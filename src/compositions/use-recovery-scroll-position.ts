@@ -31,7 +31,10 @@ const useRecoveryScrollPosition = (
 };
 
 export const scrollBehavior: RouterScrollBehavior = async (to) => {
-  const scrollView = document.getElementById("scroll-view")!;
+  const scrollView = document.getElementById("scroll-view");
+  if (!scrollView) {
+    return;
+  }
   if (["COMIC_DETAIL", "COMIC_READ"].includes(to.name as string)) {
     await nextTick();
     scrollView.scrollTo({
