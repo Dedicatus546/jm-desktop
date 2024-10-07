@@ -3,10 +3,20 @@ import { useRequest } from "alova/client";
 
 import { getComicPicListApi } from "@/apis";
 
-const route = useRoute();
-const id = computed(() => Number.parseInt(route.params.id as string));
+const props = defineProps<{
+  id: number;
+}>();
 
-const { loading, data } = useRequest(() => getComicPicListApi(id.value));
+const { loading, data, send } = useRequest(
+  (id: number) => getComicPicListApi(id),
+  {
+    immediate: false,
+  },
+);
+
+watchEffect(() => {
+  send(props.id);
+});
 </script>
 
 <template>

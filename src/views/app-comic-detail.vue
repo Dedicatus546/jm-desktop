@@ -6,10 +6,12 @@ import { collectComicApi, getComicDetailApi, likeComicApi } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 
+const props = defineProps<{
+  id: number;
+}>();
+
 const appStore = useAppStore();
 const userStore = useUserStore();
-const route = useRoute();
-const id = computed(() => Number.parseInt(route.params.id as string));
 const breakpoints = useBreakpoints(breakpointsAntDesign);
 const isGreaterLg = breakpoints.greater("lg");
 const buttonColSpan = computed(() => {
@@ -26,14 +28,12 @@ const {
   loading,
   data: comicInfo,
   send,
-} = useRequest(() => getComicDetailApi(id.value), {
+} = useRequest((id: number) => getComicDetailApi(id), {
   immediate: false,
 });
 
 watchEffect(() => {
-  if ("id" in route.params) {
-    send();
-  }
+  send(props.id);
 });
 
 const activeTabKey = ref<"relevant" | "comment">("relevant");
@@ -54,14 +54,14 @@ const tabList = computed(() => {
 });
 
 const { loading: likeComicLoading, send: likeComic } = useRequest(
-  () => likeComicApi(id.value),
+  () => likeComicApi(props.id),
   {
     immediate: false,
   },
 );
 
 const { loading: collectComicLoading, send: collectComic } = useRequest(
-  () => collectComicApi(id.value),
+  () => collectComicApi(props.id),
   {
     immediate: false,
   },
@@ -191,16 +191,18 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
               </div>
               <a-row :gutter="[16, 16]" class="mt-auto">
                 <a-col :span="buttonColSpan">
-                  <a-button
-                    :href="`#/comic-read/${comicInfo.data.id}`"
-                    size="large"
-                    block
+                  <router-link
+                    v-slot="{ navigate }"
+                    :to="{ name: 'COMIC_READ', params: { id } }"
+                    custom
                   >
+                    <a-button size="large" block @click="navigate()">
                     <template #icon>
                       <ReadOutlined />
                     </template>
                     阅读
                   </a-button>
+                  </router-link>
                 </a-col>
                 <a-col :span="buttonColSpan">
                   <a-button

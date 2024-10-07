@@ -33,13 +33,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/app-config.vue"),
       },
       {
-        path: "comic-detail/:id",
+        path: "comic-detail/:id(\\d+)",
         name: "COMIC_DETAIL",
+        props: (to) => ({
+          id: Number.parseInt(to.params.id as string),
+        }),
         component: () => import("@/views/app-comic-detail.vue"),
       },
       {
-        path: "comic-read/:id",
+        path: "comic-read/:id(\\d+)",
         name: "COMIC_READ",
+        props: (to) => ({
+          id: Number.parseInt(to.params.id as string),
+        }),
         component: () => import("@/views/app-comic-read.vue"),
       },
       {
