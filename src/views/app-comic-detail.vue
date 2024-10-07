@@ -16,7 +16,7 @@ const breakpoints = useBreakpoints(breakpointsAntDesign);
 const isGreaterLg = breakpoints.greater("lg");
 const buttonColSpan = computed(() => {
   if (!userStore.userInfo) {
-    return 8;
+    return 24;
   }
   if (isGreaterLg.value) {
     return 6;
@@ -204,53 +204,55 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     </a-button>
                   </router-link>
                 </a-col>
-                <a-col :span="buttonColSpan">
-                  <a-button
-                    :loading="likeComicLoading"
-                    size="large"
-                    block
-                    @click="likeComic()"
-                  >
-                    <template #icon>
-                      <HeartFilled
-                        v-if="comicInfo.data.isLike"
-                        style="color: red"
-                      ></HeartFilled>
-                      <HeartOutlined v-else style="color: red" />
-                    </template>
-                    {{ comicInfo.data.isLike ? "已喜欢" : "喜欢" }}
-                  </a-button>
-                </a-col>
-                <a-col :span="buttonColSpan">
-                  <a-button
-                    :loading="collectComicLoading"
-                    size="large"
-                    block
-                    @click="collectComic()"
-                  >
-                    <template #icon>
-                      <BookFilled
-                        v-if="comicInfo.data.isCollect"
-                        style="color: orange"
-                      />
-                      <BookOutlined v-else style="color: orange" />
-                    </template>
-                    {{ comicInfo.data.isCollect ? "已收藏" : "收藏" }}
-                  </a-button>
-                </a-col>
-                <a-col v-if="userStore.userInfo" :span="buttonColSpan">
-                  <app-comic-detail-download-button
-                    :comic="{
-                      id: comicInfo.data.id,
-                      name: comicInfo.data.name,
-                      author:
-                        comicInfo.data.authorList.length > 0
-                          ? comicInfo.data.authorList[0]
-                          : '',
-                    }"
-                    :is-download="comicInfo.data.isDownload"
-                  />
-                </a-col>
+                <template v-if="userStore.userInfo">
+                  <a-col :span="buttonColSpan">
+                    <a-button
+                      :loading="likeComicLoading"
+                      size="large"
+                      block
+                      @click="likeComic()"
+                    >
+                      <template #icon>
+                        <HeartFilled
+                          v-if="comicInfo.data.isLike"
+                          style="color: red"
+                        ></HeartFilled>
+                        <HeartOutlined v-else style="color: red" />
+                      </template>
+                      {{ comicInfo.data.isLike ? "已喜欢" : "喜欢" }}
+                    </a-button>
+                  </a-col>
+                  <a-col :span="buttonColSpan">
+                    <a-button
+                      :loading="collectComicLoading"
+                      size="large"
+                      block
+                      @click="collectComic()"
+                    >
+                      <template #icon>
+                        <BookFilled
+                          v-if="comicInfo.data.isCollect"
+                          style="color: orange"
+                        />
+                        <BookOutlined v-else style="color: orange" />
+                      </template>
+                      {{ comicInfo.data.isCollect ? "已收藏" : "收藏" }}
+                    </a-button>
+                  </a-col>
+                  <a-col :span="buttonColSpan">
+                    <app-comic-detail-download-button
+                      :comic="{
+                        id: comicInfo.data.id,
+                        name: comicInfo.data.name,
+                        author:
+                          comicInfo.data.authorList.length > 0
+                            ? comicInfo.data.authorList[0]
+                            : '',
+                      }"
+                      :is-download="comicInfo.data.isDownload"
+                    />
+                  </a-col>
+                </template>
               </a-row>
             </a-flex>
           </a-flex>
