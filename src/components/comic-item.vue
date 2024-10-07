@@ -13,7 +13,7 @@ const appStore = useAppStore();
 </script>
 
 <template>
-  <router-link :to="`/comic-detail/${comic.id}`">
+  <router-link :to="{ name: 'COMIC_DETAIL', params: { id: comic.id } }">
     <a-card>
       <template #cover>
         <img

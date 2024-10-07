@@ -25,7 +25,7 @@ const { loading, data, onSuccess, send } = useRequest(
 
 onSuccess(() => {
   userStore.updateUserInfoAction(data.value.data);
-  router.push("/person");
+  router.push({ name: "PERSON" });
 });
 
 const onFinish = () => {

@@ -32,7 +32,7 @@ const close = () => {
           <RollbackOutlined />
         </div>
       </a-tooltip>
-      <router-link v-if="userInfo" to="/sign-in">
+      <router-link v-if="userInfo" :to="{ name: 'SIGN_IN' }">
         <a-tooltip title="每月签到">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
@@ -41,7 +41,7 @@ const close = () => {
           </div>
         </a-tooltip>
       </router-link>
-      <router-link to="/search">
+      <router-link :to="{ name: 'SEARCH' }">
         <a-tooltip title="本子搜索">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
@@ -70,7 +70,7 @@ const close = () => {
         </template>
       </a-dropdown>
       <template v-if="userInfo">
-        <router-link to="/person">
+        <router-link :to="{ name: 'PERSON' }">
           <a-tooltip title="个人中心">
             <div
               class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
@@ -84,14 +84,14 @@ const close = () => {
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
             @click="
               userStore.logoutAction();
-              router.push('/login');
+              router.push({ name: 'LOGIN' });
             "
           >
             <LogoutOutlined />
           </div>
         </a-tooltip>
       </template>
-      <router-link v-else to="/login">
+      <router-link v-else :to="{ name: 'LOGIN' }">
         <a-tooltip title="登录">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
@@ -100,7 +100,7 @@ const close = () => {
           </div>
         </a-tooltip>
       </router-link>
-      <router-link to="/config">
+      <router-link :to="{ name: 'CONFIG' }">
         <a-tooltip title="设置">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
@@ -109,7 +109,7 @@ const close = () => {
           </div>
         </a-tooltip>
       </router-link>
-      <router-link to="/download">
+      <router-link :to="{ name: 'DOWNLOAD' }">
         <a-tooltip title="下载">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
