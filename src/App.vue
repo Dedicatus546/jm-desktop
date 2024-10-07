@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { type ThemeConfig } from "ant-design-vue/es/config-provider/context";
 import locale from "ant-design-vue/locale/zh_CN";
+import { type ComponentPublicInstance } from "vue";
 
 import useInitApp from "./compositions/use-init-app";
+import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
 
 const theme: ThemeConfig = {
   token: {
@@ -16,6 +18,8 @@ const theme: ThemeConfig = {
 };
 
 const { loading, error, currentStatus, init: reInit } = useInitApp();
+const scrollView = ref<ComponentPublicInstance | null>(null);
+useRecoveryScrollPosition(scrollView);
 </script>
 
 <template>
@@ -37,7 +41,11 @@ const { loading, error, currentStatus, init: reInit } = useInitApp();
       </div>
       <template v-else>
         <app-header />
-        <a-layout-content class="flex-grow overflow-auto">
+        <a-layout-content
+          id="scroll-view"
+          ref="scrollView"
+          class="flex-grow overflow-auto"
+        >
           <div class="min-h-full mx-auto p-4 relative">
             <router-view v-slot="{ Component }">
               <keep-alive>

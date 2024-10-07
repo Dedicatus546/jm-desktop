@@ -1,4 +1,6 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
+import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -55,8 +57,9 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
+  scrollBehavior,
 });
 
 export default router;
