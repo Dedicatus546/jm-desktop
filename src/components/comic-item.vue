@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import useAppStore from "@/stores/use-app-store";
 
-defineProps<{
-  comic: {
-    id: number;
-    name: string;
-    author: string;
-  };
-}>();
+withDefaults(
+  defineProps<{
+    comic: {
+      id: number;
+      name: string;
+      author: string;
+    };
+    replace?: boolean;
+  }>(),
+  {
+    replace: false,
+  },
+);
 
 const appStore = useAppStore();
 </script>
 
 <template>
-  <router-link :to="{ name: 'COMIC_DETAIL', params: { id: comic.id } }">
+  <router-link
+    :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
+  >
     <a-card>
       <template #cover>
         <img

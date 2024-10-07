@@ -197,11 +197,11 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     custom
                   >
                     <a-button size="large" block @click="navigate()">
-                    <template #icon>
-                      <ReadOutlined />
-                    </template>
-                    阅读
-                  </a-button>
+                      <template #icon>
+                        <ReadOutlined />
+                      </template>
+                      阅读
+                    </a-button>
                   </router-link>
                 </a-col>
                 <a-col :span="buttonColSpan">
@@ -270,7 +270,7 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
               :xl="6"
               :xxl="4"
             >
-              <comic-item :comic="item" />
+              <comic-item replace :comic="item" />
             </a-col>
           </a-row>
           <app-comic-detail-comment
