@@ -90,9 +90,7 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
         <a-card>
           <a-row :gutter="[16, 16]">
             <a-col v-for="item of 8" :key="item" :sm="8" :xl="6" :xxl="4">
-              <a-skeleton-image
-                class="skeleton-comic-item-cover aspect-[3/4]"
-              />
+              <comic-item-skeleton />
             </a-col>
           </a-row>
         </a-card>
@@ -288,15 +286,6 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
   width: 25%;
   min-width: 200px;
   max-width: 300px;
-
-  :deep(.ant-skeleton-image) {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.skeleton-comic-item-cover {
-  width: 100%;
 
   :deep(.ant-skeleton-image) {
     width: 100%;
