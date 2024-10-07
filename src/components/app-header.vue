@@ -32,7 +32,7 @@ const close = () => {
           <RollbackOutlined />
         </div>
       </a-tooltip>
-      <router-link to="/sign-in">
+      <router-link v-if="userInfo" to="/sign-in">
         <a-tooltip title="每月签到">
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
