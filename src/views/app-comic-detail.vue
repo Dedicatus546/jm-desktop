@@ -11,13 +11,13 @@ const userStore = useUserStore();
 const route = useRoute();
 const id = computed(() => Number.parseInt(route.params.id as string));
 const breakpoints = useBreakpoints(breakpointsAntDesign);
+const isGreaterLg = breakpoints.greater("lg");
 const buttonColSpan = computed(() => {
-  if (userStore.userInfo) {
-    return 6;
-  }
-  console.log(breakpoints.active().value);
-  if (breakpoints.isGreater("lg")) {
+  if (!userStore.userInfo) {
     return 8;
+  }
+  if (isGreaterLg.value) {
+    return 6;
   }
   return 12;
 });

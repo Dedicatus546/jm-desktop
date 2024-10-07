@@ -12,12 +12,15 @@ const { loading, data } = useRequest(() => getPromoteComicListApi(), {
   },
 });
 const breakpoints = useBreakpoints(breakpointsAntDesign);
+const isGreaterXXL = breakpoints.greater("xxl");
+const isGreaterXL = breakpoints.greater("xl");
+const isGreaterSM = breakpoints.greater("sm");
 const slidesPerView = computed(() => {
-  if (breakpoints.greater("xxl").value) {
+  if (isGreaterXXL.value) {
     return 8;
-  } else if (breakpoints.greater("xl").value) {
+  } else if (isGreaterXL.value) {
     return 6;
-  } else if (breakpoints.greater("sm").value) {
+  } else if (isGreaterSM.value) {
     return 4;
   }
   return 2;
