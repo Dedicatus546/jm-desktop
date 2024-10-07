@@ -72,16 +72,29 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
   <a-row :gutter="[16, 16]">
     <template v-if="loading || !comicInfo">
       <a-col :span="24">
-        <a-card loading>
-          <!-- TODO 自定义骨架 -->
-          <!-- 这里必须有内容才能在 loading = true 时显示加载骨架 -->
-          loading
+        <a-card>
+          <a-flex :gap="16">
+            <a-skeleton-image class="skeleton-comic-cover aspect-[3/4]" />
+            <a-flex class="flex-grow" vertical justify="space-between">
+              <a-skeleton active title></a-skeleton>
+              <a-row :gutter="[16, 16]">
+                <a-col v-for="item of 4" :key="item" :span="6">
+                  <a-skeleton-button block active></a-skeleton-button>
+                </a-col>
+              </a-row>
+            </a-flex>
+          </a-flex>
         </a-card>
       </a-col>
       <a-col :span="24">
-        <a-card loading>
-          <!-- 这里必须有内容才能在 loading = true 时显示加载骨架 -->
-          loading
+        <a-card>
+          <a-row :gutter="[16, 16]">
+            <a-col v-for="item of 8" :key="item" :sm="8" :xl="6" :xxl="4">
+              <a-skeleton-image
+                class="skeleton-comic-item-cover aspect-[3/4]"
+              />
+            </a-col>
+          </a-row>
         </a-card>
       </a-col>
     </template>
@@ -270,4 +283,24 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
   </a-row>
 </template>
 
-<style scoped></style>
+<style scoped lang="less">
+.skeleton-comic-cover {
+  width: 25%;
+  min-width: 200px;
+  max-width: 300px;
+
+  :deep(.ant-skeleton-image) {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.skeleton-comic-item-cover {
+  width: 100%;
+
+  :deep(.ant-skeleton-image) {
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>
