@@ -1,0 +1,8 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_size = 2
+indent_style = space
+tab_width = 2

@@ -1,0 +1,149 @@
+<script setup lang="ts">
+import useUserStore from "@/stores/use-user-store";
+
+const userStore = useUserStore();
+const userInfo = computed(() => userStore.userInfo);
+const router = useRouter();
+
+const minus = () => {
+  ipcRenderer.minimizeWin();
+};
+
+const close = () => {
+  ipcRenderer.closeWin();
+};
+</script>
+
+<template>
+  <a-layout-header
+    class="app-header flex items-center justify-between ps-4! pe-4! app-region-drag"
+  >
+    <div class="text-[1.5rem] font-bold app-region-nodrag">
+      <router-link to="/">
+        <img src="@/assets/logo.png" class="block w-[150px]" alt="jm" />
+      </router-link>
+    </div>
+    <div class="leading-none flex items-center gap-2 app-region-nodrag">
+      <a-tooltip title="返回">
+        <div
+          class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          @click="router.back()"
+        >
+          <RollbackOutlined />
+        </div>
+      </a-tooltip>
+      <router-link to="/sign-in">
+        <a-tooltip title="每月签到">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          >
+            <CalendarOutlined />
+          </div>
+        </a-tooltip>
+      </router-link>
+      <router-link to="/search">
+        <a-tooltip title="本子搜索">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          >
+            <SearchOutlined />
+          </div>
+        </a-tooltip>
+      </router-link>
+      <a-dropdown>
+        <div
+          class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+        >
+          <LinkOutlined />
+        </div>
+        <template #overlay>
+          <a-menu>
+            <!-- TODO -->
+            <!-- ipcMain shell.openExternal(url) -->
+            <a-menu-item>
+              <a href="javascript:;">官方站点</a>
+            </a-menu-item>
+            <a-menu-item>
+              <a href="javascript:;">下载页（IOS + Android）</a>
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+      <template v-if="userInfo">
+        <router-link to="/person">
+          <a-tooltip title="个人中心">
+            <div
+              class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+            >
+              <UserOutlined />
+            </div>
+          </a-tooltip>
+        </router-link>
+        <a-tooltip title="退出">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+            @click="
+              userStore.logoutAction();
+              router.push('/login');
+            "
+          >
+            <LogoutOutlined />
+          </div>
+        </a-tooltip>
+      </template>
+      <router-link v-else to="/login">
+        <a-tooltip title="登录">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          >
+            <LoginOutlined />
+          </div>
+        </a-tooltip>
+      </router-link>
+      <router-link to="/config">
+        <a-tooltip title="设置">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          >
+            <SettingOutlined />
+          </div>
+        </a-tooltip>
+      </router-link>
+      <router-link to="/download">
+        <a-tooltip title="下载">
+          <div
+            class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+          >
+            <CloudDownloadOutlined />
+          </div>
+        </a-tooltip>
+      </router-link>
+      <div
+        class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+        @click="minus"
+      >
+        <MinusOutlined />
+      </div>
+      <div
+        class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+        @click="close"
+      >
+        <CloseOutlined />
+      </div>
+    </div>
+  </a-layout-header>
+</template>
+
+<style lang="less" scoped>
+.app-header {
+  a {
+    &:hover,
+    &:active {
+      color: inherit;
+    }
+  }
+  .anticon {
+    font-size: 18px;
+  }
+}
+</style>
