@@ -21,6 +21,7 @@ const onSetRef = (el: Element | ComponentPublicInstance | null) => {
       observer.unobserve(safeTypeEl);
       if (!needDecode(props.comicId)) {
         visible.value = true;
+        imageSrc.value = props.src;
         return;
       }
       const decodeSrc = await decodeImage(props.src, props.comicId);
