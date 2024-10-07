@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 
+const appStore = useAppStore();
 const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
@@ -11,6 +13,10 @@ const minus = () => {
 
 const close = () => {
   ipcRenderer.closeWin();
+};
+
+const openLink = (link: string) => {
+  ipcRenderer.send("app/openLink", link);
 };
 </script>
 
@@ -61,10 +67,20 @@ const close = () => {
             <!-- TODO -->
             <!-- ipcMain shell.openExternal(url) -->
             <a-menu-item>
-              <a href="javascript:;">官方站点</a>
+              <span
+                :data-href="appStore.setting.webHost"
+                @click="openLink(appStore.setting.webHost)"
+              >
+                官方站点
+              </span>
             </a-menu-item>
             <a-menu-item>
-              <a href="javascript:;">下载页（IOS + Android）</a>
+              <span
+                :data-href="appStore.setting.storeLink.web"
+                @click="openLink(appStore.setting.storeLink.web)"
+              >
+                下载页面
+              </span>
             </a-menu-item>
           </a-menu>
         </template>

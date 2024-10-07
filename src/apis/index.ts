@@ -59,7 +59,7 @@ export const getSettingApi = () => {
         code: res.code,
         data: {
           logoPath: res.data.logo_path,
-          webHost: res.data.main_web_host,
+          webHost: "http://" + res.data.main_web_host,
           imgHost: res.data.img_host,
           baseUrl: res.data.base_url,
           cnBaseUrl: res.data.cn_base_url,

@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 // import { createRequire } from 'node:module'
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 
 import { config, updateConfig } from "./config";
 import { getDownloadList, insertDownload, isDownload } from "./db";
@@ -103,6 +103,10 @@ app
       })
       .on("logger/error", (_e, err: string) => {
         logger.error(err);
+      })
+      .on("app/openLink", (_e, link: string) => {
+        console.log("link", link);
+        shell.openExternal(link);
       });
     ipcMain.handle("app/config", async () => {
       return config;
