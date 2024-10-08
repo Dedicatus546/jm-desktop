@@ -38,6 +38,7 @@ const useInitConfig = () => {
   const { data, onSuccess, invoke } = useIpcRendererInvoke<{
     apiUrl: string;
     downloadDir: string;
+    readMode: number;
   }>("app/config", [], {
     immediate: false,
   });
@@ -55,6 +56,7 @@ const useInitConfig = () => {
   };
 };
 
+// TODO 是否要做自动登录？
 const useAutoLogin = () => {
   const userStore = useUserStore();
   const { send, onSuccess, data } = useRequest(() => loginApi("", ""), {
@@ -73,7 +75,7 @@ const useAutoLogin = () => {
 const useInitApp = () => {
   const setting = useInitSetting();
   const config = useInitConfig();
-  const autoLogin = useAutoLogin();
+  useAutoLogin();
   const loading = ref(true);
   const currentStatus = ref<string | null>(null);
   const error = ref<string | null>(null);
