@@ -1,32 +1,62 @@
 <script setup lang="ts">
+import { notification } from "ant-design-vue";
+
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useAppStore from "@/stores/use-app-store";
 
 const appStore = useAppStore();
+const [api, ContextHolder] = notification.useNotification();
 
 const formState = reactive<{
   apiUrl: string;
   downloadDir: string;
+  readMode: number;
 }>({
   apiUrl: "",
   downloadDir: "",
+  readMode: 1,
 });
 
-const { loading, data, onSuccess } = useIpcRendererInvoke<{
+const { loading, data, onSuccess, invoke } = useIpcRendererInvoke<{
   apiUrl: string;
   downloadDir: string;
+  readMode: number;
 }>("app/config");
 
 onSuccess(() => {
   Object.assign(formState, data.value!);
   appStore.updateConfigAction(data.value!);
 });
+
+const { loading: saveConfigLoading, invoke: saveConfig } =
+  useIpcRendererInvoke<void>(
+    "app/updateConfig",
+    () => [Object.assign({}, formState)],
+    {
+      immediate: false,
+    },
+  );
+
+const onFinish = async () => {
+  await saveConfig();
+  api.info({
+    message: "应用配置",
+    description: "保存成功",
+  });
+  invoke();
+};
 </script>
 
 <template>
+  <context-holder />
   <a-card title="软件设置">
     <a-spin :spinning="loading">
-      <a-form :model="formState" size="large" layout="vertical">
+      <a-form
+        :model="formState"
+        size="large"
+        layout="vertical"
+        @finish="onFinish"
+      >
         <a-form-item label="目标域名" name="apiUrl">
           <a-select
             v-model:value="formState.apiUrl"
@@ -40,11 +70,27 @@ onSuccess(() => {
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="下载位置">
+        <a-form-item label="下载位置" name="downloadUrl">
           <select-folder-input v-model:value="formState.downloadDir" />
         </a-form-item>
+        <a-form-item label="阅读模式" name="readMode">
+          <a-radio-group
+            v-model:value="formState.readMode"
+            button-style="solid"
+          >
+            <a-radio-button :value="1">竖向滚动</a-radio-button>
+            <a-radio-button :value="2">按钮切换</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
         <a-form-item class="mb-0">
-          <a-button block type="primary" html-type="submit">保存</a-button>
+          <a-button
+            block
+            type="primary"
+            html-type="submit"
+            :loading="saveConfigLoading"
+          >
+            保存
+          </a-button>
         </a-form-item>
         <!-- <a-form-item class="mb-4">
           <a-button block>重置</a-button>

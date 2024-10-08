@@ -25,6 +25,7 @@ interface State {
   config: {
     apiUrl: string;
     downloadDir: string;
+    readMode: number;
   };
   setting: {
     currentShuntKey: number | null;
@@ -62,6 +63,7 @@ const useAppStore = defineStore("app", () => {
     config: {
       apiUrl: "",
       downloadDir: "",
+      readMode: 1,
     },
     setting: {
       currentShuntKey: null,

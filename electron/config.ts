@@ -11,11 +11,13 @@ const defaultDownloadDir = path.resolve(appDir, "download");
 type Config = {
   apiUrl: string;
   downloadDir: string;
+  readMode: number;
 };
 
 const defaultConfig: Config = {
   apiUrl: "https://www.jmeadpoolcdn.life",
   downloadDir: defaultDownloadDir,
+  readMode: 1,
 };
 
 if (!fs.existsSync(configDir)) {
