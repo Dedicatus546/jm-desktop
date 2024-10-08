@@ -48,7 +48,7 @@ useRecoveryScrollPosition(scrollView);
         >
           <div class="min-h-full mx-auto p-4 relative">
             <router-view v-slot="{ Component }">
-              <keep-alive>
+              <keep-alive include="app-home,app-search,app-person">
                 <component :is="Component" />
               </keep-alive>
             </router-view>
