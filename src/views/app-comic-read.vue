@@ -31,7 +31,12 @@ const appStore = useAppStore();
   </div>
   <template v-else>
     <div v-if="appStore.config.readMode === 1">
-      <comic-pic v-for="item of data" :key="item" :comic-id="id" :src="item" />
+      <comic-vertical-pic
+        v-for="item of data"
+        :key="item"
+        :comic-id="id"
+        :src="item"
+      />
     </div>
     <app-comic-page-read v-else :pic-list="data" :comic-id="id" />
   </template>
