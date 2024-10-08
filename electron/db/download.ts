@@ -1,4 +1,4 @@
-import { db } from "./init";
+import { db } from "./instance";
 
 export type DownloadItem = {
   id: number;

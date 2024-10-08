@@ -1,12 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 
+import { configFilePath, defaultDownloadDir } from "./dir";
 import { logger } from "./logger";
-import { appDir } from "./utils";
-
-const configDir = path.resolve(appDir, "config");
-const configPath = path.resolve(configDir, "config.json");
-const defaultDownloadDir = path.resolve(appDir, "download");
 
 type Config = {
   apiUrl: string;
@@ -20,21 +15,17 @@ const defaultConfig: Config = {
   readMode: 1,
 };
 
-if (!fs.existsSync(configDir)) {
-  fs.mkdirSync(configDir);
-}
-
-if (!fs.existsSync(configPath)) {
-  fs.writeFileSync(configPath, JSON.stringify(defaultConfig, undefined, 2));
+if (!fs.existsSync(configFilePath)) {
+  fs.writeFileSync(configFilePath, JSON.stringify(defaultConfig, undefined, 2));
 }
 
 export const config = JSON.parse(
-  fs.readFileSync(configPath, { encoding: "utf-8" }),
+  fs.readFileSync(configFilePath, { encoding: "utf-8" }),
 ) as Config;
 
 logger.info(`读取当前应用配置 ${JSON.stringify(config)}`);
 
 export const updateConfig = (updatedConfig: Partial<Config>) => {
   Object.assign(config, updatedConfig);
-  fs.writeFileSync(configPath, JSON.stringify(config, undefined, 2));
+  fs.writeFileSync(configFilePath, JSON.stringify(config, undefined, 2));
 };
