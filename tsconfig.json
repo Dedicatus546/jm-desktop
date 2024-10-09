@@ -20,8 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@electron/*": ["./electron/*"]
     }
   },
   "include": [
