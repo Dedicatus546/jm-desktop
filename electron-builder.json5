@@ -27,7 +27,7 @@
   //   "artifactName": "${productName}-Linux-${version}.${ext}"
   // },
   win: {
-    icon: "src/assets/app-icon.ico",
+    icon: "public/app-icon.ico",
     sign: false,
     target: [
       {
