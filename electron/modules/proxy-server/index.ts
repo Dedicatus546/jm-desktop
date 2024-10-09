@@ -16,8 +16,10 @@ const __dirname = dirname(__filename);
 
 @singleton()
 export class ProxyServerService {
+  // @ts-expect-error express instance
   private app: ExpressServer | null = null;
   private server: Server | null = null;
+  private serverInitPromise: Promise<void> | null = null;
 
   static DEFAULT_CONFIG = {
     target: "https://www.jmeadpoolcdn.life",
@@ -59,20 +61,25 @@ export class ProxyServerService {
       res.sendFile(join(RENDERER_DIST, "index.html"));
     });
 
-    this.server = app.listen(0, () => {
-      this.loggerService.info("启动代理服务器");
-    });
+    this.serverInitPromise = new Promise((resolve, reject) => {
+      this.server = app.listen(0, () => {
+        this.loggerService.info("启动代理服务器");
+        resolve();
+      });
 
-    this.server.on("error", (err) => {
-      this.loggerService.error(`启动代理服务器失败 ${String(err)}`);
+      this.server.on("error", (err) => {
+        this.loggerService.error(`启动代理服务器失败 ${String(err)}`);
+        reject();
+      });
     });
   }
 
-  public getPort() {
+  public async getPort() {
     if (!this.server) {
       this.loggerService.error(`无法获取代理服务器端口，代理服务器未启动`);
       return;
     }
+    await this.serverInitPromise;
     const address = this.server.address() as AddressInfo;
     return address.port;
   }

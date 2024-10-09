@@ -16,8 +16,28 @@ export class WinService {
     @inject(ProxyServerService) private proxyServerService: ProxyServerService,
     @inject(PathService) private pathService: PathService,
     @inject(LoggerService) private loggerService: LoggerService,
+    // @ts-expect-error inject dbService
     @inject(DbService) private dbService: DbService,
   ) {
+    // Quit when all windows are closed, except on macOS. There, it's common
+    // for applications and their menu bar to stay active until the user quits
+    // explicitly with Cmd + Q.
+    app.on("window-all-closed", () => {
+      if (process.platform !== "darwin") {
+        app.quit();
+        this.win = null;
+        this.proxyServerService.closeServer();
+      }
+    });
+
+    app.on("activate", () => {
+      // On OS X it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      if (BrowserWindow.getAllWindows().length === 0) {
+        this.createWin();
+      }
+    });
+
     app.whenReady().then(() => {
       this.createWin();
 
@@ -64,7 +84,7 @@ export class WinService {
       win?.webContents.openDevTools();
       this.loggerService.info("加载开发服务器地址");
     } else {
-      const port = this.proxyServerService.getPort();
+      const port = await this.proxyServerService.getPort();
       await win.loadURL(`http://localhost:${port}`);
       this.loggerService.info("加载打包后服务器地址");
     }

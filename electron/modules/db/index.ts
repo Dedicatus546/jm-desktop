@@ -20,6 +20,7 @@ export class DbService {
 
   constructor(
     @inject(DirService) private dirService: DirService,
+    // @ts-expect-error inject configService
     @inject(ConfigService) private configService: ConfigService,
   ) {
     this.initDatabase();
