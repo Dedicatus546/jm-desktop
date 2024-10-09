@@ -1,5 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
+import AppComicDetail from "@/views/app-comic-detail.vue";
+import AppComicRead from "@/views/app-comic-read.vue";
+import AppConfig from "@/views/app-config.vue";
+import AppDownload from "@/views/app-download.vue";
+import AppHome from "@/views/app-home.vue";
+import AppLogin from "@/views/app-login.vue";
+import AppPerson from "@/views/app-person.vue";
+import AppSearch from "@/views/app-search.vue";
+import AppSignIn from "@/views/app-sign-in.vue";
+
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
 
 const routes: RouteRecordRaw[] = [
@@ -10,27 +20,27 @@ const routes: RouteRecordRaw[] = [
       {
         path: "home",
         name: "HOME",
-        component: () => import("@/views/app-home.vue"),
+        component: AppHome,
       },
       {
         path: "search",
         name: "SEARCH",
-        component: () => import("@/views/app-search.vue"),
+        component: AppSearch,
       },
       {
         path: "person",
         name: "PERSON",
-        component: () => import("@/views/app-person.vue"),
+        component: AppPerson,
       },
       {
         path: "login",
         name: "LOGIN",
-        component: () => import("@/views/app-login.vue"),
+        component: AppLogin,
       },
       {
         path: "config",
         name: "CONFIG",
-        component: () => import("@/views/app-config.vue"),
+        component: AppConfig,
       },
       {
         path: "comic-detail/:id(\\d+)",
@@ -38,7 +48,7 @@ const routes: RouteRecordRaw[] = [
         props: (to) => ({
           id: Number.parseInt(to.params.id as string),
         }),
-        component: () => import("@/views/app-comic-detail.vue"),
+        component: AppComicDetail,
       },
       {
         path: "comic-read/:id(\\d+)",
@@ -46,17 +56,17 @@ const routes: RouteRecordRaw[] = [
         props: (to) => ({
           id: Number.parseInt(to.params.id as string),
         }),
-        component: () => import("@/views/app-comic-read.vue"),
+        component: AppComicRead,
       },
       {
         path: "download",
         name: "DOWNLOAD",
-        component: () => import("@/views/app-download.vue"),
+        component: AppDownload,
       },
       {
         path: "sign-in",
         name: "SIGN_IN",
-        component: () => import("@/views/app-sign-in.vue"),
+        component: AppSignIn,
       },
     ],
   },
