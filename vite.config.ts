@@ -70,12 +70,13 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
+      "@electron": resolve(__dirname, "electron"),
     },
   },
   server: {
     proxy: {
       "^/api": {
-        target: "https://www.jmeadpoolcdn.life",
+        target: "https://www.cdnxxx-proxy.xyz",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace("/api", ""),
