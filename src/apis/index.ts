@@ -480,7 +480,7 @@ export const getComicDetailApi = (id: number) => {
           workList: res.data.works,
           isCollect: res.data.is_favorite,
           isLike: res.data.liked,
-          isDownload: await ipcRenderer.isDownload(res.data.id),
+          isDownload: await ipcRenderer.invoke("app/isDownload", res.data.id),
           relateList: res.data.related_list.map((item) => {
             return {
               id: Number.parseInt(item.id),
