@@ -8,11 +8,11 @@ const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
 
 const minus = () => {
-  ipcRenderer.minimizeWin();
+  ipcRenderer.send("app/minimizeWin");
 };
 
 const close = () => {
-  ipcRenderer.closeWin();
+  ipcRenderer.send("app/closeWin");
 };
 
 const openLink = (link: string) => {

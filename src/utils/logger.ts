@@ -1,8 +1,8 @@
 export const logger = {
   info(msg: string) {
-    ipcRenderer.infoLog(`[renderer] ${msg}`);
+    ipcRenderer.send("logger/info", `[renderer] ${msg}`);
   },
   error(err: string) {
-    ipcRenderer.errorLog(`[renderer] ${err}`);
+    ipcRenderer.send("logger/error", `[renderer] ${err}`);
   },
 };

@@ -82,6 +82,7 @@ const useInitApp = () => {
 
   const init = async () => {
     loading.value = true;
+    error.value = null;
     try {
       currentStatus.value = "获取网址设置";
       await setting.init();
