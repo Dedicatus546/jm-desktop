@@ -12,13 +12,26 @@ onActivated(() => {
 
 const hasLastPage = computed(() => page.value > 0);
 const lastPage = () => {
+  if (page.value === 0) {
+    return;
+  }
   page.value--;
 };
 
 const hasNextPage = computed(() => page.value < props.picList.length - 1);
 const nextPage = () => {
+  if (page.value === props.picList.length - 1) {
+    return;
+  }
   page.value++;
 };
+
+onKeyStroke("ArrowRight", () => nextPage(), {
+  dedupe: true,
+});
+onKeyStroke("ArrowLeft", () => lastPage(), {
+  dedupe: true,
+});
 </script>
 
 <template>
