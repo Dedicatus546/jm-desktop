@@ -80,7 +80,7 @@ onSuccess(() => {
           <template #dateFullCellRender="{ current }">
             <div
               v-if="isCurrentMonthDate(current)"
-              class="h-full flex items-center justify-center gap-2 min-h-[40px] aspect-ratio-[16/9]"
+              class="my-1 h-full flex items-center justify-center gap-2 min-h-[40px] aspect-ratio-[16/9]"
               :class="
                 dateMap
                   ? {
