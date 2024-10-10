@@ -763,6 +763,7 @@ export const getSignInDataApi = (userId: number) => {
         },
       };
     },
+    cacheFor: null,
   });
 };
 
