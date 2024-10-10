@@ -11,6 +11,7 @@ import AppSearch from "@/views/app-search.vue";
 import AppSignIn from "@/views/app-sign-in.vue";
 
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
+import AppQuickSearch from "./views/app-quick-search.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -26,6 +27,14 @@ const routes: RouteRecordRaw[] = [
         path: "search",
         name: "SEARCH",
         component: AppSearch,
+      },
+      {
+        path: "quick-search",
+        name: "QUICK_SEARCH",
+        props: (to) => ({
+          query: to.query.query as string,
+        }),
+        component: AppQuickSearch,
       },
       {
         path: "person",

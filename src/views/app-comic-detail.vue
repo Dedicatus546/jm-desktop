@@ -66,6 +66,10 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
     immediate: false,
   },
 );
+
+const toQuickQueryPage = (query: string) => {
+  return { name: "QUICK_SEARCH", query: { query } };
+};
 </script>
 
 <template>
@@ -124,14 +128,15 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     label="作者"
                   >
                     <a-flex wrap="wrap" :gap="8">
-                      <!-- 作者可点击 -->
-                      <a-typography-text
+                      <router-link
                         v-for="item of comicInfo.data.authorList"
                         :key="item"
-                        class="font-bold"
+                        :to="toQuickQueryPage(item)"
                       >
-                        {{ item }}
-                      </a-typography-text>
+                        <a-typography-text class="font-bold">
+                          {{ item }}
+                        </a-typography-text>
+                      </router-link>
                     </a-flex>
                   </a-descriptions-item>
                   <a-descriptions-item
@@ -147,11 +152,10 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     label="标签"
                   >
                     <a-flex wrap="wrap" :gap="8">
-                      <!-- TODO 快捷搜索 -->
                       <router-link
                         v-for="item of comicInfo.data.tagList"
                         :key="item"
-                        to="/search"
+                        :to="toQuickQueryPage(item)"
                       >
                         <a-tag class="mr-0">{{ item }}</a-tag>
                       </router-link>
@@ -162,11 +166,10 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     label="作品"
                   >
                     <a-flex wrap="wrap" :gap="8">
-                      <!-- TODO 快捷搜索 -->
                       <router-link
                         v-for="item of comicInfo.data.workList"
                         :key="item"
-                        to="/search"
+                        :to="toQuickQueryPage(item)"
                       >
                         <a-tag class="mr-0">{{ item }}</a-tag>
                       </router-link>
@@ -177,11 +180,10 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
                     label="登场人物"
                   >
                     <a-flex wrap="wrap" :gap="8">
-                      <!-- TODO 快捷搜索 -->
                       <router-link
                         v-for="item of comicInfo.data.roleList"
                         :key="item"
-                        to="/search"
+                        :to="toQuickQueryPage(item)"
                       >
                         <a-tag class="mr-0">{{ item }}</a-tag>
                       </router-link>
