@@ -20,6 +20,11 @@ const theme: ThemeConfig = {
 const { loading, error, currentStatus, init: reInit } = useInitApp();
 const scrollView = ref<ComponentPublicInstance | null>(null);
 useRecoveryScrollPosition(scrollView);
+
+const route = useRoute();
+const isAddContentPadding = computed(() => {
+  return !["COMIC_READ"].includes(route.name as string);
+});
 </script>
 
 <template>
@@ -46,7 +51,12 @@ useRecoveryScrollPosition(scrollView);
           ref="scrollView"
           class="flex-grow overflow-auto"
         >
-          <div class="min-h-full mx-auto p-4 relative">
+          <div
+            class="min-h-full mx-auto relative"
+            :class="{
+              'p-4': isAddContentPadding,
+            }"
+          >
             <router-view v-slot="{ Component }">
               <keep-alive include="app-home,app-search,app-person">
                 <component :is="Component" />

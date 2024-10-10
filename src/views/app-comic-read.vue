@@ -30,14 +30,11 @@ const appStore = useAppStore();
     <a-spin size="large" spinning></a-spin>
   </div>
   <template v-else>
-    <div v-if="appStore.config.readMode === 1">
-      <comic-vertical-pic
-        v-for="item of data"
-        :key="item"
-        :comic-id="id"
-        :src="item"
-      />
-    </div>
+    <app-comic-scroll-read
+      v-if="appStore.config.readMode === 1"
+      :pic-list="data"
+      :comic-id="id"
+    />
     <app-comic-page-read v-else :pic-list="data" :comic-id="id" />
   </template>
 </template>
