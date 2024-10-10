@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { inject, singleton } from "tsyringe";
 
 import { DbService } from "../db";
@@ -47,6 +47,9 @@ export class WinService {
         })
         .on("app/closeWin", () => {
           this.win?.close();
+        })
+        .on("app/openLink", (_v, link: string) => {
+          shell.openExternal(link);
         });
       ipcMain.handle("app/selectFolder", async () => {
         const result = await dialog.showOpenDialog(this.win!, {
