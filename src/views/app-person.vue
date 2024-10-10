@@ -16,6 +16,10 @@ const tabList = [
     key: "history",
     tab: "历史记录",
   },
+  {
+    key: "comment",
+    tab: "评论",
+  },
 ];
 </script>
 
@@ -79,6 +83,7 @@ const tabList = [
       >
         <app-person-collect-comic v-if="activeTabKey === 'collect'" />
         <app-person-history-comic v-else-if="activeTabKey === 'history'" />
+        <app-person-history-comment v-else-if="activeTabKey === 'comment'" />
       </a-card>
     </a-col>
   </a-row>

@@ -562,22 +562,22 @@ type Comment = {
 };
 
 const avatarColorCache = new Map<string, string>();
-  const getAvatar = (str: string) => {
-    if (["nopic-Male.gif", "nopic-Female.gif"].includes(str)) {
-      return null;
-    }
-    return str;
-  };
-  const getAvatarColor = (nickname: string) => {
-    let color: string | undefined = undefined;
-    if ((color = avatarColorCache.get(nickname))) {
-      return color;
-    }
-    const hash = CryptoJS.MD5(nickname).toString().substring(0, 6);
-    color = `#${hash}`;
-    avatarColorCache.set(nickname, color);
+const getAvatar = (str: string) => {
+  if (["nopic-Male.gif", "nopic-Female.gif"].includes(str)) {
+    return null;
+  }
+  return str;
+};
+const getAvatarColor = (nickname: string) => {
+  let color: string | undefined = undefined;
+  if ((color = avatarColorCache.get(nickname))) {
     return color;
-  };
+  }
+  const hash = CryptoJS.MD5(nickname).toString().substring(0, 6);
+  color = `#${hash}`;
+  avatarColorCache.set(nickname, color);
+  return color;
+};
 export const getComicCommentListApi = (query: {
   page: number;
   comicId: number;
@@ -656,6 +656,83 @@ export const getComicCommentListApi = (query: {
       };
     },
     cacheFor: null,
+  });
+};
+
+export const getUserCommentListApi = (page: number, userId: number) => {
+  return http.Get<
+    RespWrapper<{
+      list: Array<{
+        id: number;
+        parentId: number;
+        nickname: string;
+        likeCount: number;
+        content: string;
+        avatar: string | null;
+        avatarColor: string;
+        createTime: number;
+        replyList: Array<{
+          id: number;
+          parentId: number;
+          nickname: string;
+          likeCount: number;
+          createTime: number;
+          content: string;
+          avatar: string | null;
+          avatarColor: string;
+        }>;
+      }>;
+      total: number;
+    }>,
+    RespWrapper<{
+      list: Array<Comment>;
+      total: string;
+    }>
+  >("forum", {
+    params: {
+      page: page,
+      mode: undefined,
+      uid: userId,
+    },
+    transform(res) {
+      return {
+        code: res.code,
+        data: {
+          list: res.data.list.map((item) => {
+            const avatar = getAvatar(item.photo);
+            const avatarColor =
+              avatar === null ? getAvatarColor(item.username) : "#eee";
+            return {
+              id: Number.parseInt(item.CID),
+              parentId: Number.parseInt(item.parent_CID),
+              nickname: item.username,
+              likeCount: Number.parseInt(item.likes),
+              content: item.content,
+              avatar,
+              avatarColor,
+              createTime: Number.parseInt(item.update_at) * 1000,
+              replyList:
+                item.replys?.map((item) => {
+                  const avatar = getAvatar(item.photo);
+                  const avatarColor =
+                    avatar === null ? getAvatarColor(item.username) : "#eee";
+                  return {
+                    id: Number.parseInt(item.CID),
+                    parentId: Number.parseInt(item.parent_CID),
+                    nickname: item.username,
+                    likeCount: Number.parseInt(item.likes),
+                    createTime: Number.parseInt(item.update_at) * 1000,
+                    content: item.content,
+                    avatar,
+                    avatarColor,
+                  };
+                }) ?? [],
+            };
+          }),
+          total: Number.parseInt(res.data.total),
+        },
+      };
+    },
   });
 };
 
