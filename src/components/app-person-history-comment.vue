@@ -16,26 +16,24 @@ const { page, total, loading, data } = usePagination(
 </script>
 
 <template>
-  <a-spin :spinning="loading">
-    <a-list
-      item-layout="vertical"
-      size="large"
-      :loading="loading"
-      :pagination="{
-        current: page,
-        onChange: (newPage: number) => (page = newPage),
-        total,
-        pageSize: 10,
-        showSizeChanger: false,
-      }"
-      :data-source="data"
-    >
-      <template #renderItem="{ item, index }">
-        <a-divider v-if="index > 0" />
-        <comment-item :key="item.id" :comment="item" />
-      </template>
-    </a-list>
-  </a-spin>
+  <a-list
+    item-layout="vertical"
+    size="large"
+    :loading="loading"
+    :pagination="{
+      current: page,
+      onChange: (newPage: number) => (page = newPage),
+      total,
+      pageSize: 10,
+      showSizeChanger: false,
+    }"
+    :data-source="data"
+  >
+    <template #renderItem="{ item, index }">
+      <a-divider v-if="index > 0" />
+      <comment-item :key="item.id" :comment="item" />
+    </template>
+  </a-list>
 </template>
 
 <style scoped></style>
