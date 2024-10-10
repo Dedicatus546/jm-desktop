@@ -562,10 +562,6 @@ type Comment = {
 };
 
 const avatarColorCache = new Map<string, string>();
-export const getComicCommentListApi = (query: {
-  page: number;
-  comicId: number;
-}) => {
   const getAvatar = (str: string) => {
     if (["nopic-Male.gif", "nopic-Female.gif"].includes(str)) {
       return null;
@@ -582,6 +578,10 @@ export const getComicCommentListApi = (query: {
     avatarColorCache.set(nickname, color);
     return color;
   };
+export const getComicCommentListApi = (query: {
+  page: number;
+  comicId: number;
+}) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
@@ -655,7 +655,25 @@ export const getComicCommentListApi = (query: {
         },
       };
     },
+    cacheFor: null,
   });
+};
+
+export const commentComicApi = (content: string, comicId: number) => {
+  const formData = new FormData();
+  formData.append("comment", content);
+  // TODO 剧透功能
+  formData.append("status", "1"); // 1 无剧透 2 有剧透
+  formData.append("aid", comicId + "");
+  return http.Post<
+    RespWrapper<{
+      msg: string;
+      status: string;
+      aid: number;
+      cid: number;
+      spoiler: string;
+    }>
+  >("comment", formData);
 };
 
 // 签到情况
