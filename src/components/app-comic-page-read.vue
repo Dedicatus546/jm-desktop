@@ -6,8 +6,8 @@ const props = defineProps<{
   picList: Array<string>;
 }>();
 
-const page = ref(0);
-const sliderValue = ref(0);
+const page = ref(0); // [0, picList.length - 1]
+const sliderValue = ref(1); // [1, picList.length]
 
 onActivated(() => {
   page.value = 0;
@@ -19,7 +19,7 @@ const lastPage = () => {
     return;
   }
   page.value--;
-  sliderValue.value = page.value;
+  sliderValue.value = page.value + 1;
 };
 
 const hasNextPage = computed(() => page.value < props.picList.length - 1);
@@ -28,7 +28,7 @@ const nextPage = () => {
     return;
   }
   page.value++;
-  sliderValue.value = page.value;
+  sliderValue.value = page.value + 1;
 };
 
 onKeyStroke("ArrowRight", () => nextPage(), {
@@ -39,7 +39,7 @@ onKeyStroke("ArrowLeft", () => lastPage(), {
 });
 
 const onSliderAfterChange = (value: [number, number] | number) => {
-  page.value = value as number;
+  page.value = (value as number) - 1;
 };
 
 const containerElRef = ref<HTMLDivElement | null>(null);
