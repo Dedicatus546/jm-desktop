@@ -1,5 +1,7 @@
 import CryptoJS from "crypto-js";
 
+import { getImageRadio } from "@/utils";
+
 import http from "./http";
 
 type RespWrapper<T> = {
