@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { ComicPicElRef } from "@/compositions/use-decode-image";
+
 const props = defineProps<{
   comicId: number;
   picList: Array<string>;
 }>();
 
 const page = ref(0);
+const sliderValue = ref(0);
 
 onActivated(() => {
   page.value = 0;
@@ -16,6 +19,7 @@ const lastPage = () => {
     return;
   }
   page.value--;
+  sliderValue.value = page.value;
 };
 
 const hasNextPage = computed(() => page.value < props.picList.length - 1);
@@ -24,6 +28,7 @@ const nextPage = () => {
     return;
   }
   page.value++;
+  sliderValue.value = page.value;
 };
 
 onKeyStroke("ArrowRight", () => nextPage(), {
@@ -32,40 +37,86 @@ onKeyStroke("ArrowRight", () => nextPage(), {
 onKeyStroke("ArrowLeft", () => lastPage(), {
   dedupe: true,
 });
+
+const onSliderAfterChange = (value: [number, number] | number) => {
+  page.value = value as number;
+};
+
+const containerElRef = ref<HTMLDivElement | null>(null);
+const observerRef = ref<IntersectionObserver | null>(null);
+
+onMounted(() => {
+  observerRef.value = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((item) => {
+        if (item.isIntersecting) {
+          // show
+          (item.target as ComicPicElRef).__comic__pic__onVisible?.();
+        }
+      });
+    },
+    {
+      root: toValue(containerElRef),
+    },
+  );
+});
 </script>
 
 <template>
   <div class="absolute inset-4">
     <a-flex vertical class="h-full" :gap="16">
-      <div class="flex-grow min-h-0">
-        <comic-page-pic
-          :key="picList[page]"
-          :comic-id="comicId"
-          :src="picList[page]"
-        />
+      <div ref="containerElRef" class="flex-grow min-h-0">
+        <template v-if="observerRef">
+          <comic-page-pic
+            :key="picList[page]"
+            :comic-id="comicId"
+            :src="picList[page]"
+            :observer="observerRef"
+          />
+        </template>
       </div>
-      <a-row class="flex-shrink-0" :gutter="[16, 16]">
-        <a-col :span="12">
+      <a-card class="flex-shrink-0" size="small">
+        <a-flex align="center" :gap="16">
           <a-button
+            type="primary"
+            class="flex-shrink-0"
+            shape="circle"
             block
             size="large"
             :disabled="!hasLastPage"
             @click="lastPage"
           >
-            上一页
+            <template #icon>
+              <CaretLeftOutlined />
+            </template>
           </a-button>
-        </a-col>
-        <a-col :span="12">
+          <div class="flex-grow min-w-0">
+            <a-slider
+              v-model:value="sliderValue"
+              :tooltip-open="false"
+              :min="1"
+              :max="picList.length"
+              @after-change="onSliderAfterChange"
+            />
+          </div>
+          <div class="flex-shrink-0">
+            {{ sliderValue }} / {{ picList.length }}
+          </div>
           <a-button
+            type="primary"
+            class="flex-shrink-0"
+            shape="circle"
             block
             size="large"
             :disabled="!hasNextPage"
             @click="nextPage"
           >
-            下一页
+            <template #icon>
+              <CaretRightOutlined />
+            </template>
           </a-button>
-        </a-col>
-      </a-row>
+        </a-flex>
+      </a-card>
     </a-flex>
   </div>
 </template>

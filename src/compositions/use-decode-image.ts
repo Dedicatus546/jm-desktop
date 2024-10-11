@@ -1,34 +1,48 @@
-import {
-  ComicPicElRef,
-  decodeSrcMap,
-  observer,
-} from "@/components/comic-pic/state";
 import { decodeImage, needDecode } from "@/utils/image-rewrite";
 
+export type ComicPicElRef = HTMLDivElement & {
+  __comic__pic__onVisible?: () => void;
+};
+
+const decodeSrcMap = new Map<string, string>();
+
 const useDecodeImage = (
+  elRef: MaybeRef<Element | null>,
+  observerRef: MaybeRef<IntersectionObserver | null>,
   sourceSrc: MaybeRef<string>,
   comicId: MaybeRef<number>,
 ) => {
   const imageSrc = ref("");
   const visible = ref(false);
-  const elRef = ref<Element | null>(null);
 
-  const onSetRef = (el: Element | ComponentPublicInstance | null) => {
-    if (el) {
-      const safeTypeEl = el as ComicPicElRef;
+  onMounted(() => {
+    const observer = toValue(observerRef);
+    const elValue = toValue(elRef);
+    const sourceSrcValue = toValue(sourceSrc);
+    const comicIdValue = toValue(comicId);
+    const key =
+      comicIdValue +
+      "-" +
+      sourceSrcValue.substring(
+        sourceSrcValue.lastIndexOf("/") + 1,
+        sourceSrcValue.lastIndexOf("."),
+      );
+    if (decodeSrcMap.has(key)) {
+      visible.value = true;
+      imageSrc.value = decodeSrcMap.get(key)!;
+      return;
+    }
+    if (elValue) {
+      const safeTypeEl = elValue as ComicPicElRef;
       safeTypeEl.__comic__pic__onVisible = async () => {
-        observer.unobserve(safeTypeEl);
-        if (!needDecode(toValue(comicId))) {
+        observer?.unobserve(safeTypeEl);
+        if (!needDecode(comicIdValue)) {
           visible.value = true;
-          imageSrc.value = toValue(sourceSrc);
+          imageSrc.value = sourceSrcValue;
           return;
         }
-        const decodeSrc = await decodeImage(
-          toValue(sourceSrc),
-          toValue(comicId),
-        );
+        const decodeSrc = await decodeImage(sourceSrcValue, comicIdValue);
         if (decodeSrc) {
-          const key = toValue(sourceSrc) + toValue(comicId);
           decodeSrcMap.set(key, decodeSrc);
           setTimeout(
             () => {
@@ -40,26 +54,22 @@ const useDecodeImage = (
           visible.value = true;
         }
       };
-      elRef.value = safeTypeEl;
-    } else {
-      elRef.value = null;
     }
-  };
 
-  onMounted(() => {
-    if (elRef.value) {
-      observer.observe(elRef.value);
+    if (elValue) {
+      observer?.observe(elValue);
     }
   });
 
   onBeforeUnmount(() => {
-    if (elRef.value) {
-      observer.unobserve(elRef.value);
+    const observer = toValue(observerRef);
+    const elValue = toValue(elRef);
+    if (elValue) {
+      observer?.unobserve(elValue);
     }
   });
 
   return {
-    onSetRef,
     visible,
     imageSrc,
   };

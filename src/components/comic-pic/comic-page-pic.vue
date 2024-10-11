@@ -4,16 +4,21 @@ import useDecodeImage from "@/compositions/use-decode-image";
 const props = defineProps<{
   src: string;
   comicId: number;
+  observer: IntersectionObserver | null;
 }>();
 
-const { onSetRef, imageSrc, visible } = useDecodeImage(
+const elRef = ref<HTMLDivElement | null>(null);
+
+const { imageSrc, visible } = useDecodeImage(
+  elRef,
+  props.observer,
   toRef(props, "src"),
   toRef(props, "comicId"),
 );
 </script>
 
 <template>
-  <div :ref="onSetRef" class="w-full h-full">
+  <div ref="elRef" class="w-full h-full">
     <img
       v-if="visible"
       class="block w-full h-full object-contain"
