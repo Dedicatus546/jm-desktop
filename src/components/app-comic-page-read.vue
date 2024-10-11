@@ -44,6 +44,7 @@ const onSliderAfterChange = (value: [number, number] | number) => {
 
 const containerElRef = ref<HTMLDivElement | null>(null);
 const observerRef = ref<IntersectionObserver | null>(null);
+provide("observerRef", observerRef);
 
 onMounted(() => {
   observerRef.value = new IntersectionObserver(
@@ -60,6 +61,11 @@ onMounted(() => {
     },
   );
 });
+
+onUnmounted(() => {
+  observerRef.value?.disconnect();
+  observerRef.value = null;
+});
 </script>
 
 <template>
@@ -71,7 +77,6 @@ onMounted(() => {
             :key="picList[page]"
             :comic-id="comicId"
             :src="picList[page]"
-            :observer="observerRef"
           />
         </template>
       </div>

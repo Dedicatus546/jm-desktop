@@ -9,6 +9,7 @@ defineProps<{
 const sliderValue = ref(0);
 const containerElRef = ref<HTMLDivElement | null>(null);
 const observerRef = ref<IntersectionObserver | null>(null);
+provide("observerRef", observerRef);
 
 onMounted(() => {
   observerRef.value = new IntersectionObserver(
@@ -25,6 +26,11 @@ onMounted(() => {
     },
   );
 });
+
+onUnmounted(() => {
+  observerRef.value?.disconnect();
+  observerRef.value = null;
+});
 </script>
 
 <template>
@@ -36,7 +42,6 @@ onMounted(() => {
           :key="item"
           :comic-id="comicId"
           :src="item"
-          :observer="observerRef"
         />
       </template>
     </div>

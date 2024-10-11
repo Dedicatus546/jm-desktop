@@ -8,12 +8,12 @@ const decodeSrcMap = new Map<string, string>();
 
 const useDecodeImage = (
   elRef: MaybeRef<Element | null>,
-  observerRef: MaybeRef<IntersectionObserver | null>,
   sourceSrc: MaybeRef<string>,
   comicId: MaybeRef<number>,
 ) => {
   const imageSrc = ref("");
   const visible = ref(false);
+  const observerRef = inject<Ref<IntersectionObserver | null>>("observerRef");
 
   onMounted(() => {
     const observer = toValue(observerRef);

@@ -4,14 +4,12 @@ import useDecodeImage from "@/compositions/use-decode-image";
 const props = defineProps<{
   src: string;
   comicId: number;
-  observer: IntersectionObserver | null;
 }>();
 
 const elRef = ref<HTMLDivElement | null>(null);
 
 const { imageSrc, visible } = useDecodeImage(
   elRef,
-  props.observer,
   toRef(props, "src"),
   toRef(props, "comicId"),
 );
