@@ -7,13 +7,18 @@ import useAppStore from "@/stores/use-app-store";
 const props = defineProps<{
   id: number;
 }>();
+const radio = ref<number>(0);
 
-const { loading, data, send } = useRequest(
+const { loading, data, send, onSuccess } = useRequest(
   (id: number) => getComicPicListApi(id),
   {
     immediate: false,
   },
 );
+provide("imageRadio", radio);
+onSuccess(() => {
+  radio.value = data.value.radio;
+});
 
 watchEffect(() => {
   send(props.id);
@@ -32,10 +37,10 @@ const appStore = useAppStore();
   <template v-else>
     <app-comic-scroll-read
       v-if="appStore.config.readMode === 1"
-      :pic-list="data"
+      :pic-list="data.list"
       :comic-id="id"
     />
-    <app-comic-page-read v-else :pic-list="data" :comic-id="id" />
+    <app-comic-page-read v-else :pic-list="data.list" :comic-id="id" />
   </template>
 </template>
 

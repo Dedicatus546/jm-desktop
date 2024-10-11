@@ -9,7 +9,10 @@ defineProps<{
 const sliderValue = ref(0);
 const containerElRef = ref<HTMLDivElement | null>(null);
 const observerRef = ref<IntersectionObserver | null>(null);
+const comicVerticalPicListRef = ref<Array<{ scrollIntoView: () => void }>>([]);
 provide("observerRef", observerRef);
+const scrollObserverRef = ref<IntersectionObserver | null>(null);
+provide("scrollObserverRef", scrollObserverRef);
 
 onMounted(() => {
   observerRef.value = new IntersectionObserver(
@@ -25,12 +28,30 @@ onMounted(() => {
       root: toValue(containerElRef),
     },
   );
+  scrollObserverRef.value = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((item) => {
+        if (item.isIntersecting) {
+          (item.target as any).__comic__pic__onScrollVisible?.();
+        }
+      });
+    },
+    {
+      root: toValue(containerElRef),
+      rootMargin: "-50% 0% -50% 0%",
+    },
+  );
 });
 
 onUnmounted(() => {
   observerRef.value?.disconnect();
   observerRef.value = null;
 });
+
+const onSliderAfterChange = (value: [number, number] | number) => {
+  const index = (value as number) - 1;
+  comicVerticalPicListRef.value?.[index].scrollIntoView();
+};
 </script>
 
 <template>
@@ -38,22 +59,31 @@ onUnmounted(() => {
     <div ref="containerElRef" class="absolute inset-0 p-4 overflow-auto">
       <template v-if="observerRef">
         <comic-vertical-pic
-          v-for="item of picList"
+          v-for="(item, index) of picList"
+          ref="comicVerticalPicListRef"
           :key="item"
           :comic-id="comicId"
           :src="item"
+          @in-view="sliderValue = index + 1"
         />
       </template>
     </div>
-    <!-- TODO -->
     <div class="absolute bottom-4 inset-x-4">
       <a-card size="small">
-        <a-slider
-          v-model:value="sliderValue"
-          :tooltip-open="false"
-          :min="1"
-          :max="picList.length"
-        />
+        <a-flex align="center" :gap="16">
+          <div class="flex-grow min-w-0">
+            <a-slider
+              v-model:value="sliderValue"
+              :tooltip-open="false"
+              :min="1"
+              :max="picList.length"
+              @after-change="onSliderAfterChange"
+            />
+          </div>
+          <div class="flex-shrink-0">
+            {{ sliderValue }} / {{ picList.length }}
+          </div>
+        </a-flex>
       </a-card>
     </div>
   </div>

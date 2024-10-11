@@ -916,18 +916,21 @@ export const signInApi = (userId: number, dayId: number) => {
 
 // 获取图片列表，需要通过正则来解析 html 文件内容
 export const getComicPicListApi = (comicId: number) => {
-  return http.Get<string[], string>("chapter_view_template", {
+  return http.Get<{ radio: number; list: string[] }, string>(
+    "chapter_view_template",
+    {
     params: {
       id: comicId,
       mode: "vertical",
       page: 0,
+        // TODO
       // 图源节点， setting 接口返回的值
       app_img_shunt: 1,
       express: "off",
       v: Date.now(),
       // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
-    transform(htmlStr) {
+      async transform(htmlStr) {
       // 正则解析
       const regex = /data-original="(.*)"/g;
       const matches = [];
@@ -937,9 +940,15 @@ export const getComicPicListApi = (comicId: number) => {
         matches.push(match[1]);
       }
 
-      return matches.filter((item) => item.includes(".webp"));
+        const list = matches.filter((item) => item.includes(".webp"));
+
+        return {
+          radio: await getImageRadio(list[0]),
+          list,
+        };
     },
-  });
+    },
+  );
   // .then(() => {
   //   return [
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00001.webp",

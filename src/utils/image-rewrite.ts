@@ -3,23 +3,10 @@
 
 import CryptoJS from "crypto-js";
 
+import { getLoadedImage } from ".";
+
 export const needDecode = (comicId: number): boolean => {
   return comicId > 220980;
-};
-
-const getLoadedImage = async (src: string) => {
-  const img = document.createElement("img");
-  // 允许跨域
-  img.setAttribute("crossOrigin", "anonymous");
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    img.addEventListener("load", () => {
-      resolve(img);
-    });
-    img.addEventListener("error", (e) => {
-      reject(e);
-    });
-    img.src = src;
-  });
 };
 
 const seedMap = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
