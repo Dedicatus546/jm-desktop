@@ -81,15 +81,15 @@ export class WinService {
     //     new Date().toLocaleString(),
     //   );
     // });
-
-    if (this.pathService.getDevServerUrl()) {
-      await win.loadURL(this.pathService.getDevServerUrl());
+    const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
+    if (devServerUrl) {
+      await win.loadURL(devServerUrl);
       win?.webContents.openDevTools();
-      this.loggerService.info("加载开发服务器地址");
+      this.loggerService.info(`加载开发服务器地址 ${devServerUrl}`);
     } else {
       const port = await this.proxyServerService.getPort();
       await win.loadURL(`http://localhost:${port}`);
-      this.loggerService.info("加载打包后服务器地址");
+      this.loggerService.info(`加载打包后服务器地址 http://localhost:${port}`);
     }
   }
 }

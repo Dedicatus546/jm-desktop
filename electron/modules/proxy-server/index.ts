@@ -1,7 +1,6 @@
 import { Server } from "node:http";
 import { AddressInfo } from "node:net";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 import cors from "cors";
 import Express, { Express as ExpressServer } from "express";
@@ -10,9 +9,7 @@ import { inject, singleton } from "tsyringe";
 
 import { ConfigService } from "../config";
 import { LoggerService } from "../logger";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { PathService } from "../path";
 
 @singleton()
 export class ProxyServerService {
@@ -28,21 +25,20 @@ export class ProxyServerService {
   constructor(
     @inject(ConfigService) private configService: ConfigService,
     @inject(LoggerService) private loggerService: LoggerService,
+    @inject(PathService) private pathService: PathService,
   ) {
     this.createServer();
   }
 
   private createServer() {
-    const appRootPath = join(__dirname, "..");
-    const RENDERER_DIST = join(appRootPath, "dist");
-
     const config = Object.assign({}, ProxyServerService.DEFAULT_CONFIG, {
       target: this.configService.get().apiUrl,
     });
+    this.loggerService.info(`默认代理服务器配置 ${JSON.stringify(config)}`);
 
     const app = (this.app = Express());
     app.use(cors());
-    app.use("/", Express.static(RENDERER_DIST));
+    app.use("/", Express.static(this.pathService.getDistRendererPath()));
 
     app.use(
       "/api",
@@ -58,17 +54,19 @@ export class ProxyServerService {
 
     // vue 路由
     app.get("*", (_req, res) => {
-      res.sendFile(join(RENDERER_DIST, "index.html"));
+      res.sendFile(join(this.pathService.getDistRendererPath(), "index.html"));
     });
 
     this.serverInitPromise = new Promise((resolve, reject) => {
       this.server = app.listen(0, () => {
-        this.loggerService.info("启动代理服务器");
+        this.loggerService.info(
+          `启动代理服务器，随机端口为 ${(this.server!.address() as AddressInfo).port}`,
+        );
         resolve();
       });
 
       this.server.on("error", (err) => {
-        this.loggerService.error(`启动代理服务器失败 ${String(err)}`);
+        this.loggerService.error(`启动代理服务器失败，原因 ${String(err)}`);
         reject();
       });
     });

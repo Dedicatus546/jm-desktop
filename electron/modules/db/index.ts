@@ -1,12 +1,13 @@
 import { writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 
 import Sqlite, { Database } from "better-sqlite3";
 import { ipcMain } from "electron";
 import { inject, singleton } from "tsyringe";
 
 import { ConfigService } from "../config";
-import { DirService } from "../dir";
+import { LoggerService } from "../logger";
+import { PathService } from "../path";
 
 export type DownloadItem = {
   id: number;
@@ -17,12 +18,15 @@ export type DownloadItem = {
 @singleton()
 export class DbService {
   private db: Database | null = null;
+  private dbFilePath: string;
 
   constructor(
-    @inject(DirService) private dirService: DirService,
-    // @ts-expect-error inject configService
+    @inject(PathService) pathService: PathService,
     @inject(ConfigService) private configService: ConfigService,
+    @inject(LoggerService) private loggerService: LoggerService,
   ) {
+    this.dbFilePath = join(pathService.getDataDirPath(), "app.db");
+    this.loggerService.info(`db 文件路径为 ${this.dbFilePath}`);
     this.initDatabase();
 
     ipcMain.handle("app/isDownload", async (_e, comicId: number) => {
@@ -35,7 +39,7 @@ export class DbService {
       "app/saveDownloadFile",
       async (_e, buffer: ArrayBuffer, name: string) => {
         writeFileSync(
-          resolve(configService.get().downloadDir, name),
+          resolve(this.configService.get().downloadDir, name),
           Buffer.from(buffer),
         );
       },
@@ -46,7 +50,7 @@ export class DbService {
   }
 
   private initDatabase() {
-    this.db = new Sqlite(this.dirService.get("db"));
+    this.db = new Sqlite(this.dbFilePath);
     this.db.exec(`CREATE TABLE IF NOT EXISTS download (
       id INTEGER PRIMARY KEY,
       name VARCHAR(100),

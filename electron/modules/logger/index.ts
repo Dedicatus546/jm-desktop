@@ -1,16 +1,39 @@
+import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { ipcMain } from "electron";
 import { inject, singleton } from "tsyringe";
 import winston, { format, Logger } from "winston";
 
-import { DirService } from "../dir";
+import { PathService } from "../path";
 
 @singleton()
 export class LoggerService {
   private logger: Logger;
+  private loggerDir: string;
+  private loggerInfoFilePath;
+  private loggerErrorFilePath;
+  private logCallbackList: Array<() => void>;
 
-  constructor(@inject(DirService) dirService: DirService) {
+  constructor(@inject(PathService) pathService: PathService) {
+    this.logCallbackList = [];
+    this.loggerDir = join(pathService.getDataDirPath(), "log");
+    if (existsSync(this.loggerDir)) {
+      this.delayLog(() => {
+        this.info(`检测到日志目录 ${this.loggerDir} 不存在，创建它`);
+      });
+      mkdirSync(this.loggerDir, {
+        recursive: true,
+      });
+    }
+    this.loggerInfoFilePath = join(this.loggerDir, "info.log");
+    this.delayLog(() => {
+      this.info(`info 日志路径为 ${this.loggerInfoFilePath}`);
+    });
+    this.loggerErrorFilePath = join(this.loggerDir, "error.log");
+    this.delayLog(() => {
+      this.info(`error 日志路径为 ${this.loggerErrorFilePath}`);
+    });
     this.logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.timestamp({}),
@@ -18,7 +41,7 @@ export class LoggerService {
       ),
       transports: [
         new winston.transports.File({
-          filename: join(dirService.get("log"), "info.log"),
+          filename: this.loggerInfoFilePath,
           level: "info",
           format: format((info) => {
             // 只记录 info 级别的日志
@@ -26,26 +49,42 @@ export class LoggerService {
           })(),
         }),
         new winston.transports.File({
-          filename: join(dirService.get("log"), "error.log"),
+          filename: this.loggerErrorFilePath,
           level: "error",
         }),
       ],
     });
+    this.delayLog(() => {
+      this.info(`创建日志对象成功`);
+    });
+    this.logCallbackList.forEach((fn) => fn());
 
     ipcMain
       .on("logger/info", (_e, msg: string) => {
-        this.info(msg);
+        this.ipcRendererInfo(msg);
       })
       .on("logger/error", (_e, err: string) => {
-        this.error(err);
+        this.ipcRendererError(err);
       });
   }
 
   public info(msg: string) {
-    this.logger.info(msg);
+    this.logger.info(`[ipcMain] ${msg}`);
   }
 
   public error(err: string) {
-    this.logger.error(err);
+    this.logger.error(`[ipcMain] ${err}`);
+  }
+
+  private ipcRendererInfo(msg: string) {
+    this.logger.info(`[ipcRenderer] ${msg}`);
+  }
+
+  private ipcRendererError(err: string) {
+    this.logger.info(`[ipcRenderer] ${err}`);
+  }
+
+  private delayLog(fn: () => void) {
+    this.logCallbackList.push(fn);
   }
 }
