@@ -31,8 +31,8 @@ const replyListOpen = ref(false);
 </script>
 
 <template>
-  <div class="flex items-start gap-4">
-    <div class="flex flex-col gap-2 items-center">
+  <a-flex align="start" :gap="16">
+    <div class="flex-shrink-0">
       <a-avatar
         v-if="comment.avatar"
         :src="`${appStore.setting.imgHost}/media/users/${comment.avatar}`"
@@ -48,13 +48,13 @@ const replyListOpen = ref(false);
         {{ comment.nickname[0].toUpperCase() }}
       </a-avatar>
     </div>
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-col">
+    <a-flex vertical :gap="8" class="flex-grow">
+      <a-flex vertical>
         <a-typography-text>{{ comment.nickname }}</a-typography-text>
         <a-typography-text type="secondary">
           {{ dayjs(comment.createTime).format("YYYY-MM-DD HH:mm:ss") }}
         </a-typography-text>
-      </div>
+      </a-flex>
       <a-typography-text>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-html="comment.content"></div>
@@ -82,6 +82,6 @@ const replyListOpen = ref(false);
           <comment-item :comment="subItem" />
         </template>
       </div>
-    </div>
-  </div>
+    </a-flex>
+  </a-flex>
 </template>

@@ -54,15 +54,16 @@ onBeforeUnmount(() => {
 <template>
   <div ref="elRef">
     <img v-if="visible" class="block w-full" :src="imageSrc" alt="" />
-    <div
+    <a-flex
       v-else
-      class="flex items-center justify-center"
+      align="center"
+      justify="center"
       :style="{
         aspectRatio: radio,
       }"
     >
       <a-spin size="large" />
-    </div>
+    </a-flex>
   </div>
 </template>
 

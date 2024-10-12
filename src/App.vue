@@ -31,19 +31,21 @@ const isAddContentPadding = computed(() => {
   <a-config-provider :theme="theme" :locale="locale">
     <a-layout class="w-screen h-screen">
       <div v-if="error"></div>
-      <div
+      <a-flex
         v-if="loading || error"
-        class="w-full h-full flex items-center justify-center"
+        align="center"
+        justify="center"
+        class="w-full h-full"
       >
-        <div v-if="loading" class="flex flex-col items-center gap-4">
+        <a-flex v-if="loading" vertical align="center" :gap="16">
           <a-spin size="large" />
           {{ currentStatus }}
-        </div>
-        <div v-if="error" class="flex flex-col items-center gap-4">
+        </a-flex>
+        <a-flex v-if="error" vertical align="center" :gap="16">
           {{ error }}
           <a-button type="primary" @click="reInit()">重新加载</a-button>
-        </div>
-      </div>
+        </a-flex>
+      </a-flex>
       <template v-else>
         <app-header />
         <a-layout-content

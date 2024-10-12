@@ -78,9 +78,12 @@ onSuccess(() => {
         >
           <template #headerRender></template>
           <template #dateFullCellRender="{ current }">
-            <div
+            <a-flex
               v-if="isCurrentMonthDate(current)"
-              class="my-1 h-full flex items-center justify-center gap-2 min-h-[40px] aspect-ratio-[16/9]"
+              align="center"
+              justify="center"
+              :gap="8"
+              class="my-1 h-full min-h-[40px] aspect-ratio-[16/9]"
               :class="
                 dateMap
                   ? {
@@ -103,7 +106,7 @@ onSuccess(() => {
                 v-if="dateMap && dateMap[current.format('DD')]?.hasExtraBonus"
                 class="text-pink"
               />
-            </div>
+            </a-flex>
           </template>
         </a-calendar>
         <a-button

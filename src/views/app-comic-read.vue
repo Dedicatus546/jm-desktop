@@ -28,12 +28,14 @@ const appStore = useAppStore();
 </script>
 
 <template>
-  <div
+  <a-flex
     v-if="loading || !data"
-    class="absolute inset-4 flex items-center justify-center"
+    align="center"
+    justify="center"
+    class="absolute inset-4"
   >
     <a-spin size="large" spinning></a-spin>
-  </div>
+  </a-flex>
   <template v-else>
     <app-comic-scroll-read
       v-if="appStore.config.readMode === 1"

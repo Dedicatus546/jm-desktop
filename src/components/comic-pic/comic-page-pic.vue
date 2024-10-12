@@ -23,9 +23,9 @@ const { imageSrc, visible } = useDecodeImage(
       :src="imageSrc"
       alt=""
     />
-    <div v-else class="w-full h-full flex items-center justify-center">
+    <a-flex v-else align="center" justify="center" class="w-full h-full">
       <a-spin size="large" />
-    </div>
+    </a-flex>
   </div>
 </template>
 
