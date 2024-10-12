@@ -25,10 +25,18 @@ const route = useRoute();
 const isAddContentPadding = computed(() => {
   return !["COMIC_READ"].includes(route.name as string);
 });
+
+const getPopupContainer = (triggerNode?: HTMLElement) => {
+  return (triggerNode?.parentNode as any) ?? document.body;
+};
 </script>
 
 <template>
-  <a-config-provider :theme="theme" :locale="locale">
+  <a-config-provider
+    :theme="theme"
+    :locale="locale"
+    :get-popup-container="getPopupContainer"
+  >
     <a-layout class="w-screen h-screen">
       <div v-if="error"></div>
       <a-flex
