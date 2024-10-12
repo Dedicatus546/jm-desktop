@@ -4,13 +4,17 @@ import { useRequest } from "alova/client";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
-import { getPromoteComicListApi } from "@/apis";
+import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
 
 const { loading, data } = useRequest(() => getPromoteComicListApi(), {
   initialData: {
     list: [],
   },
 });
+const { loading: latestLoading, data: latestData } = useRequest(() =>
+  getLatestComicListApi(1),
+);
+
 const breakpoints = useBreakpoints(breakpointsAntDesign);
 const isGreaterXXL = breakpoints.greater("xxl");
 const isGreaterXL = breakpoints.greater("xl");
@@ -28,7 +32,7 @@ const slidesPerView = computed(() => {
 </script>
 
 <template>
-  <a-row v-if="loading" :gutter="[16, 16]">
+  <a-row v-if="loading || latestLoading" :gutter="[16, 16]">
     <a-col v-for="item of 4" :key="item" :span="24">
       <a-card>
         <template #title>
@@ -64,6 +68,28 @@ const slidesPerView = computed(() => {
             <comic-item :comic="subItem" />
           </swiper-slide>
         </swiper>
+      </a-card>
+    </a-col>
+    <a-col :span="24">
+      <a-card title="最新发布">
+        <template #extra>
+          <router-link custom :to="{ name: 'SEARCH' }">
+            <template #default="{ navigate }">
+              <a-button type="link" @click="navigate()">更多</a-button>
+            </template>
+          </router-link>
+        </template>
+        <a-row :gutter="[16, 16]">
+          <a-col
+            v-for="item of latestData.data"
+            :key="item.id"
+            :sm="8"
+            :xl="6"
+            :xxl="4"
+          >
+            <comic-item :comic="item" />
+          </a-col>
+        </a-row>
       </a-card>
     </a-col>
   </a-row>

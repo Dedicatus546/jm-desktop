@@ -409,6 +409,44 @@ export const getPromoteComicListApi = () => {
   });
 };
 
+export const getLatestComicListApi = (page: number) => {
+  return http.Get<
+    RespWrapper<
+      Array<{
+        id: number;
+        author: string;
+        name: string;
+      }>
+    >,
+    RespWrapper<
+      Array<{
+        id: string;
+        author: string;
+        name: string;
+      }>
+    >
+  >("latest", {
+    params: {
+      page,
+    },
+    transform(res) {
+      return {
+        code: res.code,
+        data: res.data.map((item) => {
+          return {
+            id: Number.parseInt(item.id),
+            author: item.author,
+            name: item.name,
+            // liked: item.liked,
+            // isCollect: item.is_favorite,
+            // updateAt: item.update_at,
+          };
+        }),
+      };
+    },
+  });
+};
+
 export const getComicDetailApi = (id: number) => {
   return http.Get<
     RespWrapper<{
@@ -921,26 +959,26 @@ export const getComicPicListApi = (comicId: number) => {
   return http.Get<{ radio: number; list: string[] }, string>(
     "chapter_view_template",
     {
-    params: {
-      id: comicId,
-      mode: "vertical",
-      page: 0,
+      params: {
+        id: comicId,
+        mode: "vertical",
+        page: 0,
         // TODO
-      // 图源节点， setting 接口返回的值
-      app_img_shunt: 1,
-      express: "off",
-      v: Date.now(),
-      // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
-    },
+        // 图源节点， setting 接口返回的值
+        app_img_shunt: 1,
+        express: "off",
+        v: Date.now(),
+        // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
+      },
       async transform(htmlStr) {
-      // 正则解析
-      const regex = /data-original="(.*)"/g;
-      const matches = [];
-      let match;
+        // 正则解析
+        const regex = /data-original="(.*)"/g;
+        const matches = [];
+        let match;
 
-      while ((match = regex.exec(htmlStr)) !== null) {
-        matches.push(match[1]);
-      }
+        while ((match = regex.exec(htmlStr)) !== null) {
+          matches.push(match[1]);
+        }
 
         const list = matches.filter((item) => item.includes(".webp"));
 
@@ -948,7 +986,7 @@ export const getComicPicListApi = (comicId: number) => {
           radio: await getImageRadio(list[0]),
           list,
         };
-    },
+      },
     },
   );
   // .then(() => {
