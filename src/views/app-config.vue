@@ -62,9 +62,6 @@ const onFinish = async () => {
             v-model:value="formState.apiUrl"
             placeholder="如果发现无法使用可以切换此处的域名"
           >
-            <a-select-option value="https://www.jmeadpoolcdn.life">
-              https://www.jmeadpoolcdn.life
-            </a-select-option>
             <a-select-option value="https://www.cdnxxx-proxy.xyz">
               https://www.cdnxxx-proxy.xyz
             </a-select-option>
