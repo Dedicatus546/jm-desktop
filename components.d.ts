@@ -34,6 +34,7 @@ declare module 'vue' {
     APagination: typeof import('ant-design-vue/es')['Pagination']
     AppComicDetailComment: typeof import('./src/components/app-comic-detail-comment.vue')['default']
     AppComicDetailDownloadButton: typeof import('./src/components/app-comic-detail-download-button.vue')['default']
+    AppComicDetailSeries: typeof import('./src/components/app-comic-detail-series.vue')['default']
     AppComicPageRead: typeof import('./src/components/app-comic-page-read.vue')['default']
     AppComicScrollRead: typeof import('./src/components/app-comic-scroll-read.vue')['default']
     AppDownloadCompleteList: typeof import('./src/components/app-download-complete-list.vue')['default']
