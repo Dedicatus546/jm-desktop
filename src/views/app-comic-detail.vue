@@ -296,14 +296,19 @@ const toQuickQueryPage = (query: string) => {
           @tab-change="(key) => (activeTabKey = key as any)"
         >
           <a-row v-if="activeTabKey === 'relevant'" :gutter="[16, 16]">
-            <a-col
-              v-for="item of comicInfo.data.relateList"
-              :key="item.id"
-              :sm="8"
-              :xl="6"
-              :xxl="4"
-            >
-              <comic-item replace :comic="item" />
+            <template v-if="comicInfo.data.relateList.length > 0">
+              <a-col
+                v-for="item of comicInfo.data.relateList"
+                :key="item.id"
+                :sm="8"
+                :xl="6"
+                :xxl="4"
+              >
+                <comic-item replace :comic="item" />
+              </a-col>
+            </template>
+            <a-col v-else :span="24">
+              <a-empty />
             </a-col>
           </a-row>
           <app-comic-detail-comment
