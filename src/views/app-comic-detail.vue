@@ -132,7 +132,7 @@ const toQuickQueryPage = (query: string) => {
             <div class="w-1/4 max-w-[300px] min-w-[200px] flex-shrink-0">
               <img
                 loading="lazy"
-                class="block aspect-[3/4] w-full"
+                class="block aspect-[3/4] w-full rounded-lg"
                 alt=""
                 :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
               />
