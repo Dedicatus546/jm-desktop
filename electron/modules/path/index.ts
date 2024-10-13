@@ -23,8 +23,9 @@ export class PathService {
       ? join(this.appRoot, "public")
       : this.distRenderer;
     this.dataDir = join(
-      import.meta.env.DEV ? this.appRoot : app.getPath("exe"),
-      "data",
+      ...(import.meta.env.DEV
+        ? [this.appRoot, "data"]
+        : [app.getPath("exe"), "..", "data"]),
     );
   }
 
