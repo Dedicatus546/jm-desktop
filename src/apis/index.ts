@@ -468,6 +468,11 @@ export const getComicDetailApi = (id: number) => {
         name: string;
         author: string;
       }>;
+      seriesList: Array<{
+        id: number;
+        name: string;
+      }>;
+      currentSeriesId: number;
     }>,
     RespWrapper<{
       id: number;
@@ -505,6 +510,7 @@ export const getComicDetailApi = (id: number) => {
       id,
     },
     async transform(res) {
+      res.data.series.sort((s1, s2) => +s1.sort - +s2.sort);
       return {
         code: res.code,
         data: {
@@ -528,6 +534,13 @@ export const getComicDetailApi = (id: number) => {
               author: item.author,
             };
           }),
+          seriesList: res.data.series.map((item, index) => {
+            return {
+              id: Number.parseInt(item.id),
+              name: `第 ${index + 1} 话 ` + item.name,
+            };
+          }),
+          currentSeriesId: Number.parseInt(res.data.series_id),
         },
       };
     },

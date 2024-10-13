@@ -28,6 +28,7 @@ const {
   loading,
   data: comicInfo,
   send,
+  onSuccess,
 } = useRequest((id: number) => getComicDetailApi(id), {
   immediate: false,
 });
@@ -36,12 +37,19 @@ watchEffect(() => {
   send(props.id);
 });
 
-const activeTabKey = ref<"relevant" | "comment">("relevant");
+const activeTabKey = ref<"relevant" | "comment" | "series">("relevant");
 const tabList = computed(() => {
   if (!comicInfo.value) {
     return [];
   }
-  return [
+  const list = [];
+  if (comicInfo.value.data.seriesList.length > 0) {
+    list.push({
+      key: "series",
+      tab: "目录",
+    });
+  }
+  list.push(
     {
       key: "relevant",
       tab: "相关漫画",
@@ -50,7 +58,24 @@ const tabList = computed(() => {
       key: "comment",
       tab: comicInfo.value.data.commentCount + "条评论",
     },
-  ];
+  );
+  return list;
+});
+
+onSuccess(() => {
+  if (comicInfo.value.data.seriesList.length > 0) {
+    activeTabKey.value = "series";
+  }
+});
+
+const currentSeriesName = computed(() => {
+  if (comicInfo.value.data.currentSeriesId) {
+    const item = comicInfo.value.data.seriesList.find(
+      (item) => item.id === comicInfo.value.data.currentSeriesId,
+    );
+    return item ? `从${item.name}开始阅读` : "阅读";
+  }
+  return "阅读";
 });
 
 const { loading: likeComicLoading, send: likeComic } = useRequest(
@@ -202,7 +227,11 @@ const toQuickQueryPage = (query: string) => {
                       <template #icon>
                         <ReadOutlined />
                       </template>
-                      阅读
+                      {{
+                        comicInfo.data.currentSeriesId
+                          ? currentSeriesName
+                          : "阅读"
+                      }}
                     </a-button>
                   </router-link>
                 </a-col>
@@ -280,6 +309,11 @@ const toQuickQueryPage = (query: string) => {
           <app-comic-detail-comment
             v-else-if="activeTabKey === 'comment'"
             :comic-id="id"
+          />
+          <app-comic-detail-series
+            v-else-if="activeTabKey === 'series'"
+            :series-list="comicInfo.data.seriesList"
+            :current-series-id="comicInfo.data.currentSeriesId"
           />
         </a-card>
       </a-col>
