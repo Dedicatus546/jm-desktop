@@ -24,7 +24,7 @@ const { page, total, data, send, loading } = usePagination(
         placeholder="车牌号，名称，作者"
         enter-button="搜索"
         :disabled="loading"
-        @search="send()"
+        @search="send(1, 0)"
       />
     </a-col>
     <a-col :span="24">

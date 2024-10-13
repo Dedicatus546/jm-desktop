@@ -49,7 +49,7 @@ onSuccess(() => {
     message: "评论",
     description: commentData.value.data.msg,
   });
-  refresh();
+  refresh(1, 0);
 });
 </script>
 
