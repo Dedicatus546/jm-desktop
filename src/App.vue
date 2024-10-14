@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { notification } from "ant-design-vue";
 import { type ThemeConfig } from "ant-design-vue/es/config-provider/context";
 import locale from "ant-design-vue/locale/zh_CN";
 import { type ComponentPublicInstance } from "vue";
@@ -16,6 +17,10 @@ const theme: ThemeConfig = {
     },
   },
 };
+
+notification.config({
+  top: "80px",
+});
 
 const { loading, error, currentStatus, init: reInit } = useInitApp();
 const scrollView = ref<ComponentPublicInstance | null>(null);
