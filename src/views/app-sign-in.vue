@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
-import { notification } from "ant-design-vue";
 import dayjs, { type Dayjs } from "dayjs";
 
 import { getSignInDataApi, signInApi } from "@/apis";
+import useNotification from "@/compositions/use-notification";
 import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
-const [api, ContextHolder] = notification.useNotification();
+const notification = useNotification();
 
 const currentDate = ref(dayjs());
 const validRange = computed<[Dayjs, Dayjs]>(() => {
@@ -58,7 +58,7 @@ const {
   },
 );
 onSuccess(() => {
-  api.success({
+  notification.success({
     message: "签到",
     description: "签到成功，" + signInData.value.data.msg,
   });
@@ -121,7 +121,6 @@ onSuccess(() => {
       </a-flex>
     </a-card>
   </a-spin>
-  <context-holder />
 </template>
 
 <style lang="less" scoped>

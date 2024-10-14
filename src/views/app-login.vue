@@ -2,10 +2,13 @@
 import { useRequest } from "alova/client";
 
 import { loginApi } from "@/apis";
+import useNotification from "@/compositions/use-notification";
 import useUserStore from "@/stores/use-user-store";
 
 const router = useRouter();
 const userStore = useUserStore();
+const notification = useNotification();
+
 
 const formState = reactive({
   username: "",

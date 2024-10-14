@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { notification } from "ant-design-vue";
-
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import useNotification from "@/compositions/use-notification";
 import useAppStore from "@/stores/use-app-store";
 
 const appStore = useAppStore();
-const [api, ContextHolder] = notification.useNotification();
+const notification = useNotification();
 
 const formState = reactive<{
   apiUrl: string;
@@ -39,7 +38,7 @@ const { loading: saveConfigLoading, invoke: saveConfig } =
 
 const onFinish = async () => {
   await saveConfig();
-  api.info({
+  notification.info({
     message: "应用配置",
     description: "保存成功",
   });
@@ -48,7 +47,6 @@ const onFinish = async () => {
 </script>
 
 <template>
-  <context-holder />
   <a-card title="软件设置">
     <a-spin :spinning="loading">
       <a-form

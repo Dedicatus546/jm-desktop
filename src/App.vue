@@ -5,7 +5,14 @@ import locale from "ant-design-vue/locale/zh_CN";
 import { type ComponentPublicInstance } from "vue";
 
 import useInitApp from "./compositions/use-init-app";
+import { injectNotificationKey } from "./compositions/use-notification";
 import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
+
+// 全局注册
+const [api, ContextHolder] = notification.useNotification({
+  top: "100px",
+});
+provide(injectNotificationKey, api);
 
 const theme: ThemeConfig = {
   token: {
@@ -17,10 +24,6 @@ const theme: ThemeConfig = {
     },
   },
 };
-
-notification.config({
-  top: "80px",
-});
 
 const { loading, error, currentStatus, init: reInit } = useInitApp();
 const scrollView = ref<ComponentPublicInstance | null>(null);
@@ -81,6 +84,7 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
         </a-layout-content>
       </template>
     </a-layout>
+    <context-holder />
   </a-config-provider>
 </template>
 

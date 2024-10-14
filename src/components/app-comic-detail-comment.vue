@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { usePagination, useRequest } from "alova/client";
-import { notification } from "ant-design-vue";
 
 import { commentComicApi, getComicCommentListApi } from "@/apis";
+import useNotification from "@/compositions/use-notification";
 import useUserStore from "@/stores/use-user-store";
 
 const props = defineProps<{
@@ -27,7 +27,7 @@ const {
   },
 );
 
-const [api, ContextHolder] = notification.useNotification();
+const notification = useNotification();
 const userStore = useUserStore();
 const formState = reactive({
   content: "",
@@ -45,7 +45,7 @@ const {
 );
 
 onSuccess(() => {
-  api.success({
+  notification.success({
     message: "评论",
     description: commentData.value.data.msg,
   });
@@ -54,7 +54,6 @@ onSuccess(() => {
 </script>
 
 <template>
-  <context-holder />
   <a-form :model="formState" @finish="send()">
     <a-form-item
       name="content"
