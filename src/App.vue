@@ -9,6 +9,8 @@ import { injectNotificationKey } from "./compositions/use-notification";
 import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
 
 // 全局注册
+// TODO fix 目前看来像是 ant-design-vue 的 bug
+// https://github.com/vueComponent/ant-design-vue/issues/7875
 const [api, ContextHolder] = notification.useNotification({
   top: "100px",
 });
