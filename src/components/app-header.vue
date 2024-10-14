@@ -22,6 +22,16 @@ const openLink = (link: string) => {
 const getPopupContainer = () => {
   return document.body;
 };
+
+onKeyStroke(
+  "Escape",
+  () => {
+    router.back();
+  },
+  {
+    dedupe: true,
+  },
+);
 </script>
 
 <template>
