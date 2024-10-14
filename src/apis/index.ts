@@ -7,6 +7,7 @@ import http from "./http";
 type RespWrapper<T> = {
   code: number;
   data: T;
+  errorMsg?: string;
 };
 
 export const getSettingApi = () => {

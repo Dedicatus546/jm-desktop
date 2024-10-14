@@ -28,7 +28,7 @@ const http = createAlova({
   responded: {
     async onSuccess(response, method) {
       if (response.status >= 400) {
-        throw new Error(response.statusText);
+        throw new Error(response.data.errorMsg ?? response.statusText);
       }
       if (
         // 下载接口
@@ -40,7 +40,7 @@ const http = createAlova({
       }
       const json = response.data;
       if (json.code !== 200) {
-        throw new Error(json.message);
+        throw new Error(json.errorMsg);
       }
       json.data = decode(json.data);
       console.log(method.url, response.status, json);
