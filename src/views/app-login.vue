@@ -19,7 +19,7 @@ const formRules = {
   password: [{ required: true, message: "密码不能为空" }],
 };
 
-const { loading, data, onSuccess, send } = useRequest(
+const { loading, data, onSuccess, onError, send } = useRequest(
   () => loginApi(formState.username, formState.password),
   {
     immediate: false,
@@ -27,12 +27,21 @@ const { loading, data, onSuccess, send } = useRequest(
 );
 
 onSuccess(() => {
+  notification.error({
+    message: "登录",
+    description: "登录成功",
+  });
   userStore.updateUserInfoAction(data.value.data);
   router.push({ name: "PERSON" });
 });
 
-const onFinish = () => {
-  send();
+onError((e) => {
+  notification.error({
+    message: "登录",
+    description: (e.error as Error).message,
+  });
+});
+
 };
 </script>
 
