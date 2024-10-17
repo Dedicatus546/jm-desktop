@@ -4,7 +4,7 @@ import vueHook from "alova/vue";
 import CryptoJS from "crypto-js";
 
 const ts = Math.floor(Date.now() / 1000);
-const version = "1.7.3";
+const version = "1.7.4";
 const token = "185Hcomic3PAPP7R";
 const tokenHash = CryptoJS.MD5(`${ts}${token}`).toString().toLowerCase();
 
