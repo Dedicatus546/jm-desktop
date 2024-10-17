@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, screen, shell } from "electron";
 import { inject, singleton } from "tsyringe";
 
 import { DbService } from "../db";
@@ -61,26 +61,29 @@ export class WinService {
   }
 
   private async createWin() {
+    const display = screen.getPrimaryDisplay();
+    const { width, height } = display.size;
     const win = (this.win = new BrowserWindow({
       icon: join(this.pathService.getPublicPath(), "app-icon.ico"),
       webPreferences: {
         preload: join(this.pathService.getDistElectronPath(), "preload.mjs"),
       },
-      width: 1400,
-      height: 900,
+      width: width * 0.7,
+      height: height * 0.8,
       autoHideMenuBar: true, // 隐藏菜单栏
       frame: false, // 去除边框
-      minWidth: 750,
-      minHeight: 400,
+      minWidth: width * 0.5,
+      minHeight: height * 0.5,
     }));
 
-    // Test active push message to Renderer-process.
-    // win.webContents.on("did-finish-load", () => {
-    //   win?.webContents.send(
-    //     "main-process-message",
-    //     new Date().toLocaleString(),
-    //   );
-    // });
+    if (width <= 1920) {
+      win.webContents.setZoomLevel(1);
+    } else if (width <= 2560) {
+      win.webContents.setZoomLevel(1.4);
+    } else if (width <= 3840) {
+      win.webContents.setZoomLevel(1.8);
+    }
+
     const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
     if (devServerUrl) {
       await win.loadURL(devServerUrl);
