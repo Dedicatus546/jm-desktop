@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
 
-import { downloadComicApi, getComicDownloadInfoApi } from "@/apis";
+import {
+  downloadComicApi,
+  getComicDownloadInfoApi,
+  insertDownloadComicIpc,
+  saveDownloadComicIpc,
+} from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useDownloadStore from "@/stores/use-download-store";
 
@@ -26,23 +31,20 @@ const percent = computed(() => {
   return item.total === 0 ? 0 : +((item.loaded / item.total) * 100).toFixed(0);
 });
 
-const { invoke: insertDownload } = useIpcRendererInvoke<boolean>(
-  "app/insertDownload",
-  () => [
-    {
+const { invoke: insertDownload } = useIpcRendererInvoke(
+  () =>
+    insertDownloadComicIpc({
       id: props.comic.id,
       name: props.comic.name,
       author: props.comic.author,
-    },
-  ],
+    }),
   {
     immediate: false,
   },
 );
 
 const { invoke: saveDownloadFile } = useIpcRendererInvoke(
-  "app/saveDownloadFile",
-  (buffer: ArrayBuffer, name: string) => [buffer, name],
+  (buffer: ArrayBuffer, name: string) => saveDownloadComicIpc(buffer, name),
   {
     immediate: false,
   },
@@ -81,7 +83,6 @@ watchEffect(() => {
 
 const download = async () => {
   try {
-    console.log("props.comic.id", props.comic.id);
     await getComicDownloadInfo();
     downloadStore.addDownloadAction({
       ...props.comic,

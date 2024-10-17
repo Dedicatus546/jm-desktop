@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getDownloadComicListIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useAppStore from "@/stores/use-app-store";
 
@@ -8,15 +9,12 @@ const pagination = reactive({
   pageSize: 8,
   total: 0,
 });
-const { loading, data, invoke } = useIpcRendererInvoke<{
-  list: Array<{
-    id: number;
-    name: string;
-    author: string;
-    createAt: number;
-  }>;
-  total: number;
-}>("app/getDownloadList", () => [pagination.page, pagination.pageSize]);
+const { loading, data, invoke } = useIpcRendererInvoke(() =>
+  getDownloadComicListIpc({
+    page: pagination.page,
+    pageSize: pagination.pageSize,
+  }),
+);
 
 const onPageChange = (page: number) => {
   pagination.page = page;

@@ -30,8 +30,7 @@ const useCallbackList = <T extends (...args: any[]) => void = () => void>() => {
 };
 
 const useIpcRendererInvoke = <T = any>(
-  name: string,
-  args: any[] | ((...args: any[]) => any[]) = [],
+  fn: (...args: any) => Promise<T>,
   config?: {
     immediate: boolean;
   },
@@ -58,9 +57,7 @@ const useIpcRendererInvoke = <T = any>(
   };
 
   const invoke = async (...extraArgs: any[]) => {
-    const realArgs = Array.isArray(args) ? args : args(...extraArgs);
-    await ipcRenderer
-      .invoke(name, ...realArgs)
+    await Promise.resolve(fn(...extraArgs))
       .then(
         (res) => {
           data.value = res;

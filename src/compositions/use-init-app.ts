@@ -1,9 +1,10 @@
 import { useRequest } from "alova/client";
 import { isString } from "radash";
 
-import { getSettingApi, loginApi } from "@/apis";
+import { getConfigIpc, getSettingApi, loginApi, updateConfigIpc } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
+import { Config } from "@/type";
 
 import useIpcRendererInvoke from "./use-ipc-renderer-invoke";
 
@@ -35,13 +36,12 @@ const useInitSetting = () => {
 
 const useInitConfig = () => {
   const appStore = useAppStore();
-  const { data, onSuccess, invoke } = useIpcRendererInvoke<{
-    apiUrl: string;
-    downloadDir: string;
-    readMode: number;
-  }>("app/config", [], {
+  const { data, onSuccess, invoke } = useIpcRendererInvoke<Config>(
+    () => getConfigIpc(),
+    {
     immediate: false,
-  });
+    },
+  );
 
   onSuccess(() => {
     appStore.updateConfigAction(data.value!);

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { closeWinIpc, minimizeWinIpc, openLinkIpc } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 
@@ -6,18 +7,6 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
-
-const minus = () => {
-  ipcRenderer.send("app/minimizeWin");
-};
-
-const close = () => {
-  ipcRenderer.send("app/closeWin");
-};
-
-const openLink = (link: string) => {
-  ipcRenderer.send("app/openLink", link);
-};
 
 const getPopupContainer = () => {
   return document.body;
@@ -79,12 +68,10 @@ onKeyStroke(
           </div>
           <template #overlay>
             <a-menu>
-              <!-- TODO -->
-              <!-- ipcMain shell.openExternal(url) -->
               <a-menu-item>
                 <span
                   :data-href="appStore.setting.webHost"
-                  @click="openLink(appStore.setting.webHost)"
+                  @click="openLinkIpc(appStore.setting.webHost)"
                 >
                   官方站点
                 </span>
@@ -92,7 +79,7 @@ onKeyStroke(
               <a-menu-item>
                 <span
                   :data-href="appStore.setting.storeLink.web"
-                  @click="openLink(appStore.setting.storeLink.web)"
+                  @click="openLinkIpc(appStore.setting.storeLink.web)"
                 >
                   下载页面
                 </span>
@@ -151,13 +138,13 @@ onKeyStroke(
         </router-link>
         <div
           class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
-          @click="minus"
+          @click="minimizeWinIpc()"
         >
           <MinusOutlined />
         </div>
         <div
           class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
-          @click="close"
+          @click="closeWinIpc()"
         >
           <CloseOutlined />
         </div>

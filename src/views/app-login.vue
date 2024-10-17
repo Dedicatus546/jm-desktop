@@ -9,7 +9,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const notification = useNotification();
 
-
 const formState = reactive({
   username: "",
   password: "",
@@ -19,7 +18,7 @@ const formRules = {
   password: [{ required: true, message: "密码不能为空" }],
 };
 
-const { loading, data, onSuccess, onError, send } = useRequest(
+const { loading, data, onSuccess, onError } = useRequest(
   () => loginApi(formState.username, formState.password),
   {
     immediate: false,
@@ -41,8 +40,6 @@ onError((e) => {
     description: (e.error as Error).message,
   });
 });
-
-};
 </script>
 
 <template>
@@ -54,7 +51,6 @@ onError((e) => {
       :required-mark="false"
       autocomplete="off"
       size="large"
-      @finish="onFinish"
     >
       <a-form-item name="username" :colon="false">
         <a-input

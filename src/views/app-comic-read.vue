@@ -11,7 +11,7 @@ const radio = ref<number>(0);
 const appStore = useAppStore();
 
 const { loading, data, send, onSuccess } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.setting.currentShuntKey),
+  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
   {
     immediate: false,
   },

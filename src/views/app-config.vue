@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getConfigIpc, updateConfigIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useNotification from "@/compositions/use-notification";
 import useAppStore from "@/stores/use-app-store";
@@ -20,7 +21,7 @@ const { loading, data, onSuccess, invoke } = useIpcRendererInvoke<{
   apiUrl: string;
   downloadDir: string;
   readMode: number;
-}>("app/config");
+}>(() => getConfigIpc());
 
 onSuccess(() => {
   Object.assign(formState, data.value!);
@@ -29,8 +30,7 @@ onSuccess(() => {
 
 const { loading: saveConfigLoading, invoke: saveConfig } =
   useIpcRendererInvoke<void>(
-    "app/updateConfig",
-    () => [Object.assign({}, formState)],
+    () => updateConfigIpc(Object.assign({}, formState)),
     {
       immediate: false,
     },

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Form } from "ant-design-vue";
 
+import { selectFolderIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 
 const formContext = Form.useInjectFormItemContext();
 const value = defineModel<string>("value");
 
 const { loading, data, invoke } = useIpcRendererInvoke<string>(
-  "app/selectFolder",
-  [],
+  () => selectFolderIpc(),
   {
     immediate: false,
   },
