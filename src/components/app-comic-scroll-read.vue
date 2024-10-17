@@ -81,6 +81,9 @@ const onSliderAfterChange = (value: [number, number] | number) => {
             />
           </div>
           <div class="flex-shrink-0">
+            <app-shunt-select />
+          </div>
+          <div class="flex-shrink-0">
             {{ sliderValue }} / {{ picList.length }}
           </div>
         </a-flex>

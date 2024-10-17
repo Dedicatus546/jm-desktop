@@ -969,7 +969,10 @@ export const signInApi = (userId: number, dayId: number) => {
 };
 
 // 获取图片列表，需要通过正则来解析 html 文件内容
-export const getComicPicListApi = (comicId: number) => {
+export const getComicPicListApi = (
+  comicId: number,
+  shuntKey: number | undefined,
+) => {
   return http.Get<{ radio: number; list: string[] }, string>(
     "chapter_view_template",
     {
@@ -977,9 +980,7 @@ export const getComicPicListApi = (comicId: number) => {
         id: comicId,
         mode: "vertical",
         page: 0,
-        // TODO
-        // 图源节点， setting 接口返回的值
-        app_img_shunt: 1,
+        app_img_shunt: shuntKey,
         express: "off",
         v: Date.now(),
         // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089

@@ -107,6 +107,9 @@ onUnmounted(() => {
           <div class="flex-shrink-0">
             {{ sliderValue }} / {{ picList.length }}
           </div>
+          <div class="flex-shrink-0">
+            <app-shunt-select />
+          </div>
           <a-button
             type="primary"
             class="flex-shrink-0"

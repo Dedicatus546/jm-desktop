@@ -28,7 +28,7 @@ interface State {
     readMode: number;
   };
   setting: {
-    currentShuntKey: number | null;
+    currentShuntKey: number | undefined;
     logoPath: string;
     webHost: string;
     imgHost: string;
@@ -66,7 +66,7 @@ const useAppStore = defineStore("app", () => {
       readMode: 1,
     },
     setting: {
-      currentShuntKey: null,
+      currentShuntKey: undefined,
       logoPath: "",
       webHost: "",
       imgHost: "",
@@ -85,6 +85,9 @@ const useAppStore = defineStore("app", () => {
     setting: Omit<State["setting"], "currentShuntKey">,
   ) => {
     Object.assign(state.setting, setting);
+    if (setting.shuntList.length > 0) {
+      state.setting.currentShuntKey = setting.shuntList[0].key;
+    }
   };
 
   const updateConfigAction = (config: State["config"]) => {

@@ -8,13 +8,15 @@ const props = defineProps<{
   id: number;
 }>();
 const radio = ref<number>(0);
+const appStore = useAppStore();
 
 const { loading, data, send, onSuccess } = useRequest(
-  (id: number) => getComicPicListApi(id),
+  (id: number) => getComicPicListApi(id, appStore.setting.currentShuntKey),
   {
     immediate: false,
   },
 );
+
 provide("imageRadio", radio);
 onSuccess(() => {
   radio.value = data.value.radio;
@@ -23,8 +25,6 @@ onSuccess(() => {
 watchEffect(() => {
   send(props.id);
 });
-
-const appStore = useAppStore();
 </script>
 
 <template>
