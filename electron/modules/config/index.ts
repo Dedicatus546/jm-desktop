@@ -40,10 +40,12 @@ export class ConfigService {
       "download",
     );
     this.loggerService.info(
-      `默认 config 配置为 ${JSON.stringify(ConfigService.DEFAULT_CONFIG)}`,
+      `预设 config 配置为 ${JSON.stringify(ConfigService.DEFAULT_CONFIG)}`,
     );
     if (!existsSync(configPath)) {
-      this.loggerService.info(`检测到配置文件 ${configPath} 不存在，创建它`);
+      this.loggerService.info(
+        `检测到配置文件 ${configPath} 不存在，使用预设配置创建它`,
+      );
       writeFileSync(
         configPath,
         JSON.stringify(ConfigService.DEFAULT_CONFIG, undefined, 2),
@@ -80,10 +82,11 @@ export class ConfigService {
   }
 
   public update(updatedConfig: Partial<Config>) {
+    const sourceConfigStr = JSON.stringify(this.config);
     Object.assign(this.config, updatedConfig);
     writeFileSync(this.configPath, JSON.stringify(this.config, undefined, 2));
     this.loggerService.info(
-      `更新应用配置，参数 ${JSON.stringify(updatedConfig)} 更新结果 ${JSON.stringify(this.config)}`,
+      `更新应用配置，原配置为：${sourceConfigStr} 参数 ${JSON.stringify(updatedConfig)} 更新结果 ${JSON.stringify(this.config)}`,
     );
   }
 

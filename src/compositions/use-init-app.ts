@@ -44,6 +44,9 @@ const useInitConfig = () => {
   );
   const { invoke: updateConfigInvoke } = useIpcRendererInvoke(
     (shuntKey: number) => updateConfigIpc({ currentShuntKey: shuntKey }),
+    {
+      immediate: false,
+    },
   );
 
   onSuccess(() => {
