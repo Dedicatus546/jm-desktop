@@ -11,6 +11,7 @@ export type Config = {
   apiUrl: string;
   downloadDir: string;
   readMode: number;
+  currentShuntKey: number | undefined;
 };
 
 @singleton()
@@ -19,6 +20,7 @@ export class ConfigService {
     apiUrl: "https://www.cdnxxx-proxy.xyz",
     downloadDir: "",
     readMode: 1,
+    currentShuntKey: undefined,
   };
 
   config: Config;

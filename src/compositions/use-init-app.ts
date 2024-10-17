@@ -39,12 +39,24 @@ const useInitConfig = () => {
   const { data, onSuccess, invoke } = useIpcRendererInvoke<Config>(
     () => getConfigIpc(),
     {
-    immediate: false,
+      immediate: false,
     },
+  );
+  const { invoke: updateConfigInvoke } = useIpcRendererInvoke(
+    (shuntKey: number) => updateConfigIpc({ currentShuntKey: shuntKey }),
   );
 
   onSuccess(() => {
     appStore.updateConfigAction(data.value!);
+    if (
+      appStore.config.currentShuntKey === undefined &&
+      appStore.setting.shuntList.length > 0
+    ) {
+      appStore.updateConfigAction({
+        currentShuntKey: appStore.setting.shuntList[0].key,
+      });
+      updateConfigInvoke(appStore.config.currentShuntKey);
+    }
   });
 
   return {

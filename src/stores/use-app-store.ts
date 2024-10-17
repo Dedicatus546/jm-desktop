@@ -26,9 +26,9 @@ interface State {
     apiUrl: string;
     downloadDir: string;
     readMode: number;
+    currentShuntKey: number | undefined;
   };
   setting: {
-    currentShuntKey: number | undefined;
     logoPath: string;
     webHost: string;
     imgHost: string;
@@ -64,9 +64,9 @@ const useAppStore = defineStore("app", () => {
       apiUrl: "",
       downloadDir: "",
       readMode: 1,
+      currentShuntKey: undefined,
     },
     setting: {
-      currentShuntKey: undefined,
       logoPath: "",
       webHost: "",
       imgHost: "",
@@ -81,16 +81,11 @@ const useAppStore = defineStore("app", () => {
     },
   });
 
-  const updateSettingAction = (
-    setting: Omit<State["setting"], "currentShuntKey">,
-  ) => {
+  const updateSettingAction = (setting: Partial<State["setting"]>) => {
     Object.assign(state.setting, setting);
-    if (setting.shuntList.length > 0) {
-      state.setting.currentShuntKey = setting.shuntList[0].key;
-    }
   };
 
-  const updateConfigAction = (config: State["config"]) => {
+  const updateConfigAction = (config: Partial<State["config"]>) => {
     Object.assign(state.config, config);
   };
 
