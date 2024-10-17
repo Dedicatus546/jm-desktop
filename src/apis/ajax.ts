@@ -1,5 +1,6 @@
 import CryptoJS from "crypto-js";
 
+import { BaseComic } from "@/type";
 import { getImageRadio } from "@/utils";
 
 import http from "./http";
@@ -410,15 +411,11 @@ export const getPromoteComicListApi = () => {
   });
 };
 
+// 最新漫画
+// 该接口无返回total，无法做常规分页
 export const getLatestComicListApi = (page: number) => {
   return http.Get<
-    RespWrapper<
-      Array<{
-        id: number;
-        author: string;
-        name: string;
-      }>
-    >,
+    RespWrapper<Array<BaseComic>>,
     RespWrapper<
       Array<{
         id: string;
@@ -913,15 +910,6 @@ export const getSignInDataApi = (userId: number) => {
       };
     },
     cacheFor: null,
-  });
-};
-
-// 最新漫画
-export const getLatestListApi = async () => {
-  return http.Get("latest", {
-    params: {
-      page: 0,
-    },
   });
 };
 

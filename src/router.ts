@@ -11,6 +11,7 @@ import AppSearch from "@/views/app-search.vue";
 import AppSignIn from "@/views/app-sign-in.vue";
 
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
+import AppComicLatest from "./views/app-comic-latest.vue";
 import AppQuickSearch from "./views/app-quick-search.vue";
 
 const routes: RouteRecordRaw[] = [
@@ -76,6 +77,11 @@ const routes: RouteRecordRaw[] = [
         path: "sign-in",
         name: "SIGN_IN",
         component: AppSignIn,
+      },
+      {
+        path: "comic-latest",
+        name: "COMIC_LATEST",
+        component: AppComicLatest,
       },
     ],
   },

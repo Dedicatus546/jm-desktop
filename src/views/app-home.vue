@@ -73,7 +73,7 @@ const slidesPerView = computed(() => {
     <a-col :span="24">
       <a-card title="最新发布">
         <template #extra>
-          <router-link custom :to="{ name: 'SEARCH' }">
+          <router-link custom :to="{ name: 'COMIC_LATEST' }">
             <template #default="{ navigate }">
               <a-button type="link" @click="navigate()">更多</a-button>
             </template>
