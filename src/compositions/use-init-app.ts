@@ -51,14 +51,20 @@ const useInitConfig = () => {
 
   onSuccess(() => {
     appStore.updateConfigAction(data.value!);
-    if (
-      appStore.config.currentShuntKey === undefined &&
-      appStore.setting.shuntList.length > 0
-    ) {
-      appStore.updateConfigAction({
-        currentShuntKey: appStore.setting.shuntList[0].key,
-      });
-      updateConfigInvoke(appStore.config.currentShuntKey);
+    if (appStore.setting.shuntList.length > 0) {
+      if (
+        // 第一次启动未选择图源
+        appStore.config.currentShuntKey === undefined ||
+        // 接口的图源列表可能发生变化，回退到第一个图源
+        appStore.setting.shuntList.every(
+          (item) => item.key !== appStore.config.currentShuntKey,
+        )
+      ) {
+        appStore.updateConfigAction({
+          currentShuntKey: appStore.setting.shuntList[0].key,
+        });
+        updateConfigInvoke(appStore.config.currentShuntKey);
+      }
     }
   });
 
