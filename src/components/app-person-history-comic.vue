@@ -26,7 +26,7 @@ const { page, total, loading, data } = usePagination(
       <a-col v-if="false" :span="24">
         <a-pagination
           v-model:current="page"
-          align="center"
+          align="right"
           :page-size="20"
           :total="total"
           :show-size-changer="false"

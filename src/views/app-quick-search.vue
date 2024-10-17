@@ -32,7 +32,7 @@ const { page, total, data, loading } = usePagination(
           <a-col :span="24">
             <a-pagination
               v-model:current="page"
-              align="center"
+              align="right"
               :page-size="80"
               :total="total"
               show-quick-jumper

@@ -75,7 +75,7 @@ const openLocalFile = () => {
         <a-col :span="24">
           <a-pagination
             :current="pagination.page"
-            align="center"
+            align="right"
             :page-size="8"
             :total="pagination.total"
             :show-size-changer="false"
