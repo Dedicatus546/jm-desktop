@@ -81,7 +81,7 @@ export class LoggerService {
   }
 
   private ipcRendererError(err: string) {
-    this.logger.info(`[ipcRenderer] ${err}`);
+    this.logger.error(`[ipcRenderer] ${err}`);
   }
 
   private delayLog(fn: () => void) {
