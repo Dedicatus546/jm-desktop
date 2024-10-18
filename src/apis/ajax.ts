@@ -226,6 +226,7 @@ export const getHotTagListApi = () => {
 
 export const getCollectComicListApi = (query: {
   page: number;
+  type: string;
   // folder_id: number;
 }) => {
   return http.Get<
@@ -264,7 +265,7 @@ export const getCollectComicListApi = (query: {
       page: query.page,
       size: 8,
       folder_id: 0,
-      o: "mr",
+      o: query.type,
     },
     transform(res) {
       return {
