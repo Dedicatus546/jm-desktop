@@ -173,6 +173,14 @@ const toQuickQueryPage = (query: string) => {
                     </a-typography-text>
                   </a-descriptions-item>
                   <a-descriptions-item
+                    v-if="comicInfo.data.authorList.length > 0"
+                    label="喜欢人数"
+                  >
+                    <a-typography-text>
+                      {{ comicInfo.data.likeCount }}人
+                    </a-typography-text>
+                  </a-descriptions-item>
+                  <a-descriptions-item
                     v-if="comicInfo.data.tagList.length > 0"
                     label="标签"
                   >
