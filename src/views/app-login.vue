@@ -18,7 +18,7 @@ const formRules = {
   password: [{ required: true, message: "密码不能为空" }],
 };
 
-const { loading, data, onSuccess, onError } = useRequest(
+const { loading, data, onSuccess, onError, send } = useRequest(
   () => loginApi(formState.username, formState.password),
   {
     immediate: false,
@@ -26,7 +26,7 @@ const { loading, data, onSuccess, onError } = useRequest(
 );
 
 onSuccess(() => {
-  notification.error({
+  notification.info({
     message: "登录",
     description: "登录成功",
   });
@@ -51,6 +51,7 @@ onError((e) => {
       :required-mark="false"
       autocomplete="off"
       size="large"
+      @finish="send()"
     >
       <a-form-item name="username" :colon="false">
         <a-input
