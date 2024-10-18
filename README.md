@@ -62,7 +62,7 @@ linux 、 mac 用户请使用源码自行构建。
 
 ### 读取网址设置失败
 
-请将 www.cdnxxx-proxy.xyz 和 www.jmeadpoolcdn.life 添加到梯子规则中，可能是你的地区屏蔽了这两个域名。
+请将 www.cdnxxx-proxy.xyz 添加到梯子规则中，可能是你的地区屏蔽了这个域名。
 
 ---
 
