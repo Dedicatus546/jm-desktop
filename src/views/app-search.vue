@@ -3,14 +3,23 @@ import { usePagination } from "alova/client";
 
 import { getComicListApi } from "@/apis";
 
-const queryStr = ref("");
+const formState = reactive({
+  content: "",
+  type: "mr",
+});
 
 const { page, total, data, send, loading } = usePagination(
-  (page) => getComicListApi(queryStr.value, page),
+  (page) =>
+    getComicListApi({
+      page,
+      content: formState.content,
+      type: formState.type,
+    }),
   {
     immediate: false,
     data: (res) => res.data.content,
     total: (res) => res.data.total,
+    watchingStates: [() => formState.type],
   },
 );
 </script>
@@ -19,13 +28,26 @@ const { page, total, data, send, loading } = usePagination(
   <a-row :gutter="[16, 16]">
     <a-col :span="24">
       <a-input-search
-        v-model:value="queryStr"
+        v-model:value="formState.content"
         size="large"
         placeholder="车牌号，名称，作者"
         enter-button="搜索"
         :disabled="loading"
         @search="send(1, 0)"
-      />
+      >
+        <template #addonBefore>
+          <a-select
+            v-model:value="formState.type"
+            size="large"
+            class="w-[140px]"
+          >
+            <a-select-option value="mr">最新</a-select-option>
+            <a-select-option value="mv">最多收藏</a-select-option>
+            <a-select-option value="mp">最多图片</a-select-option>
+            <a-select-option value="tf">最多爱心</a-select-option>
+          </a-select>
+        </template>
+      </a-input-search>
     </a-col>
     <a-col :span="24">
       <a-spin :spinning="loading">

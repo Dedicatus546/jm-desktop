@@ -141,7 +141,11 @@ export const loginApi = (username: string, password: string) => {
   });
 };
 
-export const getComicListApi = (queryStr: string, page: number) => {
+export const getComicListApi = (query: {
+  page: number;
+  type: string;
+  content: string;
+}) => {
   return http.Get<
     RespWrapper<{
       total: number;
@@ -187,8 +191,9 @@ export const getComicListApi = (queryStr: string, page: number) => {
     >
   >("search", {
     params: {
-      search_query: queryStr,
-      page: page,
+      search_query: query.content,
+      page: query.page,
+      o: query.type,
     },
     transform(res) {
       return {
