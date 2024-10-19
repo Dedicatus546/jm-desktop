@@ -11,7 +11,7 @@ const { page, total, loading, data } = usePagination(
   (page) =>
     getHistoryComicListApi({
       page,
-      type: formState.type,
+      order: formState.type,
     }),
   {
     initialPage: 1,

@@ -222,7 +222,7 @@ export const getComicListApi = (query: {
 
 export const getCollectComicListApi = (query: {
   page: number;
-  type: string;
+  order: string;
   // folder_id: number;
 }) => {
   return http.Get<
@@ -261,7 +261,7 @@ export const getCollectComicListApi = (query: {
       page: query.page,
       size: 8,
       folder_id: 0,
-      o: query.type,
+      o: query.order,
     },
     transform(res) {
       return {
@@ -286,7 +286,7 @@ export const getCollectComicListApi = (query: {
 
 export const getHistoryComicListApi = (query: {
   page: number;
-  type: string;
+  order: string;
 }) => {
   return http.Get<
     RespWrapper<{
@@ -323,7 +323,7 @@ export const getHistoryComicListApi = (query: {
     params: {
       page: query.page,
       folder_id: 0,
-      o: query.type,
+      o: query.order,
     },
     transform(res) {
       return {
@@ -690,6 +690,10 @@ export const getCategoryFilterListApi = (query: {
       };
     },
   });
+};
+
+export const getHotTagListApi = () => {
+  return http.Get<RespWrapper<Array<string>>>("hot_tags").then();
 };
 
 // 等级相关
