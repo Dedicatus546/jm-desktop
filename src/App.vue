@@ -45,6 +45,7 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
   <a-config-provider
     :theme="theme"
     :locale="locale"
+    :auto-insert-space-in-button="false"
     :get-popup-container="getPopupContainer"
   >
     <a-layout class="w-screen h-screen">
