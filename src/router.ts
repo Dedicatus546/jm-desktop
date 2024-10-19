@@ -11,6 +11,7 @@ import AppSearch from "@/views/app-search.vue";
 import AppSignIn from "@/views/app-sign-in.vue";
 
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
+import AppCategory from "./views/app-category.vue";
 import AppComicLatest from "./views/app-comic-latest.vue";
 import AppQuickSearch from "./views/app-quick-search.vue";
 
@@ -36,6 +37,11 @@ const routes: RouteRecordRaw[] = [
           query: to.query.query as string,
         }),
         component: AppQuickSearch,
+      },
+      {
+        path: "category",
+        name: "CATEGORY",
+        component: AppCategory,
       },
       {
         path: "person",

@@ -60,6 +60,15 @@ onKeyStroke(
             </div>
           </a-tooltip>
         </router-link>
+        <router-link :to="{ name: 'CATEGORY' }">
+          <a-tooltip title="本子分类">
+            <div
+              class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+            >
+              <TagsOutlined />
+            </div>
+          </a-tooltip>
+        </router-link>
         <a-dropdown>
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"

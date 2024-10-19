@@ -554,19 +554,140 @@ export const getCollectTagListApi = async () => {
   return http.Get<RespWrapper<string[]>>("tag_favorite");
 };
 
-export const getCategoryListApi = async () => {
-  return http.Get<unknown>("categories");
+export const getCategoryListApi = () => {
+  return http.Get<
+    RespWrapper<{
+      categoryList: Array<{
+        id: number;
+        name: string;
+        type: "slug" | "search";
+        slug: string;
+        subCategoryList: Array<{
+          id: number;
+          name: string;
+          slug: string;
+        }>;
+      }>;
+      tagTypeList: Array<{
+        title: string;
+        list: Array<string>;
+      }>;
+    }>,
+    RespWrapper<{
+      categories: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        total_albums: string;
+        type: "slug" | "search";
+        sub_categories?: Array<{
+          CID: string;
+          name: string;
+          slug: string;
+        }>;
+      }>;
+      // 快速搜索
+      blocks: Array<{
+        title: string;
+        content: Array<string>;
+      }>;
+    }>
+  >("categories", {
+    transform(res) {
+      return {
+        code: res.code,
+        errorMsg: res.errorMsg,
+        data: {
+          categoryList: res.data.categories.map((item) => {
+            return {
+              id: Number.parseInt(item.id),
+              name: item.name,
+              type: item.type,
+              slug: item.slug,
+              subCategoryList: (item.sub_categories ?? []).map((item) => {
+                return {
+                  id: Number.parseInt(item.CID),
+                  name: item.name,
+                  slug: item.slug,
+                };
+              }),
+            };
+          }),
+          tagTypeList: res.data.blocks.map((item) => {
+            return {
+              title: item.title,
+              list: item.content,
+            };
+          }),
+        },
+      };
+    },
+  });
 };
 
-// getCategoryListApi();
-
-export const getCategoryFilterListApi = async () => {
-  return http.Get("categories/filter", {
+export const getCategoryFilterListApi = (query: {
+  page: number;
+  category: string;
+  order: string;
+}) => {
+  return http.Get<
+    RespWrapper<{
+      total: number;
+      list: Array<{
+        id: number;
+        author: string;
+        name: string;
+        liked: boolean;
+        isCollect: boolean;
+        updateAt: number;
+      }>;
+    }>,
+    RespWrapper<{
+      total: string;
+      content: Array<{
+        id: string;
+        author: string;
+        description: string | null;
+        name: string;
+        image: string;
+        category: {
+          id: string;
+          title: string;
+        };
+        category_sub: {
+          id: string;
+          title: string;
+        };
+        liked: boolean;
+        is_favorite: boolean;
+        update_at: number;
+      }>;
+    }>
+  >("categories/filter", {
     params: {
-      page: 0,
-      order: undefined,
-      c: undefined,
-      o: undefined,
+      page: query.page,
+      // TODO 未知参数名
+      // order: undefined,
+      c: query.category,
+      o: query.order,
+    },
+    transform(res) {
+      return {
+        code: res.code,
+        data: {
+          total: Number.parseInt(res.data.total),
+          list: res.data.content.map((item) => {
+            return {
+              id: Number.parseInt(item.id),
+              author: item.author,
+              name: item.name,
+              liked: item.liked,
+              isCollect: item.is_favorite,
+              updateAt: item.update_at,
+            };
+          }),
+        },
+      };
     },
   });
 };

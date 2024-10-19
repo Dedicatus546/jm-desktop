@@ -79,7 +79,7 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
             }"
           >
             <router-view v-slot="{ Component }">
-              <keep-alive include="app-home,app-search,app-person">
+              <keep-alive include="app-home,app-search,app-person,app-category">
                 <component :is="Component" />
               </keep-alive>
             </router-view>
