@@ -12,8 +12,7 @@
     "build": "vue-tsc && vite build && electron-builder",
     "preview": "vite preview",
     "lint": "eslint --fix .",
-    "postinstall": "electron-builder install-app-deps",
-    "rebuild:better-sqlite3": "electron-rebuild -f -w better-sqlite3"
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.0.8",
