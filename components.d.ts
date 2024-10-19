@@ -90,6 +90,8 @@ declare module 'vue' {
     SelectFolderInput: typeof import('./src/components/select-folder-input.vue')['default']
     SettingOutlined: typeof import('@ant-design/icons-vue')['SettingOutlined']
     ShuntSelect: typeof import('./src/components/shunt-select.vue')['default']
+    TagsOutlined: typeof import('@ant-design/icons-vue')['TagsOutlined']
+    ThunderboltOutlined: typeof import('@ant-design/icons-vue')['ThunderboltOutlined']
     UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
   }
 }
