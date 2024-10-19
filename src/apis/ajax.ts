@@ -143,7 +143,7 @@ export const loginApi = (username: string, password: string) => {
 
 export const getComicListApi = (query: {
   page: number;
-  type: string;
+  order: string;
   content: string;
 }) => {
   return http.Get<
@@ -193,7 +193,7 @@ export const getComicListApi = (query: {
     params: {
       search_query: query.content,
       page: query.page,
-      o: query.type,
+      o: query.order,
     },
     transform(res) {
       return {
@@ -218,10 +218,6 @@ export const getComicListApi = (query: {
       };
     },
   });
-};
-
-export const getHotTagListApi = () => {
-  return http.Get<RespWrapper<Array<string>>>("hot_tags");
 };
 
 export const getCollectComicListApi = (query: {

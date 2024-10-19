@@ -5,7 +5,7 @@ import { getComicListApi } from "@/apis";
 
 const formState = reactive({
   content: "",
-  type: "mr",
+  order: "mr",
 });
 
 const { page, total, data, send, loading } = usePagination(
@@ -13,13 +13,13 @@ const { page, total, data, send, loading } = usePagination(
     getComicListApi({
       page,
       content: formState.content,
-      type: formState.type,
+      order: formState.order,
     }),
   {
     immediate: false,
     data: (res) => res.data.content,
     total: (res) => res.data.total,
-    watchingStates: [() => formState.type],
+    watchingStates: [() => formState.order],
   },
 );
 </script>
@@ -37,7 +37,7 @@ const { page, total, data, send, loading } = usePagination(
       >
         <template #addonBefore>
           <a-select
-            v-model:value="formState.type"
+            v-model:value="formState.order"
             size="large"
             class="w-[140px]"
           >
