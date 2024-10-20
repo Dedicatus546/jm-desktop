@@ -64,7 +64,7 @@ export class WinService {
     const display = screen.getPrimaryDisplay();
     const { width, height } = display.size;
     const win = (this.win = new BrowserWindow({
-      icon: join(this.pathService.getPublicPath(), "app-icon.ico"),
+      icon: join(this.pathService.getPublicPath(), "png", "256x256.png"),
       webPreferences: {
         preload: join(this.pathService.getDistElectronPath(), "preload.mjs"),
       },
