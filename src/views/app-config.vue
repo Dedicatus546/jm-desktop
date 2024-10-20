@@ -63,6 +63,12 @@ const onFinish = async () => {
             <a-select-option value="https://www.cdnxxx-proxy.xyz">
               https://www.cdnxxx-proxy.xyz
             </a-select-option>
+            <a-select-option value="https://www.jmapiproxyxxx.vip">
+              https://www.jmapiproxyxxx.vip
+            </a-select-option>
+            <a-select-option value="https://www.jmeadpoolcdn.life">
+              https://www.jmeadpoolcdn.life
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="下载位置" name="downloadUrl">
