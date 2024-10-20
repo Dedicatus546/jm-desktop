@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { notification } from "ant-design-vue";
+import { notification, theme } from "ant-design-vue";
 import { type ThemeConfig } from "ant-design-vue/es/config-provider/context";
 import locale from "ant-design-vue/locale/zh_CN";
 import { type ComponentPublicInstance } from "vue";
@@ -7,7 +7,9 @@ import { type ComponentPublicInstance } from "vue";
 import useInitApp from "./compositions/use-init-app";
 import { injectNotificationKey } from "./compositions/use-notification";
 import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
+import useAppStore from "./stores/use-app-store";
 
+const appStore = useAppStore();
 // 全局注册
 // TODO fix 目前看来像是 ant-design-vue 的 bug
 // https://github.com/vueComponent/ant-design-vue/issues/7875
@@ -16,17 +18,16 @@ const [api, ContextHolder] = notification.useNotification({
 });
 provide(injectNotificationKey, api);
 
-const theme: ThemeConfig = {
+const themeConfig = computed<ThemeConfig>(() => ({
   token: {
     colorPrimary: "#ff7a00",
     fontFamily: `'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
   },
-  components: {
-    Layout: {
-      colorBgHeader: "#ffffff99",
-    },
-  },
-};
+  algorithm:
+    appStore.config.mode === "light"
+      ? theme.defaultAlgorithm
+      : theme.darkAlgorithm,
+}));
 
 const { loading, error, currentStatus, init: reInit } = useInitApp();
 const scrollView = ref<ComponentPublicInstance | null>(null);
@@ -44,7 +45,7 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
 
 <template>
   <a-config-provider
-    :theme="theme"
+    :theme="themeConfig"
     :locale="locale"
     :auto-insert-space-in-button="false"
     :get-popup-container="getPopupContainer"

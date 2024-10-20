@@ -1,3 +1,5 @@
+import { Config } from "@/type";
+
 interface State {
   signIn: {
     modalOpen: boolean;
@@ -22,12 +24,7 @@ interface State {
       > | null;
     };
   };
-  config: {
-    apiUrl: string;
-    downloadDir: string;
-    readMode: number;
-    currentShuntKey: number | undefined;
-  };
+  config: Config;
   setting: {
     logoPath: string;
     webHost: string;
@@ -61,6 +58,7 @@ const useAppStore = defineStore("app", () => {
       },
     },
     config: {
+      mode: "light",
       apiUrl: "",
       downloadDir: "",
       readMode: 1,

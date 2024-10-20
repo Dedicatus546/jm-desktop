@@ -8,6 +8,7 @@ import { LoggerService } from "../logger";
 import { PathService } from "../path";
 
 export type Config = {
+  mode: "light" | "dark";
   apiUrl: string;
   downloadDir: string;
   readMode: number;
@@ -17,6 +18,7 @@ export type Config = {
 @singleton()
 export class ConfigService {
   static DEFAULT_CONFIG: Config = {
+    mode: "light",
     apiUrl: "https://www.jmapiproxyxxx.vip",
     downloadDir: "",
     readMode: 1,

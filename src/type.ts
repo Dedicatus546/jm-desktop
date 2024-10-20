@@ -1,4 +1,5 @@
 export interface Config {
+  mode: "light" | "dark";
   apiUrl: string;
   downloadDir: string;
   readMode: number;
