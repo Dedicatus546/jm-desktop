@@ -21,7 +21,7 @@
   //   "deleteAppDataOnUninstall": false
   // },
   linux: {
-    icon: "public/app-icon.ico",
+    icon: "public/png/256x256.png",
     category: "Utility",
     target: [
       {
@@ -32,7 +32,7 @@
     artifactName: "${productName}-Linux-${version}.${ext}"
   },
   win: {
-    icon: "public/app-icon.ico",
+    icon: "public/win/app-icon.ico",
     sign: false,
     target: [
       {
