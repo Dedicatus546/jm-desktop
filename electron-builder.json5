@@ -22,8 +22,7 @@
   // },
   "linux": {
     icon: "public/app-icon.ico",
-    sign: false,
-    "target": [
+    target: [
       {
         target: "AppImage",
         arch: ["x64"],
