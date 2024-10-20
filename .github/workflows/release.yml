@@ -22,6 +22,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "latest"
+
+      - name: Cache pnpm packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
       
       - name: Enable Corepack
         run: corepack enable
@@ -36,18 +44,21 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag: ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          token: ${{ secrets.GIT_TOKEN }}
+      
+      - name: Extract Tag Name
+        run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
       - name: Upload Linux Release Assets
         if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v2
         with:
-          files: release/${{ github.ref }}/jm-desktop-${{ github.ref }}.AppImage
+          token: ${{ secrets.GIT_TOKEN }}
+          files: release/${{ env.APP_VERSION }}/jm-desktop-${{ env.APP_VERSION }}.AppImage
         
       - name: Upload Windows Release Assets
         if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v2
         with:
-          files: release/${{ github.ref }}/jm-desktop-${{ github.ref }}.zip
+          token: ${{ secrets.GIT_TOKEN }}
+          files: release/${{ env.APP_VERSION }}/jm-desktop-${{ env.APP_VERSION }}.zip
