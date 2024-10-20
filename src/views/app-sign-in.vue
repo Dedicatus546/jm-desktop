@@ -145,7 +145,7 @@ onSuccess(() => {
   .signed {
     background: v-bind("token.colorPrimary");
     color: white;
-    border-radius: v-bind("token.borderRadiusOuter");
+    border-radius: v-bind("token.borderRadiusOuter + 'px'");
   }
   .lastDaySign {
     border-top-left-radius: 0;
