@@ -39,25 +39,16 @@ jobs:
         with:
           token: ${{ secrets.GIT_TOKEN }}
       
-      - name: Extract Tag Name
-        if: matrix.os == 'ubuntu-latest'
-        run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
-      - name: Extract Tag Name
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: echo "APP_VERSION=${GITHUB_REF#refs/tags/v}" | Out-File -FilePath $env:GITHUB_ENV -Append
-      
       - name: Upload Linux Release Assets
         if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GIT_TOKEN }}
-          files: release/${{ env.APP_VERSION }}/jm-desktop-Linux-${{ env.APP_VERSION }}.AppImage
+          files: release/*/jm-desktop-Linux-*.AppImage
         
       - name: Upload Windows Release Assets
         if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GIT_TOKEN }}
-          files: release/${{ env.APP_VERSION }}/jm-desktop-Windows-${{ env.APP_VERSION }}.zip
+          files: release/*/jm-desktop-Windows-*.zip
