@@ -18,6 +18,7 @@ provide(injectNotificationKey, api);
 
 const theme: ThemeConfig = {
   token: {
+    colorPrimary: "#ff7a00",
     fontFamily: `'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
   },
   components: {

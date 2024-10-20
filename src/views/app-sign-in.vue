@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
+import { theme } from "ant-design-vue";
 import dayjs, { type Dayjs } from "dayjs";
 
 import { getSignInDataApi, signInApi } from "@/apis";
@@ -8,6 +9,8 @@ import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
 const notification = useNotification();
+const { useToken } = theme;
+const { token } = useToken();
 
 const currentDate = ref(dayjs());
 const validRange = computed<[Dayjs, Dayjs]>(() => {
@@ -140,9 +143,9 @@ onSuccess(() => {
   }
 
   .signed {
-    background: @colorPrimary;
+    background: v-bind("token.colorPrimary");
     color: white;
-    border-radius: unit(@borderRadiusOuter, px);
+    border-radius: v-bind("token.borderRadiusOuter");
   }
   .lastDaySign {
     border-top-left-radius: 0;
