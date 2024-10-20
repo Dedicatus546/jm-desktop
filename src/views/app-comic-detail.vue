@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { breakpointsAntDesign } from "@vueuse/core";
 import { useRequest } from "alova/client";
+import { theme } from "ant-design-vue";
 
 import { collectComicApi, getComicDetailApi, likeComicApi } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
@@ -10,6 +11,8 @@ const props = defineProps<{
   id: number;
 }>();
 
+const { useToken } = theme;
+const { token } = useToken();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const breakpoints = useBreakpoints(breakpointsAntDesign);
@@ -144,7 +147,7 @@ const toQuickQueryPage = (query: string) => {
               <div class="mb-4">
                 <a-descriptions
                   :label-style="{
-                    color: 'rgba(0, 0, 0, 0.45)',
+                    color: token.colorTextTertiary,
                   }"
                   :column="1"
                 >
