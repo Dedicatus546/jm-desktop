@@ -54,11 +54,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GIT_TOKEN }}
-          files: release/${{ env.APP_VERSION }}/jm-desktop-${{ env.APP_VERSION }}.AppImage
+          files: release/${{ env.APP_VERSION }}/jm-desktop-Linux-${{ env.APP_VERSION }}.AppImage
         
       - name: Upload Windows Release Assets
         if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GIT_TOKEN }}
-          files: release/${{ env.APP_VERSION }}/jm-desktop-${{ env.APP_VERSION }}.zip
+          files: release/${{ env.APP_VERSION }}/jm-desktop-Windows-${{ env.APP_VERSION }}.zip
