@@ -8,7 +8,12 @@ const props = defineProps<{
 }>();
 
 const { page, total, data, loading } = usePagination(
-  (page) => getComicListApi(props.query, page),
+  (page) =>
+    getComicListApi({
+      content: props.query,
+      page,
+      order: "mr",
+    }),
   {
     data: (res) => res.data.content,
     total: (res) => res.data.total,
