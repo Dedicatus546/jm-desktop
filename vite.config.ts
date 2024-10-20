@@ -2,7 +2,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import vue from "@vitejs/plugin-vue";
-import { theme } from "ant-design-vue";
+import { transformerDirectives } from "unocss";
 import unocss from "unocss/vite";
 import autoImport from "unplugin-auto-import/vite";
 import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
@@ -10,10 +10,6 @@ import component from "unplugin-vue-components/vite";
 import { defineConfig } from "vite";
 import electron from "vite-plugin-electron/simple";
 import vueDevTools from "vite-plugin-vue-devtools";
-
-const { defaultAlgorithm, defaultSeed } = theme;
-
-const mapToken = defaultAlgorithm(defaultSeed);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -64,7 +60,13 @@ export default defineConfig({
         }),
       ],
     }),
-    unocss(),
+    unocss({
+      transformers: [
+        transformerDirectives({
+          applyVariable: ["--at-apply", "--uno-apply", "--uno"],
+        }),
+      ],
+    }),
     vueDevTools(),
   ],
   resolve: {
@@ -80,13 +82,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace("/api", ""),
-      },
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      less: {
-        modifyVars: mapToken,
       },
     },
   },
