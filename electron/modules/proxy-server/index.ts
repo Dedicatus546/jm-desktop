@@ -19,7 +19,7 @@ export class ProxyServerService {
   private serverInitPromise: Promise<void> | null = null;
 
   static DEFAULT_CONFIG = {
-    target: "https://www.jmeadpoolcdn.life",
+    target: "https://www.jmapiproxyxxx.vip",
   };
 
   constructor(

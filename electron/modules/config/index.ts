@@ -17,7 +17,7 @@ export type Config = {
 @singleton()
 export class ConfigService {
   static DEFAULT_CONFIG: Config = {
-    apiUrl: "https://www.cdnxxx-proxy.xyz",
+    apiUrl: "https://www.jmapiproxyxxx.vip",
     downloadDir: "",
     readMode: 1,
     currentShuntKey: undefined,
