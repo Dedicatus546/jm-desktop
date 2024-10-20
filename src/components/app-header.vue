@@ -69,6 +69,15 @@ onKeyStroke(
             </div>
           </a-tooltip>
         </router-link>
+        <router-link :to="{ name: 'WEEK' }">
+          <a-tooltip title="每周必看">
+            <div
+              class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"
+            >
+              <ThunderboltOutlined />
+            </div>
+          </a-tooltip>
+        </router-link>
         <a-dropdown>
           <div
             class="p-3 hover:bg-[#00000008] cursor-pointer transition rounded-lg"

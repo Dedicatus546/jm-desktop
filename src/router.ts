@@ -14,6 +14,7 @@ import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
 import AppCategory from "./views/app-category.vue";
 import AppComicLatest from "./views/app-comic-latest.vue";
 import AppQuickSearch from "./views/app-quick-search.vue";
+import AppWeek from "./views/app-week.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -42,6 +43,11 @@ const routes: RouteRecordRaw[] = [
         path: "category",
         name: "CATEGORY",
         component: AppCategory,
+      },
+      {
+        path: "week",
+        name: "WEEK",
+        component: AppWeek,
       },
       {
         path: "person",

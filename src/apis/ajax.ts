@@ -1235,3 +1235,114 @@ export const downloadComicApi = (query: {
     },
   });
 };
+
+export const getWeekListApi = () => {
+  return http.Get<
+    RespWrapper<{
+      categoryList: Array<{
+        id: number;
+        name: string;
+      }>;
+      typeList: Array<{
+        id: string;
+        name: string;
+      }>;
+    }>,
+    RespWrapper<{
+      categories: Array<{
+        id: string;
+        time: string;
+        title: string;
+      }>;
+      type: Array<{
+        id: string;
+        title: string;
+      }>;
+    }>
+  >("week", {
+    transform(res) {
+      return {
+        code: res.code,
+        data: {
+          categoryList: res.data.categories.map((item) => {
+            return {
+              id: Number.parseInt(item.id),
+              name: item.time,
+            };
+          }),
+          typeList: res.data.type.map((item) => {
+            return {
+              id: item.id,
+              name: item.title,
+            };
+          }),
+        },
+      };
+    },
+  });
+};
+
+export const getWeekComicListApi = (query: {
+  page: number;
+  category: number;
+  type: string;
+}) => {
+  return http.Get<
+    RespWrapper<{
+      total: number;
+      list: Array<{
+        id: number;
+        author: string;
+        name: string;
+        liked: boolean;
+        isCollect: boolean;
+        updateAt: number;
+      }>;
+    }>,
+    RespWrapper<{
+      total: number;
+      list: Array<{
+        id: string;
+        author: string;
+        description: string;
+        name: string;
+        image: string;
+        category: {
+          id: string;
+          title: string;
+        };
+        category_sub: {
+          id: null;
+          title: null;
+        };
+        liked: boolean;
+        is_favorite: boolean;
+        update_at: number;
+      }>;
+    }>
+  >("week/filter", {
+    params: {
+      page: query.page,
+      id: query.category,
+      type: query.type,
+    },
+    transform(res) {
+      return {
+        code: res.code,
+        data: {
+          total: res.data.total,
+          list: res.data.list.map((item) => {
+            return {
+              id: Number.parseInt(item.id),
+              author: item.author,
+              name: item.name,
+              liked: item.liked,
+              isCollect: item.is_favorite,
+              updateAt: item.update_at,
+            };
+          }),
+        },
+      };
+    },
+  });
+};
