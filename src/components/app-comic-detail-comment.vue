@@ -61,19 +61,20 @@ onSuccess(() => {
     >
       <a-textarea
         v-model:value="formState.content"
+        size="large"
         placeholder="贤者模式中..."
       />
     </a-form-item>
     <a-form-item class="mb-0">
-      <a-flex justify="flex-end">
-        <a-button
-          type="primary"
-          :loading="commentComicLoading"
-          html-type="submit"
-        >
-          发送
-        </a-button>
-      </a-flex>
+      <a-button
+        block
+        size="large"
+        type="primary"
+        :loading="commentComicLoading"
+        html-type="submit"
+      >
+        发送
+      </a-button>
     </a-form-item>
   </a-form>
   <a-list
