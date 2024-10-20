@@ -20,15 +20,16 @@
   //   "allowToChangeInstallationDirectory": true,
   //   "deleteAppDataOnUninstall": false
   // },
-  "linux": {
+  linux: {
     icon: "public/app-icon.ico",
+    category: "Utility",
     target: [
       {
         target: "AppImage",
         arch: ["x64"],
       },
     ],
-    "artifactName": "${productName}-Linux-${version}.${ext}"
+    artifactName: "${productName}-Linux-${version}.${ext}"
   },
   win: {
     icon: "public/app-icon.ico",
