@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build && electron-builder",
+    "build": "vue-tsc && vite build && electron-builder -p never",
     "preview": "vite preview",
     "lint": "eslint --fix .",
     "postinstall": "electron-builder install-app-deps"
