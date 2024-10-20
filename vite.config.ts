@@ -76,7 +76,7 @@ export default defineConfig({
   server: {
     proxy: {
       "^/api": {
-        target: "https://www.cdnxxx-proxy.xyz",
+        target: "https://www.jmapiproxyxxx.vip",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace("/api", ""),
