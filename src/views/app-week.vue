@@ -83,19 +83,25 @@ onSuccess(() => {
           </a-select>
         </a-col>
         <a-col :span="24">
-          <a-spin :spinning="loading">
-            <a-row :gutter="[16, 16]">
-              <a-col
-                v-for="item of list ?? []"
-                :key="item.id"
-                :sm="8"
-                :xl="6"
-                :xxl="4"
-              >
-                <comic-item :comic="item" />
-              </a-col>
-            </a-row>
-          </a-spin>
+          <a-flex
+            v-if="loading"
+            align="center"
+            justify="center"
+            class="min-h-[200px]"
+          >
+            <a-spin />
+          </a-flex>
+          <a-row v-else :gutter="[16, 16]">
+            <a-col
+              v-for="item of list ?? []"
+              :key="item.id"
+              :sm="8"
+              :xl="6"
+              :xxl="4"
+            >
+              <comic-item :comic="item" />
+            </a-col>
+          </a-row>
         </a-col>
       </template>
     </a-row>
