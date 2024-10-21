@@ -66,75 +66,81 @@ onSuccess(() => {});
   <a-row :gutter="[16, 16]">
     <a-col :span="24">
       <a-card>
-        <a-spin :spinning="categoryLoading">
-          <a-form>
-            <a-form-item label="排序" class="mb-1">
-              <a-flex wrap="wrap" :gap="4">
-                <a-button
-                  v-for="item of orderList"
-                  :key="item.label"
-                  size="small"
-                  :type="formState.order === item.value ? 'primary' : undefined"
-                  @click="formState.order = item.value"
-                >
-                  {{ item.label }}
-                </a-button>
-              </a-flex>
-            </a-form-item>
-            <a-form-item label="分类" class="mb-1">
-              <a-flex wrap="wrap" :gap="4">
-                <a-button
-                  v-for="item of category.data.categoryList"
-                  :key="item.id"
-                  size="small"
-                  :type="
-                    (item.slug === '' || item.type === 'slug') &&
-                    formState.category === item.slug
-                      ? 'primary'
-                      : undefined
-                  "
-                  @click="
-                    formState.subCategory = '';
-                    formState.category = item.slug;
-                  "
-                >
-                  {{ item.name }}
-                </a-button>
-              </a-flex>
-            </a-form-item>
-            <a-form-item
-              v-if="subCategoryList.length > 0"
-              label="子分类"
-              class="mb-1"
-            >
-              <a-flex wrap="wrap" :gap="4">
-                <a-button
-                  v-for="item of subCategoryList"
-                  :key="item.id"
-                  size="small"
-                  :type="
-                    formState.subCategory === item.slug ? 'primary' : undefined
-                  "
-                  @click="formState.subCategory = item.slug"
-                >
-                  {{ item.name }}
-                </a-button>
-              </a-flex>
-            </a-form-item>
-            <a-form-item
-              v-for="item of category.data.tagTypeList"
-              :key="item.title"
-              :label="item.title"
-              class="mb-1"
-            >
-              <a-flex wrap="wrap" :gap="4">
-                <a-button v-for="tag of item.list" :key="tag" size="small">
-                  {{ tag }}
-                </a-button>
-              </a-flex>
-            </a-form-item>
-          </a-form>
-        </a-spin>
+        <a-flex
+          v-if="categoryLoading"
+          align="center"
+          justify="center"
+          class="min-h-[200px]"
+        >
+          <a-spin />
+        </a-flex>
+        <a-form v-else>
+          <a-form-item label="排序" class="mb-1">
+            <a-flex wrap="wrap" :gap="4">
+              <a-button
+                v-for="item of orderList"
+                :key="item.label"
+                size="small"
+                :type="formState.order === item.value ? 'primary' : undefined"
+                @click="formState.order = item.value"
+              >
+                {{ item.label }}
+              </a-button>
+            </a-flex>
+          </a-form-item>
+          <a-form-item label="分类" class="mb-1">
+            <a-flex wrap="wrap" :gap="4">
+              <a-button
+                v-for="item of category.data.categoryList"
+                :key="item.id"
+                size="small"
+                :type="
+                  (item.slug === '' || item.type === 'slug') &&
+                  formState.category === item.slug
+                    ? 'primary'
+                    : undefined
+                "
+                @click="
+                  formState.subCategory = '';
+                  formState.category = item.slug;
+                "
+              >
+                {{ item.name }}
+              </a-button>
+            </a-flex>
+          </a-form-item>
+          <a-form-item
+            v-if="subCategoryList.length > 0"
+            label="子分类"
+            class="mb-1"
+          >
+            <a-flex wrap="wrap" :gap="4">
+              <a-button
+                v-for="item of subCategoryList"
+                :key="item.id"
+                size="small"
+                :type="
+                  formState.subCategory === item.slug ? 'primary' : undefined
+                "
+                @click="formState.subCategory = item.slug"
+              >
+                {{ item.name }}
+              </a-button>
+            </a-flex>
+          </a-form-item>
+          <a-form-item
+            v-for="item of category.data.tagTypeList"
+            :key="item.title"
+            :label="item.title"
+            class="mb-1"
+          >
+            <a-flex wrap="wrap" :gap="4">
+              <a-button v-for="tag of item.list" :key="tag" size="small">
+                {{ tag }}
+              </a-button>
+            </a-flex>
+          </a-form-item>
+        </a-form>
       </a-card>
     </a-col>
     <a-col v-if="!categoryLoading" :span="24">
