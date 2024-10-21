@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "check": "vue-tsc",
     "build": "vue-tsc && vite build && electron-builder -p never",
     "preview": "vite preview",
     "lint": "eslint --fix .",
