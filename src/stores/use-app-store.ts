@@ -63,6 +63,8 @@ const useAppStore = defineStore("app", () => {
       downloadDir: "",
       readMode: 1,
       currentShuntKey: undefined,
+      autoLogin: false,
+      loginUserInfo: "",
     },
     setting: {
       logoPath: "",
