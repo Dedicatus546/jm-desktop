@@ -2,10 +2,12 @@ import { useRequest } from "alova/client";
 import { isString } from "radash";
 
 import { getConfigIpc, getSettingApi, loginApi, updateConfigIpc } from "@/apis";
+import logger from "@/logger";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 import { Config } from "@/type";
 
+import useDecodeUserInfo from "./use-decode-user-info";
 import useIpcRendererInvoke from "./use-ipc-renderer-invoke";
 
 const delay = (time: number) => {
@@ -28,7 +30,7 @@ const useInitSetting = () => {
   return {
     init: async () => {
       return send().catch(() => {
-        throw "读取网址设置失败";
+        throw new Error("读取网址设置失败");
       });
     },
   };
@@ -71,7 +73,7 @@ const useInitConfig = () => {
   return {
     init: async () => {
       return invoke().catch(() => {
-        throw "读取应用设置失败";
+        throw new Error("读取应用设置失败");
       });
     },
   };
@@ -80,23 +82,32 @@ const useInitConfig = () => {
 // TODO 是否要做自动登录？
 const useAutoLogin = () => {
   const userStore = useUserStore();
-  const { send, onSuccess, data } = useRequest(() => loginApi("", ""), {
-    immediate: false,
-  });
+  const appStore = useAppStore();
+  const { send, onSuccess, data } = useRequest(
+    (username: string, password: string) => loginApi(username, password),
+    {
+      immediate: false,
+    },
+  );
+  const { decrypt } = useDecodeUserInfo();
   onSuccess(() => {
     userStore.updateUserInfoAction(data.value.data);
   });
   return {
     init: async () => {
-      return send().catch(() => console.warn("自动登录失败"));
+      const { username, password } = decrypt(appStore.config.loginUserInfo);
+      return send(username, password).catch(() => {
+        logger.error("自动登录失败，跳过");
+      });
     },
   };
 };
 
 const useInitApp = () => {
+  const appStore = useAppStore();
   const setting = useInitSetting();
   const config = useInitConfig();
-  useAutoLogin();
+  const autoLogin = useAutoLogin();
   const loading = ref(true);
   const currentStatus = ref<string | null>(null);
   const error = ref<string | null>(null);
@@ -111,14 +122,16 @@ const useInitApp = () => {
       currentStatus.value = "获取应用配置";
       await config.init();
       await delay(300);
-      // currentStatus.value = "自动登录";
-      // await autoLogin.init();
-      // await delay(300);
+      if (appStore.config.autoLogin && appStore.config.loginUserInfo) {
+        currentStatus.value = "自动登录";
+        await autoLogin.init();
+        await delay(300);
+      }
     } catch (e) {
       if (isString(e)) {
         error.value = e;
-      } else {
-        error.value = String(e);
+      } else if (e instanceof Error) {
+        error.value = e.message;
       }
     }
     loading.value = false;

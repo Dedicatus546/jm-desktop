@@ -4,6 +4,8 @@ export interface Config {
   downloadDir: string;
   readMode: number;
   currentShuntKey: number | undefined;
+  autoLogin: boolean;
+  loginUserInfo: string;
 }
 
 export interface BaseComic {

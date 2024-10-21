@@ -13,6 +13,8 @@ export type Config = {
   downloadDir: string;
   readMode: number;
   currentShuntKey: number | undefined;
+  autoLogin: boolean;
+  loginUserInfo: string;
 };
 
 @singleton()
@@ -23,6 +25,8 @@ export class ConfigService {
     downloadDir: "",
     readMode: 1,
     currentShuntKey: undefined,
+    autoLogin: false,
+    loginUserInfo: "",
   };
 
   config: Config;

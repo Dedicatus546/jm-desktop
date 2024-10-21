@@ -39,10 +39,26 @@ const { invoke } = useIpcRendererInvoke(
   },
 );
 
+const { invoke: cancelAutoLogin } = useIpcRendererInvoke(
+  () =>
+    updateConfigIpc({
+      autoLogin: false,
+      loginUserInfo: "",
+    }),
+  {
+    immediate: false,
+  },
+);
+
 const onModeChange = (mode: any) => {
-  console.log("mode", mode);
   appStore.updateConfigAction({ mode });
   invoke(mode);
+};
+
+const logout = () => {
+  userStore.logoutAction();
+  cancelAutoLogin();
+  router.replace({ name: "LOGIN" });
 };
 </script>
 
@@ -169,13 +185,7 @@ const onModeChange = (mode: any) => {
             </a-tooltip>
           </router-link>
           <a-tooltip title="退出">
-            <div
-              class="app-nav-btn"
-              @click="
-                userStore.logoutAction();
-                router.push({ name: 'LOGIN' });
-              "
-            >
+            <div class="app-nav-btn" @click="logout">
               <LogoutOutlined />
             </div>
           </a-tooltip>
