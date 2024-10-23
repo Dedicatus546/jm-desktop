@@ -135,9 +135,18 @@ onSuccess(() => {});
             class="mb-1"
           >
             <a-flex wrap="wrap" :gap="4">
-              <a-button v-for="tag of item.list" :key="tag" size="small">
-                {{ tag }}
-              </a-button>
+              <router-link
+                v-for="tag of item.list"
+                :key="tag"
+                custom
+                :to="{ name: 'QUICK_SEARCH', query: { query: tag } }"
+              >
+                <template #default="{ navigate }">
+                  <a-button size="small" @click="navigate()">
+                    {{ tag }}
+                  </a-button>
+                </template>
+              </router-link>
             </a-flex>
           </a-form-item>
         </a-form>
