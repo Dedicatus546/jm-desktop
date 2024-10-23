@@ -29,23 +29,37 @@
 
 ## 截图
 
+由于需要截图原因，部分封面图片已屏蔽。
+
 ### 首页
-![](./readme-assets/首页.png)
+![](./readme-assets/首页.jpg)
 
 ### 个人中心
-![](./readme-assets/个人中心.png)
+![](./readme-assets/个人中心.jpg)
 
 ### 签到
-![](./readme-assets/签到.png)
+![](./readme-assets/签到.jpg)
 
 ### 详情
-![](./readme-assets/详情.png)
+![](./readme-assets/详情.jpg)
 
-### 阅读
-![](./readme-assets/阅读.png)
+### 详情（日间模式）
+![](./readme-assets/详情（日间模式）.jpg)
 
-### 搜索
-![](./readme-assets/搜索.png)
+### 阅读（翻页模式）
+![](./readme-assets/阅读.jpg)
+
+### 阅读（滚动模式）
+![](./readme-assets/阅读（滚动模式）.jpg)
+
+### 名称搜索
+![](./readme-assets/搜索.jpg)
+
+### 分类搜索排序
+![](./readme-assets/分类搜索.jpg)
+
+### 每周必看
+![](./readme-assets/每周必看.jpg)
 
 ## 声明
 
@@ -53,9 +67,9 @@
 
 ## 安装包
 
-只提供 win 下的 zip 安装包，解压即用，所有数据只在解压的目录中，整体文件夹可随意拷贝移动（除了下载路径）。
+只提供 win 、 linux 的 x86 绿色包，所有数据只在解压的目录中，整体文件夹可随意拷贝移动（下载路径除外）。
 
-linux 、 mac 用户请使用源码自行构建。
+mac 用户请使用源码自行构建。
 
 ## 相关帖子
 
@@ -66,7 +80,7 @@ linux 、 mac 用户请使用源码自行构建。
 
 ### 读取网址设置失败
 
-请将 www.cdnxxx-proxy.xyz 添加到梯子规则中，可能是你的地区屏蔽了这个域名。
+开启梯子，可能是你的地区屏蔽了接口域名。
 
 ---
 
