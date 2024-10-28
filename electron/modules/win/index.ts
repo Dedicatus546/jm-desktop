@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain, screen, shell } from "electron";
 import { inject, singleton } from "tsyringe";
 
+import { ConfigService } from "../config";
 import { DbService } from "../db";
 import { LoggerService } from "../logger";
 import { PathService } from "../path";
@@ -18,10 +19,8 @@ export class WinService {
     @inject(LoggerService) private loggerService: LoggerService,
     // @ts-expect-error inject dbService
     @inject(DbService) private dbService: DbService,
+    @inject(ConfigService) private configService: ConfigService,
   ) {
-    // Quit when all windows are closed, except on macOS. There, it's common
-    // for applications and their menu bar to stay active until the user quits
-    // explicitly with Cmd + Q.
     app.on("window-all-closed", () => {
       if (process.platform !== "darwin") {
         app.quit();
@@ -31,8 +30,6 @@ export class WinService {
     });
 
     app.on("activate", () => {
-      // On OS X it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) {
         this.createWin();
       }
@@ -61,36 +58,34 @@ export class WinService {
   }
 
   private async createWin() {
-    const display = screen.getPrimaryDisplay();
-    const { width, height } = display.size;
-    this.loggerService.info(`主显示器宽高 ${width}x${height}`);
+    const { minWidth, minHeight, x, y, width, height, zoomLevel } =
+      this.resolveWindowInfo();
 
-    const initWidth = width * 0.7;
-    const initHeight = height * 0.8;
-    this.loggerService.info(`初始宽高 ${initWidth}x${initHeight}`);
+    this.loggerService.info(`最小窗口大小 ${minWidth}x${minHeight}`);
+    this.loggerService.info(`窗口位置 ${x} ${y} | ${width}x${height}`);
+    this.loggerService.info(`zoomLevel值 ${zoomLevel}`);
 
-    const minWidth = width * 0.5;
-    const minHeight = height * 0.5;
     const win = (this.win = new BrowserWindow({
       icon: join(this.pathService.getPublicPath(), "png", "256x256.png"),
       webPreferences: {
         preload: join(this.pathService.getDistElectronPath(), "preload.mjs"),
       },
-      width: initWidth,
-      height: initHeight,
-      autoHideMenuBar: true, // 隐藏菜单栏
-      frame: false, // 去除边框
+      x,
+      y,
+      width,
+      height,
+      autoHideMenuBar: true,
+      frame: false,
       minWidth: minWidth,
       minHeight: minHeight,
     }));
 
-    let zoomLevel: number = 1;
-    if (width <= 2560) {
-      zoomLevel = 1.4;
-    } else if (width <= 3840) {
-      zoomLevel = 1.8;
-    }
-    this.loggerService.info(`zoomLevel 值 ${zoomLevel}`);
+    win.webContents.setZoomLevel(zoomLevel);
+
+    // 退出时保存窗口位置信息
+    win.on("close", () => {
+      this.saveWindowInfo();
+    });
 
     const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
     if (devServerUrl) {
@@ -102,5 +97,80 @@ export class WinService {
       await win.loadURL(`http://localhost:${port}`);
       this.loggerService.info(`加载打包后服务器地址 http://localhost:${port}`);
     }
+  }
+
+  // 选择保存的窗口位置（优先，如果存在）和默认位置
+  private resolveWindowInfo() {
+    const display = screen.getPrimaryDisplay();
+    const { width, height } = display.size;
+    this.loggerService.info(`主显示器大小 ${width}x${height}`);
+
+    const minWidth = width * 0.5;
+    const minHeight = height * 0.5;
+
+    const initWidth = width * 0.7;
+    const initHeight = height * 0.8;
+
+    const r: {
+      minWidth: number;
+      minHeight: number;
+      x: undefined | number;
+      y: undefined | number;
+      width: number;
+      height: number;
+      zoomLevel: number;
+    } = {
+      minWidth,
+      minHeight,
+      x: undefined,
+      y: undefined,
+      width: initWidth,
+      height: initHeight,
+      zoomLevel: 1,
+    };
+
+    if (width <= 2560) {
+      r.zoomLevel = 1.4;
+    } else if (width <= 3840) {
+      r.zoomLevel = 1.8;
+    }
+
+    if (this.configService.config.windowInfo) {
+      this.loggerService.info(`存在上次保存的窗口位置信息`);
+      return Object.assign(r, this.configService.config.windowInfo);
+    }
+
+    return Object.assign(r, {
+      width: initWidth,
+      height: initHeight,
+    });
+  }
+
+  // 获取当前窗口的位置
+  private getWindowInfo() {
+    if (!this.win) {
+      this.loggerService.error("获取应用位置大小失败，应用窗口实例未找到");
+      return {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      };
+    }
+    const rect = this.win.getBounds();
+    return {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+    };
+  }
+
+  // 保存当前窗口的位置
+  private saveWindowInfo() {
+    const windowInfo = this.getWindowInfo();
+    this.configService.update({
+      windowInfo,
+    });
   }
 }

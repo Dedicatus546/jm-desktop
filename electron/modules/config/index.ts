@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { ipcMain } from "electron";
+import { omit } from "radash";
 import { inject, singleton } from "tsyringe";
 
 import { LoggerService } from "../logger";
@@ -15,6 +16,14 @@ export type Config = {
   currentShuntKey: number | undefined;
   autoLogin: boolean;
   loginUserInfo: string;
+  windowInfo:
+    | {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+      }
+    | undefined;
 };
 
 @singleton()
@@ -27,6 +36,7 @@ export class ConfigService {
     currentShuntKey: undefined,
     autoLogin: false,
     loginUserInfo: "",
+    windowInfo: undefined,
   };
 
   config: Config;
@@ -74,7 +84,7 @@ export class ConfigService {
     this.loggerService.info(`当前应用配置 ${JSON.stringify(this.config)}`);
 
     ipcMain.handle("app/config", async () => {
-      return this.get();
+      return this.getForRenderer();
     });
     ipcMain.handle("app/updateConfig", async (_e, config) => {
       return this.update(config);
@@ -85,6 +95,11 @@ export class ConfigService {
     this.sync();
     this.loggerService.info(`读取应用配置 ${JSON.stringify(this.config)}`);
     return Object.assign({}, this.config);
+  }
+
+  public getForRenderer() {
+    const config = this.get();
+    return omit(config, ["windowInfo"]);
   }
 
   public update(updatedConfig: Partial<Config>) {
