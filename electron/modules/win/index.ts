@@ -23,9 +23,7 @@ export class WinService {
   ) {
     app.on("window-all-closed", () => {
       if (process.platform !== "darwin") {
-        app.quit();
-        this.win = null;
-        this.proxyServerService.closeServer();
+        this.quit();
       }
     });
 
@@ -85,6 +83,10 @@ export class WinService {
     // 退出时保存窗口位置信息
     win.on("close", () => {
       this.saveWindowInfo();
+    });
+
+    process.on("uncaughtException", () => {
+      this.quit();
     });
 
     const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
@@ -172,5 +174,11 @@ export class WinService {
     this.configService.update({
       windowInfo,
     });
+  }
+
+  private quit() {
+    this.win = null;
+    this.proxyServerService.closeServer();
+    app.quit();
   }
 }
