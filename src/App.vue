@@ -44,53 +44,39 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
 </script>
 
 <template>
-  <a-config-provider
-    :theme="themeConfig"
-    :locale="locale"
-    :auto-insert-space-in-button="false"
-    :get-popup-container="getPopupContainer"
-  >
-    <a-layout class="w-screen h-screen">
-      <div v-if="error"></div>
-      <a-flex
-        v-if="loading || error"
-        align="center"
-        justify="center"
-        class="w-full h-full"
-      >
-        <a-flex v-if="loading" vertical align="center" :gap="16">
-          <a-spin size="large" />
-          {{ currentStatus }}
-        </a-flex>
-        <a-flex v-if="error" vertical align="center" :gap="16">
-          {{ error }}
-          <a-button type="primary" @click="reInit()">重新加载</a-button>
-        </a-flex>
-      </a-flex>
-      <template v-else>
-        <app-header />
-        <a-layout-content
-          id="scroll-view"
-          ref="scrollView"
-          class="flex-grow overflow-auto"
+  <v-app>
+    <div v-if="error"></div>
+    <div
+      v-if="loading || error"
+      class="w-full h-full flex items-center justify-center"
+    >
+      <div v-if="loading" class="flex flex-col items-center gap-4">
+        <!-- <a-spin size="large" /> -->
+        {{ currentStatus }}
+      </div>
+      <div v-if="error" class="flex flex-col items-center gap-4">
+        {{ error }}
+        <v-btn type="primary" @click="reInit()">重新加载</v-btn>
+      </div>
+    </div>
+    <template v-else>
+      <app-header />
+      <v-main>
+        <div
+          class="min-h-full mx-auto relative"
+          :class="{
+            'p-4': isAddContentPadding,
+          }"
         >
-          <div
-            class="min-h-full mx-auto relative"
-            :class="{
-              'p-4': isAddContentPadding,
-            }"
-          >
-            <router-view v-slot="{ Component }">
-              <keep-alive include="app-home,app-search,app-person,app-category">
-                <component :is="Component" />
-              </keep-alive>
-            </router-view>
-          </div>
-        </a-layout-content>
-      </template>
-    </a-layout>
-    <context-holder />
-  </a-config-provider>
+          <router-view v-slot="{ Component }">
+            <keep-alive include="app-home,app-search,app-person,app-category">
+              route
+            </keep-alive>
+          </router-view>
+        </div>
+      </v-main>
+    </template>
+  </v-app>
 </template>
 
 <style scoped></style>
