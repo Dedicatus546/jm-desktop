@@ -49,11 +49,11 @@ const routes: RouteRecordRaw[] = [
       //   name: "WEEK",
       //   component: AppWeek,
       // },
-      // {
-      //   path: "person",
-      //   name: "PERSON",
-      //   component: AppPerson,
-      // },
+      {
+        path: "person",
+        name: "PERSON",
+        component: AppPerson,
+      },
       {
         path: "login",
         name: "LOGIN",

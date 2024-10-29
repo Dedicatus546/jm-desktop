@@ -9,84 +9,96 @@ const userInfo = computed(() => userStore.userInfo);
 const activeTabKey = ref<"collect" | "history">("collect");
 const tabList = [
   {
-    key: "collect",
+    value: "collect",
     tab: "我的收藏",
   },
   {
-    key: "history",
+    value: "history",
     tab: "历史记录",
   },
   {
-    key: "comment",
+    value: "comment",
     tab: "评论",
   },
 ];
 </script>
 
 <template>
-  <a-row v-if="userInfo" :gutter="[16, 16]">
-    <a-col :span="24">
-      <a-card>
-        <a-flex vertical align="center">
-          <a-flex vertical :gap="8" align="center">
-            <a-avatar
-              :size="120"
-              :src="`${appStore.setting.imgHost}/media/users/${userInfo.avatar}`"
-            >
-              <template #icon>
-                <AntDesignOutlined />
-              </template>
-            </a-avatar>
-            <a-typography-title :level="3">
-              {{ userInfo.username }}
-            </a-typography-title>
-          </a-flex>
-          <a-divider />
-          <a-row class="self-stretch">
-            <a-col :span="6">
-              <a-statistic
-                class="flex flex-col items-center"
-                title="经验值"
-                :value="`${userInfo.currentExp}/${userInfo.nextLevelExp}`"
-              />
-            </a-col>
-            <a-col :span="6">
-              <a-statistic
-                class="flex flex-col items-center"
-                title="等级"
-                :value="`${userInfo.level[0]}（${userInfo.level[1]}）`"
-              />
-            </a-col>
-            <a-col :span="6">
-              <a-statistic
-                class="flex flex-col items-center"
-                title="J Coins"
-                :value="userInfo.jCoin + ''"
-              />
-            </a-col>
-            <a-col :span="6">
-              <a-statistic
-                class="flex flex-col items-center"
-                title="可收藏数量"
-                :value="`${userInfo.collectCount}/${userInfo.maxCollectCount}`"
-              />
-            </a-col>
-          </a-row>
-        </a-flex>
-      </a-card>
-    </a-col>
-    <a-col :span="24">
-      <a-card
-        :tab-list="tabList"
-        :active-tab-key="activeTabKey"
-        @tab-change="(key) => (activeTabKey = key as any)"
-      >
-        <app-person-collect-comic v-if="activeTabKey === 'collect'" />
-        <app-person-history-comic v-else-if="activeTabKey === 'history'" />
-        <app-person-history-comment v-else-if="activeTabKey === 'comment'" />
-      </a-card>
-    </a-col>
-  </a-row>
+  <v-row v-if="userInfo" :gutter="[16, 16]">
+    <v-col :cols="12">
+      <v-card>
+        <v-container fluid>
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-col items-center">
+              <v-avatar
+                :size="120"
+                :image="`${appStore.setting.imgHost}/media/users/${userInfo.avatar}`"
+              >
+              </v-avatar>
+              <div class="text-h6">{{ userInfo.username }}</div>
+            </div>
+            <v-divider />
+            <v-row>
+              <v-col :cols="3">
+                <div class="flex flex-col items-center">
+                  <div>经验值</div>
+                  <div>
+                    {{ `${userInfo.currentExp}/${userInfo.nextLevelExp}` }}
+                  </div>
+                </div>
+              </v-col>
+              <v-col :cols="3">
+                <div class="flex flex-col items-center">
+                  <div>等级</div>
+                  <div>
+                    {{ `${userInfo.level[0]}（${userInfo.level[1]}）` }}
+                  </div>
+                </div>
+              </v-col>
+              <v-col :cols="3">
+                <div class="flex flex-col items-center">
+                  <div>J Coins</div>
+                  <div>
+                    {{ userInfo.jCoin }}
+                  </div>
+                </div>
+              </v-col>
+              <v-col :cols="3">
+                <div class="flex flex-col items-center">
+                  <div>可收藏数量</div>
+                  <div>
+                    {{ `${userInfo.collectCount}/${userInfo.maxCollectCount}` }}
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+        </v-container>
+      </v-card>
+    </v-col>
+    <v-col :cols="12">
+      <v-card>
+        <v-tabs v-model:model-value="activeTabKey" bg-color="primary">
+          <v-tab v-for="item of tabList" :key="item.value" :value="item.value">
+            {{ item.tab }}
+          </v-tab>
+        </v-tabs>
+        <v-card-text>
+          <v-tabs-window v-model:model-value="activeTabKey">
+            <v-tabs-window-item value="collect">
+              <app-person-collect-comic />
+            </v-tabs-window-item>
+            <!-- <v-tabs-window-item value="history">
+              <app-person-history-comic />
+            </v-tabs-window-item>
+            <v-tabs-window-item value="comment">
+              <app-person-history-comment />
+            </v-tabs-window-item> -->
+          </v-tabs-window>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped></style>
