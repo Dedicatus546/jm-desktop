@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { breakpointsAntDesign } from "@vueuse/core";
 import { useRequest } from "alova/client";
-import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
 import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
@@ -32,34 +31,20 @@ const slidesPerView = computed(() => {
 </script>
 
 <template>
-  <v-row v-if="loading || latestLoading">
-    <v-col v-for="item of 4" :key="item" :cols="12">
-      <v-card color="primary" variant="tonal">
-        <v-card-title>
-          <v-skeleton-loader type="heading"></v-skeleton-loader>
-        </v-card-title>
-        <v-container fluid>
-          <v-row>
-            <v-col v-for="subItem of 4" :key="subItem" :cols="3">
-              <comic-item-skeleton />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div
+    v-if="loading || latestLoading"
+    class="absolute inset-0 flex items-center justify-center"
+  >
+    <v-progress-circular indeterminate></v-progress-circular>
+  </div>
   <v-row v-else>
     <v-col v-for="item of data.data" :key="item.id" :cols="24">
       <v-card :title="item.title" color="primary" variant="tonal">
-        <v-container fluid>
+        <v-container fluid class="pt-0">
           <swiper
             class="select-none"
             :slides-per-view="slidesPerView"
             :space-between="16"
-            :modules="[Pagination]"
-            :pagination="{
-              clickable: true,
-            }"
           >
             <swiper-slide v-for="subItem of item.list" :key="subItem.id">
               <comic-item :comic="subItem" />
@@ -69,16 +54,18 @@ const slidesPerView = computed(() => {
       </v-card>
     </v-col>
     <v-col :cols="24">
-      <v-card title="最新发布" color="primary" variant="tonal">
-        <!-- TODO migrate -->
-        <!-- <template #extra>
-          <router-link custom :to="{ name: 'COMIC_LATEST' }">
-            <template #default="{ navigate }">
-              <v-btn @click="navigate()">更多</v-btn>
-            </template>
-          </router-link>
-        </template> -->
-        <v-container fluid>
+      <v-card color="primary" variant="tonal">
+        <v-card-item>
+          <div class="flex items-center justify-between">
+            <v-card-title>最新发布</v-card-title>
+            <router-link custom :to="{ name: 'HOME' }">
+              <template #default="{ navigate }">
+                <v-btn variant="text" @click="navigate()">更多</v-btn>
+              </template>
+            </router-link>
+          </div>
+        </v-card-item>
+        <v-container fluid class="pt-0">
           <v-row>
             <v-col
               v-for="item of latestData.data"
