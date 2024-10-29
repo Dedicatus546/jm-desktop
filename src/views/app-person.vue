@@ -90,10 +90,10 @@ const tabList = [
             </v-tabs-window-item>
             <!-- <v-tabs-window-item value="history">
               <app-person-history-comic />
-            </v-tabs-window-item>
+            </v-tabs-window-item> -->
             <v-tabs-window-item value="comment">
               <app-person-history-comment />
-            </v-tabs-window-item> -->
+            </v-tabs-window-item>
           </v-tabs-window>
         </v-card-text>
       </v-card>
