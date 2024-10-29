@@ -54,11 +54,11 @@ const routes: RouteRecordRaw[] = [
       //   name: "PERSON",
       //   component: AppPerson,
       // },
-      // {
-      //   path: "login",
-      //   name: "LOGIN",
-      //   component: AppLogin,
-      // },
+      {
+        path: "login",
+        name: "LOGIN",
+        component: AppLogin,
+      },
       // {
       //   path: "config",
       //   name: "CONFIG",
