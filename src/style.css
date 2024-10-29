@@ -1,5 +1,6 @@
 html,
 body {
+  overflow: hidden;
   font-family:
     "Noto Sans SC",
     -apple-system,

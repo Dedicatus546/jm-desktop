@@ -32,67 +32,69 @@ const slidesPerView = computed(() => {
 </script>
 
 <template>
-  <a-row v-if="loading || latestLoading" :gutter="[16, 16]">
-    <a-col v-for="item of 4" :key="item" :span="24">
-      <a-card>
-        <template #title>
-          <a-skeleton
-            class="title-skeleton"
-            :paragraph="false"
-            :title="{
-              width: '30%',
+  <v-row v-if="loading || latestLoading">
+    <v-col v-for="item of 4" :key="item" :cols="12">
+      <v-card color="primary" variant="tonal">
+        <v-card-title>
+          <v-skeleton-loader type="heading"></v-skeleton-loader>
+        </v-card-title>
+        <v-container fluid>
+          <v-row>
+            <v-col v-for="subItem of 4" :key="subItem" :cols="3">
+              <comic-item-skeleton />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-col>
+  </v-row>
+  <v-row v-else>
+    <v-col v-for="item of data.data" :key="item.id" :cols="24">
+      <v-card :title="item.title" color="primary" variant="tonal">
+        <v-container fluid>
+          <swiper
+            class="select-none"
+            :slides-per-view="slidesPerView"
+            :space-between="16"
+            :modules="[Pagination]"
+            :pagination="{
+              clickable: true,
             }"
-          />
-        </template>
-        <a-row :gutter="[16, 16]">
-          <a-col v-for="subItem of 4" :key="subItem" :span="6">
-            <comic-item-skeleton />
-          </a-col>
-        </a-row>
-      </a-card>
-    </a-col>
-  </a-row>
-  <a-row v-else :gutter="[16, 16]">
-    <a-col v-for="item of data.data" :key="item.id" :span="24">
-      <a-card :title="item.title">
-        <swiper
-          class="select-none"
-          :slides-per-view="slidesPerView"
-          :space-between="16"
-          :modules="[Pagination]"
-          :pagination="{
-            clickable: true,
-          }"
-        >
-          <swiper-slide v-for="subItem of item.list" :key="subItem.id">
-            <comic-item :comic="subItem" />
-          </swiper-slide>
-        </swiper>
-      </a-card>
-    </a-col>
-    <a-col :span="24">
-      <a-card title="最新发布">
-        <template #extra>
+          >
+            <swiper-slide v-for="subItem of item.list" :key="subItem.id">
+              <comic-item :comic="subItem" />
+            </swiper-slide>
+          </swiper>
+        </v-container>
+      </v-card>
+    </v-col>
+    <v-col :cols="24">
+      <v-card title="最新发布" color="primary" variant="tonal">
+        <!-- TODO migrate -->
+        <!-- <template #extra>
           <router-link custom :to="{ name: 'COMIC_LATEST' }">
             <template #default="{ navigate }">
-              <a-button type="link" @click="navigate()">更多</a-button>
+              <v-btn @click="navigate()">更多</v-btn>
             </template>
           </router-link>
-        </template>
-        <a-row :gutter="[16, 16]">
-          <a-col
-            v-for="item of latestData.data"
-            :key="item.id"
-            :sm="8"
-            :xl="6"
-            :xxl="4"
-          >
-            <comic-item :comic="item" />
-          </a-col>
-        </a-row>
-      </a-card>
-    </a-col>
-  </a-row>
+        </template> -->
+        <v-container fluid>
+          <v-row>
+            <v-col
+              v-for="item of latestData.data"
+              :key="item.id"
+              :cols="6"
+              :sm="4"
+              :md="3"
+              :lg="2"
+            >
+              <comic-item :comic="item" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped lang="less">

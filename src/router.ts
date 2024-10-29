@@ -21,11 +21,11 @@ const routes: RouteRecordRaw[] = [
     path: "/",
     redirect: "/home",
     children: [
-      // {
-      //   path: "home",
-      //   name: "HOME",
-      //   component: AppHome,
-      // },
+      {
+        path: "home",
+        name: "HOME",
+        component: AppHome,
+      },
       // {
       //   path: "search",
       //   name: "SEARCH",
