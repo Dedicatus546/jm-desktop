@@ -123,7 +123,7 @@ const logout = () => {
       <template v-if="userInfo">
         <app-header-icon-btn
           tooltip-text="个人中心"
-          icon="mdi-user"
+          icon="mdi-account"
           @click="
             router.push({
               name: 'PERSON',
