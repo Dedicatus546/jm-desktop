@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue";
 import { transformerDirectives } from "unocss";
 import unocss from "unocss/vite";
 import autoImport from "unplugin-auto-import/vite";
-import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
+import { Vuetify3Resolver } from "unplugin-vue-components/resolvers";
 import component from "unplugin-vue-components/vite";
 import { defineConfig } from "vite";
 import electron from "vite-plugin-electron/simple";
@@ -53,12 +53,7 @@ export default defineConfig({
       },
     }),
     component({
-      resolvers: [
-        AntDesignVueResolver({
-          resolveIcons: true,
-          importStyle: "css-in-js",
-        }),
-      ],
+      resolvers: [Vuetify3Resolver()],
     }),
     unocss({
       transformers: [
