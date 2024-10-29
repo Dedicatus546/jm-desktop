@@ -18,6 +18,11 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
 
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
+    <template #loader>
+      <div class="h-[200px] flex items-center justify-center">
+        <v-progress-circular indeterminate></v-progress-circular>
+      </div>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
