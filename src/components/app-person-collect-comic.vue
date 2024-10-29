@@ -15,7 +15,7 @@ const { page, pageCount, loading, data } = usePagination(
     }),
   {
     initialPage: 1,
-    initialPageSize: 80,
+    initialPageSize: 20,
     data: (res) => res.data.list,
     total: (res) => res.data.total,
     watchingStates: [() => formState.type],
