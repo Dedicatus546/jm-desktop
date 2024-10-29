@@ -26,11 +26,11 @@ const routes: RouteRecordRaw[] = [
         name: "HOME",
         component: AppHome,
       },
-      // {
-      //   path: "search",
-      //   name: "SEARCH",
-      //   component: AppSearch,
-      // },
+      {
+        path: "search",
+        name: "SEARCH",
+        component: AppSearch,
+      },
       // {
       //   path: "quick-search",
       //   name: "QUICK_SEARCH",
