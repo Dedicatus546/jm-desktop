@@ -21,10 +21,6 @@ a {
   color: inherit;
 }
 
-.swiper {
-  padding-bottom: 35px;
-}
-
 ::-webkit-scrollbar {
   width: 12px; /* 横向滚动条的宽度 */
   height: 12px; /* 纵向滚动条的高度 */
@@ -40,8 +36,4 @@ a {
 
 ::-webkit-scrollbar-track {
   background: transparent; /* 滚动条背景颜色 */
-}
-
-.ant-notification-notice {
-  -webkit-app-region: no-drag;
 }

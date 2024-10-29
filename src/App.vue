@@ -40,7 +40,7 @@ const isAddContentPadding = computed(() => {
           <v-container
             fluid
             style="height: calc(100vh - var(--v-layout-top, 0px))"
-            class="w-full h-full overflow-y-auto"
+            class="w-full h-full overflow-y-auto relative"
           >
             <router-view v-slot="{ Component }">
               <keep-alive include="app-home,app-search,app-person,app-category">
