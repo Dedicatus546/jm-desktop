@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { type SelectValue } from "ant-design-vue/es/select";
-
 import { updateConfigIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useAppStore from "@/stores/use-app-store";
@@ -10,7 +8,7 @@ const { invoke } = useIpcRendererInvoke(() =>
   updateConfigIpc({ currentShuntKey: appStore.config.currentShuntKey }),
 );
 
-const updateCurrentShuntKey = (value: SelectValue) => {
+const updateCurrentShuntKey = (value: number) => {
   appStore.updateConfigAction({
     currentShuntKey: value as number,
   });
@@ -19,13 +17,14 @@ const updateCurrentShuntKey = (value: SelectValue) => {
 </script>
 
 <template>
-  <a-select
-    :value="appStore.config.currentShuntKey"
-    class="w-[80px]"
-    @update:value="updateCurrentShuntKey"
+  <v-select
+    hide-details
+    :model-value="appStore.config.currentShuntKey"
+    class="w-[150px]"
+    :items="appStore.setting.shuntList"
+    item-title="title"
+    item-value="key"
+    @update:model-value="updateCurrentShuntKey"
   >
-    <a-select-option v-for="item of appStore.setting.shuntList" :key="item.key">
-      {{ item.title }}
-    </a-select-option>
-  </a-select>
+  </v-select>
 </template>

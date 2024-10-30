@@ -208,7 +208,7 @@ const toQuickQueryPage = (query: string) => {
                     <v-col :cols="buttonCols">
                       <router-link
                         v-slot="{ navigate }"
-                        :to="{ name: 'HOME', params: { id } }"
+                        :to="{ name: 'COMIC_READ', params: { id } }"
                         custom
                       >
                         <v-btn

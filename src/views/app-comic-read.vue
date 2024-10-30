@@ -14,6 +14,9 @@ const { loading, data, send, onSuccess } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
   {
     immediate: false,
+    initialData: {
+      list: [],
+    },
   },
 );
 
@@ -28,17 +31,12 @@ watchEffect(() => {
 </script>
 
 <template>
-  <a-flex
-    v-if="loading || !data"
-    align="center"
-    justify="center"
-    class="absolute inset-4"
-  >
-    <a-spin size="large" spinning></a-spin>
-  </a-flex>
+  <div v-if="loading" class="absolute inset-0 flex items-center justify-center">
+    <v-progress-circular indeterminate></v-progress-circular>
+  </div>
   <template v-else>
     <app-comic-scroll-read
-      v-if="appStore.config.readMode === 1"
+      v-if="appStore.config.mode === 'light'"
       :pic-list="data.list"
       :comic-id="id"
     />

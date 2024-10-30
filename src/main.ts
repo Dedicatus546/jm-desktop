@@ -7,13 +7,18 @@ import "./style.css";
 
 import { createApp } from "vue";
 import { createVuetify } from "vuetify";
+import { Intersect } from "vuetify/directives";
 
 import App from "./App.vue";
 import logger from "./logger";
 import router from "./router";
 import pinia from "./store";
 
-const vuetify = createVuetify();
+const vuetify = createVuetify({
+  directives: {
+    Intersect,
+  },
+});
 
 const app = createApp(App);
 

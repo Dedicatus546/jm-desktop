@@ -26,7 +26,18 @@ const getSeed = (comicIdStr: string, pageStr: string) => {
   return seedMap[charCodeOfLastChar] ?? 10; // 默认 seed
 };
 
+const decodeSrcMap = new Map<string, string>();
 export const decodeImage = async (src: string, comicId: number) => {
+  const key =
+    comicId +
+    "-" +
+    src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
+  if (decodeSrcMap.has(key)) {
+    return decodeSrcMap.get(key)!;
+  }
+  if (!needDecode(comicId)) {
+    return src;
+  }
   const page = src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
   const img = await getLoadedImage(src);
   const { naturalHeight, naturalWidth } = img;
@@ -67,7 +78,9 @@ export const decodeImage = async (src: string, comicId: number) => {
           const file = new File([blob], page + ".webp", {
             type: "image/webp",
           });
-          resolve(URL.createObjectURL(file));
+          const decodeUrl = URL.createObjectURL(file);
+          decodeSrcMap.set(key, decodeUrl);
+          resolve(decodeUrl);
         } else {
           reject("canvas not output a blob by invoking 'toBlob' method.");
         }

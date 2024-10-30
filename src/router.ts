@@ -72,14 +72,14 @@ const routes: RouteRecordRaw[] = [
         }),
         component: AppComicDetail,
       },
-      // {
-      //   path: "comic-read/:id(\\d+)",
-      //   name: "COMIC_READ",
-      //   props: (to) => ({
-      //     id: Number.parseInt(to.params.id as string),
-      //   }),
-      //   component: AppComicRead,
-      // },
+      {
+        path: "comic-read/:id(\\d+)",
+        name: "COMIC_READ",
+        props: (to) => ({
+          id: Number.parseInt(to.params.id as string),
+        }),
+        component: AppComicRead,
+      },
       // {
       //   path: "download",
       //   name: "DOWNLOAD",

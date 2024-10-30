@@ -1,69 +1,61 @@
 <script setup lang="ts">
-import scrollIntoView from "scroll-into-view-if-needed";
+import scrollIntoViewIfNeed from "scroll-into-view-if-needed";
 
-import useDecodeImage from "@/compositions/use-decode-image";
+import { decodeImage } from "@/utils/image-decode";
 
 const props = defineProps<{
   src: string;
   comicId: number;
 }>();
-
 const emits = defineEmits<{
-  (e: "inView"): void;
+  (e: "intersect"): void;
 }>();
 
 const elRef = ref<HTMLDivElement | null>(null);
-const radio = inject<Ref<number>>("imageRadio", ref(9 / 16));
-const scrollObserverRef = inject<Ref<IntersectionObserver | null>>(
-  "scrollObserverRef",
-  ref(null),
-);
+const isLoaded = ref(false);
+const imgSrc = ref<string>("");
 
-const { imageSrc, visible } = useDecodeImage(
-  elRef,
-  toRef(props, "src"),
-  toRef(props, "comicId"),
-);
+const onLoadImageIntersect = async (isIntersecting: boolean) => {
+  if (isIntersecting) {
+    imgSrc.value = await decodeImage(props.src, props.comicId);
+  }
+};
+
+const onScrollImageIntersect = (isIntersecting: boolean) => {
+  if (isIntersecting) {
+    emits("intersect");
+  }
+};
 
 defineExpose({
   scrollIntoView() {
     if (elRef.value) {
-      scrollIntoView(elRef.value, {
+      scrollIntoViewIfNeed(elRef.value, {
         block: "start",
       });
     }
   },
 });
-
-onMounted(() => {
-  if (elRef.value) {
-    (elRef.value as any).__comic__pic__onScrollVisible = () => {
-      emits("inView");
-    };
-    scrollObserverRef.value?.observe(elRef.value);
-  }
-});
-
-onBeforeUnmount(() => {
-  if (elRef.value) {
-    scrollObserverRef.value?.unobserve(elRef.value);
-  }
-});
 </script>
 
 <template>
-  <div ref="elRef">
-    <img v-if="visible" class="block w-full" :src="imageSrc" alt="" />
-    <a-flex
-      v-else
-      align="center"
-      justify="center"
-      :style="{
-        aspectRatio: radio,
+  <div ref="elRef" class="relative" :class="{ 'aspect-[9/16]': !isLoaded }">
+    <div
+      v-intersect="{
+        handler: onScrollImageIntersect,
+        options: {
+          rootMargin: '-50% 0% -50% 0%',
+        },
       }"
-    >
-      <a-spin size="large" />
-    </a-flex>
+      class="absolute inset-0"
+    ></div>
+    <img
+      v-intersect.once="onLoadImageIntersect"
+      class="block w-full h-full object-contain"
+      :src="imgSrc"
+      alt=""
+      @load="isLoaded = true"
+    />
   </div>
 </template>
 

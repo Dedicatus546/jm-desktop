@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ComicPicElRef } from "@/compositions/use-decode-image";
-
 const props = defineProps<{
   comicId: number;
   picList: Array<string>;
@@ -38,93 +36,61 @@ onKeyStroke("ArrowLeft", () => lastPage(), {
   dedupe: true,
 });
 
-const onSliderAfterChange = (value: [number, number] | number) => {
+const onSliderEnd = (value: [number, number] | number) => {
   page.value = (value as number) - 1;
 };
-
-const containerElRef = ref<HTMLDivElement | null>(null);
-const observerRef = ref<IntersectionObserver | null>(null);
-provide("observerRef", observerRef);
-
-onMounted(() => {
-  observerRef.value = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((item) => {
-        if (item.isIntersecting) {
-          // show
-          (item.target as ComicPicElRef).__comic__pic__onVisible?.();
-        }
-      });
-    },
-    {
-      root: toValue(containerElRef),
-    },
-  );
-});
-
-onUnmounted(() => {
-  observerRef.value?.disconnect();
-  observerRef.value = null;
-});
 </script>
 
 <template>
-  <div class="absolute inset-4">
-    <a-flex vertical class="h-full" :gap="16">
-      <div ref="containerElRef" class="flex-grow min-h-0">
-        <template v-if="observerRef">
-          <comic-page-pic
-            :key="picList[page]"
-            :comic-id="comicId"
-            :src="picList[page]"
-          />
-        </template>
+  <div class="absolute inset-0">
+    <div class="flex flex-col h-full gap-4">
+      <div v-if="picList.length > 0" class="flex-grow min-h-0 p-4">
+        <comic-page-pic
+          :key="picList[page]"
+          :comic-id="comicId"
+          :src="picList[page]"
+        />
       </div>
-      <a-card class="flex-shrink-0" size="small">
-        <a-flex align="center" :gap="16">
-          <a-button
-            type="primary"
-            class="flex-shrink-0"
-            shape="circle"
-            block
-            size="large"
-            :disabled="!hasLastPage"
-            @click="lastPage"
-          >
-            <template #icon>
-              <CaretLeftOutlined />
-            </template>
-          </a-button>
-          <div class="flex-grow min-w-0">
-            <a-slider
-              v-model:value="sliderValue"
-              :tooltip-open="false"
+      <div class="flex-shrink-0">
+        <v-card>
+          <v-card-text>
+            <v-slider
+              v-model:model-value="sliderValue"
+              hide-details
+              :step="1"
+              color="primary"
               :min="1"
               :max="picList.length"
-              @after-change="onSliderAfterChange"
-            />
-          </div>
-          <div class="flex-shrink-0">
-            {{ sliderValue }} / {{ picList.length }}
-          </div>
-          <div class="flex-shrink-0">
-            <shunt-select />
-          </div>
-          <a-button
-            type="primary"
-            class="flex-shrink-0"
-            shape="circle"
-            block
-            size="large"
-            :disabled="!hasNextPage"
-            @click="nextPage"
-          >
-            <template #icon>
-              <CaretRightOutlined />
-            </template>
-          </a-button>
-        </a-flex>
-      </a-card>
-    </a-flex>
+              @end="onSliderEnd"
+            >
+              <template #prepend>
+                <v-btn
+                  color="primary"
+                  icon="mdi-arrow-left"
+                  size="large"
+                  :disabled="!hasLastPage"
+                  @click="lastPage"
+                ></v-btn>
+              </template>
+              <template #append>
+                <div class="flex items-center gap-2">
+                  <div>{{ sliderValue }} / {{ picList.length }}</div>
+                  <shunt-select />
+                  <div class="flex-shrink-0"></div>
+                  <v-btn
+                    color="primary"
+                    icon="mdi-arrow-right"
+                    size="large"
+                    :disabled="!hasNextPage"
+                    @click="nextPage"
+                  >
+                  </v-btn>
+                </div>
+              </template>
+            </v-slider>
+          </v-card-text>
+        </v-card>
+      </div>
+    </div>
   </div>
 </template>
