@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { Form } from "ant-design-vue";
-
 import { selectFolderIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 
-const formContext = Form.useInjectFormItemContext();
-const value = defineModel<string>("value");
+const value = defineModel<string>("modelValue");
 
 const { loading, data, invoke } = useIpcRendererInvoke<string>(
   () => selectFolderIpc(),
@@ -17,17 +14,23 @@ const { loading, data, invoke } = useIpcRendererInvoke<string>(
 const changeDownloadDir = async () => {
   await invoke();
   value.value = data.value!;
-  formContext.onFieldChange();
 };
 </script>
 
 <template>
-  <a-space-compact block size="large">
-    <a-input v-model:value="value" placeholder="选择下载位置" read-only />
-    <a-button :loading="loading" type="primary" @click="changeDownloadDir">
-      更换
-    </a-button>
-  </a-space-compact>
+  <v-text-field
+    hide-details
+    label="下载位置"
+    :model-value="value"
+    placeholder="选择下载位置"
+    readonly
+  >
+    <template #append-inner>
+      <v-btn :loading="loading" color="primary" @click="changeDownloadDir">
+        更换
+      </v-btn>
+    </template>
+  </v-text-field>
 </template>
 
 <style scoped></style>

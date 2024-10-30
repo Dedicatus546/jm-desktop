@@ -59,11 +59,11 @@ const routes: RouteRecordRaw[] = [
         name: "LOGIN",
         component: AppLogin,
       },
-      // {
-      //   path: "config",
-      //   name: "CONFIG",
-      //   component: AppConfig,
-      // },
+      {
+        path: "config",
+        name: "CONFIG",
+        component: AppConfig,
+      },
       {
         path: "comic-detail/:id(\\d+)",
         name: "COMIC_DETAIL",
