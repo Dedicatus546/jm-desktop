@@ -58,7 +58,7 @@ const slidesPerView = computed(() => {
         <v-card-item>
           <div class="flex items-center justify-between">
             <v-card-title>最新发布</v-card-title>
-            <router-link custom :to="{ name: 'HOME' }">
+            <router-link custom :to="{ name: 'COMIC_LATEST' }">
               <template #default="{ navigate }">
                 <v-btn variant="text" @click="navigate()">更多</v-btn>
               </template>

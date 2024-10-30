@@ -90,11 +90,11 @@ const routes: RouteRecordRaw[] = [
       //   name: "SIGN_IN",
       //   component: AppSignIn,
       // },
-      // {
-      //   path: "comic-latest",
-      //   name: "COMIC_LATEST",
-      //   component: AppComicLatest,
-      // },
+      {
+        path: "comic-latest",
+        name: "COMIC_LATEST",
+        component: AppComicLatest,
+      },
     ],
   },
 ];
