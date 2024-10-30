@@ -17,6 +17,7 @@ const {
 const {
   // page,
   // total,
+  pageSize,
   data: list,
   loading,
 } = usePagination(
@@ -30,6 +31,8 @@ const {
     // 一般只有一页
     preloadNextPage: false,
     immediate: false,
+    initialPage: 1,
+    initialPageSize: 80,
     data: (res) => res.data.list,
     total: (res) => res.data.total,
     watchingStates: [() => formState.category, () => formState.type],
@@ -48,62 +51,59 @@ onSuccess(() => {
 </script>
 
 <template>
-  <a-card>
-    <a-row :gutter="[16, 16]">
-      <a-col v-if="weekLoading" :span="24">
-        <a-flex class="min-h-[200px]" align="center" justify="center">
-          <a-spin />
-        </a-flex>
-      </a-col>
-      <template v-else>
-        <a-col :span="12">
-          <a-select
-            v-model:value="formState.category"
-            size="large"
-            class="w-full"
+  <v-card>
+    <v-card-text>
+      <v-row>
+        <v-col v-if="weekLoading" :cols="12">
+          <div class="h-[30vh] flex items-center justify-center">
+            <v-progress-circular indeterminate></v-progress-circular>
+          </div>
+        </v-col>
+        <v-col v-else :cols="12">
+          <v-data-iterator
+            :items-per-page="pageSize"
+            :items="list ?? []"
+            :loading="loading"
           >
-            <a-select-option
-              v-for="item of data?.data.categoryList ?? []"
-              :key="item.id"
-              :value="item.id"
-            >
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-        </a-col>
-        <a-col :span="12">
-          <a-select v-model:value="formState.type" size="large" class="w-full">
-            <a-select-option
-              v-for="item of data?.data.typeList ?? []"
-              :key="item.id"
-              :value="item.id"
-            >
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-        </a-col>
-        <a-col :span="24">
-          <a-flex
-            v-if="loading"
-            align="center"
-            justify="center"
-            class="min-h-[200px]"
-          >
-            <a-spin />
-          </a-flex>
-          <a-row v-else :gutter="[16, 16]">
-            <a-col
-              v-for="item of list ?? []"
-              :key="item.id"
-              :sm="8"
-              :xl="6"
-              :xxl="4"
-            >
-              <comic-item :comic="item" />
-            </a-col>
-          </a-row>
-        </a-col>
-      </template>
-    </a-row>
-  </a-card>
+            <template #loader>
+              <div class="h-[30vh] flex items-center justify-center">
+                <v-progress-circular indeterminate></v-progress-circular>
+              </div>
+            </template>
+            <template #header>
+              <v-row>
+                <v-col :cols="6">
+                  <v-select
+                    v-model:model-value="formState.category"
+                    hide-details
+                    item-title="name"
+                    item-value="id"
+                    :items="data?.data.categoryList ?? []"
+                  ></v-select>
+                </v-col>
+                <v-col :cols="6">
+                  <v-select
+                    v-model:model-value="formState.type"
+                    hide-details
+                    item-title="name"
+                    item-value="id"
+                    :items="data?.data.typeList ?? []"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </template>
+            <template #default="{ items }">
+              <v-row>
+                <template v-for="item of items" :key="item.raw.id">
+                  <v-col :cols="6" :sm="4" :md="3" :lg="2">
+                    <comic-item :comic="item.raw" />
+                  </v-col>
+                </template>
+              </v-row>
+            </template>
+          </v-data-iterator>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
