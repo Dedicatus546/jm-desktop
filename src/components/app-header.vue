@@ -60,7 +60,7 @@ const logout = () => {
     <v-app-bar-title>
       <img
         src="@/assets/logo.png"
-        class="block w-[150px]"
+        class="block w-[150px] cursor-pointer"
         alt="jm"
         @click="router.push('/')"
       />
