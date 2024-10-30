@@ -49,8 +49,9 @@ defineExpose({
       }"
       class="absolute inset-0"
     ></div>
+    <div v-intersect.once="onLoadImageIntersect" class="absolute inset-0"></div>
     <img
-      v-intersect.once="onLoadImageIntersect"
+      v-if="imgSrc"
       class="block w-full h-full object-contain"
       :src="imgSrc"
       alt=""
