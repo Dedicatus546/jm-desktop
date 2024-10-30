@@ -68,7 +68,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </v-row>
     </template>
     <template #footer>
-      <div class="flex justify-end">
+      <div class="flex justify-end mt-4">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
       </div>
     </template>
