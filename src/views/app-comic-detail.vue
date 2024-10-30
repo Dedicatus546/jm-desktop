@@ -42,7 +42,7 @@ const tabList = computed(() => {
     return [];
   }
   const list = [];
-  if (comicInfo.value.data.seriesList.length > 0) {
+  if (comicInfo.value.data.seriesList.length > 1) {
     list.push({
       value: "series",
       tab: "目录",
@@ -62,13 +62,16 @@ const tabList = computed(() => {
 });
 
 onSuccess(() => {
-  if (comicInfo.value.data.seriesList.length > 0) {
+  if (comicInfo.value.data.seriesList.length > 1) {
     activeTabKey.value = "series";
   }
 });
 
 const currentSeriesName = computed(() => {
-  if (comicInfo.value.data.currentSeriesId) {
+  if (
+    comicInfo.value.data.currentSeriesId &&
+    comicInfo.value.data.seriesList.length > 1
+  ) {
     const item = comicInfo.value.data.seriesList.find(
       (item) => item.id === comicInfo.value.data.currentSeriesId,
     );
