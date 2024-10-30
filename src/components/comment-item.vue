@@ -65,20 +65,26 @@ const replyListOpen = ref(false);
       </div> -->
       <div
         v-if="comment.replyList && comment.replyList.length > 0"
-        class="flex gap-1 cursor-pointer"
+        class="flex gap-2 cursor-pointer"
         @click="replyListOpen = !replyListOpen"
       >
-        <v-icon icon="mdi-message" />
+        <v-icon icon="mdi-reply" />
         {{ comment.replyList.length }}
       </div>
       <div v-if="replyListOpen && comment.replyList" class="mt-6">
-        <template
-          v-for="(subItem, index) of comment.replyList"
-          :key="subItem.id"
-        >
-          <v-divider v-if="index > 0" />
-          <comment-item :comment="subItem" />
-        </template>
+        <v-row>
+          <template
+            v-for="(subItem, index) of comment.replyList"
+            :key="subItem.id"
+          >
+            <v-col v-if="index > 0" :cols="12">
+              <v-divider />
+            </v-col>
+            <v-col :cols="12">
+              <comment-item :comment="subItem" />
+            </v-col>
+          </template>
+        </v-row>
       </div>
     </div>
   </div>

@@ -540,7 +540,7 @@ export const getComicDetailApi = (id: number) => {
           seriesList: res.data.series.map((item, index) => {
             return {
               id: Number.parseInt(item.id),
-              name: `第 ${index + 1} 话 ` + item.name,
+              name: `第${index + 1}话${item.name ? "（" + item.name + "）" : ""}`,
             };
           }),
           currentSeriesId: Number.parseInt(res.data.series_id),

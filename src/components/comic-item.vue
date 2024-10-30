@@ -19,9 +19,9 @@ const appStore = useAppStore();
 </script>
 
 <template>
-  <!-- <router-link
+  <router-link
     :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
-  > -->
+  >
   <v-card color="primary">
     <v-img
       cover
@@ -34,7 +34,7 @@ const appStore = useAppStore();
       <v-card-subtitle>{{ comic.name ?? "未知作者" }}</v-card-subtitle>
     </v-card-item>
   </v-card>
-  <!-- </router-link> -->
+  </router-link>
 </template>
 
 <style scoped></style>

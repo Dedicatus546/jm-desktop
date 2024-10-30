@@ -64,14 +64,14 @@ const routes: RouteRecordRaw[] = [
       //   name: "CONFIG",
       //   component: AppConfig,
       // },
-      // {
-      //   path: "comic-detail/:id(\\d+)",
-      //   name: "COMIC_DETAIL",
-      //   props: (to) => ({
-      //     id: Number.parseInt(to.params.id as string),
-      //   }),
-      //   component: AppComicDetail,
-      // },
+      {
+        path: "comic-detail/:id(\\d+)",
+        name: "COMIC_DETAIL",
+        props: (to) => ({
+          id: Number.parseInt(to.params.id as string),
+        }),
+        component: AppComicDetail,
+      },
       // {
       //   path: "comic-read/:id(\\d+)",
       //   name: "COMIC_READ",
