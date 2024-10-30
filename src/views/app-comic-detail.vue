@@ -109,7 +109,7 @@ const toQuickQueryPage = (query: string) => {
     <template v-else>
       <v-col :cols="12">
         <v-card>
-          <v-container fluid>
+          <v-card-text>
             <div class="flex gap-4">
               <div class="w-1/4 max-w-[300px] min-w-[200px] flex-shrink-0">
                 <v-img
@@ -286,7 +286,7 @@ const toQuickQueryPage = (query: string) => {
                 </div>
               </div>
             </div>
-          </v-container>
+          </v-card-text>
         </v-card>
       </v-col>
       <v-col :cols="12">

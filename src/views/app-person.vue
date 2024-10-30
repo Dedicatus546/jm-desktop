@@ -27,7 +27,7 @@ const tabList = [
   <v-row v-if="userInfo" :gutter="[16, 16]">
     <v-col :cols="12">
       <v-card>
-        <v-container fluid>
+        <v-card-text>
           <div class="flex flex-col gap-4">
             <div class="flex flex-col items-center">
               <v-avatar
@@ -73,7 +73,7 @@ const tabList = [
               </v-col>
             </v-row>
           </div>
-        </v-container>
+        </v-card-text>
       </v-card>
     </v-col>
     <v-col :cols="12">

@@ -61,11 +61,8 @@ onError((e) => {
 </script>
 
 <template>
-  <v-card>
-    <v-card-item>
-      <v-card-title>登录到</v-card-title>
-    </v-card-item>
-    <v-container fluid>
+  <v-card title="登录到">
+    <v-card-text>
       <v-form @submit.prevent="send">
         <v-row>
           <v-col :cols="12">
@@ -123,7 +120,7 @@ onError((e) => {
           </v-col>
         </v-row>
       </v-form>
-    </v-container>
+    </v-card-text>
   </v-card>
 </template>
 

@@ -40,7 +40,7 @@ const slidesPerView = computed(() => {
   <v-row v-else>
     <v-col v-for="item of data.data" :key="item.id" :cols="24">
       <v-card :title="item.title" color="primary" variant="tonal">
-        <v-container fluid class="pt-0">
+        <v-card-text>
           <swiper
             class="select-none"
             :slides-per-view="slidesPerView"
@@ -50,7 +50,7 @@ const slidesPerView = computed(() => {
               <comic-item :comic="subItem" />
             </swiper-slide>
           </swiper>
-        </v-container>
+        </v-card-text>
       </v-card>
     </v-col>
     <v-col :cols="24">
@@ -65,7 +65,7 @@ const slidesPerView = computed(() => {
             </router-link>
           </div>
         </v-card-item>
-        <v-container fluid class="pt-0">
+        <v-card-text>
           <v-row>
             <v-col
               v-for="item of latestData.data"
@@ -78,7 +78,7 @@ const slidesPerView = computed(() => {
               <comic-item :comic="item" />
             </v-col>
           </v-row>
-        </v-container>
+        </v-card-text>
       </v-card>
     </v-col>
   </v-row>
