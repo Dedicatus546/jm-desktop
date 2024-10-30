@@ -95,7 +95,7 @@ const { loading: collectComicLoading, send: collectComic } = useRequest(
 );
 
 const toQuickQueryPage = (query: string) => {
-  return { name: "HOME", query: { query } };
+  return { name: "QUICK_SEARCH", query: { query } };
 };
 </script>
 

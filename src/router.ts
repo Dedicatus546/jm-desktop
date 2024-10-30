@@ -31,14 +31,14 @@ const routes: RouteRecordRaw[] = [
         name: "SEARCH",
         component: AppSearch,
       },
-      // {
-      //   path: "quick-search",
-      //   name: "QUICK_SEARCH",
-      //   props: (to) => ({
-      //     query: to.query.query as string,
-      //   }),
-      //   component: AppQuickSearch,
-      // },
+      {
+        path: "quick-search",
+        name: "QUICK_SEARCH",
+        props: (to) => ({
+          query: to.query.query as string,
+        }),
+        component: AppQuickSearch,
+      },
       // {
       //   path: "category",
       //   name: "CATEGORY",
