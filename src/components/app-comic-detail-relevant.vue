@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <v-data-iterator :items="relateList">
+  <v-data-iterator :items="relateList" :items-per-page="100">
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
