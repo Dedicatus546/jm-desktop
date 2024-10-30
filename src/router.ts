@@ -39,11 +39,11 @@ const routes: RouteRecordRaw[] = [
         }),
         component: AppQuickSearch,
       },
-      // {
-      //   path: "category",
-      //   name: "CATEGORY",
-      //   component: AppCategory,
-      // },
+      {
+        path: "category",
+        name: "CATEGORY",
+        component: AppCategory,
+      },
       {
         path: "week",
         name: "WEEK",
