@@ -102,12 +102,15 @@ const download = async () => {
 </script>
 
 <template>
-  <a-button size="large" block @click="download">
-    <template #icon>
-      <DownloadOutlined />
+  <v-btn size="large" block variant="flat" color="primary" @click="download">
+    <template #prepend>
+      <v-icon
+        icon="mdi-download"
+        :color="isDownload ? 'green' : undefined"
+      ></v-icon>
     </template>
     {{ isDownloading ? percent + "%" : isDownload ? "已下载" : "下载" }}
-  </a-button>
+  </v-btn>
 </template>
 
 <style scoped></style>

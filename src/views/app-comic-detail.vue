@@ -239,7 +239,6 @@ const toQuickQueryPage = (query: string) => {
                           block
                           @click="likeComic()"
                         >
-                          <!-- TODO migrate 颜色 -->
                           <template #prepend>
                             <v-icon
                               icon="mdi-heart"
@@ -269,8 +268,7 @@ const toQuickQueryPage = (query: string) => {
                           {{ comicInfo.data.isCollect ? "已收藏" : "收藏" }}
                         </v-btn>
                       </v-col>
-                      <!-- TODO migrate -->
-                      <!-- <v-col :cols="buttonCols">
+                      <v-col :cols="buttonCols">
                     <app-comic-detail-download-button
                       :comic="{
                         id: comicInfo.data.id,
@@ -282,7 +280,7 @@ const toQuickQueryPage = (query: string) => {
                       }"
                       :is-download="comicInfo.data.isDownload"
                     />
-                  </v-col> -->
+                      </v-col>
                     </template>
                   </v-row>
                 </div>
