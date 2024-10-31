@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js";
+import dayjs from "dayjs";
 
 import { BaseComic } from "@/type";
 import { getImageRadio } from "@/utils";
@@ -953,6 +954,7 @@ export const getSignInDataApi = (userId: number) => {
           isNextDaySign: boolean;
           isLastDaySign: boolean;
           isSign: boolean;
+          isLast: boolean;
           hasExtraBonus: boolean;
         }
       >;
@@ -986,9 +988,11 @@ export const getSignInDataApi = (userId: number) => {
           isNextDaySign: boolean;
           isLastDaySign: boolean;
           isSign: boolean;
+          isLast: boolean;
           hasExtraBonus: boolean;
         }
       > = {};
+      const currentDate = dayjs().date().toString().padStart(2, "0");
       return {
         code: res.code,
         data: {
@@ -1015,6 +1019,7 @@ export const getSignInDataApi = (userId: number) => {
               return {
                 date: item.date,
                 isSign: !!item.signed,
+                isLast: currentDate >= item.date,
                 // isSign,
                 hasExtraBonus: item.bonus,
               };
@@ -1032,6 +1037,7 @@ export const getSignInDataApi = (userId: number) => {
                 isNextDaySign: item.isNextDaySign,
                 isLastDaySign: item.isLastDaySign,
                 isSign: item.isSign,
+                isLast: item.isLast,
                 hasExtraBonus: item.hasExtraBonus,
               };
               return map;

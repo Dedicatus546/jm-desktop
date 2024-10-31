@@ -1,45 +1,17 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
-import { theme } from "ant-design-vue";
-import dayjs, { type Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { VCalendar } from "vuetify/labs/VCalendar";
 
 import { getSignInDataApi, signInApi } from "@/apis";
-import useNotification from "@/compositions/use-notification";
 import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
-const notification = useNotification();
-const { useToken } = theme;
-const { token } = useToken();
 
-const currentDate = ref(dayjs());
-const validRange = computed<[Dayjs, Dayjs]>(() => {
-  const start = currentDate.value
-    .set("date", 1)
-    .hour(0)
-    .minute(0)
-    .second(0)
-    .millisecond(0);
-  const end = currentDate.value
-    .add(1, "month")
-    .set("date", 1)
-    .add(-1, "day")
-    .hour(23)
-    .minute(59)
-    .second(59)
-    .millisecond(999);
-  return [start, end];
-});
-const disabledDate = (date: Dayjs) => {
-  const [start, end] = validRange.value;
-  return date.isBefore(start) || date.isAfter(end);
-};
+const currentDate = new Date();
+const value = [currentDate];
 
-const isCurrentMonthDate = (date: Dayjs) => {
-  return date.month() === currentDate.value.month();
-};
-
-const { loading, data, send } = useRequest(() =>
+const { data, send } = useRequest(() =>
   getSignInDataApi(userStore.userInfo?.uid ?? 0),
 );
 const dateMap = computed(() => {
@@ -47,6 +19,54 @@ const dateMap = computed(() => {
     return null;
   }
   return data.value.data.dateMap;
+});
+
+const events = computed(() => {
+  if (!dateMap.value) {
+    return [];
+  }
+  // 当前月份的天数
+  const days = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0,
+  ).getDate();
+  const events = [];
+  for (let i = 1; i <= days; i++) {
+    const key = `${i}`.padStart(2, "0");
+    const data = dateMap.value[key];
+    const d = dayjs(currentDate)
+      .date(i)
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toDate();
+    if (data.hasExtraBonus) {
+      events.push({
+        type: 1,
+        title: "额外奖励",
+        start: d,
+        end: d,
+        color: "primary",
+        allDay: true,
+      });
+    }
+    if (data.isLast) {
+      if (data.isSign) {
+        events.push({
+          type: 2,
+          title: "已签到",
+          start: d,
+          end: d,
+          color: "success",
+          allDay: true,
+        });
+      }
+    }
+  }
+
+  return events;
 });
 
 const {
@@ -61,102 +81,58 @@ const {
   },
 );
 onSuccess(() => {
-  notification.success({
-    message: "签到",
-    description: "签到成功，" + signInData.value.data.msg,
-  });
+  // TODO migrate
+  // notification.success({
+  //   message: "签到",
+  //   description: "签到成功，" + signInData.value.data.msg,
+  // });
   send();
 });
 </script>
 
 <template>
-  <a-spin :spinning="loading">
-    <a-card>
-      <a-flex vertical :gap="16">
-        <a-calendar
-          :value="currentDate"
-          :valid-range="validRange"
-          :disabled-date="disabledDate"
-          class="calendar"
-        >
-          <template #headerRender></template>
-          <template #dateFullCellRender="{ current }">
-            <a-flex
-              v-if="isCurrentMonthDate(current)"
-              align="center"
-              justify="center"
-              :gap="8"
-              class="my-1 h-full min-h-[40px] aspect-ratio-[16/9]"
-              :class="
-                dateMap
-                  ? {
-                      signed:
-                        (current.isBefore(currentDate) ||
-                          current.isSame(currentDate)) &&
-                        dateMap[current.format('DD')].isSign,
-                      unSign:
-                        (current.isBefore(currentDate) ||
-                          current.isSame(currentDate)) &&
-                        !dateMap[current.format('DD')].isSign,
-                      lastDaySign: dateMap[current.format('DD')].isLastDaySign,
-                      nextDaySign: dateMap[current.format('DD')].isNextDaySign,
-                    }
-                  : {}
-              "
-            >
-              <span>{{ current.get("date") }}</span>
-              <HeartFilled
-                v-if="dateMap && dateMap[current.format('DD')]?.hasExtraBonus"
-                class="text-pink"
-              />
-            </a-flex>
+  <v-calendar
+    ref="calendar"
+    v-model:model-value="value"
+    class="signCalendar"
+    :events="events"
+  >
+    <template #header></template>
+    <template #event="{ event }">
+      <div v-if="event.type === 1" class="m-2">
+        <v-chip>
+          <template #prepend>
+            <v-icon icon="mdi-heart" color="red"></v-icon>
           </template>
-        </a-calendar>
-        <a-button
-          :loading="signInLoading"
-          size="large"
-          block
-          type="primary"
-          @click="signIn()"
-        >
-          签到
-        </a-button>
-      </a-flex>
-    </a-card>
-  </a-spin>
+          <span class="ml-1">额外奖励</span>
+        </v-chip>
+      </div>
+      <div v-else-if="event.type === 2" class="m-2">
+        <v-chip>
+          <template #prepend>
+            <v-icon icon="mdi-check" color="success"></v-icon>
+          </template>
+          <span class="ml-1">已签到</span>
+        </v-chip>
+      </div>
+    </template>
+  </v-calendar>
+  <v-btn
+    class="mt-4"
+    :loading="signInLoading"
+    size="large"
+    block
+    color="primary"
+    @click="signIn()"
+  >
+    签到
+  </v-btn>
 </template>
 
 <style lang="less" scoped>
-.calendar {
-  :deep(.ant-picker-content) {
-    & > thead {
-      & > tr {
-        & > th {
-          text-align: center;
-          padding-inline-end: 0 !important;
-          padding-bottom: 0 !important;
-          height: 80px !important;
-          min-height: auto !important;
-        }
-      }
-    }
-  }
-
-  .signed {
-    background: v-bind("token.colorPrimary");
-    color: white;
-    border-radius: v-bind("token.borderRadiusOuter + 'px'");
-  }
-  .lastDaySign {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-  .nextDaySign {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .unSign {
-    opacity: 0.5;
+.signCalendar {
+  ::v-deep(.v-calendar-month__day) {
+    min-height: 120px;
   }
 }
 </style>

@@ -8,12 +8,12 @@ import AppHome from "@/views/app-home.vue";
 import AppLogin from "@/views/app-login.vue";
 import AppPerson from "@/views/app-person.vue";
 import AppSearch from "@/views/app-search.vue";
-import AppSignIn from "@/views/app-sign-in.vue";
 
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
 import AppCategory from "./views/app-category.vue";
 import AppComicLatest from "./views/app-comic-latest.vue";
 import AppQuickSearch from "./views/app-quick-search.vue";
+import AppSignIn from "./views/app-sign-in.vue";
 import AppWeek from "./views/app-week.vue";
 
 const routes: RouteRecordRaw[] = [
@@ -85,11 +85,11 @@ const routes: RouteRecordRaw[] = [
       //   name: "DOWNLOAD",
       //   component: AppDownload,
       // },
-      // {
-      //   path: "sign-in",
-      //   name: "SIGN_IN",
-      //   component: AppSignIn,
-      // },
+      {
+        path: "sign-in",
+        name: "SIGN_IN",
+        component: AppSignIn,
+      },
       {
         path: "comic-latest",
         name: "COMIC_LATEST",
