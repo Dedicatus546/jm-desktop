@@ -91,42 +91,46 @@ onSuccess(() => {
 </script>
 
 <template>
-  <v-calendar
-    ref="calendar"
-    v-model:model-value="value"
-    class="signCalendar"
-    :events="events"
-  >
-    <template #header></template>
-    <template #event="{ event }">
-      <div v-if="event.type === 1" class="m-2">
-        <v-chip>
-          <template #prepend>
-            <v-icon icon="mdi-heart" color="red"></v-icon>
-          </template>
-          <span class="ml-1">额外奖励</span>
-        </v-chip>
-      </div>
-      <div v-else-if="event.type === 2" class="m-2">
-        <v-chip>
-          <template #prepend>
-            <v-icon icon="mdi-check" color="success"></v-icon>
-          </template>
-          <span class="ml-1">已签到</span>
-        </v-chip>
-      </div>
-    </template>
-  </v-calendar>
-  <v-btn
-    class="mt-4"
-    :loading="signInLoading"
-    size="large"
-    block
-    color="primary"
-    @click="signIn()"
-  >
-    签到
-  </v-btn>
+  <v-card>
+    <v-card-text>
+      <v-calendar
+        ref="calendar"
+        v-model:model-value="value"
+        class="signCalendar"
+        :events="events"
+      >
+        <template #header></template>
+        <template #event="{ event }">
+          <div v-if="event.type === 1" class="m-2">
+            <v-chip>
+              <template #prepend>
+                <v-icon icon="mdi-heart" color="red"></v-icon>
+              </template>
+              <span class="ml-1">额外奖励</span>
+            </v-chip>
+          </div>
+          <div v-else-if="event.type === 2" class="m-2">
+            <v-chip>
+              <template #prepend>
+                <v-icon icon="mdi-check" color="success"></v-icon>
+              </template>
+              <span class="ml-1">已签到</span>
+            </v-chip>
+          </div>
+        </template>
+      </v-calendar>
+      <v-btn
+        class="mt-4"
+        :loading="signInLoading"
+        size="large"
+        block
+        color="primary"
+        @click="signIn()"
+      >
+        签到
+      </v-btn>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style lang="less" scoped>
