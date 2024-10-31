@@ -87,6 +87,12 @@ onSuccess(() => {
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
+    <template #no-data>
+      <app-empty-state
+        title="这看起来是一部没人评价过的本子"
+        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+      ></app-empty-state>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">

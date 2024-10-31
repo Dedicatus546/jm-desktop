@@ -58,6 +58,12 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
         </div>
       </div>
     </template>
+    <template #no-data>
+      <app-empty-state
+        title="一个收藏都没点，看来是用完就忘了"
+        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+      ></app-empty-state>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">

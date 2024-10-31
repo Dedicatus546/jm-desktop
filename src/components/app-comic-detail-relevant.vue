@@ -6,6 +6,13 @@ defineProps<{
 
 <template>
   <v-data-iterator :items="relateList" :items-per-page="100">
+    <template #no-data>
+      <!-- TODO title -->
+      <app-empty-state
+        title="TODO"
+        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+      ></app-empty-state>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">

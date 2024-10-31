@@ -23,6 +23,12 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
+    <template #no-data>
+      <app-empty-state
+        title="看来不是很喜欢评论"
+        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+      ></app-empty-state>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">

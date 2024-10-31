@@ -71,6 +71,12 @@ const { page, pageSize, pageCount, data, send, loading } = usePagination(
         </div>
       </div>
     </template>
+    <template #no-data>
+      <app-empty-state
+        title="来到了知识的荒漠，你的 XP 可能比较特殊"
+        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+      ></app-empty-state>
+    </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
