@@ -16,7 +16,6 @@ const { page, pageSize, pageCount, data, send, loading } = usePagination(
       order: formState.order,
     }),
   {
-    immediate: false,
     initialPage: 1,
     initialPageSize: 80,
     data: (res) => res.data.content,
