@@ -39,7 +39,7 @@ const slidesPerView = computed(() => {
   </div>
   <v-row v-else>
     <v-col v-for="item of data.data" :key="item.id" :cols="24">
-      <v-card :title="item.title" color="primary" variant="tonal">
+      <v-card :title="item.title" variant="text">
         <v-card-text>
           <swiper
             class="select-none"
@@ -54,7 +54,7 @@ const slidesPerView = computed(() => {
       </v-card>
     </v-col>
     <v-col :cols="24">
-      <v-card color="primary" variant="tonal">
+      <v-card variant="text">
         <v-card-item>
           <div class="flex items-center justify-between">
             <v-card-title>最新发布</v-card-title>
