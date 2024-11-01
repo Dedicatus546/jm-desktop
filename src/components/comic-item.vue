@@ -31,7 +31,7 @@ const appStore = useAppStore();
       />
       <v-card-item>
         <v-card-title>{{ comic.name }}</v-card-title>
-        <v-card-subtitle>{{ comic.name ?? "未知作者" }}</v-card-subtitle>
+        <v-card-subtitle>{{ comic.author ?? "未知作者" }}</v-card-subtitle>
       </v-card-item>
     </v-card>
   </router-link>
