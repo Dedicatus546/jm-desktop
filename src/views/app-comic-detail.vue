@@ -118,50 +118,52 @@ const toQuickQueryPage = (query: string) => {
                   :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
                 />
               </div>
-              <div class="flex flex-col flex-grow">
-                <div class="flex flex-col mb-4">
+              <div class="flex flex-col gap-4 flex-grow">
+                <div class="flex flex-col">
                   <div class="text-h5">{{ comicInfo.data.name }}</div>
                 </div>
                 <div>
-                  <v-row no-gutters class="gap-4">
+                  <v-row no-gutters class="gap-3">
                     <v-col
                       v-if="comicInfo.data.authorList.length > 0"
                       :cols="12"
                     >
-                      <div class="flex gap-1">
-                        <div>作者：</div>
+                      <div class="flex">
+                        <div class="text-nowrap">作者：</div>
                         <div class="flex flex-wrap gap-2">
                           <router-link
                             v-for="item of comicInfo.data.authorList"
                             :key="item"
                             :to="toQuickQueryPage(item)"
                           >
-                            <div class="font-bold">
+                            <span class="font-bold">
                               {{ item }}
-                            </div>
+                            </span>
                           </router-link>
                         </div>
                       </div>
                     </v-col>
                     <v-col :cols="12">
                       <div class="flex gap-1">
-                        <div>车牌：</div>
+                        <div class="text-nowrap">车牌：</div>
                         <div>
-                          <div class="font-bold">JM{{ comicInfo.data.id }}</div>
+                          <span class="font-bold">
+                            JM{{ comicInfo.data.id }}
+                          </span>
                         </div>
                       </div>
                     </v-col>
                     <v-col :cols="12">
-                      <div class="flex gap-1">
-                        <div>喜欢人数：</div>
-                        <div>
-                          <div>{{ comicInfo.data.likeCount }}人</div>
-                        </div>
+                      <div class="flex">
+                        <div class="text-nowrap">喜欢人数：</div>
+                        <div>{{ comicInfo.data.likeCount }}人</div>
                       </div>
                     </v-col>
                     <v-col v-if="comicInfo.data.tagList.length > 0" :cols="12">
                       <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px]">标签：</div>
+                        <div class="h-[30px] leading-[30px] text-nowrap">
+                          标签：
+                        </div>
                         <div class="flex flex-wrap gap-2">
                           <router-link
                             v-for="item of comicInfo.data.tagList"
@@ -175,7 +177,9 @@ const toQuickQueryPage = (query: string) => {
                     </v-col>
                     <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
                       <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px]">作品：</div>
+                        <div class="h-[30px] leading-[30px] text-nowrap">
+                          作品：
+                        </div>
                         <div class="flex flex-wrap gap-2">
                           <router-link
                             v-for="item of comicInfo.data.workList"
@@ -189,7 +193,9 @@ const toQuickQueryPage = (query: string) => {
                     </v-col>
                     <v-col v-if="comicInfo.data.roleList.length > 0" :cols="12">
                       <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px]">登场人物：</div>
+                        <div class="h-[30px] leading-[30px] text-nowrap">
+                          登场人物：
+                        </div>
                         <div class="flex flex-wrap gap-2">
                           <router-link
                             v-for="item of comicInfo.data.roleList"
