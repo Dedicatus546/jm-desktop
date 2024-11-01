@@ -12,8 +12,3 @@ export const getLoadedImage = async (src: string) => {
     img.src = src;
   });
 };
-
-export const getImageRadio = async (src: string) => {
-  const imgEl = await getLoadedImage(src);
-  return imgEl.naturalWidth / imgEl.naturalHeight;
-};

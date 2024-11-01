@@ -7,10 +7,9 @@ import useAppStore from "@/stores/use-app-store";
 const props = defineProps<{
   id: number;
 }>();
-const radio = ref<number>(0);
 const appStore = useAppStore();
 
-const { loading, data, send, onSuccess } = useRequest(
+const { loading, data, send } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
   {
     immediate: false,
@@ -19,11 +18,6 @@ const { loading, data, send, onSuccess } = useRequest(
     },
   },
 );
-
-provide("imageRadio", radio);
-onSuccess(() => {
-  radio.value = data.value.radio;
-});
 
 watchEffect(() => {
   send(props.id);

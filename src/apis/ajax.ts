@@ -2,7 +2,6 @@ import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
 
 import { BaseComic } from "@/type";
-import { getImageRadio } from "@/utils";
 
 import http from "./http";
 
@@ -1122,7 +1121,6 @@ export const getComicPicListApi = (
         const list = matches.filter((item) => item.includes(".webp"));
 
         return {
-          radio: await getImageRadio(list[0]),
           list,
         };
       },
