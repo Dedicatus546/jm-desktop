@@ -269,17 +269,17 @@ const toQuickQueryPage = (query: string) => {
                         </v-btn>
                       </v-col>
                       <v-col :cols="buttonCols">
-                    <app-comic-detail-download-button
-                      :comic="{
-                        id: comicInfo.data.id,
-                        name: comicInfo.data.name,
-                        author:
-                          comicInfo.data.authorList.length > 0
-                            ? comicInfo.data.authorList[0]
-                            : '',
-                      }"
-                      :is-download="comicInfo.data.isDownload"
-                    />
+                        <app-comic-detail-download-button
+                          :comic="{
+                            id: comicInfo.data.id,
+                            name: comicInfo.data.name,
+                            author:
+                              comicInfo.data.authorList.length > 0
+                                ? comicInfo.data.authorList[0]
+                                : '',
+                          }"
+                          :is-download="comicInfo.data.isDownload"
+                        />
                       </v-col>
                     </template>
                   </v-row>
