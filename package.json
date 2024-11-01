@@ -12,12 +12,12 @@
     "check": "vue-tsc",
     "build": "vue-tsc && vite build && electron-builder -p never",
     "preview": "vite preview",
-    "lint": "eslint --fix .",
+    "lint": "eslint --fix . --debug",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.0.9",
-    "@vueuse/core": "^11.1.0",
+    "@vueuse/core": "^11.2.0",
     "alova": "^3.1.1",
     "axios": "^1.7.7",
     "better-sqlite3": "^11.5.0",
@@ -46,7 +46,7 @@
     "@types/cors": "^2.8.17",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.8.4",
+    "@types/node": "^22.8.6",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
     "@vitejs/plugin-vue": "^5.1.4",
@@ -68,9 +68,9 @@
     "vite": "^5.4.10",
     "vite-plugin-electron": "^0.28.8",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "vite-plugin-vue-devtools": "^7.5.6",
+    "vite-plugin-vue-devtools": "^7.6.2",
     "vue-eslint-parser": "^9.4.3",
-    "vue-tsc": "^2.1.8"
+    "vue-tsc": "^2.1.10"
   },
   "main": "dist-electron/main.js",
   "packageManager": "pnpm@9.12.3"
