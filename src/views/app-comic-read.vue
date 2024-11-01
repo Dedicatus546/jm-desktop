@@ -36,7 +36,7 @@ watchEffect(() => {
   </div>
   <template v-else>
     <app-comic-scroll-read
-      v-if="appStore.config.mode === 'light'"
+      v-if="appStore.config.readMode === 1"
       :pic-list="data.list"
       :comic-id="id"
     />
