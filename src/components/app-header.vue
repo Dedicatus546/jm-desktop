@@ -42,7 +42,7 @@ const { invoke: cancelAutoLogin } = useIpcRendererInvoke(
   },
 );
 
-// TODO migrate
+// TODO migrate mode change
 const onModeChange = (mode: any) => {
   appStore.updateConfigAction({ mode });
   invoke(mode);

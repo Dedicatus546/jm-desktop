@@ -4,6 +4,7 @@ import { useRequest } from "alova/client";
 import { loginApi, updateConfigIpc } from "@/apis";
 import useDecodeUserInfo from "@/compositions/use-decode-user-info";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import useSnackbar from "@/compositions/use-snack-bar";
 import useUserStore from "@/stores/use-user-store";
 
 const router = useRouter();
@@ -34,12 +35,10 @@ const { invoke } = useIpcRendererInvoke(
   },
 );
 
+const snackbar = useSnackbar();
+
 onSuccess(() => {
-  // TODO migrate
-  // notification.info({
-  //   message: "登录",
-  //   description: "登录成功",
-  // });
+  snackbar.primary("登录成功");
   userStore.updateUserInfoAction(data.value.data);
   if (formState.autoLogin) {
     const encryptStr = encrypt({
@@ -52,11 +51,7 @@ onSuccess(() => {
 });
 
 onError((e) => {
-  // TODO migrate
-  // notification.error({
-  //   message: "登录",
-  //   description: (e.error as Error).message,
-  // });
+  snackbar.error((e.error as Error).message);
 });
 </script>
 

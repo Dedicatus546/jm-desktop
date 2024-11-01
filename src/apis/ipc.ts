@@ -1,4 +1,4 @@
-import { BaseComic, Config } from "@/type";
+import { BaseComic, Config } from "@/types/base";
 
 const invoke = <T>(name: string, ...args: any) => {
   return ipcRenderer.invoke(name, ...args) as Promise<T>;

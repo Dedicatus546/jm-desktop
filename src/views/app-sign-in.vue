@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { VCalendar } from "vuetify/labs/VCalendar";
 
 import { getSignInDataApi, signInApi } from "@/apis";
+import useSnackbar from "@/compositions/use-snack-bar";
 import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
@@ -80,12 +81,9 @@ const {
     immediate: false,
   },
 );
+const snackbar = useSnackbar();
 onSuccess(() => {
-  // TODO migrate
-  // notification.success({
-  //   message: "签到",
-  //   description: "签到成功，" + signInData.value.data.msg,
-  // });
+  snackbar.primary(signInData.value.data.msg);
   send();
 });
 </script>

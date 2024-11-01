@@ -2,6 +2,7 @@
 import { usePagination, useRequest } from "alova/client";
 
 import { commentComicApi, getComicCommentListApi } from "@/apis";
+import useSnackbar from "@/compositions/use-snack-bar";
 import useUserStore from "@/stores/use-user-store";
 
 const props = defineProps<{
@@ -44,13 +45,10 @@ const {
     immediate: false,
   },
 );
+const snackbar = useSnackbar();
 
 onSuccess(() => {
-  // TODO migrate
-  // notification.success({
-  //   message: "评论",
-  //   description: commentData.value.data.msg,
-  // });
+  snackbar.success(commentData.value.data.msg);
   refresh(1, 0);
 });
 </script>

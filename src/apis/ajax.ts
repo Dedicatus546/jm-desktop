@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
 
-import { BaseComic } from "@/type";
+import { BaseComic } from "@/types";
 
 import http from "./http";
 
@@ -1096,36 +1096,33 @@ export const getComicPicListApi = (
   comicId: number,
   shuntKey: number | undefined,
 ) => {
-  return http.Get<{ radio: number; list: string[] }, string>(
-    "chapter_view_template",
-    {
-      params: {
-        id: comicId,
-        mode: "vertical",
-        page: 0,
-        app_img_shunt: shuntKey,
-        express: "off",
-        v: Date.now(),
-        // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
-      },
-      async transform(htmlStr) {
-        // 正则解析
-        const regex = /data-original="(.*)"/g;
-        const matches = [];
-        let match;
-
-        while ((match = regex.exec(htmlStr)) !== null) {
-          matches.push(match[1]);
-        }
-
-        const list = matches.filter((item) => item.includes(".webp"));
-
-        return {
-          list,
-        };
-      },
+  return http.Get<{ list: string[] }, string>("chapter_view_template", {
+    params: {
+      id: comicId,
+      mode: "vertical",
+      page: 0,
+      app_img_shunt: shuntKey,
+      express: "off",
+      v: Date.now(),
+      // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
-  );
+    async transform(htmlStr) {
+      // 正则解析
+      const regex = /data-original="(.*)"/g;
+      const matches = [];
+      let match;
+
+      while ((match = regex.exec(htmlStr)) !== null) {
+        matches.push(match[1]);
+      }
+
+      const list = matches.filter((item) => item.includes(".webp"));
+
+      return {
+        list,
+      };
+    },
+  });
   // .then(() => {
   //   return [
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00001.webp",

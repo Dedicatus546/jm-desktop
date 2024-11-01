@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getConfigIpc, updateConfigIpc } from "@/apis";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import useSnackbar from "@/compositions/use-snack-bar";
 import useAppStore from "@/stores/use-app-store";
 
 const appStore = useAppStore();
@@ -34,9 +35,10 @@ const { loading: saveConfigLoading, invoke: saveConfig } =
     },
   );
 
+const snackbar = useSnackbar();
 const submit = async () => {
   await saveConfig();
-  // TODO migrate notification
+  snackbar.success("更新成功");
   invoke();
 };
 </script>
