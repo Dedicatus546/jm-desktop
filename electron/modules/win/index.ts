@@ -107,11 +107,11 @@ export class WinService {
     const { width, height } = display.size;
     this.loggerService.info(`主显示器大小 ${width}x${height}`);
 
-    const minWidth = width * 0.5;
-    const minHeight = height * 0.5;
+    const minWidth = Math.round(width * 0.5);
+    const minHeight = Math.round(height * 0.5);
 
-    const initWidth = width * 0.7;
-    const initHeight = height * 0.8;
+    const initWidth = Math.round(width * 0.7);
+    const initHeight = Math.round(height * 0.8);
 
     const r: {
       minWidth: number;
