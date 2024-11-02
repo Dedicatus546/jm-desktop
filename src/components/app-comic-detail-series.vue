@@ -18,8 +18,7 @@ defineProps<{
       :md="3"
       :lg="2"
     >
-      <!-- TODO migrate -->
-      <router-link :to="{ name: 'HOME', params: { id: item.id } }" custom>
+      <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
         <template #default="{ navigate }">
           <v-btn
             size="large"
