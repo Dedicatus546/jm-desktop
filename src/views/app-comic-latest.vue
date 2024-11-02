@@ -4,7 +4,7 @@ import { usePagination } from "alova/client";
 import { getLatestComicListApi } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
-const { loading, pageSize, data } = usePagination(
+const { loading, data, page } = usePagination(
   (page) => getLatestComicListApi(page),
   {
     preloadPreviousPage: false,
@@ -25,7 +25,7 @@ const { loading, pageSize, data } = usePagination(
     <v-card-text>
       <v-data-iterator
         :items="data"
-        :items-per-page="pageSize"
+        :items-per-page="data.length"
         :loading="loading"
       >
         <template #loader>
@@ -49,7 +49,15 @@ const { loading, pageSize, data } = usePagination(
           </v-row>
         </template>
         <template #footer>
-          <v-btn block color="primary" class="mt-4" size="large">
+          <v-btn
+            v-if="data.length > 0"
+            :loading="loading"
+            block
+            color="primary"
+            class="mt-4"
+            size="large"
+            @click="page++"
+          >
             查看更多
           </v-btn>
         </template>
