@@ -29,10 +29,20 @@ jobs:
       - name: Install pnpm
         run: corepack prepare pnpm@latest --activate
       
-      - name: Cache pnpm
+      - name: Cache Linux pnpm
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+      
+      - name: Cache Windows pnpm
+        if: matrix.os == 'windows-latest'
+        uses: actions/cache@v4
+        with:
+          path: D:\.pnpm-store
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-
