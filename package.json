@@ -12,7 +12,7 @@
     "check": "vue-tsc",
     "build": "vue-tsc && vite build && electron-builder -p never",
     "preview": "vite preview",
-    "lint": "eslint --fix . --debug",
+    "lint": "eslint --fix .",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
