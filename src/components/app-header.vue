@@ -45,7 +45,7 @@ const { invoke: cancelAutoLogin } = useIpcRendererInvoke(
   },
 );
 
-const onModeChange = (mode: "dark" | "light") => {
+const changeMode = (mode: "dark" | "light") => {
   appStore.updateConfigAction({ mode });
   invoke(mode);
   theme.global.name.value = mode;
@@ -59,7 +59,7 @@ const logout = () => {
 </script>
 
 <template>
-  <v-app-bar class="app-region-drag">
+  <v-app-bar color="primary" class="app-region-drag">
     <v-app-bar-title>
       <img
         src="@/assets/logo.png"
@@ -70,21 +70,17 @@ const logout = () => {
     </v-app-bar-title>
     <template #append>
       <div class="app-region-nodrag">
-        <v-btn-toggle
-          :model-value="appStore.config.mode"
-          @update:model-value="onModeChange"
-        >
-          <v-btn size="small" value="light">
-            <v-icon color="orange" icon="mdi-weather-sunny"></v-icon>
-          </v-btn>
-          <v-btn size="small" value="dark">
-            <v-icon color="blue" icon="mdi-weather-night"></v-icon>
-          </v-btn>
-        </v-btn-toggle>
         <app-header-icon-btn
           tooltip-text="返回"
           icon="mdi-arrow-u-left-top"
           @click="router.back()"
+        />
+        <app-header-icon-btn
+          :tooltip-text="`切换${appStore.config.mode === 'dark' ? '日间模式' : '夜间模式'}`"
+          icon="mdi-swap-horizontal"
+          @click="
+            changeMode(appStore.config.mode === 'dark' ? 'light' : 'dark')
+          "
         />
         <app-header-icon-btn
           tooltip-text="每月签到"
