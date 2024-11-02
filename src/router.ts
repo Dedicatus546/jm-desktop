@@ -80,11 +80,11 @@ const routes: RouteRecordRaw[] = [
         }),
         component: AppComicRead,
       },
-      // {
-      //   path: "download",
-      //   name: "DOWNLOAD",
-      //   component: AppDownload,
-      // },
+      {
+        path: "download",
+        name: "DOWNLOAD",
+        component: AppDownload,
+      },
       {
         path: "sign-in",
         name: "SIGN_IN",

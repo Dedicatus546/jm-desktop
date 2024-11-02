@@ -47,7 +47,7 @@ const slidesPerView = computed(() => {
             :space-between="16"
           >
             <swiper-slide v-for="subItem of item.list" :key="subItem.id">
-              <comic-item :comic="subItem" />
+              <comic-route-item :comic="subItem" />
             </swiper-slide>
           </swiper>
         </v-card-text>
@@ -75,7 +75,7 @@ const slidesPerView = computed(() => {
               :md="3"
               :lg="2"
             >
-              <comic-item :comic="item" />
+              <comic-route-item :comic="item" />
             </v-col>
           </v-row>
         </v-card-text>

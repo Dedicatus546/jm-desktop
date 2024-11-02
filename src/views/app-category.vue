@@ -192,7 +192,7 @@ onSuccess(() => {});
           <v-row>
             <template v-for="item of items" :key="item.raw.id">
               <v-col cols="6" :sm="4" :md="3" :lg="2">
-                <comic-item :comic="item.raw" />
+                <comic-route-item :comic="item.raw" />
               </v-col>
             </template>
           </v-row>

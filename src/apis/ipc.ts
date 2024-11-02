@@ -16,6 +16,10 @@ export const openLinkIpc = (link: string) => {
   return ipcRenderer.send("app/openLink", link);
 };
 
+export const openPathIpc = (path: string) => {
+  return ipcRenderer.send("app/openFile", path);
+};
+
 const logIpc = (level: "info" | "error", msg: string) => {
   return ipcRenderer.send(`logger/${level}`, msg);
 };

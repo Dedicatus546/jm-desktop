@@ -45,6 +45,9 @@ export class WinService {
         })
         .on("app/openLink", (_v, link: string) => {
           shell.openExternal(link);
+        })
+        .on("app/openFile", (_v, path: string) => {
+          shell.openPath(path);
         });
       ipcMain.handle("app/selectFolder", async () => {
         const result = await dialog.showOpenDialog(this.win!, {

@@ -12,3 +12,7 @@ export const getLoadedImage = async (src: string) => {
     img.src = src;
   });
 };
+
+export const resolveDownloadFileName = (comicId: number, name: string) => {
+  return `[JM${comicId}] ${name}.zip`;
+};
