@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ComponentPublicInstance } from "vue";
+import { ComponentPublicInstance } from "vue";
 
 import useInitApp from "./compositions/use-init-app";
 import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
