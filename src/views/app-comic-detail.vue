@@ -112,11 +112,13 @@ const toQuickQueryPage = (query: string) => {
           <v-card-text>
             <div class="flex gap-4">
               <div class="w-1/4 max-w-[300px] min-w-[200px] flex-shrink-0">
-                <v-img
-                  :aspect-ratio="3 / 4"
-                  alt=""
-                  :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
-                />
+                <v-card variant="text">
+                  <v-img
+                    :aspect-ratio="3 / 4"
+                    alt=""
+                    :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
+                  />
+                </v-card>
               </div>
               <div class="flex flex-col gap-4 flex-grow">
                 <div class="flex flex-col">

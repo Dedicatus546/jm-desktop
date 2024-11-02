@@ -19,8 +19,8 @@ useRecoveryScrollPosition(scrollView);
           class="w-full h-full flex items-center justify-center"
         >
           <div v-if="loading" class="flex flex-col items-center gap-4">
-            <!-- <a-spin size="large" /> -->
-            {{ currentStatus }}
+            <v-progress-circular indeterminate></v-progress-circular>
+            <span>{{ currentStatus }}</span>
           </div>
           <div v-if="error" class="flex flex-col items-center gap-4">
             {{ error }}
