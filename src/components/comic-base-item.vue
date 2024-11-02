@@ -15,7 +15,7 @@ const appStore = useAppStore();
 <template>
   <v-card color="primary">
     <v-img
-      cover
+      :aspect-ratio="3 / 4"
       class="block aspect-[3/4]"
       :alt="`${comic.name}的封面`"
       :src="`${appStore.setting.imgHost}/media/albums/${comic.id}_3x4.jpg`"
