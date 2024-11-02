@@ -20,82 +20,83 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     redirect: "/home",
-    children: [
-      {
-        path: "home",
-        name: "HOME",
-        component: AppHome,
-      },
-      {
-        path: "search",
-        name: "SEARCH",
-        component: AppSearch,
-      },
-      {
-        path: "quick-search",
-        name: "QUICK_SEARCH",
-        props: (to) => ({
-          query: to.query.query as string,
-        }),
-        component: AppQuickSearch,
-      },
-      {
-        path: "category",
-        name: "CATEGORY",
-        component: AppCategory,
-      },
-      {
-        path: "week",
-        name: "WEEK",
-        component: AppWeek,
-      },
-      {
-        path: "person",
-        name: "PERSON",
-        component: AppPerson,
-      },
-      {
-        path: "login",
-        name: "LOGIN",
-        component: AppLogin,
-      },
-      {
-        path: "config",
-        name: "CONFIG",
-        component: AppConfig,
-      },
-      {
-        path: "comic-detail/:id(\\d+)",
-        name: "COMIC_DETAIL",
-        props: (to) => ({
-          id: Number.parseInt(to.params.id as string),
-        }),
-        component: AppComicDetail,
-      },
-      {
-        path: "comic-read/:id(\\d+)",
-        name: "COMIC_READ",
-        props: (to) => ({
-          id: Number.parseInt(to.params.id as string),
-        }),
-        component: AppComicRead,
-      },
-      {
-        path: "download",
-        name: "DOWNLOAD",
-        component: AppDownload,
-      },
-      {
-        path: "sign-in",
-        name: "SIGN_IN",
-        component: AppSignIn,
-      },
-      {
-        path: "comic-latest",
-        name: "COMIC_LATEST",
-        component: AppComicLatest,
-      },
-    ],
+  },
+  {
+    path: "/home",
+    name: "HOME",
+    component: AppHome,
+  },
+  {
+    path: "/search",
+    name: "SEARCH",
+    component: AppSearch,
+  },
+  {
+    path: "/quick-search",
+    name: "QUICK_SEARCH",
+    props: (to) => ({
+      query: to.query.query as string,
+    }),
+    component: AppQuickSearch,
+  },
+  {
+    path: "/category",
+    name: "CATEGORY",
+    component: AppCategory,
+  },
+  {
+    path: "/week",
+    name: "WEEK",
+    component: AppWeek,
+  },
+  {
+    path: "/person",
+    name: "PERSON",
+    component: AppPerson,
+  },
+  {
+    path: "/login",
+    name: "LOGIN",
+    component: AppLogin,
+  },
+  {
+    path: "/config",
+    name: "CONFIG",
+    component: AppConfig,
+  },
+  {
+    path: "/comic-detail/:id(\\d+)",
+    name: "COMIC_DETAIL",
+    props: (route) => {
+      // 这里会触发警告
+      return {
+        id: Number.parseInt(route.params.id as string),
+      };
+    },
+    component: AppComicDetail,
+  },
+  {
+    path: "/comic-read/:id(\\d+)",
+    name: "COMIC_READ",
+    props: (route) => ({
+      id: Number.parseInt(route.params.id as string),
+    }),
+    component: AppComicRead,
+  },
+  {
+    path: "/download",
+    name: "DOWNLOAD",
+    component: AppDownload,
+  },
+  {
+    path: "/sign-in",
+    name: "SIGN_IN",
+    component: AppSignIn,
+  },
+  {
+    path: "/comic-latest",
+    name: "COMIC_LATEST",
+    component: AppComicLatest,
   },
 ];
 
