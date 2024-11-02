@@ -67,12 +67,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/comic-detail/:id(\\d+)",
     name: "COMIC_DETAIL",
-    props: (route) => {
-      // 这里会触发警告
-      return {
-        id: Number.parseInt(route.params.id as string),
-      };
-    },
+    props: (route) => ({
+      id: Number.parseInt(route.params.id as string),
+    }),
     component: AppComicDetail,
   },
   {
