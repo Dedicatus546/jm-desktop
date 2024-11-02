@@ -56,7 +56,7 @@ importers:
       tsyringe:
         specifier: ^4.8.0
         version: 4.8.0
-      typeface-noto-sans-sc:
+      typeface-roboto:
         specifier: ^1.1.13
         version: 1.1.13
       vue:
@@ -3441,8 +3441,8 @@ packages:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
 
-  typeface-noto-sans-sc@1.1.13:
-    resolution: {integrity: sha512-GlaLxWnnLgOSb9ytzULVitbzocwc05fyEgagX/95fkfb2ROWuHtMS9S3HpCqafhdjVUOA1HlMlRWRRg7M5HVig==}
+  typeface-roboto@1.1.13:
+    resolution: {integrity: sha512-YXvbd3a1QTREoD+FJoEkl0VQNJoEjewR2H11IjVv4bp6ahuIcw0yyw/3udC4vJkHw3T3cUh85FTg8eWef3pSaw==}
 
   typescript@5.6.3:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
@@ -7391,7 +7391,7 @@ snapshots:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
-  typeface-noto-sans-sc@1.1.13: {}
+  typeface-roboto@1.1.13: {}
 
   typescript@5.6.3: {}
 
