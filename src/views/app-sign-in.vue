@@ -93,7 +93,7 @@ onSuccess(() => {
     <v-card-text>
       <v-calendar
         ref="calendar"
-        v-model:model-value="value"
+        :model-value="value"
         class="signCalendar"
         :events="events"
       >
