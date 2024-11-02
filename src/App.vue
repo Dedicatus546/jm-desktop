@@ -5,8 +5,8 @@ import useInitApp from "./compositions/use-init-app";
 import useRecoveryScrollPosition from "./compositions/use-recovery-scroll-position";
 
 const { loading, error, currentStatus, init: reInit } = useInitApp();
-const scrollView = ref<ComponentPublicInstance | null>(null);
-useRecoveryScrollPosition(scrollView);
+const scrollViewRef = ref<ComponentPublicInstance | null>(null);
+useRecoveryScrollPosition(scrollViewRef);
 </script>
 
 <template>
@@ -31,6 +31,8 @@ useRecoveryScrollPosition(scrollView);
           <app-header />
           <v-main>
             <v-container
+              id="scroll-view"
+              ref="scrollViewRef"
               fluid
               style="height: calc(100vh - var(--v-layout-top, 0px))"
               class="w-full h-full overflow-y-auto relative"
