@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useTheme } from "vuetify";
+
 import {
   closeWinIpc,
   minimizeWinIpc,
@@ -13,6 +15,7 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
+const theme = useTheme();
 
 onKeyStroke(
   "Escape",
@@ -42,10 +45,10 @@ const { invoke: cancelAutoLogin } = useIpcRendererInvoke(
   },
 );
 
-// TODO migrate mode change
-const onModeChange = (mode: any) => {
+const onModeChange = (mode: "dark" | "light") => {
   appStore.updateConfigAction({ mode });
   invoke(mode);
+  theme.global.name.value = mode;
 };
 
 const logout = () => {
@@ -67,6 +70,17 @@ const logout = () => {
     </v-app-bar-title>
     <template #append>
       <div class="app-region-nodrag">
+        <v-btn-toggle
+          :model-value="appStore.config.mode"
+          @update:model-value="onModeChange"
+        >
+          <v-btn size="small" value="light">
+            <v-icon color="orange" icon="mdi-weather-sunny"></v-icon>
+          </v-btn>
+          <v-btn size="small" value="dark">
+            <v-icon color="blue" icon="mdi-weather-night"></v-icon>
+          </v-btn>
+        </v-btn-toggle>
         <app-header-icon-btn
           tooltip-text="返回"
           icon="mdi-arrow-u-left-top"

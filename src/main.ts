@@ -15,6 +15,25 @@ import router from "./router";
 import pinia from "./store";
 
 const vuetify = createVuetify({
+  theme: {
+    defaultTheme: "light",
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          primary: "#ff9800",
+          "on-primary": "#ffffff",
+        },
+      },
+      dark: {
+        dark: true,
+        colors: {
+          primary: "#633b00",
+          "on-primary": "#ffffff",
+        },
+      },
+    },
+  },
   directives: {
     Intersect,
   },
