@@ -39,21 +39,15 @@ jobs:
 
       - name: Build Electron App
         run: pnpm run build
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
       
-      - name: Upload Artifacts
+      - name: Upload Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v3
         with:
           name: linux-release-assets-${{ github.sha }}
           path: release/*/jm-desktop-Linux-*.AppImage
   
-      - name: Upload Artifacts
+      - name: Upload Windows Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v3
         with:
