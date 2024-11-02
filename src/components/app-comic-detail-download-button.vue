@@ -74,13 +74,6 @@ const {
   },
 );
 
-watchEffect(() => {
-  downloadStore.updateDonwloadProgressAction(
-    props.comic.id,
-    downloading.value.loaded,
-  );
-});
-
 const download = async () => {
   try {
     await getComicDownloadInfo();
@@ -88,6 +81,10 @@ const download = async () => {
       ...props.comic,
       total: comicDownloadInfo.value.data.fileSize,
     });
+    downloadStore.updateDonwloadProgressAction(
+      props.comic.id,
+      computed(() => downloading.value.loaded),
+    );
     await downloadComic({
       md5: comicDownloadInfo.value.data.md5,
       expires: comicDownloadInfo.value.data.expires,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useAppStore from "@/stores/use-app-store";
 
-defineProps<{
+const props = defineProps<{
   comic: {
     id: number;
     name: string;
@@ -10,6 +10,12 @@ defineProps<{
     loaded: number;
   };
 }>();
+
+const progress = computed(() =>
+  props.comic.total === 0
+    ? 0
+    : +((props.comic.loaded / props.comic.total) * 100).toFixed(0),
+);
 
 const appStore = useAppStore();
 </script>
@@ -27,13 +33,7 @@ const appStore = useAppStore();
       <v-card-subtitle>{{ comic.author ?? "未知作者" }}</v-card-subtitle>
     </v-card-item>
     <v-card-text>
-      <v-progress-linear
-        :model-value="
-          comic.total === 0
-            ? 0
-            : +((comic.loaded / comic.total) * 100).toFixed(0)
-        "
-      ></v-progress-linear>
+      <v-progress-linear :model-value="progress"></v-progress-linear>
     </v-card-text>
   </v-card>
 </template>
