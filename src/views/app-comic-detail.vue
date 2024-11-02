@@ -3,12 +3,14 @@ import { breakpointsAntDesign } from "@vueuse/core";
 import { useRequest } from "alova/client";
 
 import { collectComicApi, getComicDetailApi, likeComicApi } from "@/apis";
+import useSnackbar from "@/compositions/use-snack-bar";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 
 const props = defineProps<{
   id: number;
 }>();
+const snackbar = useSnackbar();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const breakpoints = useBreakpoints(breakpointsAntDesign);
@@ -80,19 +82,33 @@ const currentSeriesName = computed(() => {
   return "阅读";
 });
 
-const { loading: likeComicLoading, send: likeComic } = useRequest(
-  () => likeComicApi(props.id),
-  {
-    immediate: false,
-  },
-);
+const {
+  loading: likeComicLoading,
+  send: likeComic,
+  onSuccess: likeComicOnSuccess,
+  data: likeComicData,
+} = useRequest(() => likeComicApi(props.id), {
+  immediate: false,
+});
 
-const { loading: collectComicLoading, send: collectComic } = useRequest(
-  () => collectComicApi(props.id),
-  {
-    immediate: false,
-  },
-);
+likeComicOnSuccess(() => {
+  comicInfo.value.data.isLike = true;
+  snackbar.primary(likeComicData.value.data.msg);
+});
+
+const {
+  loading: collectComicLoading,
+  send: collectComic,
+  onSuccess: collectComicSuccess,
+  data: collectComicData,
+} = useRequest(() => collectComicApi(props.id), {
+  immediate: false,
+});
+
+collectComicSuccess(() => {
+  comicInfo.value.data.isCollect = true;
+  snackbar.primary(collectComicData.value.data.msg);
+});
 
 const toQuickQueryPage = (query: string) => {
   return { name: "QUICK_SEARCH", query: { query } };
@@ -245,6 +261,7 @@ const toQuickQueryPage = (query: string) => {
                           :loading="likeComicLoading"
                           size="large"
                           block
+                          :disabled="comicInfo.data.isLike"
                           @click="likeComic()"
                         >
                           <template #prepend>
