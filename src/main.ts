@@ -1,6 +1,6 @@
 import "@mdi/font/css/materialdesignicons.css";
 import "swiper/swiper-bundle.css";
-import "typeface-noto-sans-sc";
+import "typeface-roboto";
 import "vuetify/styles";
 import "virtual:uno.css";
 import "./style.css";

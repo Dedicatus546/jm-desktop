@@ -1,7 +1,7 @@
 html,
 body {
   overflow: hidden;
-  font-family:
+  /* font-family:
     "Noto Sans SC",
     -apple-system,
     BlinkMacSystemFont,
@@ -14,7 +14,7 @@ body {
     "Apple Color Emoji",
     "Segoe UI Emoji",
     "Segoe UI Symbol",
-    "Noto Color Emoji";
+    "Noto Color Emoji"; */
 }
 
 a {
