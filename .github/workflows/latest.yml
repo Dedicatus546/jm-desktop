@@ -44,9 +44,6 @@ jobs:
           restore-keys: |
             pnpm-${{ runner.os }}-
 
-      - name: output cache path
-        run: pnpm store path
-
       - name: Install Dependencies
         run: pnpm install
 
