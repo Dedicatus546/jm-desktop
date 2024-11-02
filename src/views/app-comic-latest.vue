@@ -2,6 +2,7 @@
 import { usePagination } from "alova/client";
 
 import { getLatestComicListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
 const { loading, pageSize, data } = usePagination(
   (page) => getLatestComicListApi(page),
@@ -35,7 +36,7 @@ const { loading, pageSize, data } = usePagination(
         <template #no-data>
           <app-empty-state
             title="出现这个就大概率是出 BUG 了，请提 issue"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+            :image="EMPTY_STATE_IMG"
           ></app-empty-state>
         </template>
         <template #default="{ items }">

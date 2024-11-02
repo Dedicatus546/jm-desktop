@@ -2,6 +2,7 @@
 import { usePagination } from "alova/client";
 
 import { getHistoryComicListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/6.jpg";
 
 const formState = reactive({
   type: "mr",
@@ -60,8 +61,8 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
     </template>
     <template #no-data>
       <app-empty-state
-        title="一本都没看过，你是来刷首页的吗"
-        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+        title="一本都没看过，你是看封面就完事的吗"
+        :image="EMPTY_STATE_IMG"
       ></app-empty-state>
     </template>
     <template #default="{ items }">

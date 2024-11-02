@@ -2,6 +2,7 @@
 import { usePagination } from "alova/client";
 
 import { getUserCommentListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
 import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
@@ -26,7 +27,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
     <template #no-data>
       <app-empty-state
         title="看来不是很喜欢评论"
-        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+        :image="EMPTY_STATE_IMG"
       ></app-empty-state>
     </template>
     <template #default="{ items }">

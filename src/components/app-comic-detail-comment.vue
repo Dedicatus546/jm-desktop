@@ -2,6 +2,7 @@
 import { usePagination, useRequest } from "alova/client";
 
 import { commentComicApi, getComicCommentListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
 import useSnackbar from "@/compositions/use-snack-bar";
 import useUserStore from "@/stores/use-user-store";
 
@@ -88,7 +89,7 @@ onSuccess(() => {
     <template #no-data>
       <app-empty-state
         title="这看起来是一部没人评价过的本子"
-        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+        :image="EMPTY_STATE_IMG"
       ></app-empty-state>
     </template>
     <template #default="{ items }">

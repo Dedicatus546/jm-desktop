@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getDownloadComicListIpc } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 
 const pagination = reactive({
@@ -36,8 +37,8 @@ const onPageChange = (page: number) => {
         </template>
         <template #no-data>
           <app-empty-state
-            title="不下载下一次又得找了"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+            title="一本都不下载，下一次干活又得找了"
+            :image="EMPTY_STATE_IMG"
           ></app-empty-state>
         </template>
         <template #default="{ items }">

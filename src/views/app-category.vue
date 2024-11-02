@@ -2,6 +2,7 @@
 import { usePagination, useRequest } from "alova/client";
 
 import { getCategoryFilterListApi, getCategoryListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
 const formState = reactive({
   order: "",
@@ -185,7 +186,7 @@ onSuccess(() => {});
         <template #no-data>
           <app-empty-state
             title="出现这个就大概率是出 BUG 了，请提 issue"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+            :image="EMPTY_STATE_IMG"
           ></app-empty-state>
         </template>
         <template #default="{ items }">

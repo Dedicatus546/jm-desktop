@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+
 defineProps<{
   relateList: Array<any>;
 }>();
@@ -7,10 +9,9 @@ defineProps<{
 <template>
   <v-data-iterator :items="relateList" :items-per-page="100">
     <template #no-data>
-      <!-- TODO title -->
       <app-empty-state
-        title="TODO"
-        image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+        title="一个相关都没有的小众宝藏本子"
+        :image="EMPTY_STATE_IMG"
       ></app-empty-state>
     </template>
     <template #default="{ items }">
