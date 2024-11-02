@@ -286,7 +286,7 @@ const toQuickQueryPage = (query: string) => {
                             <v-icon
                               icon="mdi-book-heart"
                               :color="
-                                comicInfo.data.isCollect ? 'orange' : undefined
+                                comicInfo.data.isCollect ? '#834e00' : undefined
                               "
                             ></v-icon>
                           </template>
