@@ -2,13 +2,14 @@
 import { usePagination } from "alova/client";
 
 import { getComicListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 
 const formState = reactive({
   content: "",
   order: "mr",
 });
 
-const { page, total, data, send, loading } = usePagination(
+const { page, pageSize, pageCount, data, send, loading } = usePagination(
   (page) =>
     getComicListApi({
       page,
@@ -16,7 +17,8 @@ const { page, total, data, send, loading } = usePagination(
       order: formState.order,
     }),
   {
-    immediate: false,
+    initialPage: 1,
+    initialPageSize: 80,
     data: (res) => res.data.content,
     total: (res) => res.data.total,
     watchingStates: [() => formState.order],
@@ -25,59 +27,83 @@ const { page, total, data, send, loading } = usePagination(
 </script>
 
 <template>
-  <a-row :gutter="[16, 16]">
-    <a-col :span="24">
-      <a-input-search
-        v-model:value="formState.content"
-        size="large"
-        placeholder="车牌号，名称，作者"
-        enter-button="搜索"
-        :disabled="loading"
-        @search="send(1, 0)"
+  <v-card>
+    <v-card-text>
+      <v-data-iterator
+        :items="data"
+        :items-per-page="pageSize"
+        :loading="loading"
       >
-        <template #addonBefore>
-          <a-select
-            v-model:value="formState.order"
-            size="large"
-            class="w-[140px]"
-          >
-            <a-select-option value="mr">最新</a-select-option>
-            <a-select-option value="mv">最多收藏</a-select-option>
-            <a-select-option value="mp">最多图片</a-select-option>
-            <a-select-option value="tf">最多爱心</a-select-option>
-          </a-select>
+        <template #loader>
+          <div class="h-[30vh] flex items-center justify-center">
+            <v-progress-circular indeterminate></v-progress-circular>
+          </div>
         </template>
-      </a-input-search>
-    </a-col>
-    <a-col :span="24">
-      <a-card>
-        <a-spin :spinning="loading">
-          <a-row v-if="total" :gutter="[16, 16]">
-            <a-col v-for="item of data" :key="item.id" :sm="8" :xl="6" :xxl="4">
-              <comic-item :comic="item" />
-            </a-col>
-            <a-col :span="24">
-              <a-pagination
-                v-model:current="page"
-                align="right"
-                :page-size="80"
-                :total="total"
-                show-quick-jumper
-                :show-size-changer="false"
-              />
-            </a-col>
-          </a-row>
-          <a-col v-else :span="24">
-            <a-empty>
-              <a-typography-text type="secondary">
-                使用上面的搜索框来搜索作品
-              </a-typography-text>
-            </a-empty>
-          </a-col>
-        </a-spin>
-      </a-card>
-    </a-col>
-  </a-row>
+        <template #header>
+          <div class="flex mb-2">
+            <div class="w-[200px]">
+              <v-select
+                v-model:model-value="formState.order"
+                hide-details
+                :items="[
+                  {
+                    title: '最新',
+                    value: 'mr',
+                  },
+                  {
+                    title: '最多收藏',
+                    value: 'mv',
+                  },
+                  {
+                    title: '最多图片',
+                    value: 'mp',
+                  },
+                  {
+                    title: '最多爱心',
+                    value: 'tf',
+                  },
+                ]"
+              ></v-select>
+            </div>
+            <div class="flex-grow">
+              <v-text-field
+                v-model:model-value="formState.content"
+                placeholder="车牌号，名称，作者"
+              >
+                <template #append>
+                  <v-btn
+                    variant="text"
+                    icon="mdi-magnify"
+                    @click="send(1, 80)"
+                  />
+                </template>
+              </v-text-field>
+            </div>
+          </div>
+        </template>
+        <template #no-data>
+          <app-empty-state
+            title="来到了知识的荒漠，你的 XP 可能比较特殊"
+            :image="EMPTY_STATE_IMG"
+          ></app-empty-state>
+        </template>
+        <template #default="{ items }">
+          <v-row>
+            <template v-for="item of items" :key="item.raw.id">
+              <v-col cols="6" :sm="4" :md="3" :lg="2">
+                <comic-route-item :comic="item.raw" />
+              </v-col>
+            </template>
+          </v-row>
+        </template>
+        <template #footer>
+          <div class="flex justify-end mt-4">
+            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+          </div>
+        </template>
+      </v-data-iterator>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped></style>

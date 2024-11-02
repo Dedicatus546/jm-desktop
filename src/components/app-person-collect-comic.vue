@@ -2,12 +2,13 @@
 import { usePagination } from "alova/client";
 
 import { getCollectComicListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/5.jpg";
 
 const formState = reactive({
   type: "mr",
 });
 
-const { page, total, loading, data } = usePagination(
+const { page, pageCount, pageSize, loading, data } = usePagination(
   (page) =>
     getCollectComicListApi({
       page,
@@ -15,6 +16,7 @@ const { page, total, loading, data } = usePagination(
     }),
   {
     initialPage: 1,
+    initialPageSize: 20,
     data: (res) => res.data.list,
     total: (res) => res.data.total,
     watchingStates: [() => formState.type],
@@ -23,36 +25,61 @@ const { page, total, loading, data } = usePagination(
 </script>
 
 <template>
-  <a-spin :spinning="loading">
-    <a-row :gutter="[16, 16]">
-      <a-col :span="24">
-        <a-flex justify="end">
-          <a-select
-            v-model:value="formState.type"
-            size="large"
-            class="w-[140px]"
-          >
-            <a-select-option value="mr">最新</a-select-option>
-            <a-select-option value="mv">最多收藏</a-select-option>
-            <a-select-option value="mp">最多图片</a-select-option>
-            <a-select-option value="tf">最多爱心</a-select-option>
-          </a-select>
-        </a-flex>
-      </a-col>
-      <a-col v-for="item of data" :key="item.id" :sm="8" :xl="6" :xxl="4">
-        <comic-item :comic="item" />
-      </a-col>
-      <a-col :span="24">
-        <a-pagination
-          v-model:current="page"
-          align="right"
-          :page-size="20"
-          :total="total"
-          :show-size-changer="false"
-        />
-      </a-col>
-    </a-row>
-  </a-spin>
+  <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
+    <template #loader>
+      <div class="h-[30vh] flex items-center justify-center">
+        <v-progress-circular indeterminate></v-progress-circular>
+      </div>
+    </template>
+    <template #header>
+      <div class="flex justify-end mb-4">
+        <div class="w-[200px]">
+          <v-select
+            v-model:model-value="formState.type"
+            hide-details
+            :items="[
+              {
+                title: '最新',
+                value: 'mr',
+              },
+              {
+                title: '最多收藏',
+                value: 'mv',
+              },
+              {
+                title: '最多图片',
+                value: 'mp',
+              },
+              {
+                title: '最多爱心',
+                value: 'tf',
+              },
+            ]"
+          ></v-select>
+        </div>
+      </div>
+    </template>
+    <template #no-data>
+      <app-empty-state
+        title="一个收藏都没点，看来是用完就忘了"
+        :image="EMPTY_STATE_IMG"
+      ></app-empty-state>
+    </template>
+    <template #default="{ items }">
+      <v-row>
+        <template v-for="item of items" :key="item.raw.id">
+          <v-col :cols="6" :sm="4" :md="3" :lg="2">
+            <comic-route-item :comic="item.raw" />
+          </v-col>
+        </template>
+      </v-row>
+    </template>
+    <template #footer>
+      <div class="flex justify-end mt-4">
+        <v-pagination v-model="page" :length="pageCount"></v-pagination>
+      </div>
+    </template>
+  </v-data-iterator>
 </template>
 
 <style scoped></style>

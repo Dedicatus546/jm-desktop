@@ -2,6 +2,7 @@
 import { usePagination, useRequest } from "alova/client";
 
 import { getCategoryFilterListApi, getCategoryListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
 const formState = reactive({
   order: "",
@@ -18,7 +19,7 @@ const orderList = [
   { label: "日排行", value: "mv_t" },
 ];
 
-const { loading, data, page, total } = usePagination(
+const { loading, pageCount, pageSize, data, page } = usePagination(
   (page) =>
     getCategoryFilterListApi({
       page,
@@ -28,6 +29,8 @@ const { loading, data, page, total } = usePagination(
       order: formState.order,
     }),
   {
+    initialPage: 1,
+    initialPageSize: 80,
     watchingStates: [
       () => formState.order,
       () => formState.category,
@@ -63,118 +66,144 @@ onSuccess(() => {});
 </script>
 
 <template>
-  <a-row :gutter="[16, 16]">
-    <a-col :span="24">
-      <a-card>
-        <a-flex
-          v-if="categoryLoading"
-          align="center"
-          justify="center"
-          class="min-h-[200px]"
-        >
-          <a-spin />
-        </a-flex>
-        <a-form v-else>
-          <a-form-item label="排序" class="mb-1">
-            <a-flex wrap="wrap" :gap="4">
-              <a-button
-                v-for="item of orderList"
-                :key="item.label"
-                size="small"
-                :type="formState.order === item.value ? 'primary' : undefined"
-                @click="formState.order = item.value"
-              >
-                {{ item.label }}
-              </a-button>
-            </a-flex>
-          </a-form-item>
-          <a-form-item label="分类" class="mb-1">
-            <a-flex wrap="wrap" :gap="4">
-              <a-button
-                v-for="item of category.data.categoryList"
-                :key="item.id"
-                size="small"
-                :type="
-                  (item.slug === '' || item.type === 'slug') &&
-                  formState.category === item.slug
-                    ? 'primary'
-                    : undefined
-                "
-                @click="
-                  formState.subCategory = '';
-                  formState.category = item.slug;
-                "
-              >
-                {{ item.name }}
-              </a-button>
-            </a-flex>
-          </a-form-item>
-          <a-form-item
-            v-if="subCategoryList.length > 0"
-            label="子分类"
-            class="mb-1"
-          >
-            <a-flex wrap="wrap" :gap="4">
-              <a-button
-                v-for="item of subCategoryList"
-                :key="item.id"
-                size="small"
-                :type="
-                  formState.subCategory === item.slug ? 'primary' : undefined
-                "
-                @click="formState.subCategory = item.slug"
-              >
-                {{ item.name }}
-              </a-button>
-            </a-flex>
-          </a-form-item>
-          <a-form-item
-            v-for="item of category.data.tagTypeList"
-            :key="item.title"
-            :label="item.title"
-            class="mb-1"
-          >
-            <a-flex wrap="wrap" :gap="4">
-              <router-link
-                v-for="tag of item.list"
-                :key="tag"
-                custom
-                :to="{ name: 'QUICK_SEARCH', query: { query: tag } }"
-              >
-                <template #default="{ navigate }">
-                  <a-button size="small" @click="navigate()">
-                    {{ tag }}
-                  </a-button>
-                </template>
-              </router-link>
-            </a-flex>
-          </a-form-item>
-        </a-form>
-      </a-card>
-    </a-col>
-    <a-col v-if="!categoryLoading" :span="24">
-      <a-card>
-        <a-spin :spinning="loading">
-          <a-row v-if="total" :gutter="[16, 16]">
-            <a-col v-for="item of data" :key="item.id" :sm="8" :xl="6" :xxl="4">
-              <comic-item :comic="item" />
-            </a-col>
-            <a-col :span="24">
-              <a-pagination
-                v-model:current="page"
-                align="right"
-                :page-size="80"
-                :total="total"
-                show-quick-jumper
-                :show-size-changer="false"
-              />
-            </a-col>
-          </a-row>
-          <a-col v-else :span="24">
-            <a-empty></a-empty>
-          </a-col>
-        </a-spin>
-      </a-card>
-    </a-col>
-  </a-row>
+  <v-card>
+    <v-card-text>
+      <v-data-iterator
+        :items="data"
+        :items-per-page="pageSize"
+        :loading="loading"
+      >
+        <template #loader>
+          <div class="h-[30vh] flex items-center justify-center">
+            <v-progress-circular indeterminate></v-progress-circular>
+          </div>
+        </template>
+        <template #header>
+          <div class="mb-4">
+            <div
+              v-if="categoryLoading"
+              class="h-[30vh] flex items-center justify-center"
+            >
+              <v-progress-circular indeterminate></v-progress-circular>
+            </div>
+            <v-form v-else>
+              <v-row>
+                <v-col :cols="12">
+                  <div class="flex gap-2">
+                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                      排序
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <v-chip
+                        v-for="item of orderList"
+                        :key="item.label"
+                        :color="
+                          formState.order === item.value ? 'primary' : undefined
+                        "
+                        @click="formState.order = item.value"
+                      >
+                        {{ item.label }}
+                      </v-chip>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col :cols="12">
+                  <div class="flex gap-2">
+                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                      分类
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <!-- TODO fix 这里有些 category 需要走 quick search 页面 -->
+                      <v-chip
+                        v-for="item of category.data.categoryList"
+                        :key="item.id"
+                        :color="
+                          (item.slug === '' || item.type === 'slug') &&
+                          formState.category === item.slug
+                            ? 'primary'
+                            : undefined
+                        "
+                        @click="
+                          formState.subCategory = '';
+                          formState.category = item.slug;
+                        "
+                      >
+                        {{ item.name }}
+                      </v-chip>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col v-if="subCategoryList.length > 0" :cols="12">
+                  <div class="flex gap-2">
+                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                      子分类
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <v-chip
+                        v-for="item of subCategoryList"
+                        :key="item.id"
+                        :color="
+                          formState.subCategory === item.slug
+                            ? 'primary'
+                            : undefined
+                        "
+                        @click="formState.subCategory = item.slug"
+                      >
+                        {{ item.name }}
+                      </v-chip>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col
+                  v-for="item of category.data.tagTypeList"
+                  :key="item.title"
+                  :cols="12"
+                >
+                  <div class="flex gap-2">
+                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                      {{ item.title }}
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <router-link
+                        v-for="tag of item.list"
+                        :key="tag"
+                        custom
+                        :to="{ name: 'QUICK_SEARCH', query: { query: tag } }"
+                      >
+                        <template #default="{ navigate }">
+                          <v-chip @click="navigate()">
+                            {{ tag }}
+                          </v-chip>
+                        </template>
+                      </router-link>
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-form>
+          </div>
+        </template>
+        <template #no-data>
+          <app-empty-state
+            title="出现这个就大概率是出 BUG 了，请提 issue"
+            :image="EMPTY_STATE_IMG"
+          ></app-empty-state>
+        </template>
+        <template #default="{ items }">
+          <v-row>
+            <template v-for="item of items" :key="item.raw.id">
+              <v-col cols="6" :sm="4" :md="3" :lg="2">
+                <comic-route-item :comic="item.raw" />
+              </v-col>
+            </template>
+          </v-row>
+        </template>
+        <template #footer>
+          <div class="flex justify-end mt-4">
+            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+          </div>
+        </template>
+      </v-data-iterator>
+    </v-card-text>
+  </v-card>
 </template>

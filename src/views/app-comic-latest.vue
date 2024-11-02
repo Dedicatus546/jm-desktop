@@ -2,6 +2,7 @@
 import { usePagination } from "alova/client";
 
 import { getLatestComicListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
 const { loading, data, page } = usePagination(
   (page) => getLatestComicListApi(page),
@@ -20,29 +21,47 @@ const { loading, data, page } = usePagination(
 </script>
 
 <template>
-  <a-card title="最新发布">
-    <a-row :gutter="[16, 16]">
-      <a-col v-if="page === 1 && loading" :span="24">
-        <a-flex align="center" justify="center" class="min-h-[200px]">
-          <a-spin />
-        </a-flex>
-      </a-col>
-      <template v-else>
-        <a-col v-for="item of data" :key="item.id" :sm="8" :xl="6" :xxl="4">
-          <comic-item :comic="item"></comic-item>
-        </a-col>
-      </template>
-      <a-col v-if="page > 1 || !loading" :span="24">
-        <a-button
-          type="primary"
-          block
-          size="large"
-          :loading="loading"
-          @click="page++"
-        >
-          加载更多
-        </a-button>
-      </a-col>
-    </a-row>
-  </a-card>
+  <v-card title="最新发布">
+    <v-card-text>
+      <v-data-iterator
+        :items="data"
+        :items-per-page="data.length"
+        :loading="loading"
+      >
+        <template #loader>
+          <div class="h-[30vh] flex items-center justify-center">
+            <v-progress-circular indeterminate></v-progress-circular>
+          </div>
+        </template>
+        <template #no-data>
+          <app-empty-state
+            title="出现这个就大概率是出 BUG 了，请提 issue"
+            :image="EMPTY_STATE_IMG"
+          ></app-empty-state>
+        </template>
+        <template #default="{ items }">
+          <v-row>
+            <template v-for="item of items" :key="item.raw.id">
+              <v-col cols="6" :sm="4" :md="3" :lg="2">
+                <comic-route-item :comic="item.raw" />
+              </v-col>
+            </template>
+          </v-row>
+        </template>
+        <template #footer>
+          <v-btn
+            v-if="data.length > 0"
+            :loading="loading"
+            block
+            color="primary"
+            class="mt-4"
+            size="large"
+            @click="page++"
+          >
+            查看更多
+          </v-btn>
+        </template>
+      </v-data-iterator>
+    </v-card-text>
+  </v-card>
 </template>

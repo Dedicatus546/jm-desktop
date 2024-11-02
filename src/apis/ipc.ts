@@ -1,4 +1,4 @@
-import { BaseComic, Config } from "@/type";
+import { BaseComic, Config } from "@/types/base";
 
 const invoke = <T>(name: string, ...args: any) => {
   return ipcRenderer.invoke(name, ...args) as Promise<T>;
@@ -14,6 +14,10 @@ export const closeWinIpc = () => {
 
 export const openLinkIpc = (link: string) => {
   return ipcRenderer.send("app/openLink", link);
+};
+
+export const openPathIpc = (path: string) => {
+  return ipcRenderer.send("app/openFile", path);
 };
 
 const logIpc = (level: "info" | "error", msg: string) => {

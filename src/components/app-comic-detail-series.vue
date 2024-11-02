@@ -9,20 +9,27 @@ defineProps<{
 </script>
 
 <template>
-  <a-row :gutter="[16, 16]">
-    <a-col v-for="item of seriesList" :key="item.id" :sm="8" :xl="6" :xxl="4">
+  <v-row>
+    <v-col
+      v-for="item of seriesList"
+      :key="item.id"
+      :cols="6"
+      :sm="4"
+      :md="3"
+      :lg="2"
+    >
       <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
         <template #default="{ navigate }">
-          <a-button
+          <v-btn
             size="large"
-            :type="currentSeriesId === item.id ? 'primary' : 'default'"
+            :color="currentSeriesId === item.id ? 'primary' : undefined"
             block
             @click="navigate()"
           >
             {{ item.name }}
-          </a-button>
+          </v-btn>
         </template>
       </router-link>
-    </a-col>
-  </a-row>
+    </v-col>
+  </v-row>
 </template>

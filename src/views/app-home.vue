@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { breakpointsAntDesign } from "@vueuse/core";
 import { useRequest } from "alova/client";
-import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
 import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
@@ -32,67 +31,57 @@ const slidesPerView = computed(() => {
 </script>
 
 <template>
-  <a-row v-if="loading || latestLoading" :gutter="[16, 16]">
-    <a-col v-for="item of 4" :key="item" :span="24">
-      <a-card>
-        <template #title>
-          <a-skeleton
-            class="title-skeleton"
-            :paragraph="false"
-            :title="{
-              width: '30%',
-            }"
-          />
-        </template>
-        <a-row :gutter="[16, 16]">
-          <a-col v-for="subItem of 4" :key="subItem" :span="6">
-            <comic-item-skeleton />
-          </a-col>
-        </a-row>
-      </a-card>
-    </a-col>
-  </a-row>
-  <a-row v-else :gutter="[16, 16]">
-    <a-col v-for="item of data.data" :key="item.id" :span="24">
-      <a-card :title="item.title">
-        <swiper
-          class="select-none"
-          :slides-per-view="slidesPerView"
-          :space-between="16"
-          :modules="[Pagination]"
-          :pagination="{
-            clickable: true,
-          }"
-        >
-          <swiper-slide v-for="subItem of item.list" :key="subItem.id">
-            <comic-item :comic="subItem" />
-          </swiper-slide>
-        </swiper>
-      </a-card>
-    </a-col>
-    <a-col :span="24">
-      <a-card title="最新发布">
-        <template #extra>
-          <router-link custom :to="{ name: 'COMIC_LATEST' }">
-            <template #default="{ navigate }">
-              <a-button type="link" @click="navigate()">更多</a-button>
-            </template>
-          </router-link>
-        </template>
-        <a-row :gutter="[16, 16]">
-          <a-col
-            v-for="item of latestData.data"
-            :key="item.id"
-            :sm="8"
-            :xl="6"
-            :xxl="4"
+  <div
+    v-if="loading || latestLoading"
+    class="absolute inset-0 flex items-center justify-center"
+  >
+    <v-progress-circular indeterminate></v-progress-circular>
+  </div>
+  <v-row v-else>
+    <v-col v-for="item of data.data" :key="item.id" :cols="24">
+      <v-card :title="item.title">
+        <v-card-text>
+          <swiper
+            class="select-none"
+            :slides-per-view="slidesPerView"
+            :space-between="16"
           >
-            <comic-item :comic="item" />
-          </a-col>
-        </a-row>
-      </a-card>
-    </a-col>
-  </a-row>
+            <swiper-slide v-for="subItem of item.list" :key="subItem.id">
+              <comic-route-item :comic="subItem" />
+            </swiper-slide>
+          </swiper>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col :cols="24">
+      <v-card>
+        <v-card-item>
+          <div class="flex items-center justify-between">
+            <v-card-title>最新发布</v-card-title>
+            <router-link custom :to="{ name: 'COMIC_LATEST' }">
+              <template #default="{ navigate }">
+                <v-btn variant="text" @click="navigate()">更多</v-btn>
+              </template>
+            </router-link>
+          </div>
+        </v-card-item>
+        <v-card-text>
+          <v-row>
+            <v-col
+              v-for="item of latestData.data"
+              :key="item.id"
+              :cols="6"
+              :sm="4"
+              :md="3"
+              :lg="2"
+            >
+              <comic-route-item :comic="item" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped lang="less">

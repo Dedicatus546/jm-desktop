@@ -1,13 +1,19 @@
-interface PendingItem {
-  id: number;
-  author: string;
-  name: string;
+import { WatchHandle } from "vue";
+
+import { BaseComic } from "@/types";
+
+interface PendingItem extends BaseComic {
   loaded: number;
   total: number;
 }
 
 interface State {
-  pendingMap: Map<number, PendingItem>;
+  pendingMap: Map<
+    number,
+    PendingItem & {
+      watchHandler?: WatchHandle;
+    }
+  >;
 }
 
 const useDownloadStore = defineStore("download", () => {
@@ -27,16 +33,27 @@ const useDownloadStore = defineStore("download", () => {
     });
   };
 
-  const updateDonwloadProgressAction = (id: number, loaded: number) => {
+  const updateDonwloadProgressAction = (
+    id: number,
+    loaded: ComputedRef<number>,
+  ) => {
     if (!state.pendingMap.has(id)) {
       // TODO
       return;
     }
     const item = state.pendingMap.get(id)!;
-    item.loaded = loaded;
+    item.watchHandler = watchEffect(() => {
+      item.loaded = loaded.value;
+    });
   };
 
   const removeDownloadAction = (id: number) => {
+    if (!state.pendingMap.has(id)) {
+      // TODO
+      return;
+    }
+    const item = state.pendingMap.get(id)!;
+    item.watchHandler?.();
     state.pendingMap.delete(id);
   };
 

@@ -5,7 +5,7 @@ import { getConfigIpc, getSettingApi, loginApi, updateConfigIpc } from "@/apis";
 import logger from "@/logger";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
-import { Config } from "@/type";
+import { Config } from "@/types/base";
 
 import useDecodeUserInfo from "./use-decode-user-info";
 import useIpcRendererInvoke from "./use-ipc-renderer-invoke";
@@ -79,7 +79,6 @@ const useInitConfig = () => {
   };
 };
 
-// TODO 是否要做自动登录？
 const useAutoLogin = () => {
   const userStore = useUserStore();
   const appStore = useAppStore();

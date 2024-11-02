@@ -2,25 +2,34 @@
 const activeTabKey = ref<"pending" | "complete">("pending");
 const tabList = [
   {
-    key: "pending",
+    value: "pending",
     tab: "正在下载",
   },
   {
-    key: "complete",
+    value: "complete",
     tab: "已下载",
   },
 ];
 </script>
 
 <template>
-  <a-card
-    :tab-list="tabList"
-    :active-tab-key="activeTabKey"
-    @tab-change="(key) => (activeTabKey = key as any)"
-  >
-    <app-download-pending-list v-if="activeTabKey === 'pending'" />
-    <app-download-complete-list v-else-if="activeTabKey === 'complete'" />
-  </a-card>
+  <v-card>
+    <v-tabs v-model:model-value="activeTabKey" bg-color="primary">
+      <v-tab v-for="item of tabList" :key="item.value" :value="item.value">
+        {{ item.tab }}
+      </v-tab>
+    </v-tabs>
+    <v-card-text>
+      <v-tabs-window v-model:model-value="activeTabKey">
+        <v-tabs-window-item value="pending">
+          <app-download-pending-list />
+        </v-tabs-window-item>
+        <v-tabs-window-item value="complete">
+          <app-download-complete-list />
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped></style>

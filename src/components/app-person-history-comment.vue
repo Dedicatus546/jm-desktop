@@ -2,13 +2,15 @@
 import { usePagination } from "alova/client";
 
 import { getUserCommentListApi } from "@/apis";
+import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
 import useUserStore from "@/stores/use-user-store";
 
 const userStore = useUserStore();
-const { page, total, loading, data } = usePagination(
+const { page, pageCount, pageSize, loading, data } = usePagination(
   (page) => getUserCommentListApi(page, userStore.userInfo!.uid),
   {
     initialPage: 1,
+    initialPageSize: 10,
     data: (res) => res.data.list,
     total: (res) => res.data.total,
   },
@@ -16,24 +18,36 @@ const { page, total, loading, data } = usePagination(
 </script>
 
 <template>
-  <a-list
-    item-layout="vertical"
-    size="large"
-    :loading="loading"
-    :pagination="{
-      current: page,
-      onChange: (newPage: number) => (page = newPage),
-      total,
-      pageSize: 10,
-      showSizeChanger: false,
-    }"
-    :data-source="data"
-  >
-    <template #renderItem="{ item, index }">
-      <a-divider v-if="index > 0" />
-      <comment-item :key="item.id" :comment="item" />
+  <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
+    <template #loader>
+      <div class="h-[30vh] flex items-center justify-center">
+        <v-progress-circular indeterminate></v-progress-circular>
+      </div>
     </template>
-  </a-list>
+    <template #no-data>
+      <app-empty-state
+        title="看来不是很喜欢评论"
+        :image="EMPTY_STATE_IMG"
+      ></app-empty-state>
+    </template>
+    <template #default="{ items }">
+      <v-row>
+        <template v-for="item of items" :key="item.raw.id">
+          <v-col cols="12">
+            <comment-item :comment="item.raw" />
+          </v-col>
+          <v-col>
+            <v-divider />
+          </v-col>
+        </template>
+      </v-row>
+    </template>
+    <template #footer>
+      <div class="flex justify-end mt-4">
+        <v-pagination v-model="page" :length="pageCount"></v-pagination>
+      </div>
+    </template>
+  </v-data-iterator>
 </template>
 
 <style scoped></style>

@@ -45,6 +45,9 @@ export class WinService {
         })
         .on("app/openLink", (_v, link: string) => {
           shell.openExternal(link);
+        })
+        .on("app/openFile", (_v, path: string) => {
+          shell.openPath(path);
         });
       ipcMain.handle("app/selectFolder", async () => {
         const result = await dialog.showOpenDialog(this.win!, {
@@ -56,12 +59,12 @@ export class WinService {
   }
 
   private async createWin() {
-    const { minWidth, minHeight, x, y, width, height, zoomLevel } =
+    const { minWidth, minHeight, x, y, width, height, zoomFactor } =
       this.resolveWindowInfo();
 
     this.loggerService.info(`最小窗口大小 ${minWidth}x${minHeight}`);
     this.loggerService.info(`窗口位置 ${x} ${y} | ${width}x${height}`);
-    this.loggerService.info(`zoomLevel值 ${zoomLevel}`);
+    this.loggerService.info(`zoomFactor值 ${zoomFactor}`);
 
     const win = (this.win = new BrowserWindow({
       icon: join(this.pathService.getPublicPath(), "png", "256x256.png"),
@@ -78,7 +81,10 @@ export class WinService {
       minHeight: minHeight,
     }));
 
-    win.webContents.setZoomLevel(zoomLevel);
+    // 必须先调用 setVisualZoomLevelLimits 解除缩放限制
+    win.webContents.setVisualZoomLevelLimits(1, 3).then(() => {
+      win.webContents.setZoomFactor(zoomFactor);
+    });
 
     // 退出时保存窗口位置信息
     win.on("close", () => {
@@ -107,11 +113,11 @@ export class WinService {
     const { width, height } = display.size;
     this.loggerService.info(`主显示器大小 ${width}x${height}`);
 
-    const minWidth = width * 0.5;
-    const minHeight = height * 0.5;
+    const minWidth = Math.round(width * 0.5);
+    const minHeight = Math.round(height * 0.5);
 
-    const initWidth = width * 0.7;
-    const initHeight = height * 0.8;
+    const initWidth = Math.round(width * 0.7);
+    const initHeight = Math.round(height * 0.8);
 
     const r: {
       minWidth: number;
@@ -120,7 +126,7 @@ export class WinService {
       y: undefined | number;
       width: number;
       height: number;
-      zoomLevel: number;
+      zoomFactor: number;
     } = {
       minWidth,
       minHeight,
@@ -128,13 +134,13 @@ export class WinService {
       y: undefined,
       width: initWidth,
       height: initHeight,
-      zoomLevel: 1,
+      zoomFactor: 1,
     };
 
     if (width <= 2560) {
-      r.zoomLevel = 1.4;
+      r.zoomFactor = 1.4;
     } else if (width <= 3840) {
-      r.zoomLevel = 1.8;
+      r.zoomFactor = 1.8;
     }
 
     if (this.configService.config.windowInfo) {

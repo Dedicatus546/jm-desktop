@@ -17,7 +17,14 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ["data/**/*", "dist-electron/**/*", "**/.eslintrc.cjs", ""],
+    ignores: [
+      "data/**/*",
+      "dist/**/*",
+      "public/**/*",
+      "dist-electron/**/*",
+      "**/.eslintrc.cjs",
+      "node_modules/**/*",
+    ],
   },
   ...compat.extends(
     "eslint:recommended",

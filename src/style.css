@@ -1,6 +1,7 @@
 html,
 body {
-  font-family:
+  overflow: hidden;
+  /* font-family:
     "Noto Sans SC",
     -apple-system,
     BlinkMacSystemFont,
@@ -13,15 +14,12 @@ body {
     "Apple Color Emoji",
     "Segoe UI Emoji",
     "Segoe UI Symbol",
-    "Noto Color Emoji";
+    "Noto Color Emoji"; */
 }
 
 a {
   color: inherit;
-}
-
-.swiper {
-  padding-bottom: 35px;
+  text-decoration: none;
 }
 
 ::-webkit-scrollbar {
@@ -39,8 +37,4 @@ a {
 
 ::-webkit-scrollbar-track {
   background: transparent; /* 滚动条背景颜色 */
-}
-
-.ant-notification-notice {
-  -webkit-app-region: no-drag;
 }

@@ -1,7 +1,8 @@
 import CryptoJS from "crypto-js";
+import dayjs from "dayjs";
 
-import { BaseComic } from "@/type";
-import { getImageRadio } from "@/utils";
+import { BaseComic } from "@/types";
+import { resolveDownloadFileName } from "@/utils";
 
 import http from "./http";
 
@@ -540,7 +541,7 @@ export const getComicDetailApi = (id: number) => {
           seriesList: res.data.series.map((item, index) => {
             return {
               id: Number.parseInt(item.id),
-              name: `第 ${index + 1} 话 ` + item.name,
+              name: `第${index + 1}话${item.name ? "（" + item.name + "）" : ""}`,
             };
           }),
           currentSeriesId: Number.parseInt(res.data.series_id),
@@ -953,6 +954,7 @@ export const getSignInDataApi = (userId: number) => {
           isNextDaySign: boolean;
           isLastDaySign: boolean;
           isSign: boolean;
+          isLast: boolean;
           hasExtraBonus: boolean;
         }
       >;
@@ -986,9 +988,11 @@ export const getSignInDataApi = (userId: number) => {
           isNextDaySign: boolean;
           isLastDaySign: boolean;
           isSign: boolean;
+          isLast: boolean;
           hasExtraBonus: boolean;
         }
       > = {};
+      const currentDate = dayjs().date().toString().padStart(2, "0");
       return {
         code: res.code,
         data: {
@@ -1015,6 +1019,7 @@ export const getSignInDataApi = (userId: number) => {
               return {
                 date: item.date,
                 isSign: !!item.signed,
+                isLast: currentDate >= item.date,
                 // isSign,
                 hasExtraBonus: item.bonus,
               };
@@ -1032,6 +1037,7 @@ export const getSignInDataApi = (userId: number) => {
                 isNextDaySign: item.isNextDaySign,
                 isLastDaySign: item.isLastDaySign,
                 isSign: item.isSign,
+                isLast: item.isLast,
                 hasExtraBonus: item.hasExtraBonus,
               };
               return map;
@@ -1091,37 +1097,33 @@ export const getComicPicListApi = (
   comicId: number,
   shuntKey: number | undefined,
 ) => {
-  return http.Get<{ radio: number; list: string[] }, string>(
-    "chapter_view_template",
-    {
-      params: {
-        id: comicId,
-        mode: "vertical",
-        page: 0,
-        app_img_shunt: shuntKey,
-        express: "off",
-        v: Date.now(),
-        // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
-      },
-      async transform(htmlStr) {
-        // 正则解析
-        const regex = /data-original="(.*)"/g;
-        const matches = [];
-        let match;
-
-        while ((match = regex.exec(htmlStr)) !== null) {
-          matches.push(match[1]);
-        }
-
-        const list = matches.filter((item) => item.includes(".webp"));
-
-        return {
-          radio: await getImageRadio(list[0]),
-          list,
-        };
-      },
+  return http.Get<{ list: string[] }, string>("chapter_view_template", {
+    params: {
+      id: comicId,
+      mode: "vertical",
+      page: 0,
+      app_img_shunt: shuntKey,
+      express: "off",
+      v: Date.now(),
+      // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
-  );
+    async transform(htmlStr) {
+      // 正则解析
+      const regex = /data-original="(.*)"/g;
+      const matches = [];
+      let match;
+
+      while ((match = regex.exec(htmlStr)) !== null) {
+        matches.push(match[1]);
+      }
+
+      const list = matches.filter((item) => item.includes(".webp"));
+
+      return {
+        list,
+      };
+    },
+  });
   // .then(() => {
   //   return [
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00001.webp",
@@ -1228,9 +1230,13 @@ export const downloadComicApi = (query: {
       aid: query.comicId,
     },
     transform(blob) {
-      const file = new File([blob], `[JM${query.comicId}] ${query.name}.zip`, {
-        type: "application/zip",
-      });
+      const file = new File(
+        [blob],
+        resolveDownloadFileName(query.comicId, query.name),
+        {
+          type: "application/zip",
+        },
+      );
       return file;
     },
   });

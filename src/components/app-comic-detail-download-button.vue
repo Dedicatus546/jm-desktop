@@ -74,13 +74,6 @@ const {
   },
 );
 
-watchEffect(() => {
-  downloadStore.updateDonwloadProgressAction(
-    props.comic.id,
-    downloading.value.loaded,
-  );
-});
-
 const download = async () => {
   try {
     await getComicDownloadInfo();
@@ -88,6 +81,10 @@ const download = async () => {
       ...props.comic,
       total: comicDownloadInfo.value.data.fileSize,
     });
+    downloadStore.updateDonwloadProgressAction(
+      props.comic.id,
+      computed(() => downloading.value.loaded),
+    );
     await downloadComic({
       md5: comicDownloadInfo.value.data.md5,
       expires: comicDownloadInfo.value.data.expires,
@@ -102,12 +99,15 @@ const download = async () => {
 </script>
 
 <template>
-  <a-button size="large" block @click="download">
-    <template #icon>
-      <DownloadOutlined />
+  <v-btn size="large" block variant="flat" color="primary" @click="download">
+    <template #prepend>
+      <v-icon
+        icon="mdi-download"
+        :color="isDownload ? 'green' : undefined"
+      ></v-icon>
     </template>
     {{ isDownloading ? percent + "%" : isDownload ? "已下载" : "下载" }}
-  </a-button>
+  </v-btn>
 </template>
 
 <style scoped></style>

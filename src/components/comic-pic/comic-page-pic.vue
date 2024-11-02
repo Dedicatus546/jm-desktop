@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import useDecodeImage from "@/compositions/use-decode-image";
+import { decodeImage } from "@/utils/image-decode";
 
 const props = defineProps<{
   src: string;
   comicId: number;
 }>();
 
-const elRef = ref<HTMLDivElement | null>(null);
+const isLoaded = ref(false);
+const imgSrc = ref<string>("");
 
-const { imageSrc, visible } = useDecodeImage(
-  elRef,
-  toRef(props, "src"),
-  toRef(props, "comicId"),
-);
+onMounted(async () => {
+  imgSrc.value = await decodeImage(props.src, props.comicId);
+});
 </script>
 
 <template>
-  <div ref="elRef" class="w-full h-full">
+  <div
+    class="w-full h-full object-contain"
+    :class="{ 'aspect-[9/16]': !isLoaded }"
+  >
     <img
-      v-if="visible"
+      v-if="imgSrc"
       class="block w-full h-full object-contain"
-      :src="imageSrc"
+      :src="imgSrc"
       alt=""
+      @load="isLoaded = true"
     />
-    <a-flex v-else align="center" justify="center" class="w-full h-full">
-      <a-spin size="large" />
-    </a-flex>
   </div>
 </template>
 
