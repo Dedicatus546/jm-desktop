@@ -43,6 +43,9 @@ const app = createApp(App);
 
 app.config.errorHandler = (err, _instance, info) => {
   logger.error(`[vue] 全局捕获错误，错误码 ${info} 错误信息 ${String(err)}`);
+  if (err instanceof Error) {
+    logger.error(`${err.stack}`);
+  }
 };
 
 app.config.performance = true;
