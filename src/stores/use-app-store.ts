@@ -65,6 +65,7 @@ const useAppStore = defineStore("app", () => {
       currentShuntKey: undefined,
       autoLogin: false,
       loginUserInfo: "",
+      proxy: undefined,
     },
     setting: {
       logoPath: "",
