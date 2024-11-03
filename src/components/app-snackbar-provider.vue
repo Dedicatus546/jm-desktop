@@ -185,6 +185,9 @@ provide<SnackbarInjectValue>(injectKey, snackbar);
 <template>
   <slot></slot>
   <template v-for="location of locationList" :key="location">
+    <!-- close-on-back 必须设置为 false -->
+    <!-- 不然 router.back 会无效 -->
+    <!-- https://github.com/vuetifyjs/vuetify/issues/18283 -->
     <v-snackbar
       v-for="inst of instanceLocationMap[location]"
       :ref="
@@ -193,6 +196,7 @@ provide<SnackbarInjectValue>(injectKey, snackbar);
         }
       "
       :key="inst.id"
+      :close-on-back="false"
       :style="getStyle(inst)"
       :model-value="inst.modelValue"
       :location="inst.location"
