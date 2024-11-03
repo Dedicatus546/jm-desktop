@@ -59,8 +59,9 @@ export class WinService {
   }
 
   private async createWin() {
-    const { minWidth, minHeight, x, y, width, height, zoomFactor } =
+    const { minWidth, minHeight, x, y, width, height } =
       this.resolveWindowInfo();
+    const zoomFactor = this.configService.get().zoomFactor;
 
     this.loggerService.info(`最小窗口大小 ${minWidth}x${minHeight}`);
     this.loggerService.info(`窗口位置 ${x} ${y} | ${width}x${height}`);
@@ -126,7 +127,6 @@ export class WinService {
       y: undefined | number;
       width: number;
       height: number;
-      zoomFactor: number;
     } = {
       minWidth,
       minHeight,
@@ -134,14 +134,7 @@ export class WinService {
       y: undefined,
       width: initWidth,
       height: initHeight,
-      zoomFactor: 1,
     };
-
-    if (width <= 2560) {
-      r.zoomFactor = 1.4;
-    } else if (width <= 3840) {
-      r.zoomFactor = 1.8;
-    }
 
     if (this.configService.config.windowInfo) {
       this.loggerService.info(`存在上次保存的窗口位置信息`);

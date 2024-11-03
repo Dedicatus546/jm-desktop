@@ -15,6 +15,7 @@ const formState = reactive<{
   downloadDir: string;
   readMode: number;
   useProxy: boolean;
+  zoomFactor: number;
   proxy: {
     host: string;
     port: number | undefined;
@@ -25,6 +26,7 @@ const formState = reactive<{
   apiUrl: "",
   downloadDir: "",
   readMode: 1,
+  zoomFactor: 1,
   useProxy: false,
   proxy: {
     host: "",
@@ -54,6 +56,7 @@ const { loading: saveConfigLoading, invoke: saveConfig } =
         "apiUrl",
         "downloadDir",
         "readMode",
+        "zoomFactor",
       ]);
       if (formState.useProxy) {
         config.proxy = {
@@ -117,29 +120,51 @@ const onUseProxyChange = (useProxy: boolean) => {
             <select-folder-input v-model:model-value="formState.downloadDir" />
           </v-col>
           <v-col :cols="12">
-            阅读模式
-            <v-btn-toggle
+            <v-select
               v-model:model-value="formState.readMode"
-              mandatory
-              divided
-              class="ml-2"
-            >
-              <v-btn :value="1">竖向滚动</v-btn>
-              <v-btn :value="2">按钮切换</v-btn>
-            </v-btn-toggle>
+              label="阅读模式"
+              item-title="text"
+              item-value="value"
+              :items="[
+                {
+                  value: 1,
+                  text: '竖向滚动',
+                },
+                {
+                  value: 2,
+                  text: '按钮切换',
+                },
+              ]"
+            ></v-select>
           </v-col>
           <v-col :cols="12">
-            代理设置
-            <v-btn-toggle
+            <v-slider
+              v-model:model-value="formState.zoomFactor"
+              thumb-label="always"
+              :min="1"
+              :max="3"
+              :step="0.2"
+              label="缩放等级"
+            ></v-slider>
+          </v-col>
+          <v-col :cols="12">
+            <v-select
               :model-value="formState.useProxy"
-              mandatory
-              divided
-              class="ml-2"
+              label="代理设置"
+              item-title="text"
+              item-value="value"
+              :items="[
+                {
+                  value: false,
+                  text: '不使用代理',
+                },
+                {
+                  value: true,
+                  text: '使用 HTTP 代理',
+                },
+              ]"
               @update:model-value="onUseProxyChange"
-            >
-              <v-btn :value="false">不使用代理</v-btn>
-              <v-btn :value="true"> 使用 HTTP 代理 </v-btn>
-            </v-btn-toggle>
+            ></v-select>
           </v-col>
           <template v-if="formState.useProxy">
             <v-col :cols="6">

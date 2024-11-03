@@ -16,6 +16,7 @@ export type Config = {
   currentShuntKey: number | undefined;
   autoLogin: boolean;
   loginUserInfo: string;
+  zoomFactor: number;
   windowInfo:
     | {
         x: number;
@@ -44,6 +45,7 @@ export class ConfigService {
     currentShuntKey: undefined,
     autoLogin: false,
     loginUserInfo: "",
+    zoomFactor: 1,
     windowInfo: undefined,
     proxy: undefined,
   };
