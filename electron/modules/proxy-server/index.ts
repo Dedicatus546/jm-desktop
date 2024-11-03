@@ -1,10 +1,11 @@
-import { Server } from "node:http";
+import { Agent, Server } from "node:http";
 import { AddressInfo } from "node:net";
 import { join } from "node:path";
 
 import cors from "cors";
 import Express, { Express as ExpressServer } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { inject, singleton } from "tsyringe";
 
 import { ConfigService } from "../config";
@@ -34,6 +35,13 @@ export class ProxyServerService {
     const config = Object.assign({}, ProxyServerService.DEFAULT_CONFIG, {
       target: this.configService.get().apiUrl,
     });
+    let agent: Agent | undefined = undefined;
+    if (this.configService.get().proxy) {
+      const proxy = this.configService.get().proxy!;
+      const proxyUrl = `http:${proxy.host}:${proxy.port}`;
+      agent = new HttpsProxyAgent(proxyUrl);
+      this.loggerService.info(`使用 http 代理 ${proxyUrl}`);
+    }
     this.loggerService.info(`默认代理服务器配置 ${JSON.stringify(config)}`);
 
     const app = (this.app = Express());
@@ -44,6 +52,7 @@ export class ProxyServerService {
       "/api",
       createProxyMiddleware({
         target: config.target,
+        agent,
         changeOrigin: true,
         secure: false,
         pathRewrite: {

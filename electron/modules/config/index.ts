@@ -24,6 +24,14 @@ export type Config = {
         height: number;
       }
     | undefined;
+  proxy:
+    | {
+        host: string;
+        port: number;
+        username: string;
+        password: string;
+      }
+    | undefined;
 };
 
 @singleton()
@@ -37,6 +45,7 @@ export class ConfigService {
     autoLogin: false,
     loginUserInfo: "",
     windowInfo: undefined,
+    proxy: undefined,
   };
 
   config: Config;

@@ -6,6 +6,14 @@ export interface Config {
   currentShuntKey: number | undefined;
   autoLogin: boolean;
   loginUserInfo: string;
+  proxy:
+    | {
+        host: string;
+        port: number | undefined;
+        username: string;
+        password: string;
+      }
+    | undefined;
 }
 
 export interface BaseComic {
