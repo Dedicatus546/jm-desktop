@@ -26,6 +26,7 @@
     "dayjs": "^1.11.13",
     "express": "^4.21.1",
     "http-proxy-middleware": "^3.0.3",
+    "https-proxy-agent": "^7.0.5",
     "pinia": "^2.2.5",
     "radash": "^12.1.0",
     "reflect-metadata": "^0.2.2",
