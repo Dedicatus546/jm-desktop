@@ -47,7 +47,7 @@
       provider: "github",
       owner: "Dedicatus546",
       repo: "jm-desktop",
-      releaseType: "latest"
+      releaseType: "release"
     }
   ]
 }
