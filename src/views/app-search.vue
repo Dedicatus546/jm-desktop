@@ -69,12 +69,13 @@ const { page, pageSize, pageCount, data, send, loading } = usePagination(
               <v-text-field
                 v-model:model-value="formState.content"
                 placeholder="车牌号，名称，作者"
+                @keyup.enter="send(1, 80)"
               >
                 <template #append>
                   <v-btn
                     variant="text"
                     icon="mdi-magnify"
-                    @click="send(1, 80)"
+                    @click="loading || send(1, 80)"
                   />
                 </template>
               </v-text-field>
