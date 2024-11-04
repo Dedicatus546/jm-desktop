@@ -46,7 +46,7 @@ jobs:
         run: pnpm install
 
       - name: Build Electron App
-        run: pnpm run build
+        run: pnpm run build:latest
       
       - name: Upload Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
