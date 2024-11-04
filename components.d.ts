@@ -40,7 +40,6 @@ declare module 'vue' {
     VAppBarTitle: typeof import('vuetify/components')['VAppBarTitle']
     VAvatar: typeof import('vuetify/components')['VAvatar']
     VBtn: typeof import('vuetify/components')['VBtn']
-    VBtnToggle: typeof import('vuetify/components')['VBtnToggle']
     VCard: typeof import('vuetify/components')['VCard']
     VCardItem: typeof import('vuetify/components')['VCardItem']
     VCardSubtitle: typeof import('vuetify/components')['VCardSubtitle']
