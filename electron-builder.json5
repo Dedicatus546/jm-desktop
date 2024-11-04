@@ -42,4 +42,12 @@
     ],
     artifactName: "${productName}-Windows-${version}.${ext}",
   },
+  publish: [
+    {
+      provider: "github",
+      owner: "Dedicatus546",
+      repo: "jm-desktop",
+      releaseType: "latest"
+    }
+  ]
 }
