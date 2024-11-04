@@ -50,23 +50,3 @@ jobs:
 
       - name: Build Electron App
         run: pnpm run build
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-      
-      - name: Upload Linux Release Assets
-        if: matrix.os == 'ubuntu-latest'
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-          files: release/*/jm-desktop-Linux-*.zip
-        
-      - name: Upload Windows Release Assets
-        if: matrix.os == 'windows-latest'
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-          files: release/*/jm-desktop-Windows-*.zip
