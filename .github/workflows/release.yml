@@ -49,4 +49,6 @@ jobs:
         run: pnpm i
 
       - name: Build Electron App
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: pnpm run build
