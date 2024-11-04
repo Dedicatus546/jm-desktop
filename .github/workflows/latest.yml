@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-release-assets-${{ github.sha }}
-          path: release/*/jm-desktop-Linux-*.AppImage
+          path: release/*/jm-desktop-Linux-*.zip
   
       - name: Upload Windows Artifacts
         if: matrix.os == 'windows-latest'
