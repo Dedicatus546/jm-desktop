@@ -3,6 +3,8 @@
 - [ ] jcoin 购买下载
 - [ ] 分集下载
 - [x] snackbar 存在时无法 router.back()
+- [ ] 自动更新
+- [x] 回车搜索
 
 # v1.6.1
 
