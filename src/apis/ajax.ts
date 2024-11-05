@@ -477,6 +477,8 @@ export const getComicDetailApi = (id: number) => {
         name: string;
       }>;
       currentSeriesId: number;
+      price: number;
+      isBuy: boolean;
     }>,
     RespWrapper<{
       id: number;
@@ -505,9 +507,9 @@ export const getComicDetailApi = (id: number) => {
       }>;
       liked: boolean;
       is_favorite: boolean;
-      is_aids: unknown; //
-      price: unknown; // 价格 string ？
-      purchased: unknown;
+      price: number | string;
+      purchased: boolean;
+      is_aids: unknown;
     }>
   >("album", {
     params: {
@@ -545,6 +547,8 @@ export const getComicDetailApi = (id: number) => {
             };
           }),
           currentSeriesId: Number.parseInt(res.data.series_id),
+          price: Number.parseInt(res.data.price + ""),
+          isBuy: !!res.data.purchased,
         },
       };
     },
@@ -1351,4 +1355,15 @@ export const getWeekComicListApi = (query: {
       };
     },
   });
+};
+
+export const buyComicApi = (comicId: number) => {
+  const formData = new FormData();
+  formData.set("id", comicId + "");
+  return http.Post<
+    RespWrapper<{
+      msg: string;
+      status: "ok" | "error";
+    }>
+  >("coin_buy_comics", formData);
 };

@@ -295,6 +295,7 @@ const toQuickQueryPage = (query: string) => {
                       </v-col>
                       <v-col :cols="buttonCols">
                         <app-comic-detail-download-button
+                          v-model:is-download="comicInfo.data.isDownload"
                           :comic="{
                             id: comicInfo.data.id,
                             name: comicInfo.data.name,
@@ -302,8 +303,9 @@ const toQuickQueryPage = (query: string) => {
                               comicInfo.data.authorList.length > 0
                                 ? comicInfo.data.authorList[0]
                                 : '',
+                            price: comicInfo.data.price,
+                            isBuy: comicInfo.data.isBuy,
                           }"
-                          :is-download="comicInfo.data.isDownload"
                         />
                       </v-col>
                     </template>
