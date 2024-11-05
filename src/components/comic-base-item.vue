@@ -10,6 +10,7 @@ defineProps<{
 }>();
 
 const appStore = useAppStore();
+const route = useRoute();
 </script>
 
 <template>
@@ -22,7 +23,23 @@ const appStore = useAppStore();
     />
     <v-card-item>
       <v-card-title>{{ comic.name }}</v-card-title>
-      <v-card-subtitle>{{ comic.author ?? "未知作者" }}</v-card-subtitle>
+      <v-card-subtitle
+        :class="{
+          'cursor-pointer': !!comic.author,
+        }"
+      >
+        <router-link
+          v-if="comic.author && route.name !== 'QUICK_SEARCH'"
+          :to="{
+            name: 'QUICK_SEARCH',
+            query: { query: comic.author },
+            replace: route.name === 'QUICK_SEARCH',
+          }"
+        >
+          {{ comic.author }}
+        </router-link>
+        <template v-else>未知作者</template>
+      </v-card-subtitle>
     </v-card-item>
   </v-card>
 </template>
