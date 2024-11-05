@@ -102,7 +102,7 @@ const logout = () => {
         />
         <app-header-icon-btn
           tooltip-text="本子分类"
-          icon="mdi-tag-outline"
+          icon="mdi-tag"
           @click="
             router.push({
               name: 'CATEGORY',
@@ -111,7 +111,7 @@ const logout = () => {
         />
         <app-header-icon-btn
           tooltip-text="每周必看"
-          icon="mdi-eye-outline"
+          icon="mdi-eye"
           @click="
             router.push({
               name: 'WEEK',
@@ -159,7 +159,7 @@ const logout = () => {
         />
         <app-header-icon-btn
           tooltip-text="设置"
-          icon="mdi-cog-outline"
+          icon="mdi-cog"
           @click="
             router.push({
               name: 'CONFIG',
@@ -168,7 +168,7 @@ const logout = () => {
         />
         <app-header-icon-btn
           tooltip-text="下载"
-          icon="mdi-download-outline"
+          icon="mdi-download"
           @click="
             router.push({
               name: 'DOWNLOAD',
