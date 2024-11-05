@@ -14,5 +14,5 @@ export const getLoadedImage = async (src: string) => {
 };
 
 export const resolveDownloadFileName = (comicId: number, name: string) => {
-  return `[JM${comicId}] ${name}.zip`;
+  return `[JM${comicId}] ${name.replace(/[\\/:*?"<>|]/g, "_")}.zip`;
 };

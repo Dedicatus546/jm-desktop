@@ -21,12 +21,14 @@ const props = defineProps<{
     author: string;
     price: number;
     isBuy: boolean;
+    seriesList: Array<{
+      id: number;
+      name: string;
+    }>;
   };
 }>();
-const isDownload = defineModel<boolean>("isDownload", {
-  default: false,
-});
 const showDownloadConfirmDialog = ref(false);
+const showSeriesSelectDialog = ref(false);
 
 const snackbar = useSnackbar();
 const userStore = useUserStore();
@@ -43,10 +45,10 @@ const percent = computed(() => {
 });
 
 const { invoke: insertDownload } = useIpcRendererInvoke(
-  () =>
+  (query: { id: number; name: string }) =>
     insertDownloadComicIpc({
-      id: props.comic.id,
-      name: props.comic.name,
+      id: query.id,
+      name: query.name,
       author: props.comic.author,
     }),
   {
@@ -62,7 +64,7 @@ const { invoke: saveDownloadFile } = useIpcRendererInvoke(
 );
 
 const { data: comicDownloadInfo, send: getComicDownloadInfo } = useRequest(
-  () => getComicDownloadInfoApi(props.comic.id),
+  (id: number) => getComicDownloadInfoApi(id),
   {
     immediate: false,
   },
@@ -73,12 +75,12 @@ const {
   send: downloadComic,
   downloading,
 } = useRequest(
-  (query: { md5: string; expires: number }) =>
+  (query: { md5: string; expires: number; comicId: number; name: string }) =>
     downloadComicApi({
       md5: query.md5,
       expires: query.expires,
-      comicId: props.comic.id,
-      name: props.comic.name,
+      comicId: query.comicId,
+      name: query.name,
     }),
   {
     immediate: false,
@@ -103,7 +105,18 @@ const ok = () => {
     showDownloadConfirmDialog.value = true;
     return;
   }
+  // 2024.11.05
+  // 系列的话目前应该不会有需要付费的情况
+  if (props.comic.seriesList.length > 0) {
+    showSeriesSelectDialog.value = true;
+    return;
+  }
   download();
+};
+
+const onSelectSeriesDownload = (series: { id: number; name: string }) => {
+  showSeriesSelectDialog.value = false;
+  download(series);
 };
 
 const buy = async () => {
@@ -124,11 +137,17 @@ const buy = async () => {
   download();
 };
 
-const download = async () => {
+const download = async (series?: { id: number; name: string }) => {
   try {
-    await getComicDownloadInfo();
+    const id = series ? series.id : props.comic.id;
+    const name = props.comic.name + (series ? `[${series.name}]` : "");
+    await getComicDownloadInfo(id);
+    // 这里依然将下载任务附加在本id上，这样可以方便本页获取下载状态
+    // 后面可能需要更改
     downloadStore.addDownloadAction({
-      ...props.comic,
+      id: props.comic.id,
+      name,
+      author: props.comic.author,
       total: comicDownloadInfo.value.data.fileSize,
     });
     downloadStore.updateDonwloadProgressAction(
@@ -136,29 +155,60 @@ const download = async () => {
       computed(() => downloading.value.loaded),
     );
     await downloadComic({
+      comicId: id,
+      name,
       md5: comicDownloadInfo.value.data.md5,
       expires: comicDownloadInfo.value.data.expires,
     });
     downloadStore.removeDownloadAction(props.comic.id);
     await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
-    await insertDownload();
-    isDownload.value = true;
+    await insertDownload({
+      id,
+      name,
+    });
   } catch (e) {
-    console.error(e);
+    snackbar.error("下载出错，请打开日志查看详细错误");
+    logger.error(`下载出错，原因 ${String(e)}`);
   }
 };
 </script>
 
 <template>
-  <v-btn size="large" block variant="flat" color="primary" @click="ok">
+  <v-btn
+    size="large"
+    block
+    variant="flat"
+    color="primary"
+    :loading="isDownloading"
+    @click="ok"
+  >
     <template #prepend>
-      <v-icon
-        icon="mdi-download"
-        :color="isDownload ? 'green' : undefined"
-      ></v-icon>
+      <v-icon icon="mdi-download"></v-icon>
     </template>
-    {{ isDownloading ? percent + "%" : isDownload ? "已下载" : "下载" }}
+    <template #loader>
+      {{ percent + "%" }}
+    </template>
+    下载
   </v-btn>
+  <v-dialog v-model:model-value="showDownloadConfirmDialog" width="50%">
+    <template #default="{ isActive }">
+      <v-card title="确认购买？">
+        <v-card-text>
+          该本子为 JM 付费本，是否支付 {{ comic.price }} JCoin 购买？
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text="取消" @click="isActive.value = false"></v-btn>
+          <v-btn
+            :loading="buyComicLoading"
+            color="primary"
+            text="确认"
+            @click="buy"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
   <v-dialog v-model:model-value="showDownloadConfirmDialog" width="50%">
     <template #default="{ isActive }">
       <v-card title="确认购买？">
@@ -178,6 +228,25 @@ const download = async () => {
         </v-card-actions>
       </v-card>
     </template>
+  </v-dialog>
+  <v-dialog v-model:model-value="showSeriesSelectDialog" width="80%">
+    <v-card title="选择下载章节">
+      <v-card-text class="h-[60vh] overflow-auto">
+        <v-row>
+          <v-col
+            v-for="item of comic.seriesList"
+            :key="item.id"
+            :cols="6"
+            :md="4"
+            :lg="3"
+          >
+            <v-btn size="large" block @click="onSelectSeriesDownload(item)">
+              {{ item.name }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </v-dialog>
 </template>
 

@@ -29,8 +29,10 @@ export class DbService {
     this.loggerService.info(`db 文件路径为 ${this.dbFilePath}`);
     this.initDatabase();
 
-    ipcMain.handle("app/isDownload", async (_e, comicId: number) => {
-      return this.isComicDownload(comicId);
+    // 暂时不检测是否已下载，可能需要重新设计该数据库结构，包含series
+    // series 下的封面都为默认的缺省封面，显示上可能有问题
+    ipcMain.handle("app/isDownload", async () => {
+      return false;
     });
     ipcMain.handle("app/getDownloadList", async (_e, page, pageSize) => {
       return this.getDownloadComicList(page, pageSize);
