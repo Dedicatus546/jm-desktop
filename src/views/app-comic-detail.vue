@@ -77,7 +77,7 @@ const currentSeriesName = computed(() => {
     const item = comicInfo.value.data.seriesList.find(
       (item) => item.id === comicInfo.value.data.currentSeriesId,
     );
-    return item ? `从${item.name}开始阅读` : "阅读";
+    return item ? `从${item.name}阅读` : "阅读";
   }
   return "阅读";
 });
