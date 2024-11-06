@@ -1,6 +1,6 @@
 {
   "name": "jm-desktop",
-  "description": "A jm comic desktop app for windows by react + electron.",
+  "description": "A jm comic desktop app for windows and linux by vue + electron.",
   "author": {
     "name": "Par9uet",
     "email": "1607611087@qq.com"
