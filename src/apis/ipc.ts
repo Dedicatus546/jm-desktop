@@ -63,5 +63,5 @@ export const getConfigIpc = () => {
 };
 
 export const selectFolderIpc = () => {
-  return invoke<string>("selectFolder");
+  return invoke<string>("app/selectFolder");
 };
