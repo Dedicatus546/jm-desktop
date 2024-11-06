@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { breakpointsAntDesign } from "@vueuse/core";
+import { breakpointsVuetifyV3 } from "@vueuse/core";
 import { useRequest } from "alova/client";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
@@ -14,7 +14,7 @@ const { loading: latestLoading, data: latestData } = useRequest(() =>
   getLatestComicListApi(1),
 );
 
-const breakpoints = useBreakpoints(breakpointsAntDesign);
+const breakpoints = useBreakpoints(breakpointsVuetifyV3);
 const isGreaterXXL = breakpoints.greater("xxl");
 const isGreaterXL = breakpoints.greater("xl");
 const isGreaterSM = breakpoints.greater("sm");
