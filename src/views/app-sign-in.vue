@@ -15,6 +15,51 @@ const value = [currentDate];
 const { data, send } = useRequest(() =>
   getSignInDataApi(userStore.userInfo?.uid ?? 0),
 );
+const sliderTickMap = computed(() => {
+  const o = {
+    3: "三",
+    6: "七",
+  };
+  if (data.value) {
+    o["3"] +=
+      `(${data.value.data.threeDaysCoinCount},${data.value.data.threeDaysExpCount})`;
+    o["6"] +=
+      `(${data.value.data.sevenDaysCoinCount},${data.value.data.sevenDaysExpCount})`;
+  }
+  return {
+    1: "一",
+    2: "二",
+    3: o["3"],
+    4: "四",
+    5: "五",
+    6: "六",
+    7: o["6"],
+  };
+});
+const continuousSignInDay = computed(() => {
+  if (!data.value) {
+    return 1;
+  }
+  const dateArr = Object.values(data.value.data.dateMap);
+  return dateArr.reduce(
+    (r, item) => {
+      if (item.isSign) {
+        r.current++;
+        r.max = Math.max(r.max, r.current);
+      } else {
+        r.current = 0;
+      }
+      return r;
+    },
+    { current: 0, max: 0 },
+  ).max;
+});
+const signInSumDay = computed(() => {
+  if (!data.value) {
+    return 0;
+  }
+  return Math.round(30 * data.value.data.currentProgress);
+});
 const dateMap = computed(() => {
   if (!data.value) {
     return null;
@@ -91,42 +136,70 @@ onSuccess(() => {
 <template>
   <v-card>
     <v-card-text>
-      <v-calendar
-        ref="calendar"
-        :model-value="value"
-        class="signCalendar"
-        :events="events"
-      >
-        <template #header></template>
-        <template #event="{ event }">
-          <div v-if="event.type === 1" class="m-2">
-            <v-chip>
-              <template #prepend>
-                <v-icon icon="mdi-heart" color="red"></v-icon>
-              </template>
-              <span class="ml-1">额外奖励</span>
-            </v-chip>
-          </div>
-          <div v-else-if="event.type === 2" class="m-2">
-            <v-chip>
-              <template #prepend>
-                <v-icon icon="mdi-check" color="success"></v-icon>
-              </template>
-              <span class="ml-1">已签到</span>
-            </v-chip>
-          </div>
-        </template>
-      </v-calendar>
-      <v-btn
-        class="mt-4"
-        :loading="signInLoading"
-        size="large"
-        block
-        color="primary"
-        @click="signIn()"
-      >
-        签到
-      </v-btn>
+      <div class="flex flex-col gap-4">
+        <v-calendar
+          ref="calendar"
+          :model-value="value"
+          class="signCalendar"
+          :events="events"
+        >
+          <template #header>
+            <div class="text-h6 text-center mb-4">
+              本月已签到 {{ signInSumDay }} 天
+            </div>
+          </template>
+          <template #event="{ event }">
+            <div v-if="event.type === 1" class="m-2">
+              <v-chip>
+                <template #prepend>
+                  <v-icon icon="mdi-heart" color="red"></v-icon>
+                </template>
+                <span class="ml-1">额外奖励</span>
+              </v-chip>
+            </div>
+            <div v-else-if="event.type === 2" class="m-2">
+              <v-chip>
+                <template #prepend>
+                  <v-icon icon="mdi-check" color="success"></v-icon>
+                </template>
+                <span class="ml-1">已签到</span>
+              </v-chip>
+            </div>
+          </template>
+        </v-calendar>
+        <v-slider
+          readonly
+          label="连续签到进度"
+          :model-value="continuousSignInDay"
+          :min="1"
+          :max="7"
+          :step="1"
+          show-ticks="always"
+          :ticks="sliderTickMap"
+          :tick-size="7"
+        ></v-slider>
+        <v-alert type="info" title="连续签到奖励">
+          <template #text>
+            <div class="text">
+              连续签到三天额外得 {{ data?.data.threeDaysCoinCount ?? 0 }} JCoins
+              和 {{ data?.data.threeDaysExpCount ?? 0 }} 经验
+            </div>
+            <div class="text">
+              连续签到七天额外得 {{ data?.data.sevenDaysCoinCount ?? 0 }} JCoins
+              和 {{ data?.data.sevenDaysExpCount ?? 0 }} 经验
+            </div>
+          </template>
+        </v-alert>
+        <v-btn
+          :loading="signInLoading"
+          size="large"
+          block
+          color="primary"
+          @click="signIn()"
+        >
+          签到
+        </v-btn>
+      </div>
     </v-card-text>
   </v-card>
 </template>
