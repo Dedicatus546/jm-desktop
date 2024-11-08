@@ -41,17 +41,10 @@ const slidesPerView = computed(() => {
     <v-col v-for="item of data.data" :key="item.id" :cols="24">
       <v-card :title="item.title">
         <v-card-text>
-          <swiper
-            class="select-none"
-            centered-slides
-            loop
+          <app-home-swiper
+            :list="item.list"
             :slides-per-view="slidesPerView"
-            :space-between="16"
-          >
-            <swiper-slide v-for="subItem of item.list" :key="subItem.id">
-              <comic-route-item :comic="subItem" />
-            </swiper-slide>
-          </swiper>
+          ></app-home-swiper>
         </v-card-text>
       </v-card>
     </v-col>
