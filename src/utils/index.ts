@@ -16,3 +16,13 @@ export const getLoadedImage = async (src: string) => {
 export const resolveDownloadFileName = (comicId: number, name: string) => {
   return `[JM${comicId}] ${name.replace(/[\\/:*?"<>|]/g, "_")}.zip`;
 };
+
+export const normalizeError = (err: unknown) => {
+  if (err instanceof Error) {
+    return `
+      ${err.message}\n
+      ${err.stack}
+    `;
+  }
+  return String(err);
+};

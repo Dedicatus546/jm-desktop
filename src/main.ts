@@ -13,6 +13,7 @@ import App from "./App.vue";
 import logger from "./logger";
 import router from "./router";
 import pinia from "./store";
+import { normalizeError } from "./utils";
 
 const vuetify = createVuetify({
   theme: {
@@ -42,10 +43,9 @@ const vuetify = createVuetify({
 const app = createApp(App);
 
 app.config.errorHandler = (err, _instance, info) => {
-  logger.error(`[vue] 全局捕获错误，错误码 ${info} 错误信息 ${String(err)}`);
-  if (err instanceof Error) {
-    logger.error(`${err.stack}`);
-  }
+  logger.error(
+    `[vue] 全局捕获错误，错误码 ${info} 错误信息 ${normalizeError(err)}`,
+  );
 };
 
 app.config.performance = true;
