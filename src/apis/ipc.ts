@@ -20,6 +20,10 @@ export const openPathIpc = (path: string) => {
   return ipcRenderer.send("app/openFile", path);
 };
 
+export const relaunchAppIpc = () => {
+  return ipcRenderer.send("app/relaunch");
+};
+
 const logIpc = (level: "info" | "error", msg: string) => {
   return ipcRenderer.send(`logger/${level}`, msg);
 };

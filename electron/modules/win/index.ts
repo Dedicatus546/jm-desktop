@@ -48,6 +48,10 @@ export class WinService {
         })
         .on("app/openFile", (_v, path: string) => {
           shell.openPath(path);
+        })
+        .on("app/relaunch", () => {
+          app.relaunch();
+          app.quit();
         });
       ipcMain.handle("app/selectFolder", async () => {
         const result = await dialog.showOpenDialog(this.win!, {

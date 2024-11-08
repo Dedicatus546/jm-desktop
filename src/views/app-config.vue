@@ -2,9 +2,9 @@
 import { omit, pick } from "radash";
 import { VNumberInput } from "vuetify/labs/VNumberInput";
 
-import { getConfigIpc, updateConfigIpc } from "@/apis";
+import { getConfigIpc, relaunchAppIpc, updateConfigIpc } from "@/apis";
+import useDialog from "@/compositions/use-dialog";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
-import useSnackbar from "@/compositions/use-snack-bar";
 import useAppStore from "@/stores/use-app-store";
 
 const appStore = useAppStore();
@@ -72,12 +72,20 @@ const { loading: saveConfigLoading, invoke: saveConfig } =
     },
   );
 
-const snackbar = useSnackbar();
+const dialog = useDialog();
 const submit = async () => {
   if (formValid.value) {
     await saveConfig();
-    snackbar.success("更新成功");
-    invoke();
+    await invoke();
+    dialog({
+      width: "50%",
+      title: "更新成功",
+      content: "除下载位置、阅读模式之外的配置重启后生效，是否立即重启？",
+      okText: "重启",
+      onOk() {
+        relaunchAppIpc();
+      },
+    });
   }
 };
 
