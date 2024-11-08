@@ -8,6 +8,7 @@ import {
   insertDownloadComicIpc,
   saveDownloadComicIpc,
 } from "@/apis";
+import useDialog from "@/compositions/use-dialog";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useSnackbar from "@/compositions/use-snack-bar";
 import logger from "@/logger";
@@ -27,9 +28,9 @@ const props = defineProps<{
     }>;
   };
 }>();
-const showDownloadConfirmDialog = ref(false);
 const showSeriesSelectDialog = ref(false);
 
+const dialog = useDialog();
 const snackbar = useSnackbar();
 const userStore = useUserStore();
 const downloadStore = useDownloadStore();
@@ -88,7 +89,6 @@ const {
 );
 
 const {
-  loading: buyComicLoading,
   onSuccess,
   data: buyComicData,
   send: buyComic,
@@ -102,7 +102,14 @@ onSuccess(() => {
 
 const ok = () => {
   if (props.comic.price > 0 && !props.comic.isBuy) {
-    showDownloadConfirmDialog.value = true;
+    dialog({
+      width: "50%",
+      title: "确认购买？",
+      content: `该本子为 JM 付费本，是否支付 ${props.comic.price} JCoin 购买？`,
+      onOk: async () => {
+        await buy();
+      },
+    });
     return;
   }
   // 2024.11.05
@@ -129,7 +136,6 @@ const buy = async () => {
   }
   try {
     await buyComic();
-    showDownloadConfirmDialog.value = false;
   } catch (e) {
     logger.error(`购买漫画失败，原因 ${String(e)}`);
     return;
@@ -190,45 +196,6 @@ const download = async (series?: { id: number; name: string }) => {
     </template>
     下载
   </v-btn>
-  <v-dialog v-model:model-value="showDownloadConfirmDialog" width="50%">
-    <template #default="{ isActive }">
-      <v-card title="确认购买？">
-        <v-card-text>
-          该本子为 JM 付费本，是否支付 {{ comic.price }} JCoin 购买？
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text="取消" @click="isActive.value = false"></v-btn>
-          <v-btn
-            :loading="buyComicLoading"
-            color="primary"
-            text="确认"
-            @click="buy"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-dialog>
-  <v-dialog v-model:model-value="showDownloadConfirmDialog" width="50%">
-    <template #default="{ isActive }">
-      <v-card title="确认购买？">
-        <v-card-text>
-          该本子为 JM 付费本，是否支付 {{ comic.price }} JCoin 购买？
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text="取消" @click="isActive.value = false"></v-btn>
-          <v-btn
-            :loading="buyComicLoading"
-            color="primary"
-            text="确认"
-            @click="buy"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-dialog>
   <v-dialog v-model:model-value="showSeriesSelectDialog" width="80%">
     <v-card title="选择下载章节">
       <v-card-text class="h-[60vh] overflow-auto">
