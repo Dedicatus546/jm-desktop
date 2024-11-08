@@ -3,14 +3,14 @@ import { CSSProperties } from "vue";
 import { VFadeTransition, type VSnackbar } from "vuetify/components";
 
 import {
-  injectKey,
   isSnackbarTopInstance,
   SnackbarBaseInstance,
   SnackbarBottomInstance,
-  SnackbarInjectValue,
   SnackbarInstance,
   SnackbarLocation,
   SnackbarOptions,
+  snackbarProviderInjectKey,
+  SnackbarProviderInjectValue,
   SnackbarTopInstance,
 } from "@/types";
 
@@ -128,7 +128,7 @@ const getStyle = (inst: SnackbarInstance) => {
   return style;
 };
 
-const snackbar: SnackbarInjectValue = ((text, messageOptions) => {
+const snackbar: SnackbarProviderInjectValue = ((text, messageOptions) => {
   const configs = {} as SnackbarOptions;
   Object.assign(
     configs,
@@ -168,7 +168,7 @@ const snackbar: SnackbarInjectValue = ((text, messageOptions) => {
       close(messageInstance.id, messageInstance.location);
     },
   };
-}) as SnackbarInjectValue;
+}) as SnackbarProviderInjectValue;
 
 (["primary", "success", "warning", "error"] as const).forEach((key) => {
   snackbar[key] = (text, config) => {
@@ -179,7 +179,7 @@ const snackbar: SnackbarInjectValue = ((text, messageOptions) => {
   };
 });
 
-provide<SnackbarInjectValue>(injectKey, snackbar);
+provide<SnackbarProviderInjectValue>(snackbarProviderInjectKey, snackbar);
 </script>
 
 <template>

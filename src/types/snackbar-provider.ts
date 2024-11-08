@@ -1,7 +1,7 @@
 import { ExtractPropTypes, VNodeChild } from "vue";
 import { VSnackbar } from "vuetify/components";
 
-export const injectKey = Symbol("vuetify-Snackbar");
+export const snackbarProviderInjectKey = Symbol("vuetify-snackbar");
 
 export type TextType = string | (() => VNodeChild);
 
@@ -61,7 +61,7 @@ export interface Snackbar<T = any> {
   ): closable;
 }
 
-export interface SnackbarInjectValue extends Snackbar<void> {
+export interface SnackbarProviderInjectValue extends Snackbar<void> {
   primary: Snackbar<"primary">;
   success: Snackbar<"success">;
   warning: Snackbar<"warning">;
