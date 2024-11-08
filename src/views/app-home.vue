@@ -20,13 +20,13 @@ const isGreaterXL = breakpoints.greater("xl");
 const isGreaterSM = breakpoints.greater("sm");
 const slidesPerView = computed(() => {
   if (isGreaterXXL.value) {
-    return 6;
+    return 6.5;
   } else if (isGreaterXL.value) {
-    return 5;
+    return 5.5;
   } else if (isGreaterSM.value) {
-    return 4;
+    return 4.5;
   }
-  return 3;
+  return 3.5;
 });
 </script>
 
