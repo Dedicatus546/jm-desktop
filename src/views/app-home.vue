@@ -20,13 +20,13 @@ const isGreaterXL = breakpoints.greater("xl");
 const isGreaterSM = breakpoints.greater("sm");
 const slidesPerView = computed(() => {
   if (isGreaterXXL.value) {
-    return 6.5;
+    return 6.3;
   } else if (isGreaterXL.value) {
-    return 5.5;
+    return 5.3;
   } else if (isGreaterSM.value) {
-    return 4.5;
+    return 4.3;
   }
-  return 3.5;
+  return 3.3;
 });
 </script>
 
@@ -43,6 +43,8 @@ const slidesPerView = computed(() => {
         <v-card-text>
           <swiper
             class="select-none"
+            centered-slides
+            loop
             :slides-per-view="slidesPerView"
             :space-between="16"
           >
