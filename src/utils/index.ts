@@ -19,10 +19,7 @@ export const resolveDownloadFileName = (comicId: number, name: string) => {
 
 export const normalizeError = (err: unknown) => {
   if (err instanceof Error) {
-    return `
-      ${err.message}\n
-      ${err.stack}
-    `;
+    return ` ${err.message}\n${err.stack}`;
   }
   return String(err);
 };
