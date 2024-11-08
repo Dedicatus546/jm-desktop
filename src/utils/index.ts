@@ -23,3 +23,11 @@ export const normalizeError = (err: unknown) => {
   }
   return String(err);
 };
+
+export const delay = async (ts: number) => {
+  await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ts);
+  });
+};
