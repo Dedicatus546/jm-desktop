@@ -19,6 +19,7 @@ declare module 'vue' {
     AppEmptyState: typeof import('./src/components/app-empty-state.vue')['default']
     AppHeader: typeof import('./src/components/app-header.vue')['default']
     AppHeaderIconBtn: typeof import('./src/components/app-header-icon-btn.vue')['default']
+    AppHomeSwiper: typeof import('./src/components/app-home-swiper.vue')['default']
     AppPersonCollectComic: typeof import('./src/components/app-person-collect-comic.vue')['default']
     AppPersonHistoryComic: typeof import('./src/components/app-person-history-comic.vue')['default']
     AppPersonHistoryComment: typeof import('./src/components/app-person-history-comment.vue')['default']
