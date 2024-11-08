@@ -13,6 +13,7 @@ declare module 'vue' {
     AppComicDetailSeries: typeof import('./src/components/app-comic-detail-series.vue')['default']
     AppComicPageRead: typeof import('./src/components/app-comic-page-read.vue')['default']
     AppComicScrollRead: typeof import('./src/components/app-comic-scroll-read.vue')['default']
+    AppDialogProvider: typeof import('./src/components/app-dialog-provider.vue')['default']
     AppDownloadCompleteList: typeof import('./src/components/app-download-complete-list.vue')['default']
     AppDownloadPendingList: typeof import('./src/components/app-download-pending-list.vue')['default']
     AppEmptyState: typeof import('./src/components/app-empty-state.vue')['default']
