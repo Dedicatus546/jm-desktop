@@ -11,11 +11,16 @@ interface State {
     collectCount: number;
     maxCollectCount: number;
   } | null;
+  loginInfo: {
+    username: string;
+    password: string;
+  } | null;
 }
 
 const useUserStore = defineStore("user", () => {
   const state = reactive<State>({
     userInfo: null,
+    loginInfo: null,
   });
 
   const updateUserInfoAction = (userInfo: NonNullable<State["userInfo"]>) => {
@@ -26,13 +31,22 @@ const useUserStore = defineStore("user", () => {
     state.userInfo = Object.assign({}, userInfo);
   };
 
+  const updateLoginInfoAction = (username: string, password: string) => {
+    state.loginInfo = {
+      username,
+      password,
+    };
+  };
+
   const logoutAction = () => {
     state.userInfo = null;
+    state.loginInfo = null;
   };
 
   return {
     ...toRefs(state),
     updateUserInfoAction,
+    updateLoginInfoAction,
     logoutAction,
   };
 });

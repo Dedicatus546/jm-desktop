@@ -6,17 +6,10 @@ import logger from "@/logger";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 import { Config } from "@/types/base";
+import { delay } from "@/utils";
 
 import useDecodeUserInfo from "./use-decode-user-info";
 import useIpcRendererInvoke from "./use-ipc-renderer-invoke";
-
-const delay = (time: number) => {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time);
-  });
-};
 
 const useInitSetting = () => {
   const appStore = useAppStore();
@@ -82,6 +75,8 @@ const useInitConfig = () => {
 const useAutoLogin = () => {
   const userStore = useUserStore();
   const appStore = useAppStore();
+  let username = "",
+    password = "";
   const { send, onSuccess, data } = useRequest(
     (username: string, password: string) => loginApi(username, password),
     {
@@ -91,10 +86,13 @@ const useAutoLogin = () => {
   const { decrypt } = useDecodeUserInfo();
   onSuccess(() => {
     userStore.updateUserInfoAction(data.value.data);
+    userStore.updateLoginInfoAction(username, password);
   });
   return {
     init: async () => {
-      const { username, password } = decrypt(appStore.config.loginUserInfo);
+      const loginInfo = decrypt(appStore.config.loginUserInfo);
+      username = loginInfo.username;
+      password = loginInfo.password;
       return send(username, password).catch(() => {
         logger.error("自动登录失败，跳过");
       });

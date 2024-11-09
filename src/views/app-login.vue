@@ -40,6 +40,7 @@ const snackbar = useSnackbar();
 onSuccess(() => {
   snackbar.primary("登录成功");
   userStore.updateUserInfoAction(data.value.data);
+  userStore.updateLoginInfoAction(formState.username, formState.password);
   if (formState.autoLogin) {
     const encryptStr = encrypt({
       username: formState.username,
@@ -58,7 +59,7 @@ onError((e) => {
 <template>
   <v-card title="登录到">
     <v-card-text>
-      <v-form @submit.prevent="send">
+      <v-form :disabled="loading" @submit.prevent="send">
         <v-row>
           <v-col :cols="12">
             <v-text-field
