@@ -285,10 +285,7 @@ export const getCollectComicListApi = (query: {
   });
 };
 
-export const getHistoryComicListApi = (query: {
-  page: number;
-  order: string;
-}) => {
+export const getHistoryComicListApi = (query: { page: number }) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
@@ -323,8 +320,6 @@ export const getHistoryComicListApi = (query: {
   >("watch_list", {
     params: {
       page: query.page,
-      folder_id: 0,
-      o: query.order,
     },
     transform(res) {
       return {
