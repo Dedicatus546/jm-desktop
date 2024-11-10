@@ -4,6 +4,8 @@ import { usePagination, useRequest } from "alova/client";
 import { getCategoryFilterListApi, getCategoryListApi } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 
+const router = useRouter();
+
 const formState = reactive({
   order: "",
   category: "",
@@ -41,18 +43,17 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
   },
 );
 
-const {
-  loading: categoryLoading,
-  data: category,
-  onSuccess,
-} = useRequest(() => getCategoryListApi(), {
-  initialData: {
-    data: {
-      categoryList: [],
-      tagTypeList: [],
+const { loading: categoryLoading, data: category } = useRequest(
+  () => getCategoryListApi(),
+  {
+    initialData: {
+      data: {
+        categoryList: [],
+        tagTypeList: [],
+      },
     },
   },
-});
+);
 
 const subCategoryList = computed(() => {
   return (
@@ -62,7 +63,19 @@ const subCategoryList = computed(() => {
   );
 });
 
-onSuccess(() => {});
+const onCategoryClick = (type: string, slug: string, name: string) => {
+  if (type === "slug") {
+    formState.subCategory = "";
+    formState.category = slug;
+  } else {
+    router.push({
+      name: "QUICK_SEARCH",
+      query: {
+        query: name,
+      },
+    });
+  }
+};
 </script>
 
 <template>
@@ -113,7 +126,6 @@ onSuccess(() => {});
                       分类
                     </div>
                     <div class="flex flex-wrap gap-2">
-                      <!-- TODO fix 这里有些 category 需要走 quick search 页面 -->
                       <v-chip
                         v-for="item of category.data.categoryList"
                         :key="item.id"
@@ -124,8 +136,7 @@ onSuccess(() => {});
                             : undefined
                         "
                         @click="
-                          formState.subCategory = '';
-                          formState.category = item.slug;
+                          onCategoryClick(item.type, item.slug, item.name)
                         "
                       >
                         {{ item.name }}
