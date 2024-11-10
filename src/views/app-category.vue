@@ -64,7 +64,7 @@ const subCategoryList = computed(() => {
 });
 
 const onCategoryClick = (type: string, slug: string, name: string) => {
-  if (type === "slug") {
+  if (type === "slug" || slug === "") {
     formState.subCategory = "";
     formState.category = slug;
   } else {
