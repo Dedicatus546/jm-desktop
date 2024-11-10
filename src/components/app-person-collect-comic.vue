@@ -39,20 +39,12 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
             hide-details
             :items="[
               {
-                title: '最新',
+                title: '收藏时间',
                 value: 'mr',
               },
               {
-                title: '最多收藏',
-                value: 'mv',
-              },
-              {
-                title: '最多图片',
+                title: '更新时间',
                 value: 'mp',
-              },
-              {
-                title: '最多爱心',
-                value: 'tf',
               },
             ]"
           ></v-select>
