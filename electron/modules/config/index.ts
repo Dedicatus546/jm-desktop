@@ -122,6 +122,19 @@ export class ConfigService {
     );
   }
 
+  public resolveProxyUrl() {
+    const { proxy } = this.config;
+    if (!proxy) {
+      return undefined;
+    }
+    const { host, port, username, password } = proxy;
+    const url = new URL(`http://${host}:${port}`);
+    url.username = username;
+    url.password = password;
+    // 去除末尾斜杠
+    return url.toString().slice(0, -1);
+  }
+
   private sync() {
     this.config = JSON.parse(
       readFileSync(this.configPath, { encoding: "utf-8" }),

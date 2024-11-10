@@ -36,11 +36,12 @@ export class ProxyServerService {
       target: this.configService.get().apiUrl,
     });
     let agent: Agent | undefined = undefined;
-    if (this.configService.get().proxy) {
-      const proxy = this.configService.get().proxy!;
-      const proxyUrl = `http:${proxy.host}:${proxy.port}`;
+    const proxyUrl = this.configService.resolveProxyUrl();
+    if (proxyUrl) {
       agent = new HttpsProxyAgent(proxyUrl);
-      this.loggerService.info(`使用 http 代理 ${proxyUrl}`);
+      this.loggerService.info(`接口使用 http 代理`);
+    } else {
+      this.loggerService.info(`接口未配置 http 代理`);
     }
     this.loggerService.info(`默认代理服务器配置 ${JSON.stringify(config)}`);
 

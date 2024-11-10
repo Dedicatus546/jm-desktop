@@ -1,6 +1,14 @@
 import { join } from "node:path";
 
-import { app, BrowserWindow, dialog, ipcMain, screen, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  screen,
+  session,
+  shell,
+} from "electron";
 import { inject, singleton } from "tsyringe";
 
 import { ConfigService } from "../config";
@@ -99,6 +107,17 @@ export class WinService {
     process.on("uncaughtException", () => {
       this.quit();
     });
+
+    const proxyUrl = this.configService.resolveProxyUrl();
+    if (proxyUrl) {
+      await session.defaultSession.setProxy({
+        mode: "fixed_servers",
+        proxyRules: proxyUrl,
+      });
+      this.loggerService.info(`渲染进程设置 http 代理, ${proxyUrl}`);
+    } else {
+      this.loggerService.info(`渲染进程未设置 http 代理`);
+    }
 
     const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
     if (devServerUrl) {
