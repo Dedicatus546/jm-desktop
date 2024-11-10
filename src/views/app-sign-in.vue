@@ -58,7 +58,13 @@ const signInSumDay = computed(() => {
   if (!data.value) {
     return 0;
   }
-  return Math.round(30 * data.value.data.currentProgress);
+  const dateArr = Object.values(data.value.data.dateMap);
+  return dateArr.reduce((r, item) => {
+    if (item.isSign) {
+      return r + 1;
+    }
+    return r;
+  }, 0);
 });
 const dateMap = computed(() => {
   if (!data.value) {
