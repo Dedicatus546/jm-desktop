@@ -116,6 +116,9 @@ export class WinService {
       });
       this.loggerService.info(`渲染进程设置 http 代理, ${proxyUrl}`);
     } else {
+      await session.defaultSession.setProxy({
+        mode: "direct",
+      });
       this.loggerService.info(`渲染进程未设置 http 代理`);
     }
 

@@ -68,7 +68,9 @@ export class ProxyServerService {
     });
 
     this.serverInitPromise = new Promise((resolve, reject) => {
-      this.server = app.listen(0, () => {
+      const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
+      const port = devServerUrl ? 6174 : 0;
+      this.server = app.listen(port, () => {
         this.loggerService.info(
           `启动代理服务器，随机端口为 ${(this.server!.address() as AddressInfo).port}`,
         );
