@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { breakpointsVuetifyV3 } from "@vueuse/core";
 import { useRequest } from "alova/client";
-import { Swiper, SwiperSlide } from "swiper/vue";
 
 import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
 
