@@ -1,21 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
+import { scrollBehavior } from "@/compositions/use-recovery-scroll-position";
 import AppComicDetail from "@/views/app-comic-detail.vue";
 import AppComicRead from "@/views/app-comic-read.vue";
-import AppConfig from "@/views/app-config.vue";
-import AppDownload from "@/views/app-download.vue";
 import AppHome from "@/views/app-home.vue";
-import AppLogin from "@/views/app-login.vue";
-import AppPerson from "@/views/app-person.vue";
-import AppSearch from "@/views/app-search.vue";
-
-import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
-import AppAbout from "./views/app-about.vue";
-import AppCategory from "./views/app-category.vue";
-import AppComicLatest from "./views/app-comic-latest.vue";
-import AppQuickSearch from "./views/app-quick-search.vue";
-import AppSignIn from "./views/app-sign-in.vue";
-import AppWeek from "./views/app-week.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,7 +18,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/search",
     name: "SEARCH",
-    component: AppSearch,
+    component: () => import("@/views/app-search.vue"),
   },
   {
     path: "/quick-search",
@@ -38,32 +26,32 @@ const routes: RouteRecordRaw[] = [
     props: (to) => ({
       query: to.query.query as string,
     }),
-    component: AppQuickSearch,
+    component: () => import("@/views/app-quick-search.vue"),
   },
   {
     path: "/category",
     name: "CATEGORY",
-    component: AppCategory,
+    component: () => import("@/views/app-category.vue"),
   },
   {
     path: "/week",
     name: "WEEK",
-    component: AppWeek,
+    component: () => import("@/views/app-week.vue"),
   },
   {
     path: "/person",
     name: "PERSON",
-    component: AppPerson,
+    component: () => import("@/views/app-person.vue"),
   },
   {
     path: "/login",
     name: "LOGIN",
-    component: AppLogin,
+    component: () => import("@/views/app-login.vue"),
   },
   {
     path: "/config",
     name: "CONFIG",
-    component: AppConfig,
+    component: () => import("@/views/app-config.vue"),
   },
   {
     path: "/comic-detail/:id(\\d+)",
@@ -84,22 +72,22 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/download",
     name: "DOWNLOAD",
-    component: AppDownload,
+    component: () => import("@/views/app-download.vue"),
   },
   {
     path: "/sign-in",
     name: "SIGN_IN",
-    component: AppSignIn,
+    component: () => import("@/views/app-sign-in.vue"),
   },
   {
     path: "/comic-latest",
     name: "COMIC_LATEST",
-    component: AppComicLatest,
+    component: () => import("@/views/app-comic-latest.vue"),
   },
   {
     path: "/about",
     name: "ABOUT",
-    component: AppAbout,
+    component: () => import("@/views/app-about.vue"),
   },
 ];
 
