@@ -182,6 +182,15 @@ const logout = () => {
           "
         />
         <app-header-icon-btn
+          tooltip-text="关于"
+          icon="mdi-information"
+          @click="
+            router.push({
+              name: 'ABOUT',
+            })
+          "
+        />
+        <app-header-icon-btn
           tooltip-text="最小化"
           icon="mdi-minus"
           @click="minimizeWinIpc()"

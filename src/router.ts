@@ -10,6 +10,7 @@ import AppPerson from "@/views/app-person.vue";
 import AppSearch from "@/views/app-search.vue";
 
 import { scrollBehavior } from "./compositions/use-recovery-scroll-position";
+import AppAbout from "./views/app-about.vue";
 import AppCategory from "./views/app-category.vue";
 import AppComicLatest from "./views/app-comic-latest.vue";
 import AppQuickSearch from "./views/app-quick-search.vue";
@@ -94,6 +95,11 @@ const routes: RouteRecordRaw[] = [
     path: "/comic-latest",
     name: "COMIC_LATEST",
     component: AppComicLatest,
+  },
+  {
+    path: "/about",
+    name: "ABOUT",
+    component: AppAbout,
   },
 ];
 
