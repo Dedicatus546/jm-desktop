@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,9 +13,15 @@ import electron from "vite-plugin-electron/simple";
 import vueDevTools from "vite-plugin-vue-devtools";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const currentCommitHash = execSync("git rev-parse HEAD")
+  .toString()
+  .substring(0, 8);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    __COMIT_HASH__: JSON.stringify(currentCommitHash),
+  },
   base: "/",
   plugins: [
     vue(),

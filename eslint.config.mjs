@@ -32,6 +32,7 @@ export default [
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended",
     "./.eslintrc-auto-import.json",
+    "./.eslintrc-define-import.json"
   ),
   {
     plugins: {
