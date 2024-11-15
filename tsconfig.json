@@ -25,7 +25,8 @@
 
     "paths": {
       "@/*": ["./src/*"],
-      "@electron/*": ["./electron/*"]
+      "@electron/*": ["./electron/*"],
+      "@@/*": ["./*"]
     }
   },
   "include": [

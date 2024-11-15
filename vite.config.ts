@@ -68,6 +68,7 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
       "@electron": resolve(__dirname, "electron"),
+      "@@": resolve(__dirname),
     },
   },
   server: {
