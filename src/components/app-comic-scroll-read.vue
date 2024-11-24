@@ -11,6 +11,11 @@ const onSliderEnd = (value: number) => {
   const index = value - 1;
   comicVerticalPicListRef.value?.[index].scrollIntoView();
 };
+
+const onDecodeSuccess = inject<(index: number) => void>(
+  "onDecodeSuccess",
+  () => {},
+);
 </script>
 
 <template>
@@ -23,6 +28,7 @@ const onSliderEnd = (value: number) => {
         :comic-id="comicId"
         :src="item"
         @intersect="sliderValue = index + 1"
+        @decode-success="onDecodeSuccess(index)"
       />
     </div>
     <div class="absolute bottom-4 inset-x-4">

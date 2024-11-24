@@ -7,10 +7,6 @@ const props = defineProps<{
 const page = ref(0); // [0, picList.length - 1]
 const sliderValue = ref(1); // [1, picList.length]
 
-onActivated(() => {
-  page.value = 0;
-});
-
 const hasLastPage = computed(() => page.value > 0);
 const lastPage = () => {
   if (page.value === 0) {
@@ -28,6 +24,11 @@ const nextPage = () => {
   page.value++;
   sliderValue.value = page.value + 1;
 };
+
+const onDecodeSuccess = inject<(index: number) => void>(
+  "onDecodeSuccess",
+  () => {},
+);
 
 onKeyStroke("ArrowRight", () => nextPage(), {
   dedupe: true,
@@ -49,6 +50,7 @@ const onSliderEnd = (value: [number, number] | number) => {
           :key="picList[page]"
           :comic-id="comicId"
           :src="picList[page]"
+          @decode-success="onDecodeSuccess(page)"
         />
       </div>
       <div class="flex-shrink-0">

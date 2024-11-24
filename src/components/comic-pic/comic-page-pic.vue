@@ -5,12 +5,16 @@ const props = defineProps<{
   src: string;
   comicId: number;
 }>();
+const emits = defineEmits<{
+  (e: "decodeSuccess"): void;
+}>();
 
 const isLoaded = ref(false);
 const imgSrc = ref<string>("");
 
 onMounted(async () => {
   imgSrc.value = await decodeImage(props.src, props.comicId);
+  emits("decodeSuccess");
 });
 </script>
 

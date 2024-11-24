@@ -27,6 +27,7 @@ const getSeed = (comicId: number, pageStr: string) => {
 };
 
 const decodeSrcMap = new Map<string, string>();
+const decodePromiseMap = new Map<string, Promise<string>>();
 export const decodeImage = async (src: string, comicId: number) => {
   const key =
     comicId +
@@ -37,6 +38,10 @@ export const decodeImage = async (src: string, comicId: number) => {
   }
   if (!needDecode(comicId)) {
     return src;
+  }
+  // 确保只有一个 promise 被加载
+  if (decodePromiseMap.has(key)) {
+    return decodePromiseMap.get(key)!;
   }
   const page = src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
   const img = await getLoadedImage(src);
@@ -71,7 +76,7 @@ export const decodeImage = async (src: string, comicId: number) => {
       height,
     );
   }
-  return new Promise<string>((resolve, reject) => {
+  const promise = new Promise<string>((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
         if (blob) {
@@ -89,4 +94,7 @@ export const decodeImage = async (src: string, comicId: number) => {
       1,
     );
   });
+  decodePromiseMap.set(key, promise);
+  promise.then(() => decodePromiseMap.delete(key));
+  return promise;
 };

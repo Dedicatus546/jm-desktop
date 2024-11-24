@@ -9,6 +9,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits<{
   (e: "intersect"): void;
+  (e: "decodeSuccess"): void;
 }>();
 
 const elRef = ref<HTMLDivElement | null>(null);
@@ -18,6 +19,7 @@ const imgSrc = ref<string>("");
 const onLoadImageIntersect = async (isIntersecting: boolean) => {
   if (isIntersecting) {
     imgSrc.value = await decodeImage(props.src, props.comicId);
+    emits("decodeSuccess");
   }
 };
 
