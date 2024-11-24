@@ -5,7 +5,7 @@
     "name": "Par9uet",
     "email": "1607611087@qq.com"
   },
-  "version": "1.9.0",
+  "version": "1.10.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
