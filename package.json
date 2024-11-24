@@ -11,7 +11,7 @@
     "dev": "vite",
     "check": "vue-tsc",
     "build": "vue-tsc && vite build && electron-builder --publish always",
-    "build:latest": "vue-tsc --trace-uncaught && vite build && electron-builder --publish never",
+    "build:latest": "vue-tsc && vite build && electron-builder --publish never",
     "preview": "vite preview",
     "lint": "eslint --fix .",
     "postinstall": "electron-builder install-app-deps"
