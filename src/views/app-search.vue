@@ -4,26 +4,48 @@ import { usePagination } from "alova/client";
 import { getComicListApi } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 
+const router = useRouter();
 const formState = reactive({
   content: "",
   order: "mr",
 });
+const redirectId = ref<number | null>(null);
 
-const { page, pageSize, pageCount, data, send, loading } = usePagination(
-  (page) =>
-    getComicListApi({
-      page,
-      content: formState.content,
-      order: formState.order,
-    }),
-  {
-    initialPage: 1,
-    initialPageSize: 80,
-    data: (res) => res.data.content,
-    total: (res) => res.data.total,
-    watchingStates: [() => formState.order],
-  },
-);
+const { page, pageSize, pageCount, data, send, loading, onSuccess } =
+  usePagination(
+    (page) =>
+      getComicListApi({
+        page,
+        content: formState.content,
+        order: formState.order,
+      }),
+    {
+      initialPage: 1,
+      initialPageSize: 80,
+      data: (res) => {
+        const list = res.data.content;
+        redirectId.value = res.data.redirect_aid;
+        return list;
+      },
+      total: (res) => res.data.total,
+      watchingStates: [() => formState.order],
+    },
+  );
+
+// 如果根据 id 搜索应该直接跳到指定详情页
+onSuccess(() => {
+  if (redirectId.value) {
+    router.push({
+      name: "COMIC_DETAIL",
+      params: {
+        id: redirectId.value,
+      },
+    });
+    formState.content = "";
+    redirectId.value = null;
+    send(1, 80);
+  }
+});
 </script>
 
 <template>
@@ -99,7 +121,12 @@ const { page, pageSize, pageCount, data, send, loading } = usePagination(
         </template>
         <template #footer>
           <div class="flex justify-end mt-4">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+            <v-pagination
+              v-model="page"
+              :length="pageCount"
+              :disabled="loading"
+              :total-visible="8"
+            ></v-pagination>
           </div>
         </template>
       </v-data-iterator>
