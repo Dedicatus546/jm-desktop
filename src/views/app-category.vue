@@ -211,7 +211,12 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
         </template>
         <template #footer>
           <div class="flex justify-end mt-4">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+            <v-pagination
+              v-model="page"
+              :length="pageCount"
+              :disabled="loading"
+              :total-visible="8"
+            ></v-pagination>
           </div>
         </template>
       </v-data-iterator>
