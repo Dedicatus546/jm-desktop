@@ -41,7 +41,13 @@ export const getDownloadComicListIpc = (query: {
   pageSize: number;
 }) => {
   return invoke<{
-    list: BaseComic[];
+    list: Array<
+      BaseComic & {
+        fileName: string;
+        belongId: number;
+        seriesName: string;
+      }
+    >;
     total: number;
   }>("app/getDownloadList", query.page, query.pageSize);
 };
