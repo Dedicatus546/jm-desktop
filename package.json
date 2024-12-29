@@ -28,6 +28,7 @@
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
     "https-proxy-agent": "^7.0.6",
+    "mitt": "^3.0.1",
     "pinia": "^2.3.0",
     "radash": "^12.1.0",
     "reflect-metadata": "^0.2.2",
