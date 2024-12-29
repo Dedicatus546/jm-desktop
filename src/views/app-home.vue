@@ -27,6 +27,16 @@ const slidesPerView = computed(() => {
   }
   return 3.3;
 });
+const minListCount = computed(() => {
+  if (isGreaterXXL.value) {
+    return 7;
+  } else if (isGreaterXL.value) {
+    return 6;
+  } else if (isGreaterSM.value) {
+    return 5;
+  }
+  return 4;
+});
 </script>
 
 <template>
@@ -40,7 +50,20 @@ const slidesPerView = computed(() => {
     <v-col v-for="item of data.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
         <v-card-text>
+          <v-row v-if="item.list.length < minListCount">
+            <v-col
+              v-for="subItem of item.list"
+              :key="subItem.id"
+              :cols="6"
+              :sm="4"
+              :md="3"
+              :lg="2"
+            >
+              <comic-route-item :comic="subItem" />
+            </v-col>
+          </v-row>
           <app-home-swiper
+            v-else
             :list="item.list"
             :slides-per-view="slidesPerView"
           ></app-home-swiper>
