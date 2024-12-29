@@ -37,7 +37,7 @@ const slidesPerView = computed(() => {
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
   <v-row v-else>
-    <v-col v-for="item of data.data" :key="item.id" :cols="24">
+    <v-col v-for="item of data.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
         <v-card-text>
           <app-home-swiper
@@ -47,7 +47,7 @@ const slidesPerView = computed(() => {
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col :cols="24">
+    <v-col :cols="12">
       <v-card>
         <v-card-item>
           <div class="flex items-center justify-between">
