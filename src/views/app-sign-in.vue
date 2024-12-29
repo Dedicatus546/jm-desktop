@@ -43,7 +43,6 @@ const continuousSignInDay = computed(() => {
   const dateArr = Object.entries(data.value.data.dateMap)
     .sort((i1, i2) => +i1[0] - +i2[0])
     .map((i) => i[1]);
-  console.log(dateArr);
   return dateArr.reduce(
     (r, item) => {
       if (item.isSign) {
