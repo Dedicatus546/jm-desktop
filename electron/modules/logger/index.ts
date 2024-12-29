@@ -18,7 +18,7 @@ export class LoggerService {
   constructor(@inject(PathService) pathService: PathService) {
     this.logCallbackList = [];
     this.loggerDir = join(pathService.getDataDirPath(), "log");
-    if (existsSync(this.loggerDir)) {
+    if (!existsSync(this.loggerDir)) {
       this.delayLog(() => {
         this.info(`检测到日志目录 ${this.loggerDir} 不存在，创建它`);
       });
