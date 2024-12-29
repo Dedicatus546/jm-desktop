@@ -18,7 +18,7 @@ const decode = (data: string) => {
 
 const http = createAlova({
   statesHook: vueHook,
-  requestAdapter: xhrRequestAdapter(),
+  requestAdapter: xhrRequestAdapter({}),
   baseURL: "/api",
   beforeRequest(method) {
     // method.config.headers["Content-Type"] = "application/x-www-form-urlencoded";
