@@ -2,6 +2,7 @@
 import { getDownloadComicListIpc } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import { emitter } from "@/mitt";
 
 const pagination = reactive({
   page: 1,
@@ -19,6 +20,19 @@ const onPageChange = (page: number) => {
   pagination.page = page;
   invoke();
 };
+
+const onRefreshCompleteDownloadList = () => {
+  pagination.page = 1;
+  invoke();
+};
+
+onMounted(() => {
+  emitter.on("RefreshCompleteDownloadList", onRefreshCompleteDownloadList);
+});
+
+onUnmounted(() => {
+  emitter.off("RefreshCompleteDownloadList", onRefreshCompleteDownloadList);
+});
 </script>
 
 <template>

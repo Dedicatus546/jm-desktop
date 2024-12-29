@@ -12,6 +12,7 @@ import useDialog from "@/compositions/use-dialog";
 import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useSnackbar from "@/compositions/use-snack-bar";
 import logger from "@/logger";
+import { emitter } from "@/mitt";
 import useDownloadStore from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
 import { resolveDownloadFileName } from "@/utils";
@@ -197,6 +198,7 @@ const download = async (series?: { id: number; name: string }) => {
       fileName,
       seriesName: series ? series.name : "",
     });
+    emitter.emit("RefreshCompleteDownloadList");
     snackbar.success("下载成功");
   } catch (e) {
     snackbar.error("下载出错，请打开日志查看详细错误");
