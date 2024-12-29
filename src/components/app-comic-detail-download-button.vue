@@ -14,6 +14,7 @@ import useSnackbar from "@/compositions/use-snack-bar";
 import logger from "@/logger";
 import useDownloadStore from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
+import { resolveDownloadFileName } from "@/utils";
 
 const props = defineProps<{
   comic: {
@@ -46,10 +47,19 @@ const percent = computed(() => {
 });
 
 const { invoke: insertDownload } = useIpcRendererInvoke(
-  (query: { id: number; name: string }) =>
+  (query: {
+    id: number;
+    name: string;
+    belongId: number;
+    fileName: string;
+    seriesName: string;
+  }) =>
     insertDownloadComicIpc({
       id: query.id,
+      belongId: query.belongId,
       name: query.name,
+      fileName: query.fileName,
+      seriesName: query.seriesName,
       author: props.comic.author,
     }),
   {
@@ -76,12 +86,17 @@ const {
   send: downloadComic,
   downloading,
 } = useRequest(
-  (query: { md5: string; expires: number; comicId: number; name: string }) =>
+  (query: {
+    md5: string;
+    expires: number;
+    comicId: number;
+    fileName: string;
+  }) =>
     downloadComicApi({
       md5: query.md5,
       expires: query.expires,
       comicId: query.comicId,
-      name: query.name,
+      fileName: query.fileName,
     }),
   {
     immediate: false,
@@ -146,32 +161,43 @@ const buy = async () => {
 const download = async (series?: { id: number; name: string }) => {
   try {
     const id = series ? series.id : props.comic.id;
-    const name = props.comic.name + (series ? `[${series.name}]` : "");
+    const belongId = props.comic.id;
+    const name = props.comic.name;
+    const seriesName = series ? series.name : "";
+    const fileName = resolveDownloadFileName(
+      id,
+      props.comic.name + (seriesName ? `[${seriesName}]` : ""),
+    );
     await getComicDownloadInfo(id);
-    // 这里依然将下载任务附加在本id上，这样可以方便本页获取下载状态
-    // 后面可能需要更改
     downloadStore.addDownloadAction({
-      id: props.comic.id,
+      id,
+      belongId,
       name,
+      fileName,
+      seriesName,
       author: props.comic.author,
       total: comicDownloadInfo.value.data.fileSize,
     });
     downloadStore.updateDonwloadProgressAction(
-      props.comic.id,
+      id,
       computed(() => downloading.value.loaded),
     );
     await downloadComic({
       comicId: id,
-      name,
+      fileName,
       md5: comicDownloadInfo.value.data.md5,
       expires: comicDownloadInfo.value.data.expires,
     });
-    downloadStore.removeDownloadAction(props.comic.id);
+    downloadStore.removeDownloadAction(id);
     await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
     await insertDownload({
       id,
       name,
+      belongId,
+      fileName,
+      seriesName: series ? series.name : "",
     });
+    snackbar.success("下载成功");
   } catch (e) {
     snackbar.error("下载出错，请打开日志查看详细错误");
     logger.error(`下载出错，原因 ${String(e)}`);

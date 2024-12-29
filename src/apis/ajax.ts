@@ -2,7 +2,6 @@ import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
 
 import { BaseComic } from "@/types";
-import { resolveDownloadFileName } from "@/utils";
 
 import http from "./http";
 
@@ -1219,7 +1218,7 @@ export const downloadComicApi = (query: {
   md5: string;
   expires: number;
   comicId: number;
-  name: string;
+  fileName: string;
 }) => {
   return http.Get<File, Blob>("dl_comic_zip", {
     responseType: "blob",
@@ -1229,13 +1228,9 @@ export const downloadComicApi = (query: {
       aid: query.comicId,
     },
     transform(blob) {
-      const file = new File(
-        [blob],
-        resolveDownloadFileName(query.comicId, query.name),
-        {
-          type: "application/zip",
-        },
-      );
+      const file = new File([blob], query.fileName, {
+        type: "application/zip",
+      });
       return file;
     },
   });

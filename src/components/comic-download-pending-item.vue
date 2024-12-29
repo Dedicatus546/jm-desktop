@@ -6,6 +6,9 @@ const props = defineProps<{
     id: number;
     name: string;
     author: string;
+    belongId: number;
+    fileName: string;
+    seriesName: string;
     total: number;
     loaded: number;
   };
@@ -26,8 +29,14 @@ const appStore = useAppStore();
       cover
       class="block aspect-[3/4]"
       :alt="`${comic.name}的封面`"
-      :src="`${appStore.setting.imgHost}/media/albums/${comic.id}_3x4.jpg`"
-    />
+      :src="`${appStore.setting.imgHost}/media/albums/${comic.belongId}_3x4.jpg`"
+    >
+      <div v-if="comic.id !== comic.belongId" class="absolute right-4 top-4">
+        <v-chip variant="elevated" elevation="0" color="primary">
+          {{ comic.seriesName }}
+        </v-chip>
+      </div>
+    </v-img>
     <v-card-item>
       <v-card-title>{{ comic.name }}</v-card-title>
       <v-card-subtitle>{{ comic.author ?? "未知作者" }}</v-card-subtitle>

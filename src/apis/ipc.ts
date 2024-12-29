@@ -16,8 +16,8 @@ export const openLinkIpc = (link: string) => {
   return ipcRenderer.send("app/openLink", link);
 };
 
-export const openPathIpc = (path: string) => {
-  return ipcRenderer.send("app/openFile", path);
+export const showItemInFolder = (path: string) => {
+  return ipcRenderer.send("app/showItemInFolder", path);
 };
 
 export const relaunchAppIpc = () => {
@@ -48,7 +48,10 @@ export const getDownloadComicListIpc = (query: {
 
 export const insertDownloadComicIpc = (query: {
   id: number;
+  belongId: number;
   name: string;
+  seriesName: string;
+  fileName: string;
   author: string;
 }) => {
   return ipcRenderer.invoke("app/insertDownload", query) as Promise<boolean>;

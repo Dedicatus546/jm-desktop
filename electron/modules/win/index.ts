@@ -54,8 +54,8 @@ export class WinService {
         .on("app/openLink", (_v, link: string) => {
           shell.openExternal(link);
         })
-        .on("app/openFile", (_v, path: string) => {
-          shell.openPath(path);
+        .on("app/showItemInFolder", (_v, path: string) => {
+          shell.showItemInFolder(path);
         })
         .on("app/relaunch", () => {
           app.relaunch();

@@ -3,6 +3,9 @@ import { WatchHandle } from "vue";
 import { BaseComic } from "@/types";
 
 interface PendingItem extends BaseComic {
+  fileName: string;
+  belongId: number;
+  seriesName: string;
   loaded: number;
   total: number;
 }
@@ -20,6 +23,29 @@ const useDownloadStore = defineStore("download", () => {
   const state = reactive<State>({
     pendingMap: new Map(),
   });
+
+  // state.pendingMap.set(1044048, {
+  //   author: "森宫正幸",
+  //   belongId: 1044048,
+  //   seriesName: "",
+  //   fileName:
+  //     "[JM1044048] (C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码].zip",
+  //   id: 1044048,
+  //   loaded: 5000000,
+  //   name: "(C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码]",
+  //   total: 6710886.4,
+  // });
+  // state.pendingMap.set(1044049, {
+  //   author: "森宫正幸",
+  //   belongId: 1044048,
+  //   seriesName: "第二话",
+  //   fileName:
+  //     "[JM1044048] (C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码].zip",
+  //   id: 1044049,
+  //   loaded: 5000000,
+  //   name: "(C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码]",
+  //   total: 6710886.4,
+  // });
 
   const pendingList = computed(() => [...state.pendingMap.values()]);
 

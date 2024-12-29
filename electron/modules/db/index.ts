@@ -11,8 +11,11 @@ import { PathService } from "../path";
 
 export type DownloadItem = {
   id: number;
+  belongId: number;
   name: string;
+  seriesName: string;
   author: string;
+  fileName: string;
 };
 
 @singleton()
@@ -29,8 +32,6 @@ export class DbService {
     this.loggerService.info(`db 文件路径为 ${this.dbFilePath}`);
     this.initDatabase();
 
-    // 暂时不检测是否已下载，可能需要重新设计该数据库结构，包含series
-    // series 下的封面都为默认的缺省封面，显示上可能有问题
     ipcMain.handle("app/isDownload", async () => {
       return false;
     });
@@ -39,7 +40,7 @@ export class DbService {
     });
     ipcMain.handle(
       "app/saveDownloadFile",
-      async (_e, buffer: ArrayBuffer, name: string) => {
+      (_e, buffer: ArrayBuffer, name: string) => {
         writeFileSync(
           resolve(this.configService.get().downloadDir, name),
           Buffer.from(buffer),
@@ -54,10 +55,14 @@ export class DbService {
   private initDatabase() {
     this.db = new Sqlite(this.dbFilePath);
     this.db.exec(`CREATE TABLE IF NOT EXISTS download (
-      id INTEGER PRIMARY KEY,
+      id INTEGER,
+      belongId INTEGER,
       name VARCHAR(100),
+      seriesName VARCHAR(100),
       author VARCHAR(50),
-      createAt INTEGER 
+      fileName VARCHAR(200),
+      createAt INTEGER,
+      PRIMARY KEY (id, belongId)
     )`);
   }
 
@@ -98,9 +103,17 @@ export class DbService {
     }
     const r = this.db
       ?.prepare(
-        "INSERT INTO download(id, name, author, createAt) VALUES(?, ?, ?, ?)",
+        "INSERT INTO download(id, belongId, name, fileName, seriesName, author, createAt) VALUES(?, ?, ?, ?, ?, ?, ?)",
       )
-      .run(item.id, item.name, item.author, Date.now());
+      .run(
+        item.id,
+        item.belongId,
+        item.name,
+        item.fileName,
+        item.seriesName,
+        item.author,
+        Date.now(),
+      );
     return (r?.changes ?? 0) > 0;
   };
 }

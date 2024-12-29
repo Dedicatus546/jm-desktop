@@ -1,29 +1,51 @@
 <script setup lang="ts">
-import { openPathIpc } from "@/apis";
+import { showItemInFolder } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
-import { resolveDownloadFileName } from "@/utils";
 
 const props = defineProps<{
   comic: {
     id: number;
+    belongId: number;
     name: string;
     author: string;
+    fileName: string;
+    seriesName: string;
   };
 }>();
+
+console.log(props);
 
 const appStore = useAppStore();
 
 const openLocalFile = () => {
-  openPathIpc(
-    appStore.config.downloadDir +
-      "/" +
-      resolveDownloadFileName(props.comic.id, props.comic.name),
-  );
+  showItemInFolder(appStore.config.downloadDir + "/" + props.comic.fileName);
 };
 </script>
 
 <template>
-  <comic-base-item :comic="comic" @click="openLocalFile"></comic-base-item>
+  <v-card color="primary" class="cursor-pointer" @click="openLocalFile">
+    <v-img
+      :aspect-ratio="3 / 4"
+      class="block aspect-[3/4]"
+      :alt="`${comic.name}的封面`"
+      :src="`${appStore.setting.imgHost}/media/albums/${comic.belongId}_3x4.jpg`"
+    >
+      <div v-if="comic.id !== comic.belongId" class="absolute right-4 top-4">
+        <v-chip variant="elevated" elevation="0" color="primary">
+          {{ comic.seriesName }}
+        </v-chip>
+      </div>
+    </v-img>
+    <v-card-item>
+      <v-card-title>{{ comic.name }}</v-card-title>
+      <v-card-subtitle>
+        <template v-if="comic.author">
+          {{ comic.author }}
+        </template>
+        <template v-else>未知作者</template>
+      </v-card-subtitle>
+    </v-card-item>
+  </v-card>
 </template>
 
 <style scoped></style>
