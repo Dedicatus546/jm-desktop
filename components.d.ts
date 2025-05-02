@@ -65,6 +65,7 @@ declare module 'vue' {
     VListItemTitle: typeof import('vuetify/components')['VListItemTitle']
     VMain: typeof import('vuetify/components')['VMain']
     VMenu: typeof import('vuetify/components')['VMenu']
+    VNumberInput: typeof import('vuetify/components')['VNumberInput']
     VPagination: typeof import('vuetify/components')['VPagination']
     VProgressCircular: typeof import('vuetify/components')['VProgressCircular']
     VProgressLinear: typeof import('vuetify/components')['VProgressLinear']
