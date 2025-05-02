@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { omit, pick } from "radash";
-import { VNumberInput } from "vuetify/labs/VNumberInput";
 
 import { getConfigIpc, relaunchAppIpc, updateConfigIpc } from "@/apis";
 import useDialog from "@/compositions/use-dialog";
