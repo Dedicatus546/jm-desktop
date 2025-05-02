@@ -156,7 +156,7 @@ onSuccess(() => {
               本月已签到 {{ signInSumDay }} 天
             </div>
           </template>
-          <template #event="{ event }">
+          <template #intervalEvent="{ event }">
             <div v-if="event.type === 1" class="m-2">
               <v-chip>
                 <template #prepend>
