@@ -80,7 +80,7 @@ const onSliderEnd = (value: [number, number] | number) => {
               <template #append>
                 <div class="wind-flex wind-items-center gap-2">
                   <div>{{ sliderValue }} / {{ picList.length }}</div>
-                  <shunt-select />
+                  <app-shunt-select />
                   <div class="wind-flex-shrink-0"></div>
                   <v-btn
                     color="primary"

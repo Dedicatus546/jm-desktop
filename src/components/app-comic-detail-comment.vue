@@ -98,7 +98,7 @@ onSuccess(() => {
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
           <v-col cols="12">
-            <comment-item :comment="item.raw" />
+            <app-comment-list-item :comment="item.raw" />
           </v-col>
           <v-col>
             <v-divider />

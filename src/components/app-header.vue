@@ -161,15 +161,6 @@ const closeWin = () => {
               })
             "
           />
-          <app-header-icon-btn
-            tooltip-text="下载"
-            icon="mdi-download"
-            @click="
-              router.push({
-                name: 'DOWNLOAD',
-              })
-            "
-          />
         </template>
         <app-header-icon-btn
           tooltip-text="设置"

@@ -70,11 +70,6 @@ const routes: RouteRecordRaw[] = [
     component: AppComicRead,
   },
   {
-    path: "/download",
-    name: "DOWNLOAD",
-    component: () => import("@/views/app-download.vue"),
-  },
-  {
     path: "/sign-in",
     name: "SIGN_IN",
     component: () => import("@/views/app-sign-in.vue"),

@@ -87,7 +87,9 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
         :loading="loading"
       >
         <template #loader>
-          <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
+          <div
+            class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+          >
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>
@@ -103,7 +105,9 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
               <v-row>
                 <v-col :cols="12">
                   <div class="flex gap-2">
-                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
+                    <div
+                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
+                    >
                       排序
                     </div>
                     <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -122,7 +126,9 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                 </v-col>
                 <v-col :cols="12">
                   <div class="wind-flex wind-gap-2">
-                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
+                    <div
+                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
+                    >
                       分类
                     </div>
                     <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -146,7 +152,9 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                 </v-col>
                 <v-col v-if="subCategoryList.length > 0" :cols="12">
                   <div class="wind-flex wind-gap-2">
-                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
+                    <div
+                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
+                    >
                       子分类
                     </div>
                     <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -171,7 +179,9 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                   :cols="12"
                 >
                   <div class="wind-flex wind-gap-2">
-                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
+                    <div
+                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
+                    >
                       {{ item.title }}
                     </div>
                     <div class="wind-flex wind-flex-wrap wind-gap-2">

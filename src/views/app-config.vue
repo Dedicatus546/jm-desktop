@@ -1,109 +1,87 @@
 <script setup lang="ts">
-import { omit, pick } from "radash";
+import { Config } from "@electron/module/config";
+import { clone } from "radash";
 
-import { getConfigIpc, relaunchAppIpc, updateConfigIpc } from "@/apis";
-import useDialog from "@/compositions/use-dialog";
-import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
-import useAppStore from "@/stores/use-app-store";
+import { trpcClient } from "@/apis/ipc";
+import useSnackbar from "@/compositions/use-snack-bar";
+import useAppStore from "@/stores/use-app-store.ts";
 
+const loading = ref(false);
+const saveLoading = ref(false);
 const appStore = useAppStore();
 
 const formValid = ref<boolean | null>(null);
-const formState = reactive<{
-  apiUrl: string;
-  downloadDir: string;
-  readMode: number;
-  useProxy: boolean;
-  zoomFactor: number;
-  proxy: {
-    host: string;
-    port: number | undefined;
-    username: string;
-    password: string;
-  };
-}>({
-  apiUrl: "",
-  downloadDir: "",
-  readMode: 1,
-  zoomFactor: 1,
-  useProxy: false,
-  proxy: {
-    host: "",
-    port: undefined,
-    username: "",
-    password: "",
-  },
-});
 
-const { loading, data, onSuccess, invoke } = useIpcRendererInvoke(() =>
-  getConfigIpc(),
-);
-
-onSuccess(() => {
-  Object.assign(formState, omit(data.value!, ["proxy"]));
-  if (data.value!.proxy) {
-    formState.useProxy = true;
-    Object.assign(formState.proxy, data.value!.proxy);
+const formState = reactive<
+  Omit<Config, "windowInfo" | "loginUserInfo" | "autoLogin"> & {
+    useProxy: boolean;
   }
-  appStore.updateConfigAction(data.value!);
+>({
+  theme: "light",
+  apiUrl: "",
+  apiUrlList: [],
+  downloadDir: "",
+  readMode: "click",
+  zoomFactor: 0,
+  proxyInfo: undefined,
+  useProxy: false,
 });
 
-const { loading: saveConfigLoading, invoke: saveConfig } =
-  useIpcRendererInvoke<void>(
-    () => {
-      const config: any = pick(formState, [
-        "apiUrl",
-        "downloadDir",
-        "readMode",
-        "zoomFactor",
-      ]);
-      if (formState.useProxy) {
-        config.proxy = {
-          ...formState.proxy,
-        };
-      } else {
-        config.proxy = undefined;
-      }
-      return updateConfigIpc(config);
-    },
-    {
-      immediate: false,
-    },
-  );
+const getConfig = async () => {
+  try {
+    const config = await trpcClient.getConfig.query();
+    await appStore.updateConfigAction(config);
+    Object.assign(formState, clone(appStore.config));
+    if (formState.proxyInfo) {
+      formState.useProxy = true;
+    } else {
+      formState.useProxy = false;
+    }
+  } catch (e) {
+    console.error("读取配置文件失败", e);
+  }
+};
 
-const dialog = useDialog();
+const snackbar = useSnackbar();
 const submit = async () => {
-  if (formValid.value) {
-    await saveConfig();
-    await invoke();
-    dialog({
-      width: "50%",
-      title: "更新成功",
-      content: "除下载位置、阅读模式之外的配置重启后生效，是否立即重启？",
-      okText: "重启",
-      onOk() {
-        relaunchAppIpc();
-      },
-    });
+  if (!formValid.value) {
+    return;
+  }
+  try {
+    await appStore.updateConfigAction(formState, true);
+    snackbar.success("更新成功");
+  } catch (e) {
+    console.error("保存配置失败", e);
   }
 };
 
 const onUseProxyChange = (useProxy: boolean) => {
   formState.useProxy = useProxy;
-  formState.proxy = {
-    host: "",
-    port: undefined,
-    username: "",
-    password: "",
-  };
+  if (formState.useProxy) {
+    formState.proxyInfo = {
+      host: "",
+      port: 0,
+      username: "",
+      password: "",
+    };
+  } else {
+    formState.proxyInfo = undefined;
+  }
 };
+
+onMounted(() => {
+  getConfig();
+});
 </script>
 
 <template>
   <v-card title="软件设置">
     <v-card-text>
       <v-form v-model:model-value="formValid" @submit.prevent="submit">
-        <div v-if="loading" class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
+        <div
+          v-if="loading"
+          class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
+        >
           <v-progress-circular indeterminate></v-progress-circular>
         </div>
         <v-row>
@@ -115,34 +93,33 @@ const onUseProxyChange = (useProxy: boolean) => {
               placeholder="如果发现无法使用可以切换此处的域名"
               item-title="value"
               item-value="value"
-              :items="[
-                { value: 'https://www.cdnxxx-proxy.xyz' },
-                { value: 'https://www.jmapiproxyxxx.vip' },
-                { value: 'https://www.jmeadpoolcdn.life' },
-              ]"
+              :items="formState.apiUrlList"
             >
             </v-select>
           </v-col>
           <v-col :cols="12">
-            <select-folder-input v-model:model-value="formState.downloadDir" />
-          </v-col>
-          <v-col :cols="12">
             <v-select
+              hide-details
               v-model:model-value="formState.readMode"
               label="阅读模式"
               item-title="text"
               item-value="value"
               :items="[
                 {
-                  value: 1,
+                  value: 'scroll',
                   text: '竖向滚动',
                 },
                 {
-                  value: 2,
+                  value: 'click',
                   text: '按钮切换',
                 },
               ]"
             ></v-select>
+          </v-col>
+          <v-col :cols="12">
+            <app-select-folder-input
+              v-model:model-value="formState.downloadDir"
+            />
           </v-col>
           <v-col :cols="12">
             <v-slider
@@ -156,6 +133,7 @@ const onUseProxyChange = (useProxy: boolean) => {
           </v-col>
           <v-col :cols="12">
             <v-select
+              hide-details
               :model-value="formState.useProxy"
               label="代理设置"
               item-title="text"
@@ -173,33 +151,33 @@ const onUseProxyChange = (useProxy: boolean) => {
               @update:model-value="onUseProxyChange"
             ></v-select>
           </v-col>
-          <template v-if="formState.useProxy">
+          <template v-if="formState.useProxy && formState.proxyInfo">
             <v-col :cols="6">
               <v-text-field
-                v-model:model-value="formState.proxy.host"
+                v-model:model-value="formState.proxyInfo.host"
                 label="IP"
                 placeholder="一般为 127.0.0.1"
-                :rules="[(value) => !!value || 'IP 不能为空']"
+                :rules="[(value?: string) => !!value || 'IP 不能为空']"
               ></v-text-field>
             </v-col>
             <v-col :cols="6">
               <v-number-input
-                v-model:model-value="formState.proxy.port"
+                v-model:model-value="formState.proxyInfo.port"
                 label="端口"
                 placeholder="V2rayN 为 10809"
-                :rules="[(value) => !!value || '端口不能为空']"
+                :rules="[(value?: number) => !!value || '端口不能为空']"
               ></v-number-input>
             </v-col>
             <v-col :cols="6">
               <v-text-field
-                v-model:model-value="formState.proxy.username"
+                v-model:model-value="formState.proxyInfo.username"
                 label="用户名"
                 placeholder="一般为空"
               ></v-text-field>
             </v-col>
             <v-col :cols="6">
               <v-text-field
-                v-model:model-value="formState.proxy.password"
+                v-model:model-value="formState.proxyInfo.password"
                 label="密码"
                 placeholder="一般为空"
               ></v-text-field>
@@ -211,7 +189,7 @@ const onUseProxyChange = (useProxy: boolean) => {
               block
               color="primary"
               type="submit"
-              :loading="saveConfigLoading"
+              :loading="saveLoading"
             >
               保存
             </v-btn>

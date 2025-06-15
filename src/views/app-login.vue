@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
 
-import { loginApi, updateConfigIpc } from "@/apis";
-import useDecodeUserInfo from "@/compositions/use-decode-user-info";
-import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import { loginApi } from "@/apis";
 import useSnackbar from "@/compositions/use-snack-bar";
+import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
+import { encryptLoginUser } from "@/utils/login-user-info";
 
 const router = useRouter();
 const userStore = useUserStore();
+const appStore = useAppStore();
 
 const formState = reactive({
   username: "",
@@ -16,19 +17,11 @@ const formState = reactive({
   autoLogin: false,
 });
 
-const { encrypt } = useDecodeUserInfo();
 const { loading, data, onSuccess, onError, send } = useRequest(
-  () => loginApi(formState.username, formState.password),
-  {
-    immediate: false,
-  },
-);
-
-const { invoke } = useIpcRendererInvoke(
-  (autoLogin: boolean, loginUserInfo: string) =>
-    updateConfigIpc({
-      autoLogin,
-      loginUserInfo,
+  () =>
+    loginApi({
+      username: formState.username,
+      password: formState.password,
     }),
   {
     immediate: false,
@@ -42,11 +35,25 @@ onSuccess(() => {
   userStore.updateUserInfoAction(data.value.data);
   userStore.updateLoginInfoAction(formState.username, formState.password);
   if (formState.autoLogin) {
-    const encryptStr = encrypt({
+    const encryptStr = encryptLoginUser({
       username: formState.username,
       password: formState.password,
     });
-    invoke(true, encryptStr);
+    appStore.updateConfigAction(
+      {
+        loginUserInfo: encryptStr,
+        autoLogin: true,
+      },
+      true,
+    );
+  } else {
+    appStore.updateConfigAction(
+      {
+        loginUserInfo: "",
+        autoLogin: false,
+      },
+      true,
+    );
   }
   router.replace({ name: "PERSON" });
 });
@@ -92,7 +99,7 @@ onError((e) => {
               type="warning"
             >
               <template #text>
-                <div class="wind-flex wind-flex-col wind-gap-2 wind-py-2">
+                <div class="wind-py-2 wind-flex wind-flex-col wind-gap-2">
                   <div>
                     1.自动登录会使用对称加密的方式将你的账号和密码写在本地，如果不希望这么做请勿开启。
                   </div>
@@ -119,5 +126,3 @@ onError((e) => {
     </v-card-text>
   </v-card>
 </template>
-
-<style scoped></style>

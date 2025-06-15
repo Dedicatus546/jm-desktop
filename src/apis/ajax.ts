@@ -79,10 +79,10 @@ export const getSettingApi = () => {
   });
 };
 
-export const loginApi = (username: string, password: string) => {
+export const loginApi = (query: { username: string; password: string }) => {
   const formData = new FormData();
-  formData.append("username", username);
-  formData.append("password", password);
+  formData.append("username", query.username);
+  formData.append("password", query.password);
   return http.Post<
     RespWrapper<{
       uid: number;

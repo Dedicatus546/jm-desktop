@@ -201,7 +201,9 @@ const toQuickQueryPage = (query: string) => {
                     </v-col>
                     <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
                       <div class="wind-flex wind-gap-1">
-                        <div class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]">
+                        <div
+                          class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]"
+                        >
                           作品：
                         </div>
                         <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -217,7 +219,9 @@ const toQuickQueryPage = (query: string) => {
                     </v-col>
                     <v-col v-if="comicInfo.data.roleList.length > 0" :cols="12">
                       <div class="wind-flex wind-gap-1">
-                        <div class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]">
+                        <div
+                          class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]"
+                        >
                           登场人物：
                         </div>
                         <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -300,7 +304,8 @@ const toQuickQueryPage = (query: string) => {
                         </v-btn>
                       </v-col>
                       <v-col :cols="buttonCols">
-                        <app-comic-detail-download-button
+                        <!-- TODO 下载按钮 -->
+                        <!-- <app-comic-detail-download-button
                           :comic="{
                             id: comicInfo.data.id,
                             name: comicInfo.data.name,
@@ -312,7 +317,7 @@ const toQuickQueryPage = (query: string) => {
                             isBuy: comicInfo.data.isBuy,
                             seriesList: comicInfo.data.seriesList,
                           }"
-                        />
+                        /> -->
                       </v-col>
                     </template>
                   </v-row>

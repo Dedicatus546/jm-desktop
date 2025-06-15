@@ -45,7 +45,7 @@ const onDecodeSuccess = inject<(index: number) => void>(
           >
             <template #append>
               <div class="wind-flex wind-items-center wind-gap-2">
-                <shunt-select />
+                <app-shunt-select />
                 <div>{{ sliderValue }} / {{ picList.length }}</div>
               </div>
             </template>

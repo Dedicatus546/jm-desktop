@@ -20,7 +20,9 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
+      <div
+        class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+      >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
@@ -34,7 +36,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
           <v-col cols="12">
-            <comment-item :comment="item.raw" />
+            <app-comment-list-item :comment="item.raw" />
           </v-col>
           <v-col>
             <v-divider />
