@@ -40,7 +40,7 @@ watchEffect(() => {
 <template>
   <div
     v-if="loading"
-    class="wind-absolute wind-inset-0 wind-items-center wind-justify-center flex"
+    class="wind-absolute wind-inset-0 wind-items-center wind-justify-center wind-flex"
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
