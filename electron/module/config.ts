@@ -36,10 +36,11 @@ export const configFilepath = resolve(dataDir, "config.json");
 
 export const defaultConfig: Config = {
   theme: "light",
-  apiUrl: "https://api.mangacopy.com/api/v3",
+  apiUrl: "https://www.jmapiproxyxxx.vip",
   apiUrlList: [
-    "https://api.copy2000.online/api/v3",
-    "https://api.mangacopy.com/api/v3",
+    "https://www.jmapiproxyxxx.vip",
+    "https://www.cdnxxx-proxy.xyz",
+    "https://www.jmeadpoolcdn.life",
   ],
   downloadDir: "",
   readMode: "scroll",

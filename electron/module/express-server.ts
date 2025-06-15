@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { Agent, Server } from "node:http";
 import { AddressInfo } from "node:net";
 import { join } from "node:path";
@@ -6,7 +5,6 @@ import { join } from "node:path";
 import { distElectron, distRenderer } from "@electron/shared/path";
 import { resolveProxyUrl } from "@electron/shared/utils";
 import cors from "cors";
-import { format } from "date-fns";
 import Express from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -70,70 +68,9 @@ const getExpressInstance = async () => {
   info("设置 distRenderer：%s 为静态目录", distRenderer);
   express.use("/", Express.static(distRenderer));
 
-  express.get("/api/getLightNovelTxtContent", async (req, res) => {
-    const q = req.query.q as string;
-    const forceGet = req.query.forceGet as string;
-    const encoding = (req.query.encoding as string) ?? "utf-8";
-    // 在 chrome 下正常，但是 electron 下就不正常，离谱。。
-    // TODO 这里很奇怪，设置 304 还是返回 200
-    // 但是确实走了缓存
-    try {
-      if (!forceGet && req.headers["if-none-match"]) {
-        res.set({
-          "Cache-Control": "max-age=2592000, no-cache",
-          ETag: `"${req.headers["if-none-match"]}"`,
-          "Last-Modified": req.headers["if-modified-since"],
-          "return-cache": "true",
-        });
-        res.status(304).end();
-        return;
-      }
-      const buffer = await fetch(q, {
-        method: "GET",
-      }).then((res) => res.arrayBuffer());
-      const td = new TextDecoder(encoding);
-      const resStr = td.decode(buffer);
-      const md5 = createHash("md5")
-        .update(resStr)
-        .digest()
-        .toString("hex")
-        .toLowerCase();
-      res.set({
-        "Cache-Control": "max-age=2592000, no-cache",
-        ETag: `"${md5}"`,
-        "Last-Modified": new Date().toUTCString(),
-      });
-      res.type("application/json");
-      res.end(
-        JSON.stringify({
-          code: 200,
-          message: "",
-          results: resStr,
-        }),
-      );
-    } catch (e) {
-      res.send(e);
-    }
-  });
-
   info("设置 api 转发");
   express.use(
     "/api",
-    (req, _res, next) => {
-      req.headers["user-agent"] = "COPY/2.3.0";
-      req.headers.source = "copyApp";
-      // mumu 模拟器设备
-      req.headers.deviceinfo = "2206123SC-mayfly";
-      req.headers.device = "V417IR";
-      req.headers.webp = "1";
-      req.headers.platform = "3";
-      req.headers.dt = format(new Date(), "yyyy.MM.dd");
-      req.headers.referer = "com.copymanga.app-2.3.0";
-      req.headers.region = "1";
-      req.headers.version = "2.3.0";
-      req.headers.umstring = "b4c89ca4104ea9a97750314d791520ac";
-      next();
-    },
     (info("创建 api 转发中间件"),
     createProxyMiddleware({
       target: config.apiUrl,
