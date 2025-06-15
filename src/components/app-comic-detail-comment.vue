@@ -118,5 +118,3 @@ onSuccess(() => {
     </template>
   </v-data-iterator>
 </template>
-
-<style scoped></style>

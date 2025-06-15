@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import dayjs from "dayjs";
+import { format, getDate, parse } from "date-fns";
 
 import { BaseComic } from "@/types";
 
@@ -770,13 +770,13 @@ export const getComicCommentListApi = (query: {
         content: string;
         avatar: string | null;
         avatarColor: string;
-        createTime: number;
+        createTime: string;
         replyList: Array<{
           id: number;
           parentId: number;
           nickname: string;
           likeCount: number;
-          createTime: number;
+          createTime: string;
           content: string;
           avatar: string | null;
           avatarColor: string;
@@ -810,7 +810,10 @@ export const getComicCommentListApi = (query: {
               content: item.content,
               avatar,
               avatarColor,
-              createTime: Number.parseInt(item.update_at) * 1000,
+              createTime: format(
+                parse(item.addtime, "MMM d, yyyy", new Date()),
+                "yyyy-MM-dd",
+              ),
               replyList:
                 item.replys?.map((item) => {
                   const avatar = getAvatar(item.photo);
@@ -821,7 +824,10 @@ export const getComicCommentListApi = (query: {
                     parentId: Number.parseInt(item.parent_CID),
                     nickname: item.username,
                     likeCount: Number.parseInt(item.likes),
-                    createTime: Number.parseInt(item.update_at) * 1000,
+                    createTime: format(
+                      parse(item.addtime, "MMM d, yyyy", new Date()),
+                      "yyyy-MM-dd",
+                    ),
                     content: item.content,
                     avatar,
                     avatarColor,
@@ -988,7 +994,7 @@ export const getSignInDataApi = (userId: number) => {
           hasExtraBonus: boolean;
         }
       > = {};
-      const currentDate = dayjs().date().toString().padStart(2, "0");
+      const currentDate = getDate(new Date(), {}).toString().padStart(2, "0");
       return {
         code: res.code,
         data: {

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import dayjs from "dayjs";
-
 import useAppStore from "@/stores/use-app-store";
 
 defineProps<{
@@ -12,13 +10,13 @@ defineProps<{
     content: string;
     avatar: string | null;
     avatarColor: string;
-    createTime: number;
+    createTime: string;
     replyList?: Array<{
       id: number;
       parentId: number;
       nickname: string;
       likeCount: number;
-      createTime: number;
+      createTime: string;
       content: string;
       avatar: string | null;
       avatarColor: string;
@@ -52,7 +50,7 @@ const replyListOpen = ref(false);
       <div class="wind-flex wind-flex-col">
         <div class="wind-text">{{ comment.nickname }}</div>
         <div class="wind-text">
-          {{ dayjs(comment.createTime).format("YYYY-MM-DD HH:mm:ss") }}
+          {{ comment.createTime }}
         </div>
       </div>
       <!-- eslint-disable-next-line vue/no-v-html -->
