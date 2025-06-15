@@ -18,8 +18,6 @@ const props = withDefaults(
 const appStore = useAppStore();
 const route = useRoute();
 
-console.log(import.meta.env);
-
 const cover = computed(() =>
   import.meta.env.VITE_NSFW === "on"
     ? "/360x640.svg"
