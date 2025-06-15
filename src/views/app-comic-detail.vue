@@ -113,6 +113,12 @@ collectComicSuccess(() => {
 const toQuickQueryPage = (query: string) => {
   return { name: "QUICK_SEARCH", query: { query } };
 };
+
+const cover = computed(() =>
+  import.meta.env.VITE_NSFW === "on"
+    ? "/360x640.svg"
+    : `${appStore.setting.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
+);
 </script>
 
 <template>
@@ -133,12 +139,7 @@ const toQuickQueryPage = (query: string) => {
                 class="wind-w-1/4 wind-max-w-[300px] wind-min-w-[200px] wind-flex-shrink-0"
               >
                 <v-card variant="text">
-                  <v-img
-                    :aspect-ratio="3 / 4"
-                    cover
-                    alt=""
-                    :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
-                  />
+                  <v-img :aspect-ratio="3 / 4" cover alt="" :src="cover" />
                 </v-card>
               </div>
               <div

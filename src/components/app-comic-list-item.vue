@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useAppStore from "@/stores/use-app-store";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     comic: {
       id: number;
@@ -17,6 +17,14 @@ withDefaults(
 
 const appStore = useAppStore();
 const route = useRoute();
+
+console.log(import.meta.env);
+
+const cover = computed(() =>
+  import.meta.env.VITE_NSFW === "on"
+    ? "/360x640.svg"
+    : `${appStore.setting.imgHost}/media/albums/${props.comic.id}_3x4.jpg`,
+);
 </script>
 
 <template>
@@ -28,7 +36,7 @@ const route = useRoute();
         :aspect-ratio="3 / 4"
         cover
         :alt="`${comic.name}的封面`"
-        :src="`${appStore.setting.imgHost}/media/albums/${comic.id}_3x4.jpg`"
+        :src="cover"
       />
       <v-card-item>
         <v-card-title>{{ comic.name }}</v-card-title>
