@@ -158,7 +158,7 @@ onSuccess(() => {
           </template>
           <template #intervalEvent="{ event }">
             <div v-if="event.type === 1" class="wind-m-2">
-              <v-chip>
+              <v-chip color="primary">
                 <template #prepend>
                   <v-icon icon="mdi-heart" color="red"></v-icon>
                 </template>
@@ -166,7 +166,7 @@ onSuccess(() => {
               </v-chip>
             </div>
             <div v-else-if="event.type === 2" class="wind-m-2">
-              <v-chip>
+              <v-chip color="primary">
                 <template #prepend>
                   <v-icon icon="mdi-check" color="success"></v-icon>
                 </template>

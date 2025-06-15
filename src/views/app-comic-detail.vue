@@ -155,7 +155,7 @@ const toQuickQueryPage = (query: string) => {
                       :key="item"
                       :to="toQuickQueryPage(item)"
                     >
-                      <v-chip>{{ item }}</v-chip>
+                      <v-chip color="primary">{{ item }}</v-chip>
                     </router-link>
                   </div>
                 </div>
@@ -209,7 +209,7 @@ const toQuickQueryPage = (query: string) => {
                             :key="item"
                             :to="toQuickQueryPage(item)"
                           >
-                            <v-chip>{{ item }}</v-chip>
+                            <v-chip color="primary">{{ item }}</v-chip>
                           </router-link>
                         </div>
                       </div>
@@ -227,7 +227,7 @@ const toQuickQueryPage = (query: string) => {
                             :key="item"
                             :to="toQuickQueryPage(item)"
                           >
-                            <v-chip>{{ item }}</v-chip>
+                            <v-chip color="primary">{{ item }}</v-chip>
                           </router-link>
                         </div>
                       </div>
