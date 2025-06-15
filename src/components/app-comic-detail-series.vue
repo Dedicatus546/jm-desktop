@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <v-row>
+  <v-row class="wind-p-1">
     <v-col
       v-for="item of seriesList"
       :key="item.id"
