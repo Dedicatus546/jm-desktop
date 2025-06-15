@@ -135,17 +135,32 @@ const toQuickQueryPage = (query: string) => {
                 <v-card variant="text">
                   <v-img
                     :aspect-ratio="3 / 4"
+                    cover
                     alt=""
                     :src="`${appStore.setting.imgHost}/media/albums/${comicInfo.data.id}_3x4.jpg`"
                   />
                 </v-card>
               </div>
-              <div class="wind-flex wind-flex-col wind-gap-4 wind-flex-grow">
-                <div class="wind-flex wind-flex-col">
-                  <div class="wind-text-h5">{{ comicInfo.data.name }}</div>
+              <div
+                class="wind-leading-6 wind-flex wind-flex-col wind-gap-4 wind-flex-grow"
+              >
+                <div class="wind-flex wind-flex-col wind-gap-2">
+                  <div class="text-h5">{{ comicInfo.data.name }}</div>
+                  <div
+                    class="wind-flex wind-flex-wrap wind-gap-2"
+                    v-if="comicInfo.data.tagList.length > 0"
+                  >
+                    <router-link
+                      v-for="item of comicInfo.data.tagList"
+                      :key="item"
+                      :to="toQuickQueryPage(item)"
+                    >
+                      <v-chip>{{ item }}</v-chip>
+                    </router-link>
+                  </div>
                 </div>
                 <div>
-                  <v-row no-gutters class="wind-gap-3">
+                  <v-row no-gutters class="wind-gap-2">
                     <v-col
                       v-if="comicInfo.data.authorList.length > 0"
                       :cols="12"
@@ -179,24 +194,6 @@ const toQuickQueryPage = (query: string) => {
                       <div class="wind-flex">
                         <div class="wind-text-nowrap">喜欢人数：</div>
                         <div>{{ comicInfo.data.likeCount }}人</div>
-                      </div>
-                    </v-col>
-                    <v-col v-if="comicInfo.data.tagList.length > 0" :cols="12">
-                      <div class="wind-flex wind-gap-1">
-                        <div
-                          class="wind-h-[30px] wind-leading-[30px] wind-text-nowrap"
-                        >
-                          标签：
-                        </div>
-                        <div class="wind-flex wind-flex-wrap wind-gap-2">
-                          <router-link
-                            v-for="item of comicInfo.data.tagList"
-                            :key="item"
-                            :to="toQuickQueryPage(item)"
-                          >
-                            <v-chip>{{ item }}</v-chip>
-                          </router-link>
-                        </div>
                       </div>
                     </v-col>
                     <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
