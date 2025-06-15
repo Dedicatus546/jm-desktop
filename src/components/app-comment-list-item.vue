@@ -81,7 +81,7 @@ const replyListOpen = ref(false);
               <v-divider />
             </v-col>
             <v-col :cols="12">
-              <comment-item :comment="subItem" />
+              <app-comment-list-item :comment="subItem" />
             </v-col>
           </template>
         </v-row>
