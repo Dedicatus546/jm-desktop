@@ -49,11 +49,14 @@ const { loading: categoryLoading, data: category } = useRequest(
     initialData: {
       data: {
         categoryList: [],
+        // TODO fix 这里这个 tagTypeList 好像服务器没返回了？
         tagTypeList: [],
       },
     },
   },
 );
+
+const tagList = category.value.data.tagTypeList.flatMap((item) => item.list);
 
 const subCategoryList = computed(() => {
   return (
@@ -63,15 +66,21 @@ const subCategoryList = computed(() => {
   );
 });
 
-const onCategoryClick = (type: string, slug: string, name: string) => {
-  if (type === "slug" || slug === "") {
+const onCategoryClick = (slug: string) => {
+  const item = category.value.data.categoryList.find(
+    (item) => item.slug == slug,
+  );
+  if (!item) {
+    return;
+  }
+  if (item.type === "slug") {
     formState.subCategory = "";
-    formState.category = slug;
+    formState.category = item.slug;
   } else {
     router.push({
       name: "QUICK_SEARCH",
       query: {
-        query: name,
+        query: item.name,
       },
     });
   }
@@ -95,113 +104,71 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
         </template>
         <template #header>
           <div class="wind-mb-4">
-            <div
-              v-if="categoryLoading"
-              class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
-            >
-              <v-progress-circular indeterminate></v-progress-circular>
-            </div>
-            <v-form v-else>
-              <v-row>
-                <v-col :cols="12">
-                  <div class="flex gap-2">
-                    <div
-                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
-                    >
-                      排序
-                    </div>
-                    <div class="wind-flex wind-flex-wrap wind-gap-2">
-                      <v-chip
-                        v-for="item of orderList"
-                        :key="item.label"
-                        :color="
-                          formState.order === item.value ? 'primary' : undefined
-                        "
-                        @click="formState.order = item.value"
-                      >
-                        {{ item.label }}
-                      </v-chip>
-                    </div>
-                  </div>
-                </v-col>
-                <v-col :cols="12">
-                  <div class="wind-flex wind-gap-2">
-                    <div
-                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
-                    >
-                      分类
-                    </div>
-                    <div class="wind-flex wind-flex-wrap wind-gap-2">
-                      <v-chip
-                        v-for="item of category.data.categoryList"
-                        :key="item.id"
-                        :color="
-                          (item.slug === '' || item.type === 'slug') &&
-                          formState.category === item.slug
-                            ? 'primary'
-                            : undefined
-                        "
-                        @click="
-                          onCategoryClick(item.type, item.slug, item.name)
-                        "
-                      >
-                        {{ item.name }}
-                      </v-chip>
-                    </div>
-                  </div>
-                </v-col>
-                <v-col v-if="subCategoryList.length > 0" :cols="12">
-                  <div class="wind-flex wind-gap-2">
-                    <div
-                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
-                    >
-                      子分类
-                    </div>
-                    <div class="wind-flex wind-flex-wrap wind-gap-2">
-                      <v-chip
-                        v-for="item of subCategoryList"
-                        :key="item.id"
-                        :color="
-                          formState.subCategory === item.slug
-                            ? 'primary'
-                            : undefined
-                        "
-                        @click="formState.subCategory = item.slug"
-                      >
-                        {{ item.name }}
-                      </v-chip>
-                    </div>
-                  </div>
-                </v-col>
-                <v-col
-                  v-for="item of category.data.tagTypeList"
-                  :key="item.title"
-                  :cols="12"
+            <template v-if="!categoryLoading">
+              <v-chip-group
+                color="primary"
+                v-model:model-value="formState.order"
+                column
+                filter
+              >
+                <v-chip
+                  v-for="item of orderList"
+                  :key="item.value"
+                  :value="item.value"
                 >
-                  <div class="wind-flex wind-gap-2">
-                    <div
-                      class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0"
-                    >
-                      {{ item.title }}
-                    </div>
-                    <div class="wind-flex wind-flex-wrap wind-gap-2">
-                      <router-link
-                        v-for="tag of item.list"
-                        :key="tag"
-                        custom
-                        :to="{ name: 'QUICK_SEARCH', query: { query: tag } }"
-                      >
-                        <template #default="{ navigate }">
-                          <v-chip @click="navigate()">
-                            {{ tag }}
-                          </v-chip>
-                        </template>
-                      </router-link>
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-form>
+                  {{ item.label }}
+                </v-chip>
+              </v-chip-group>
+              <v-divider />
+              <v-chip-group
+                color="primary"
+                :model-value="formState.category"
+                @update:model-value="onCategoryClick"
+                column
+                filter
+              >
+                <v-chip
+                  v-for="item of category.data.categoryList"
+                  :key="item.slug"
+                  :value="item.slug"
+                >
+                  {{ item.name }}
+                </v-chip>
+              </v-chip-group>
+              <template v-if="subCategoryList.length > 0">
+                <v-divider />
+                <v-chip-group
+                  color="primary"
+                  v-model:model-value="formState.subCategory"
+                  column
+                  filter
+                >
+                  <v-chip
+                    v-for="item of subCategoryList"
+                    :key="item.slug"
+                    :value="item.slug"
+                  >
+                    {{ item.name }}
+                  </v-chip>
+                </v-chip-group>
+              </template>
+              <v-divider />
+              <v-chip-group color="primary" column>
+                <router-link
+                  v-for="item of tagList"
+                  :key="item"
+                  custom
+                  :to="{ name: 'QUICK_SEARCH', query: { query: item } }"
+                >
+                  <template #default="{ navigate }">
+                    <v-chip @click="navigate()">
+                      {{ item }}
+                    </v-chip>
+                  </template>
+                </router-link>
+              </v-chip-group>
+              <v-divider />
+            </template>
           </div>
         </template>
         <template #no-data>

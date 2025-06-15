@@ -18,8 +18,14 @@ const decode = (data: string) => {
   );
 };
 
-const port = await trpcClient.getProxyServerPort.query();
-const baseURL = `http://localhost:${port}/api`;
+let baseURL = "";
+if (import.meta.env.DEV) {
+  baseURL = "/api";
+} else {
+  const port = await trpcClient.getProxyServerPort.query();
+  baseURL = `http://localhost:${port}/api`;
+}
+
 console.log("baseURL: ", baseURL);
 
 const http = createAlova({
