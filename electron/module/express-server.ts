@@ -73,7 +73,7 @@ const getExpressInstance = async () => {
     "/api",
     (info("创建 api 转发中间件"),
     createProxyMiddleware({
-      target: config.apiUrl,
+      target: (info("api 目标地址：%s", config.apiUrl), config.apiUrl),
       agent,
       changeOrigin: true,
       secure: false,

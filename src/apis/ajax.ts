@@ -1100,7 +1100,7 @@ export const getComicPicListApi = (
       page: 0,
       app_img_shunt: shuntKey,
       express: "off",
-      v: Date.now(),
+      v: Math.floor(Date.now() / 1000),
       // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
     async transform(htmlStr) {

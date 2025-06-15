@@ -27,6 +27,7 @@ onMounted(async () => {
       v-if="imgSrc"
       class="wind-block wind-w-full wind-h-full wind-object-contain"
       :src="imgSrc"
+      :data-original-src="src"
       alt=""
       @load="isLoaded = true"
     />

@@ -19,7 +19,8 @@ const useInitSetting = () => {
 
   return {
     init: async () => {
-      return send().catch(() => {
+      return send().catch((e) => {
+        error(e);
         throw new Error("读取网址设置失败");
       });
     },

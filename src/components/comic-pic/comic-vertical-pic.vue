@@ -63,6 +63,7 @@ defineExpose({
       v-if="imgSrc"
       class="wind-block wind-h-full wind-w-full wind-object-contain"
       :src="imgSrc"
+      :data-original-src="src"
       alt=""
       @load="isLoaded = true"
     />

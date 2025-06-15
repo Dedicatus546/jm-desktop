@@ -20,7 +20,7 @@ const getSeed = (comicId: number, pageStr: string) => {
   const right = 421925;
   if (comicId >= left && comicId <= right) {
     charCodeOfLastChar = charCodeOfLastChar % 10;
-  } else if (comicId >= right) {
+  } else if (comicId >= right + 1) {
     charCodeOfLastChar = charCodeOfLastChar % 8;
   }
   return seedMap[charCodeOfLastChar] ?? 10; // 默认 seed

@@ -3,10 +3,14 @@ import { createAlova } from "alova";
 import vueHook from "alova/vue";
 import CryptoJS from "crypto-js";
 
+import { createLogger } from "@/logger";
+
 import { trpcClient } from "./ipc";
 
+const { info } = createLogger("api");
+
 const ts = Math.floor(Date.now() / 1000);
-const version = "1.7.4";
+const version = "1.8.0";
 const token = "185Hcomic3PAPP7R";
 const tokenHash = CryptoJS.MD5(`${ts}${token}`).toString().toLowerCase();
 
@@ -26,7 +30,7 @@ if (import.meta.env.DEV) {
   baseURL = `http://localhost:${port}/api`;
 }
 
-console.log("baseURL: ", baseURL);
+info("baseURL: ", baseURL);
 
 const http = createAlova({
   statesHook: vueHook,
@@ -55,7 +59,7 @@ const http = createAlova({
         throw new Error(json.errorMsg);
       }
       json.data = decode(json.data);
-      console.log(method.url, response.status, json);
+      info(method.url, response.status, json);
       return json;
     },
   },
