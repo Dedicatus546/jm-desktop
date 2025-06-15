@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
-import dayjs from "dayjs";
+import { set } from "date-fns";
 import { VCalendar } from "vuetify/labs/VCalendar";
 
 import { getSignInDataApi, signInApi } from "@/apis";
@@ -89,13 +89,13 @@ const events = computed(() => {
   for (let i = 1; i <= days; i++) {
     const key = `${i}`.padStart(2, "0");
     const data = dateMap.value[key];
-    const d = dayjs(currentDate)
-      .date(i)
-      .hour(0)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toDate();
+    const d = set(currentDate, {
+      date: i,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
     if (data.hasExtraBonus) {
       events.push({
         type: 1,
