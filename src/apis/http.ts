@@ -3,6 +3,8 @@ import { createAlova } from "alova";
 import vueHook from "alova/vue";
 import CryptoJS from "crypto-js";
 
+import { trpcClient } from "./ipc";
+
 const ts = Math.floor(Date.now() / 1000);
 const version = "1.7.4";
 const token = "185Hcomic3PAPP7R";
@@ -16,10 +18,14 @@ const decode = (data: string) => {
   );
 };
 
+const port = await trpcClient.getProxyServerPort.query();
+const baseURL = `http://localhost:${port}/api`;
+console.log("baseURL: ", baseURL);
+
 const http = createAlova({
   statesHook: vueHook,
   requestAdapter: xhrRequestAdapter({}),
-  baseURL: "/api",
+  baseURL,
   beforeRequest(method) {
     // method.config.headers["Content-Type"] = "application/x-www-form-urlencoded";
     method.config.headers.tokenparam = `${ts},${version}`;

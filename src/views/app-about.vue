@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { trpcClient } from "@/apis";
-import { version } from "@@/package.json";
+
+import { version } from "../../package.json";
 const hash = __COMIT_HASH__;
 const isDev = import.meta.env.DEV;
 

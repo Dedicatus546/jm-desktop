@@ -13,6 +13,7 @@ import electron from "vite-plugin-electron/simple";
 import vueDevTools from "vite-plugin-vue-devtools";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const envDir = resolve(__dirname, "env");
 const currentCommitHash = execSync("git rev-parse HEAD")
   .toString()
   .substring(0, 8);
@@ -22,6 +23,7 @@ export default defineConfig({
   define: {
     __COMIT_HASH__: JSON.stringify(currentCommitHash),
   },
+  envDir,
   base: "/",
   plugins: [
     vue(),
@@ -30,7 +32,13 @@ export default defineConfig({
         // Shortcut of `build.lib.entry`.
         entry: "electron/main.ts",
         vite: {
+          resolve: {
+            alias: {
+              "@electron": resolve(__dirname, "electron"),
+            },
+          },
           build: {
+            target: "esnext",
             rollupOptions: {
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
@@ -75,17 +83,6 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
       "@electron": resolve(__dirname, "electron"),
-      "@@": resolve(__dirname),
     },
   },
-  server: {
-    proxy: {
-      "^/api": {
-        target: "http://localhost:6174",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
-  envDir: resolve(__dirname, "env"),
 });
