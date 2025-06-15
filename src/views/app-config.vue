@@ -103,7 +103,7 @@ const onUseProxyChange = (useProxy: boolean) => {
   <v-card title="软件设置">
     <v-card-text>
       <v-form v-model:model-value="formValid" @submit.prevent="submit">
-        <div v-if="loading" class="h-[30vh] flex items-center justify-center">
+        <div v-if="loading" class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
           <v-progress-circular indeterminate></v-progress-circular>
         </div>
         <v-row>

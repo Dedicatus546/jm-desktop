@@ -118,7 +118,9 @@ const toQuickQueryPage = (query: string) => {
 <template>
   <v-row>
     <v-col v-if="loading || !comicInfo" :cols="12">
-      <div class="h-[30vh] flex items-center justify-center">
+      <div
+        class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+      >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </v-col>
@@ -126,8 +128,10 @@ const toQuickQueryPage = (query: string) => {
       <v-col :cols="12">
         <v-card>
           <v-card-text>
-            <div class="flex gap-4">
-              <div class="w-1/4 max-w-[300px] min-w-[200px] flex-shrink-0">
+            <div class="wind-flex wind-gap-4">
+              <div
+                class="wind-w-1/4 wind-max-w-[300px] wind-min-w-[200px] wind-flex-shrink-0"
+              >
                 <v-card variant="text">
                   <v-img
                     :aspect-ratio="3 / 4"
@@ -136,25 +140,25 @@ const toQuickQueryPage = (query: string) => {
                   />
                 </v-card>
               </div>
-              <div class="flex flex-col gap-4 flex-grow">
-                <div class="flex flex-col">
-                  <div class="text-h5">{{ comicInfo.data.name }}</div>
+              <div class="wind-flex wind-flex-col wind-gap-4 wind-flex-grow">
+                <div class="wind-flex wind-flex-col">
+                  <div class="wind-text-h5">{{ comicInfo.data.name }}</div>
                 </div>
                 <div>
-                  <v-row no-gutters class="gap-3">
+                  <v-row no-gutters class="wind-gap-3">
                     <v-col
                       v-if="comicInfo.data.authorList.length > 0"
                       :cols="12"
                     >
-                      <div class="flex">
-                        <div class="text-nowrap">作者：</div>
-                        <div class="flex flex-wrap gap-2">
+                      <div class="wind-flex">
+                        <div class="wind-text-nowrap">作者：</div>
+                        <div class="wind-flex wind-flex-wrap wind-gap-2">
                           <router-link
                             v-for="item of comicInfo.data.authorList"
                             :key="item"
                             :to="toQuickQueryPage(item)"
                           >
-                            <span class="font-bold">
+                            <span class="wind-font-bold">
                               {{ item }}
                             </span>
                           </router-link>
@@ -162,27 +166,29 @@ const toQuickQueryPage = (query: string) => {
                       </div>
                     </v-col>
                     <v-col :cols="12">
-                      <div class="flex gap-1">
-                        <div class="text-nowrap">车牌：</div>
+                      <div class="wind-flex wind-gap-1">
+                        <div class="wind-text-nowrap">车牌：</div>
                         <div>
-                          <span class="font-bold">
+                          <span class="wind-font-bold">
                             JM{{ comicInfo.data.id }}
                           </span>
                         </div>
                       </div>
                     </v-col>
                     <v-col :cols="12">
-                      <div class="flex">
-                        <div class="text-nowrap">喜欢人数：</div>
+                      <div class="wind-flex">
+                        <div class="wind-text-nowrap">喜欢人数：</div>
                         <div>{{ comicInfo.data.likeCount }}人</div>
                       </div>
                     </v-col>
                     <v-col v-if="comicInfo.data.tagList.length > 0" :cols="12">
-                      <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px] text-nowrap">
+                      <div class="wind-flex wind-gap-1">
+                        <div
+                          class="wind-h-[30px] wind-leading-[30px] wind-text-nowrap"
+                        >
                           标签：
                         </div>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="wind-flex wind-flex-wrap wind-gap-2">
                           <router-link
                             v-for="item of comicInfo.data.tagList"
                             :key="item"
@@ -194,11 +200,11 @@ const toQuickQueryPage = (query: string) => {
                       </div>
                     </v-col>
                     <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
-                      <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px] text-nowrap">
+                      <div class="wind-flex wind-gap-1">
+                        <div class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]">
                           作品：
                         </div>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="wind-flex wind-flex-wrap wind-gap-2">
                           <router-link
                             v-for="item of comicInfo.data.workList"
                             :key="item"
@@ -210,11 +216,11 @@ const toQuickQueryPage = (query: string) => {
                       </div>
                     </v-col>
                     <v-col v-if="comicInfo.data.roleList.length > 0" :cols="12">
-                      <div class="flex gap-1">
-                        <div class="h-[30px] leading-[30px] text-nowrap">
+                      <div class="wind-flex wind-gap-1">
+                        <div class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]">
                           登场人物：
                         </div>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="wind-flex wind-flex-wrap wind-gap-2">
                           <router-link
                             v-for="item of comicInfo.data.roleList"
                             :key="item"
@@ -227,7 +233,7 @@ const toQuickQueryPage = (query: string) => {
                     </v-col>
                   </v-row>
                 </div>
-                <div class="mt-auto">
+                <div class="wind-mt-auto">
                   <v-row>
                     <v-col :cols="buttonCols">
                       <router-link

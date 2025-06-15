@@ -57,13 +57,13 @@ onSuccess(() => {
         :loading="loading"
       >
         <template #loader>
-          <div class="h-[30vh] flex items-center justify-center">
+          <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>
         <template #header>
-          <div class="flex mb-2">
-            <div class="w-[200px]">
+          <div class="wind-flex wind-mb-2">
+            <div class="wind-w-[200px]">
               <v-select
                 v-model:model-value="formState.order"
                 hide-details
@@ -87,7 +87,7 @@ onSuccess(() => {
                 ]"
               ></v-select>
             </div>
-            <div class="flex-grow">
+            <div class="wind-flex-grow">
               <v-text-field
                 v-model:model-value="formState.content"
                 placeholder="车牌号，名称，作者"
@@ -114,13 +114,13 @@ onSuccess(() => {
           <v-row>
             <template v-for="item of items" :key="item.raw.id">
               <v-col cols="6" :sm="4" :md="3" :lg="2">
-                <comic-route-item :comic="item.raw" />
+                <app-comic-list-item :comic="item.raw" />
               </v-col>
             </template>
           </v-row>
         </template>
         <template #footer>
-          <div class="flex justify-end mt-4">
+          <div class="wind-flex wind-justify-end wind-mt-4">
             <v-pagination
               v-model="page"
               :length="pageCount"

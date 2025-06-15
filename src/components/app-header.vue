@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { useTheme } from "vuetify";
 
-import {
-  closeWinIpc,
-  minimizeWinIpc,
-  openLinkIpc,
-  updateConfigIpc,
-} from "@/apis";
-import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import { trpcClient } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
 
@@ -19,7 +13,7 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
-const theme = useTheme();
+const gTheme = useTheme();
 
 onKeyStroke(
   "Escape",
@@ -31,34 +25,29 @@ onKeyStroke(
   },
 );
 
-const { invoke } = useIpcRendererInvoke(
-  (mode: "light" | "dark") => updateConfigIpc({ mode }),
-  {
-    immediate: false,
-  },
-);
-
-const { invoke: cancelAutoLogin } = useIpcRendererInvoke(
-  () =>
-    updateConfigIpc({
-      autoLogin: false,
-      loginUserInfo: "",
-    }),
-  {
-    immediate: false,
-  },
-);
-
-const changeMode = (mode: "dark" | "light") => {
-  appStore.updateConfigAction({ mode });
-  invoke(mode);
-  theme.global.name.value = mode;
+const changeMode = (theme: "dark" | "light") => {
+  appStore.updateConfigAction({ theme }, true);
+  gTheme.global.name.value = theme;
 };
 
 const logout = () => {
   userStore.logoutAction();
-  cancelAutoLogin();
-  router.replace({ name: "LOGIN" });
+  appStore.updateConfigAction(
+    {
+      autoLogin: false,
+      loginUserInfo: "",
+    },
+    true,
+  );
+  router.push({ name: "LOGIN" });
+};
+
+const minimizeWin = () => {
+  trpcClient.minimizeWin.query();
+};
+
+const closeWin = () => {
+  trpcClient.closeWin.query();
 };
 </script>
 
@@ -67,7 +56,7 @@ const logout = () => {
     <v-app-bar-title>
       <img
         src="@/assets/logo.png"
-        class="block w-[150px] cursor-pointer app-region-nodrag"
+        class="wind-w-[150px] cursor-pointer app-region-nodrag"
         alt="jm"
         @click="router.push('/')"
       />
@@ -81,10 +70,10 @@ const logout = () => {
             @click="router.back()"
           />
           <app-header-icon-btn
-            :tooltip-text="`切换${appStore.config.mode === 'dark' ? '日间模式' : '夜间模式'}`"
+            :tooltip-text="`切换${appStore.config.theme === 'dark' ? '日间模式' : '夜间模式'}`"
             icon="mdi-swap-horizontal"
             @click="
-              changeMode(appStore.config.mode === 'dark' ? 'light' : 'dark')
+              changeMode(appStore.config.theme === 'dark' ? 'light' : 'dark')
             "
           />
           <app-header-icon-btn
@@ -128,10 +117,20 @@ const logout = () => {
               <v-btn v-bind="props" icon="mdi-link"></v-btn>
             </template>
             <v-list>
-              <v-list-item @click="openLinkIpc(appStore.setting.webHost)">
+              <v-list-item
+                @click="
+                  trpcClient.openLink.query({ url: appStore.setting.webHost })
+                "
+              >
                 <v-list-item-title>官方站点</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="openLinkIpc(appStore.setting.storeLink.web)">
+              <v-list-item
+                @click="
+                  trpcClient.openLink.query({
+                    url: appStore.setting.storeLink.web,
+                  })
+                "
+              >
                 <v-list-item-title>下载页面</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -193,12 +192,12 @@ const logout = () => {
         <app-header-icon-btn
           tooltip-text="最小化"
           icon="mdi-minus"
-          @click="minimizeWinIpc()"
+          @click="minimizeWin()"
         />
         <app-header-icon-btn
           tooltip-text="关闭"
           icon="mdi-close"
-          @click="closeWinIpc()"
+          @click="closeWin()"
         />
       </div>
     </template>

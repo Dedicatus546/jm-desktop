@@ -38,12 +38,15 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div v-if="loading" class="absolute inset-0 flex items-center justify-center">
+  <div
+    v-if="loading"
+    class="wind-absolute wind-inset-0 wind-items-center wind-justify-center flex"
+  >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
   <template v-else>
     <app-comic-scroll-read
-      v-if="appStore.config.readMode === 1"
+      v-if="appStore.config.readMode === 'scroll'"
       :pic-list="data.list"
       :comic-id="id"
     />

@@ -31,8 +31,8 @@ const replyListOpen = ref(false);
 </script>
 
 <template>
-  <div class="flex items-start gap-4">
-    <div class="flex-shrink-0">
+  <div class="wind-flex wind-items-start wind-gap-4">
+    <div class="wind-flex-shrink-0">
       <v-avatar
         v-if="comment.avatar"
         :image="`${appStore.setting.imgHost}/media/users/${comment.avatar}`"
@@ -48,10 +48,10 @@ const replyListOpen = ref(false);
         {{ comment.nickname[0].toUpperCase() }}
       </v-avatar>
     </div>
-    <div class="flex flex-col gap-2 flex-grow">
-      <div class="flex flex-col">
-        <div class="text">{{ comment.nickname }}</div>
-        <div class="text">
+    <div class="wind-flex wind-flex-col wind-gap-2 wind-flex-grow">
+      <div class="wind-flex wind-flex-col">
+        <div class="wind-text">{{ comment.nickname }}</div>
+        <div class="wind-text">
           {{ dayjs(comment.createTime).format("YYYY-MM-DD HH:mm:ss") }}
         </div>
       </div>
@@ -65,13 +65,13 @@ const replyListOpen = ref(false);
       </div> -->
       <div
         v-if="comment.replyList && comment.replyList.length > 0"
-        class="flex gap-2 cursor-pointer"
+        class="wind-flex wind-gap-2 wind-cursor-pointer"
         @click="replyListOpen = !replyListOpen"
       >
         <v-icon icon="mdi-reply" />
         {{ comment.replyList.length }}
       </div>
-      <div v-if="replyListOpen && comment.replyList" class="mt-6">
+      <div v-if="replyListOpen && comment.replyList" class="wind-mt-6">
         <v-row>
           <template
             v-for="(subItem, index) of comment.replyList"

@@ -21,14 +21,16 @@ const openLocalFile = () => {
 </script>
 
 <template>
-  <v-card color="primary" class="cursor-pointer" @click="openLocalFile">
+  <v-card color="primary" class="wind-cursor-pointer" @click="openLocalFile">
     <v-img
       :aspect-ratio="3 / 4"
-      class="block aspect-[3/4]"
       :alt="`${comic.name}的封面`"
       :src="`${appStore.setting.imgHost}/media/albums/${comic.belongId}_3x4.jpg`"
     >
-      <div v-if="comic.id !== comic.belongId" class="absolute right-4 top-4">
+      <div
+        v-if="comic.id !== comic.belongId"
+        class="wind-absolute wind-right-4 wind-top-4"
+      >
         <v-chip variant="elevated" elevation="0" color="primary">
           {{ comic.seriesName }}
         </v-chip>

@@ -43,9 +43,12 @@ const onSliderEnd = (value: [number, number] | number) => {
 </script>
 
 <template>
-  <div class="absolute inset-0">
-    <div class="flex flex-col h-full gap-4">
-      <div v-if="picList.length > 0" class="flex-grow min-h-0 p-4">
+  <div class="wind-absolute wind-inset-0">
+    <div class="wind-flex wind-flex-col wind-h-full wind-gap-4">
+      <div
+        v-if="picList.length > 0"
+        class="wind-flex-grow wind-min-h-0 wind-p-4"
+      >
         <comic-page-pic
           :key="picList[page]"
           :comic-id="comicId"
@@ -53,7 +56,7 @@ const onSliderEnd = (value: [number, number] | number) => {
           @decode-success="onDecodeSuccess(page)"
         />
       </div>
-      <div class="flex-shrink-0">
+      <div class="wind-flex-shrink-0">
         <v-card>
           <v-card-text>
             <v-slider
@@ -75,10 +78,10 @@ const onSliderEnd = (value: [number, number] | number) => {
                 ></v-btn>
               </template>
               <template #append>
-                <div class="flex items-center gap-2">
+                <div class="wind-flex wind-items-center gap-2">
                   <div>{{ sliderValue }} / {{ picList.length }}</div>
                   <shunt-select />
-                  <div class="flex-shrink-0"></div>
+                  <div class="wind-flex-shrink-0"></div>
                   <v-btn
                     color="primary"
                     icon="mdi-arrow-right"

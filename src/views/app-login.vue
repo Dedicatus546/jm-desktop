@@ -92,7 +92,7 @@ onError((e) => {
               type="warning"
             >
               <template #text>
-                <div class="flex flex-col gap-2 py-2">
+                <div class="wind-flex wind-flex-col wind-gap-2 wind-py-2">
                   <div>
                     1.自动登录会使用对称加密的方式将你的账号和密码写在本地，如果不希望这么做请勿开启。
                   </div>

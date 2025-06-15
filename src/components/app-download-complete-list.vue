@@ -45,7 +45,7 @@ onUnmounted(() => {
         @update:page="onPageChange"
       >
         <template #loader>
-          <div class="h-[30vh] flex items-center justify-center">
+          <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>

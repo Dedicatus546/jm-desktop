@@ -20,7 +20,7 @@ const updateCurrentShuntKey = (value: number) => {
   <v-select
     hide-details
     :model-value="appStore.config.currentShuntKey"
-    class="w-[150px]"
+    class="wind-w-[150px]"
     :items="appStore.setting.shuntList"
     item-title="title"
     item-value="key"

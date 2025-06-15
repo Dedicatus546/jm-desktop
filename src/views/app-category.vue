@@ -87,15 +87,15 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
         :loading="loading"
       >
         <template #loader>
-          <div class="h-[30vh] flex items-center justify-center">
+          <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>
         <template #header>
-          <div class="mb-4">
+          <div class="wind-mb-4">
             <div
               v-if="categoryLoading"
-              class="h-[30vh] flex items-center justify-center"
+              class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
             >
               <v-progress-circular indeterminate></v-progress-circular>
             </div>
@@ -103,10 +103,10 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
               <v-row>
                 <v-col :cols="12">
                   <div class="flex gap-2">
-                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
                       排序
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="wind-flex wind-flex-wrap wind-gap-2">
                       <v-chip
                         v-for="item of orderList"
                         :key="item.label"
@@ -121,11 +121,11 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                   </div>
                 </v-col>
                 <v-col :cols="12">
-                  <div class="flex gap-2">
-                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                  <div class="wind-flex wind-gap-2">
+                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
                       分类
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="wind-flex wind-flex-wrap wind-gap-2">
                       <v-chip
                         v-for="item of category.data.categoryList"
                         :key="item.id"
@@ -145,11 +145,11 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                   </div>
                 </v-col>
                 <v-col v-if="subCategoryList.length > 0" :cols="12">
-                  <div class="flex gap-2">
-                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                  <div class="wind-flex wind-gap-2">
+                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
                       子分类
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="wind-flex wind-flex-wrap wind-gap-2">
                       <v-chip
                         v-for="item of subCategoryList"
                         :key="item.id"
@@ -170,11 +170,11 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
                   :key="item.title"
                   :cols="12"
                 >
-                  <div class="flex gap-2">
-                    <div class="h-[30px] leading-[30px] flex-shrink-0">
+                  <div class="wind-flex wind-gap-2">
+                    <div class="wind-h-[30px] wind-leading-[30px] wind-flex-shrink-0">
                       {{ item.title }}
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="wind-flex wind-flex-wrap wind-gap-2">
                       <router-link
                         v-for="tag of item.list"
                         :key="tag"
@@ -204,13 +204,13 @@ const onCategoryClick = (type: string, slug: string, name: string) => {
           <v-row>
             <template v-for="item of items" :key="item.raw.id">
               <v-col cols="6" :sm="4" :md="3" :lg="2">
-                <comic-route-item :comic="item.raw" />
+                <app-comic-list-item :comic="item.raw" />
               </v-col>
             </template>
           </v-row>
         </template>
         <template #footer>
-          <div class="flex justify-end mt-4">
+          <div class="wind-flex wind-justify-end wind-mt-4">
             <v-pagination
               v-model="page"
               :length="pageCount"

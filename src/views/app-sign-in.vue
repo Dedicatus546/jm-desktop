@@ -144,7 +144,7 @@ onSuccess(() => {
 <template>
   <v-card>
     <v-card-text>
-      <div class="flex flex-col gap-4">
+      <div class="wind-flex wind-flex-col wind-gap-4">
         <v-calendar
           ref="calendar"
           :model-value="value"
@@ -152,25 +152,25 @@ onSuccess(() => {
           :events="events"
         >
           <template #header>
-            <div class="text-h6 text-center mb-4">
+            <div class="wind-text-h6 wind-text-center wind-mb-4">
               本月已签到 {{ signInSumDay }} 天
             </div>
           </template>
           <template #intervalEvent="{ event }">
-            <div v-if="event.type === 1" class="m-2">
+            <div v-if="event.type === 1" class="wind-m-2">
               <v-chip>
                 <template #prepend>
                   <v-icon icon="mdi-heart" color="red"></v-icon>
                 </template>
-                <span class="ml-1">额外奖励</span>
+                <span class="wind-ml-1">额外奖励</span>
               </v-chip>
             </div>
-            <div v-else-if="event.type === 2" class="m-2">
+            <div v-else-if="event.type === 2" class="wind-m-2">
               <v-chip>
                 <template #prepend>
                   <v-icon icon="mdi-check" color="success"></v-icon>
                 </template>
-                <span class="ml-1">已签到</span>
+                <span class="wind-ml-1">已签到</span>
               </v-chip>
             </div>
           </template>
@@ -188,11 +188,11 @@ onSuccess(() => {
         ></v-slider>
         <v-alert type="info" title="连续签到奖励">
           <template #text>
-            <div class="text">
+            <div class="wind-text">
               连续签到三天额外得 {{ data?.data.threeDaysCoinCount ?? 0 }} JCoins
               和 {{ data?.data.threeDaysExpCount ?? 0 }} 经验
             </div>
-            <div class="text">
+            <div class="wind-text">
               连续签到七天额外得 {{ data?.data.sevenDaysCoinCount ?? 0 }} JCoins
               和 {{ data?.data.sevenDaysExpCount ?? 0 }} 经验
             </div>

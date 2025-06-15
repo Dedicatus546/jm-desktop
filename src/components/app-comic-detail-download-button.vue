@@ -226,7 +226,7 @@ const download = async (series?: { id: number; name: string }) => {
   </v-btn>
   <v-dialog v-model:model-value="showSeriesSelectDialog" width="80%">
     <v-card title="选择下载章节">
-      <v-card-text class="h-[60vh] overflow-auto">
+      <v-card-text class="wind-h-[60vh] wind-overflow-auto">
         <v-row>
           <v-col
             v-for="item of comic.seriesList"

@@ -25,3 +25,5 @@ declare namespace NodeJS {
 interface Window {
   ipcRenderer: import("electron").IpcRenderer;
 }
+
+declare const ipcRenderer: Window["ipcRenderer"];

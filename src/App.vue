@@ -23,17 +23,23 @@ useRefreshUser();
               ref="scrollViewRef"
               fluid
               style="height: calc(100vh - var(--v-layout-top, 0px))"
-              class="w-full h-full overflow-y-auto relative"
+              class="wind-w-full wind-h-full wind-overflow-y-auto wind-relative"
             >
               <div
                 v-if="loading || error"
-                class="w-full h-full flex items-center justify-center"
+                class="wind-h-full wind-w-full wind-flex wind-items-center wind-justify-center"
               >
-                <div v-if="loading" class="flex flex-col items-center gap-4">
+                <div
+                  v-if="loading"
+                  class="wind-flex wind-flex-col wind-items-center wind-gap-4"
+                >
                   <v-progress-circular indeterminate></v-progress-circular>
                   <span>{{ currentStatus }}</span>
                 </div>
-                <div v-if="error" class="flex flex-col items-center gap-4">
+                <div
+                  v-if="error"
+                  class="wind-flex wind-flex-col wind-items-center wind-gap-4"
+                >
                   {{ error }}
                   <v-btn type="primary" @click="reInit()">重新加载</v-btn>
                 </div>

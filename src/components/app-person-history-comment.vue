@@ -20,7 +20,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div class="h-[30vh] flex items-center justify-center">
+      <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
@@ -43,7 +43,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </v-row>
     </template>
     <template #footer>
-      <div class="flex justify-end mt-4">
+      <div class="wind-flex wind-justify-end mt-4">
         <v-pagination
           v-model="page"
           :length="pageCount"

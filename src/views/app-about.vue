@@ -12,9 +12,9 @@ const toRepo = () => {
 <template>
   <v-card title="关于">
     <v-card-text>
-      <div class="flex flex-col gap-4 items-center py-4">
+      <div class="wind-flex wind-flex-col wind-gap-4 wind-items-center wind-py-4">
         <v-avatar size="100" image="/png/512x512.png" rounded="0" />
-        <div class="text-h5">jm-desktop</div>
+        <div class="wind-text-h5">jm-desktop</div>
       </div>
       <v-divider />
       <v-list>
@@ -30,7 +30,7 @@ const toRepo = () => {
         </v-list-item>
         <v-list-item title="仓库地址">
           <template #append>
-            <div class="cursor-pointer" @click="toRepo">
+            <div class="wind-cursor-pointer" @click="toRepo">
               https://github.com/Dedicatus546/jm-desktop
             </div>
           </template>

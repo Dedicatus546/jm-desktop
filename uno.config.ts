@@ -1,7 +1,11 @@
-import { defineConfig, presetWind } from "unocss";
+import { defineConfig, presetWind4 } from "unocss";
 
 export default defineConfig({
-  presets: [presetWind()],
+  presets: [
+    presetWind4({
+      prefix: "wind",
+    }),
+  ],
   rules: [
     [
       "app-region-drag",

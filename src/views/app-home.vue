@@ -42,7 +42,7 @@ const minListCount = computed(() => {
 <template>
   <div
     v-if="loading || latestLoading"
-    class="absolute inset-0 flex items-center justify-center"
+    class="wind-absolute wind-inset-0 wind-flex wind-items-center wind-justify-center"
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
@@ -59,7 +59,7 @@ const minListCount = computed(() => {
               :md="3"
               :lg="2"
             >
-              <comic-route-item :comic="subItem" />
+              <app-comic-list-item :comic="subItem" />
             </v-col>
           </v-row>
           <app-home-swiper
@@ -73,7 +73,7 @@ const minListCount = computed(() => {
     <v-col :cols="12">
       <v-card>
         <v-card-item>
-          <div class="flex items-center justify-between">
+          <div class="wind-flex wind-items-center wind-justify-between">
             <v-card-title>最新发布</v-card-title>
             <router-link custom :to="{ name: 'COMIC_LATEST' }">
               <template #default="{ navigate }">
@@ -92,7 +92,7 @@ const minListCount = computed(() => {
               :md="3"
               :lg="2"
             >
-              <comic-route-item :comic="item" />
+              <app-comic-list-item :comic="item" />
             </v-col>
           </v-row>
         </v-card-text>
@@ -100,11 +100,3 @@ const minListCount = computed(() => {
     </v-col>
   </v-row>
 </template>
-
-<style scoped lang="less">
-.title-skeleton {
-  :deep(.ant-skeleton-title) {
-    margin-bottom: 0;
-  }
-}
-</style>

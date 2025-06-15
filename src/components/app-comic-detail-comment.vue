@@ -55,7 +55,7 @@ onSuccess(() => {
 </script>
 
 <template>
-  <v-form :model="formState" class="mb-4" @submit.prevent="send()">
+  <v-form :model="formState" class="wind-mb-4" @submit.prevent="send()">
     <v-row>
       <v-col :cols="12">
         <v-textarea
@@ -82,7 +82,9 @@ onSuccess(() => {
   </v-form>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div class="h-[30vh] flex items-center justify-center">
+      <div
+        class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+      >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
@@ -105,7 +107,7 @@ onSuccess(() => {
       </v-row>
     </template>
     <template #footer>
-      <div class="flex justify-end mt-4">
+      <div class="wind-flex wind-justify-end wind-mt-4">
         <v-pagination
           v-model="page"
           :length="pageCount"

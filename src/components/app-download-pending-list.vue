@@ -10,7 +10,7 @@ const downloadStore = useDownloadStore();
     <v-card-text>
       <v-data-iterator :items="downloadStore.pendingList" :items-per-page="30">
         <template #loader>
-          <div class="h-[30vh] flex items-center justify-center">
+          <div class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center">
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>

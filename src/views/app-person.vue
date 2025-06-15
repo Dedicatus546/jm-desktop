@@ -28,19 +28,19 @@ const tabList = [
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-col items-center">
+          <div class="wind-flex wind-flex-col wind-gap-4">
+            <div class="wind-flex wind-flex-col wind-items-center">
               <v-avatar
                 :size="120"
                 :image="`${appStore.setting.imgHost}/media/users/${userInfo.avatar}`"
               >
               </v-avatar>
-              <div class="text-h6">{{ userInfo.username }}</div>
+              <div class="wind-text-h6">{{ userInfo.username }}</div>
             </div>
             <v-divider />
             <v-row>
               <v-col :cols="3">
-                <div class="flex flex-col items-center">
+                <div class="wind-flex wind-flex-col wind-items-center">
                   <div>经验值</div>
                   <div>
                     {{ `${userInfo.currentExp}/${userInfo.nextLevelExp}` }}
@@ -48,7 +48,7 @@ const tabList = [
                 </div>
               </v-col>
               <v-col :cols="3">
-                <div class="flex flex-col items-center">
+                <div class="wind-flex wind-flex-col wind-items-center">
                   <div>等级</div>
                   <div>
                     {{ `${userInfo.level[0]}（${userInfo.level[1]}）` }}
@@ -56,7 +56,7 @@ const tabList = [
                 </div>
               </v-col>
               <v-col :cols="3">
-                <div class="flex flex-col items-center">
+                <div class="wind-flex wind-flex-col wind-items-center">
                   <div>J Coins</div>
                   <div>
                     {{ userInfo.jCoin }}
@@ -64,7 +64,7 @@ const tabList = [
                 </div>
               </v-col>
               <v-col :cols="3">
-                <div class="flex flex-col items-center">
+                <div class="wind-flex wind-flex-col wind-items-center">
                   <div>可收藏数量</div>
                   <div>
                     {{ `${userInfo.collectCount}/${userInfo.maxCollectCount}` }}
