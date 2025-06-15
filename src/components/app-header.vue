@@ -56,7 +56,7 @@ const closeWin = () => {
     <v-app-bar-title>
       <img
         src="@/assets/logo.png"
-        class="wind-w-[150px] cursor-pointer app-region-nodrag"
+        class="wind-w-[150px] wind-cursor-pointer app-region-nodrag"
         alt="jm"
         @click="router.push('/')"
       />

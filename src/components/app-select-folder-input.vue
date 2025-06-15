@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { selectFolderIpc } from "@/apis";
-import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
+import { trpcClient } from "@/apis/ipc";
 
 const value = defineModel<string>("modelValue");
-
-const { loading, data, invoke } = useIpcRendererInvoke<string>(
-  () => selectFolderIpc(),
-  {
-    immediate: false,
-  },
-);
+const loading = ref(false);
 
 const changeDownloadDir = async () => {
-  await invoke();
-  value.value = data.value!;
+  const dir = await trpcClient.selectFolder.query();
+  value.value = dir;
 };
 </script>
 
