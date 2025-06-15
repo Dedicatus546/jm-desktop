@@ -49,14 +49,15 @@ const { loading: categoryLoading, data: category } = useRequest(
     initialData: {
       data: {
         categoryList: [],
-        // TODO fix 这里这个 tagTypeList 好像服务器没返回了？
         tagTypeList: [],
       },
     },
   },
 );
 
-const tagList = category.value.data.tagTypeList.flatMap((item) => item.list);
+const tagList = computed(() =>
+  category.value.data.tagTypeList.flatMap((item) => item.list),
+);
 
 const subCategoryList = computed(() => {
   return (
