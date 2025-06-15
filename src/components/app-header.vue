@@ -77,6 +77,7 @@ const closeWin = () => {
             "
           />
           <app-header-icon-btn
+            v-if="userStore.isLogin"
             tooltip-text="每月签到"
             icon="mdi-calendar-month"
             @click="

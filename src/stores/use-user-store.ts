@@ -23,6 +23,8 @@ const useUserStore = defineStore("user", () => {
     loginInfo: null,
   });
 
+  const isLogin = computed(() => !!state.userInfo);
+
   const updateUserInfoAction = (userInfo: NonNullable<State["userInfo"]>) => {
     if (state.userInfo) {
       Object.assign(state.userInfo, userInfo);
@@ -45,6 +47,7 @@ const useUserStore = defineStore("user", () => {
 
   return {
     ...toRefs(state),
+    isLogin,
     updateUserInfoAction,
     updateLoginInfoAction,
     logoutAction,
