@@ -1104,19 +1104,44 @@ export const getComicPicListApi = (
       // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
     async transform(htmlStr) {
-      // 正则解析
-      const regex = /data-original="(.*)"/g;
-      const matches = [];
-      let match;
-
-      while ((match = regex.exec(htmlStr)) !== null) {
-        matches.push(match[1]);
+      // 2025.06.15 新版匹配方式
+      // 正则表达式匹配 result 对象
+      const resultRegex = /const result\s*=\s*({[\s\S]*?});/;
+      const resultMatch = htmlStr.match(resultRegex);
+      let result: { images: Array<string> } | null = null;
+      if (resultMatch) {
+        try {
+          result = eval(`(${resultMatch[1]})`);
+        } catch (e) {
+          console.error("Error parsing result object:", e);
+        }
       }
 
-      const list = matches.filter((item) => item.includes(".webp"));
-
+      // 正则表达式匹配 config 对象
+      const configRegex = /const config\s*=\s*({[\s\S]*?});/;
+      const configMatch = htmlStr.match(configRegex);
+      let config: {
+        cache: string;
+        imghost: string;
+        jmid: string;
+      } | null = null;
+      if (configMatch) {
+        try {
+          config = eval(`(${configMatch[1]})`);
+        } catch (e) {
+          console.error("Error parsing config object:", e);
+        }
+      }
+      if (!result || !config) {
+        return {
+          list: [],
+        };
+      }
       return {
-        list,
+        list: result.images.map(
+          (item) =>
+            `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
+        ),
       };
     },
   });
