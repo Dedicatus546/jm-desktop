@@ -85,4 +85,15 @@ export default defineConfig({
       "@electron": resolve(__dirname, "electron"),
     },
   },
+  server: {
+    // 由于 jm 的接口以 cookie 形式来验证用户登录，所以这里我们在开发下只能做一层转发
+    // 生产下不受影响，由 electron 侧提供服务器来供访问
+    proxy: {
+      "^/api": {
+        target: "http://localhost:6174",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });
