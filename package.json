@@ -24,7 +24,6 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
-    "dayjs": "^1.11.13",
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "https-proxy-agent": "^7.0.6",
