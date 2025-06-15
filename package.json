@@ -52,6 +52,7 @@
     "@types/node": "^22.15.31",
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
+    "@unocss/eslint-config": "^66.2.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
