@@ -360,7 +360,7 @@ const cover = computed(() =>
   </v-row>
 </template>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 .skeleton-comic-cover {
   width: 25%;
   min-width: 200px;
