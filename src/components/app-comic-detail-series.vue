@@ -21,15 +21,26 @@ defineProps<{
       <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
         <template #default="{ navigate }">
           <v-btn
+            class="chapter-btn"
             size="large"
             :color="currentSeriesId === item.id ? 'primary' : undefined"
             block
             @click="navigate()"
           >
-            {{ item.name }}
+            <app-scroll-wrapper>
+              {{ item.name }}
+            </app-scroll-wrapper>
           </v-btn>
         </template>
       </router-link>
     </v-col>
   </v-row>
 </template>
+
+<style scoped lang="scss">
+.chapter-btn {
+  ::v-deep(.v-btn__content) {
+    min-width: 0;
+  }
+}
+</style>
