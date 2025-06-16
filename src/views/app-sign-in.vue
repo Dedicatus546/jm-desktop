@@ -212,7 +212,7 @@ onSuccess(() => {
   </v-card>
 </template>
 
-<style lang="less" scoped>
+<style lang="sass" scoped>
 .signCalendar {
   ::v-deep(.v-calendar-month__day) {
     min-height: 120px;

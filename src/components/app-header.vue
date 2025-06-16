@@ -195,5 +195,3 @@ const closeWin = () => {
     </template>
   </v-app-bar>
 </template>
-
-<style lang="less" scoped></style>
