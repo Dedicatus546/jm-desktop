@@ -1,9 +1,9 @@
-import CryptoJS from "crypto-js";
 import { format, getDate, parse } from "date-fns";
 
 import { BaseComic } from "@/types";
 
 import http from "./http";
+import { trpcClient } from "./ipc";
 
 type RespWrapper<T> = {
   code: number;
@@ -746,12 +746,12 @@ const getAvatar = (str: string) => {
   }
   return str;
 };
-const getAvatarColor = (nickname: string) => {
+const getAvatarColor = async (nickname: string) => {
   let color: string | undefined = undefined;
   if ((color = avatarColorCache.get(nickname))) {
     return color;
   }
-  const hash = CryptoJS.MD5(nickname).toString().substring(0, 6);
+  const hash = (await trpcClient.md5.query(nickname)).substring(0, 6);
   color = `#${hash}`;
   avatarColorCache.set(nickname, color);
   return color;
@@ -794,47 +794,52 @@ export const getComicCommentListApi = (query: {
       mode: "manhua",
       aid: query.comicId,
     },
-    transform(res) {
+    async transform(res) {
       return {
         code: res.code,
         data: {
-          list: res.data.list.map((item) => {
-            const avatar = getAvatar(item.photo);
-            const avatarColor =
-              avatar === null ? getAvatarColor(item.username) : "#eee";
-            return {
-              id: Number.parseInt(item.CID),
-              parentId: Number.parseInt(item.parent_CID),
-              nickname: item.username,
-              likeCount: Number.parseInt(item.likes),
-              content: item.content,
-              avatar,
-              avatarColor,
-              createTime: format(
-                parse(item.addtime, "MMM d, yyyy", new Date()),
-                "yyyy-MM-dd",
-              ),
-              replyList:
-                item.replys?.map((item) => {
-                  const avatar = getAvatar(item.photo);
-                  const avatarColor =
-                    avatar === null ? getAvatarColor(item.username) : "#eee";
-                  return {
-                    id: Number.parseInt(item.CID),
-                    parentId: Number.parseInt(item.parent_CID),
-                    nickname: item.username,
-                    likeCount: Number.parseInt(item.likes),
-                    createTime: format(
-                      parse(item.addtime, "MMM d, yyyy", new Date()),
-                      "yyyy-MM-dd",
-                    ),
-                    content: item.content,
-                    avatar,
-                    avatarColor,
-                  };
-                }) ?? [],
-            };
-          }),
+          list: await Promise.all(
+            res.data.list.map(async (item) => {
+              const avatar = getAvatar(item.photo);
+              const avatarColor =
+                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              return {
+                id: Number.parseInt(item.CID),
+                parentId: Number.parseInt(item.parent_CID),
+                nickname: item.username,
+                likeCount: Number.parseInt(item.likes),
+                content: item.content,
+                avatar,
+                avatarColor,
+                createTime: format(
+                  parse(item.addtime, "MMM d, yyyy", new Date()),
+                  "yyyy-MM-dd",
+                ),
+                replyList: await Promise.all(
+                  item.replys?.map(async (item) => {
+                    const avatar = getAvatar(item.photo);
+                    const avatarColor =
+                      avatar === null
+                        ? await getAvatarColor(item.username)
+                        : "#eee";
+                    return {
+                      id: Number.parseInt(item.CID),
+                      parentId: Number.parseInt(item.parent_CID),
+                      nickname: item.username,
+                      likeCount: Number.parseInt(item.likes),
+                      createTime: format(
+                        parse(item.addtime, "MMM d, yyyy", new Date()),
+                        "yyyy-MM-dd",
+                      ),
+                      content: item.content,
+                      avatar,
+                      avatarColor,
+                    };
+                  }) ?? [],
+                ),
+              };
+            }),
+          ),
           total: Number.parseInt(res.data.total),
         },
       };
@@ -878,41 +883,46 @@ export const getUserCommentListApi = (page: number, userId: number) => {
       mode: undefined,
       uid: userId,
     },
-    transform(res) {
+    async transform(res) {
       return {
         code: res.code,
         data: {
-          list: res.data.list.map((item) => {
-            const avatar = getAvatar(item.photo);
-            const avatarColor =
-              avatar === null ? getAvatarColor(item.username) : "#eee";
-            return {
-              id: Number.parseInt(item.CID),
-              parentId: Number.parseInt(item.parent_CID),
-              nickname: item.username,
-              likeCount: Number.parseInt(item.likes),
-              content: item.content,
-              avatar,
-              avatarColor,
-              createTime: Number.parseInt(item.update_at) * 1000,
-              replyList:
-                item.replys?.map((item) => {
-                  const avatar = getAvatar(item.photo);
-                  const avatarColor =
-                    avatar === null ? getAvatarColor(item.username) : "#eee";
-                  return {
-                    id: Number.parseInt(item.CID),
-                    parentId: Number.parseInt(item.parent_CID),
-                    nickname: item.username,
-                    likeCount: Number.parseInt(item.likes),
-                    createTime: Number.parseInt(item.update_at) * 1000,
-                    content: item.content,
-                    avatar,
-                    avatarColor,
-                  };
-                }) ?? [],
-            };
-          }),
+          list: await Promise.all(
+            res.data.list.map(async (item) => {
+              const avatar = getAvatar(item.photo);
+              const avatarColor =
+                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              return {
+                id: Number.parseInt(item.CID),
+                parentId: Number.parseInt(item.parent_CID),
+                nickname: item.username,
+                likeCount: Number.parseInt(item.likes),
+                content: item.content,
+                avatar,
+                avatarColor,
+                createTime: Number.parseInt(item.update_at) * 1000,
+                replyList: await Promise.all(
+                  item.replys?.map(async (item) => {
+                    const avatar = getAvatar(item.photo);
+                    const avatarColor =
+                      avatar === null
+                        ? await getAvatarColor(item.username)
+                        : "#eee";
+                    return {
+                      id: Number.parseInt(item.CID),
+                      parentId: Number.parseInt(item.parent_CID),
+                      nickname: item.username,
+                      likeCount: Number.parseInt(item.likes),
+                      createTime: Number.parseInt(item.update_at) * 1000,
+                      content: item.content,
+                      avatar,
+                      avatarColor,
+                    };
+                  }) ?? [],
+                ),
+              };
+            }),
+          ),
           total: Number.parseInt(res.data.total),
         },
       };

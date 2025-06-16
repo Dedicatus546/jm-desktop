@@ -1,7 +1,6 @@
 import { xhrRequestAdapter } from "@alova/adapter-xhr";
 import { createAlova } from "alova";
 import vueHook from "alova/vue";
-import CryptoJS from "crypto-js";
 
 import { createLogger } from "@/logger";
 
@@ -12,15 +11,15 @@ const { info } = createLogger("api");
 const ts = Math.floor(Date.now() / 1000);
 const version = "1.8.0";
 const token = "185Hcomic3PAPP7R";
-const tokenHash = CryptoJS.MD5(`${ts}${token}`).toString().toLowerCase();
+const tokenHash = (await trpcClient.md5.query(`${ts}${token}`)).toLowerCase();
 
-const decode = (data: string) => {
-  return JSON.parse(
-    CryptoJS.AES.decrypt(data, CryptoJS.enc.Utf8.parse(tokenHash), {
-      mode: CryptoJS.mode.ECB,
-    }).toString(CryptoJS.enc.Utf8),
-  );
-};
+// const decode = (data: string) => {
+//   return JSON.parse(
+//     CryptoJS.AES.decrypt(data, CryptoJS.enc.Utf8.parse(tokenHash), {
+//       mode: CryptoJS.mode.ECB,
+//     }).toString(CryptoJS.enc.Utf8),
+//   );
+// };
 
 let baseURL = "";
 if (import.meta.env.DEV) {
@@ -58,7 +57,7 @@ const http = createAlova({
       if (json.code !== 200) {
         throw new Error(json.errorMsg);
       }
-      json.data = decode(json.data);
+      json.data = JSON.parse(await trpcClient.decodeHttpData.query(json.data));
       info(method.url, response.status, json);
       return json;
     },

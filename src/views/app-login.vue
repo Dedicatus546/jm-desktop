@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
 
-import { loginApi } from "@/apis";
+import { loginApi, trpcClient } from "@/apis";
 import useSnackbar from "@/compositions/use-snack-bar";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
-import { encryptLoginUser } from "@/utils/login-user-info";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -30,12 +29,12 @@ const { loading, data, onSuccess, onError, send } = useRequest(
 
 const snackbar = useSnackbar();
 
-onSuccess(() => {
+onSuccess(async () => {
   snackbar.primary("登录成功");
   userStore.updateUserInfoAction(data.value.data);
   userStore.updateLoginInfoAction(formState.username, formState.password);
   if (formState.autoLogin) {
-    const encryptStr = encryptLoginUser({
+    const encryptStr = await trpcClient.encryptLoginUser.query({
       username: formState.username,
       password: formState.password,
     });
