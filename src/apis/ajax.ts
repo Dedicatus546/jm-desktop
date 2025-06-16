@@ -859,13 +859,13 @@ export const getUserCommentListApi = (page: number, userId: number) => {
         content: string;
         avatar: string | null;
         avatarColor: string;
-        createTime: number;
+        createTime: string;
         replyList: Array<{
           id: number;
           parentId: number;
           nickname: string;
           likeCount: number;
-          createTime: number;
+          createTime: string;
           content: string;
           avatar: string | null;
           avatarColor: string;
@@ -900,7 +900,10 @@ export const getUserCommentListApi = (page: number, userId: number) => {
                 content: item.content,
                 avatar,
                 avatarColor,
-                createTime: Number.parseInt(item.update_at) * 1000,
+                createTime: format(
+                  parse(item.addtime, "MMM d, yyyy", new Date()),
+                  "yyyy-MM-dd",
+                ),
                 replyList: await Promise.all(
                   item.replys?.map(async (item) => {
                     const avatar = getAvatar(item.photo);
@@ -913,7 +916,10 @@ export const getUserCommentListApi = (page: number, userId: number) => {
                       parentId: Number.parseInt(item.parent_CID),
                       nickname: item.username,
                       likeCount: Number.parseInt(item.likes),
-                      createTime: Number.parseInt(item.update_at) * 1000,
+                      createTime: format(
+                        parse(item.addtime, "MMM d, yyyy", new Date()),
+                        "yyyy-MM-dd",
+                      ),
                       content: item.content,
                       avatar,
                       avatarColor,
