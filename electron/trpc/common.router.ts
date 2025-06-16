@@ -57,7 +57,7 @@ const decodeHttpDataRpc = trpc.procedure
   .query(async ({ input }) => {
     const { data, key } = input;
     const decipher = createDecipheriv(
-      "aes-128-ecb",
+      "aes-256-ecb",
       Buffer.from(key, "utf-8"),
       null,
     );

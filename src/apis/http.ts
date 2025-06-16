@@ -57,7 +57,12 @@ const http = createAlova({
       if (json.code !== 200) {
         throw new Error(json.errorMsg);
       }
-      json.data = JSON.parse(await trpcClient.decodeHttpData.query(json.data));
+      json.data = JSON.parse(
+        await trpcClient.decodeHttpData.query({
+          data: json.data,
+          key: tokenHash,
+        }),
+      );
       info(method.url, response.status, json);
       return json;
     },
