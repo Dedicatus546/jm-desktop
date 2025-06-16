@@ -40,7 +40,7 @@ const percent = computed(() => {
   return item.total === 0 ? 0 : +((item.loaded / item.total) * 100).toFixed(0);
 });
 
-const insertDownload = async () => {};
+// const insertDownload = async () => {};
 
 // const { invoke: insertDownload } = useIpcRendererInvoke(
 //   (query: {
@@ -63,7 +63,7 @@ const insertDownload = async () => {};
 //   },
 // );
 
-const saveDownloadFile = async () => {};
+// const saveDownloadFile = async () => {};
 
 // const { invoke: saveDownloadFile } = useIpcRendererInvoke(
 //   (buffer: ArrayBuffer, name: string) => saveDownloadComicIpc(buffer, name),
@@ -80,7 +80,7 @@ const { data: comicDownloadInfo, send: getComicDownloadInfo } = useRequest(
 );
 
 const {
-  data: file,
+  // data: file,
   send: downloadComic,
   downloading,
 } = useRequest(
@@ -187,14 +187,14 @@ const download = async (series?: { id: number; name: string }) => {
       expires: comicDownloadInfo.value.data.expires,
     });
     downloadStore.removeDownloadAction(id);
-    await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
-    await insertDownload({
-      id,
-      name,
-      belongId,
-      fileName,
-      seriesName: series ? series.name : "",
-    });
+    // await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
+    // await insertDownload({
+    //   id,
+    //   name,
+    //   belongId,
+    //   fileName,
+    //   seriesName: series ? series.name : "",
+    // });
     emitter.emit("RefreshCompleteDownloadList");
     snackbar.success("下载成功");
   } catch (e) {
