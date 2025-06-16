@@ -43,11 +43,11 @@ const onSliderEnd = (value: [number, number] | number) => {
 </script>
 
 <template>
-  <div class="wind-absolute wind-inset-0">
-    <div class="wind-flex wind-flex-col wind-h-full wind-gap-4">
+  <div class="wind-inset-0 wind-absolute">
+    <div class="wind-flex wind-flex-col wind-gap-4 wind-h-full">
       <div
         v-if="picList.length > 0"
-        class="wind-flex-grow wind-min-h-0 wind-p-4"
+        class="wind-p-4 wind-flex-grow wind-min-h-0"
       >
         <comic-page-pic
           :key="picList[page]"
@@ -78,7 +78,7 @@ const onSliderEnd = (value: [number, number] | number) => {
                 ></v-btn>
               </template>
               <template #append>
-                <div class="wind-flex wind-items-center wind-gap-2">
+                <div class="wind-flex wind-gap-2 wind-items-center">
                   <div>{{ sliderValue }} / {{ picList.length }}</div>
                   <app-shunt-select />
                   <div class="wind-flex-shrink-0"></div>

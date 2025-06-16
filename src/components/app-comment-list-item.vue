@@ -29,7 +29,7 @@ const replyListOpen = ref(false);
 </script>
 
 <template>
-  <div class="wind-flex wind-items-start wind-gap-4">
+  <div class="wind-flex wind-gap-4 wind-items-start">
     <div class="wind-flex-shrink-0">
       <v-avatar
         v-if="comment.avatar"
@@ -46,7 +46,7 @@ const replyListOpen = ref(false);
         {{ comment.nickname[0].toUpperCase() }}
       </v-avatar>
     </div>
-    <div class="wind-flex wind-flex-col wind-gap-2 wind-flex-grow">
+    <div class="wind-flex wind-flex-grow wind-flex-col wind-gap-2">
       <div class="wind-flex wind-flex-col">
         <div class="wind-text">{{ comment.nickname }}</div>
         <div class="wind-text">

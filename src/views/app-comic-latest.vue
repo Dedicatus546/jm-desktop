@@ -30,7 +30,7 @@ const { loading, data, page } = usePagination(
       >
         <template #loader>
           <div
-            class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+            class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
           >
             <v-progress-circular indeterminate></v-progress-circular>
           </div>

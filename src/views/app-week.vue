@@ -57,7 +57,7 @@ onSuccess(() => {
       <v-row>
         <v-col v-if="weekLoading" :cols="12">
           <div
-            class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+            class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
           >
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
@@ -70,7 +70,7 @@ onSuccess(() => {
           >
             <template #loader>
               <div
-                class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+                class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
               >
                 <v-progress-circular indeterminate></v-progress-circular>
               </div>

@@ -53,15 +53,15 @@ defineExpose({
           rootMargin: '-50% 0% -50% 0%',
         },
       }"
-      class="wind-absolute wind-inset-0"
+      class="wind-inset-0 wind-absolute"
     ></div>
     <div
       v-intersect.once="onLoadImageIntersect"
-      class="wind-absolute wind-inset-0"
+      class="wind-inset-0 wind-absolute"
     ></div>
     <img
       v-if="imgSrc"
-      class="wind-block wind-h-full wind-w-full wind-object-contain"
+      class="wind-h-full wind-w-full wind-block wind-object-contain"
       :src="imgSrc"
       :data-original-src="src"
       alt=""

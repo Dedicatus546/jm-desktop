@@ -28,13 +28,13 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
       <div
-        class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
       >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
     <template #header>
-      <div class="wind-flex wind-justify-end mb-4">
+      <div class="mb-4 wind-flex wind-justify-end">
         <div class="wind-w-[200px]">
           <v-select
             v-model:model-value="formState.type"
@@ -69,7 +69,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </v-row>
     </template>
     <template #footer>
-      <div class="wind-flex wind-justify-end mt-4">
+      <div class="mt-4 wind-flex wind-justify-end">
         <v-pagination
           v-model="page"
           :length="pageCount"

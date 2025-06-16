@@ -125,7 +125,7 @@ const cover = computed(() =>
   <v-row>
     <v-col v-if="loading || !comicInfo" :cols="12">
       <div
-        class="wind-h-[30vh] wind-flex wind-items-center wind-justify-center"
+        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
       >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
@@ -136,14 +136,14 @@ const cover = computed(() =>
           <v-card-text>
             <div class="wind-flex wind-gap-4">
               <div
-                class="wind-w-1/4 wind-max-w-[300px] wind-min-w-[200px] wind-flex-shrink-0"
+                class="wind-flex-shrink-0 wind-max-w-[300px] wind-min-w-[200px] wind-w-1/4"
               >
                 <v-card variant="text">
                   <v-img :aspect-ratio="3 / 4" cover alt="" :src="cover" />
                 </v-card>
               </div>
               <div
-                class="wind-leading-6 wind-flex wind-flex-col wind-gap-4 wind-flex-grow"
+                class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4"
               >
                 <div class="wind-flex wind-flex-col wind-gap-2">
                   <div class="text-h5">{{ comicInfo.data.name }}</div>
@@ -200,7 +200,7 @@ const cover = computed(() =>
                     <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
                       <div class="wind-flex wind-gap-1">
                         <div
-                          class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]"
+                          class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap"
                         >
                           作品：
                         </div>
@@ -218,7 +218,7 @@ const cover = computed(() =>
                     <v-col v-if="comicInfo.data.roleList.length > 0" :cols="12">
                       <div class="wind-flex wind-gap-1">
                         <div
-                          class="wind-h-[30px] wind-text-nowrap wind-leading-[30px]"
+                          class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap"
                         >
                           登场人物：
                         </div>

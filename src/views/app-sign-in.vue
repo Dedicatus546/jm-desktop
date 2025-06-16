@@ -152,7 +152,7 @@ onSuccess(() => {
           :events="events"
         >
           <template #header>
-            <div class="wind-text-h6 wind-text-center wind-mb-4">
+            <div class="wind-text-h6 wind-mb-4 wind-text-center">
               本月已签到 {{ signInSumDay }} 天
             </div>
           </template>
