@@ -45,11 +45,11 @@ useRefreshUser();
                 </div>
               </div>
               <router-view v-else v-slot="{ Component }">
-                <keep-alive
+                <!-- <keep-alive
                   include="app-home,app-search,app-person,app-category"
-                >
-                  <component :is="Component" />
-                </keep-alive>
+                > -->
+                <component :is="Component" />
+                <!-- </keep-alive> -->
               </router-view>
             </v-container>
           </v-main>
