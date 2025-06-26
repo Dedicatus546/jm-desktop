@@ -28,10 +28,10 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </div>
     </template>
     <template #no-data>
-      <app-empty-state
+      <v-empty-state
         title="一本都没看过，你是看封面就完事的吗"
         :image="EMPTY_STATE_IMG"
-      ></app-empty-state>
+      ></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>

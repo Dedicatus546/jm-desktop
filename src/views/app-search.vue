@@ -107,10 +107,10 @@ onSuccess(() => {
           </div>
         </template>
         <template #no-data>
-          <app-empty-state
+          <v-empty-state
             title="来到了知识的荒漠，你的 XP 可能比较特殊"
             :image="EMPTY_STATE_IMG"
-          ></app-empty-state>
+          ></v-empty-state>
         </template>
         <template #default="{ items }">
           <v-row>

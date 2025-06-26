@@ -9,10 +9,10 @@ defineProps<{
 <template>
   <v-data-iterator :items="relateList" :items-per-page="100">
     <template #no-data>
-      <app-empty-state
+      <v-empty-state
         title="一个相关都没有的小众宝藏本子"
         :image="EMPTY_STATE_IMG"
-      ></app-empty-state>
+      ></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>

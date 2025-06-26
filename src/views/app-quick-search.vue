@@ -41,10 +41,10 @@ const { page, pageSize, pageCount, data, loading } = usePagination(
           </div>
         </template>
         <template #no-data>
-          <app-empty-state
+          <v-empty-state
             title="出现这个就大概率是出 BUG 了，请提 issue"
             :image="EMPTY_STATE_IMG"
-          ></app-empty-state>
+          ></v-empty-state>
         </template>
         <template #default="{ items }">
           <v-row>

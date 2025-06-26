@@ -27,10 +27,10 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </div>
     </template>
     <template #no-data>
-      <app-empty-state
+      <v-empty-state
         title="看来不是很喜欢评论"
         :image="EMPTY_STATE_IMG"
-      ></app-empty-state>
+      ></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>
