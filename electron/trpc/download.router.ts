@@ -36,18 +36,7 @@ const downloadDir = resolve(dataDir, "download");
 //   );`,
 // );
 
-const animeDownloadDir = resolve(downloadDir, "anime");
-const comicDownloadDir = resolve(downloadDir, "comic");
-const lightNovelDownloadDir = resolve(downloadDir, "light-novel");
-
-[animeDownloadDir, comicDownloadDir, lightNovelDownloadDir].forEach((dir) => {
-  if (!existsSync(dir)) {
-    mkdirSync(dir, {
-      recursive: true,
-    });
-  }
-});
-
+// TODO
 const onDownloadComicRpc = trpc.procedure
   .input(
     z.object({
@@ -63,7 +52,7 @@ const onDownloadComicRpc = trpc.procedure
   .subscription(async function* (opts) {
     const query = opts.input;
     const filename = query.chapterName + ".zip";
-    const fileDir = resolve(comicDownloadDir, query.comicName, query.groupName);
+    const fileDir = resolve(downloadDir, query.comicName, query.groupName);
     const filepath = resolve(fileDir, filename);
     let complete = 0;
     const total = query.imageUrlList.length;

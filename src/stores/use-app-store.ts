@@ -1,4 +1,5 @@
 import { Config } from "@electron/module/config";
+import { useTheme } from "vuetify";
 
 import { trpcClient } from "@/apis";
 
@@ -43,12 +44,13 @@ interface State {
 }
 
 const useAppStore = defineStore("app", () => {
+  const theme = useTheme();
+  const isDark = usePreferredDark();
   const state = reactive<State>({
     config: {
       theme: "dark",
       apiUrl: "",
       apiUrlList: [],
-      downloadDir: "",
       readMode: "scroll",
       currentShuntKey: undefined,
       autoLogin: false,
@@ -95,6 +97,13 @@ const useAppStore = defineStore("app", () => {
     config: Partial<State["config"]>,
     sync = false,
   ) => {
+    if (config.theme) {
+      if (config.theme === "auto") {
+        theme.global.name.value = isDark.value ? "dark" : "light";
+      } else {
+        theme.global.name.value = config.theme;
+      }
+    }
     state.config = {
       ...state.config,
       ...config,

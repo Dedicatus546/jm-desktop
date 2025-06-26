@@ -20,7 +20,6 @@ const formState = reactive<
   theme: "light",
   apiUrl: "",
   apiUrlList: [],
-  downloadDir: "",
   readMode: "click",
   zoomFactor: 0,
   proxyInfo: undefined,
@@ -87,6 +86,22 @@ onMounted(() => {
         <v-row>
           <v-col :cols="12">
             <v-select
+              color="primary"
+              v-model:model-value="formState.theme"
+              hide-details
+              label="主题设置"
+              item-title="title"
+              item-value="value"
+              :items="[
+                { title: '自动', value: 'auto' },
+                { title: '日间模式', value: 'light' },
+                { title: '夜间模式', value: 'dark' },
+              ]"
+            >
+            </v-select>
+          </v-col>
+          <v-col :cols="12">
+            <v-select
               v-model:model-value="formState.apiUrl"
               hide-details
               label="代理域名"
@@ -117,19 +132,17 @@ onMounted(() => {
             ></v-select>
           </v-col>
           <v-col :cols="12">
-            <app-select-folder-input
-              v-model:model-value="formState.downloadDir"
-            />
-          </v-col>
-          <v-col :cols="12">
-            <v-slider
+            <v-number-input
+              hide-details
+              color="primary"
               v-model:model-value="formState.zoomFactor"
-              thumb-label="always"
-              :min="1"
-              :max="3"
-              :step="0.2"
               label="缩放等级"
-            ></v-slider>
+              :min="1"
+              :max="2"
+              :step="0.1"
+              :precision="1"
+              placeholder="系统默认缩放情况下 2k 可尝试 1.4 ，4k 可尝试 1.8"
+            ></v-number-input>
           </v-col>
           <v-col :cols="12">
             <v-select

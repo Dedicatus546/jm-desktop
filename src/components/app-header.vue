@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useTheme } from "vuetify";
-
 import { trpcClient } from "@/apis";
 import useAppStore from "@/stores/use-app-store";
 import useUserStore from "@/stores/use-user-store";
@@ -13,7 +11,6 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 const router = useRouter();
-const gTheme = useTheme();
 
 onKeyStroke(
   "Escape",
@@ -24,11 +21,6 @@ onKeyStroke(
     dedupe: true,
   },
 );
-
-const changeMode = (theme: "dark" | "light") => {
-  appStore.updateConfigAction({ theme }, true);
-  gTheme.global.name.value = theme;
-};
 
 const logout = () => {
   userStore.logoutAction();
@@ -70,13 +62,6 @@ const closeWin = () => {
             @click="router.back()"
           />
           <app-header-icon-btn
-            :tooltip-text="`切换${appStore.config.theme === 'dark' ? '日间模式' : '夜间模式'}`"
-            icon="mdi-swap-horizontal"
-            @click="
-              changeMode(appStore.config.theme === 'dark' ? 'light' : 'dark')
-            "
-          />
-          <app-header-icon-btn
             v-if="userStore.isLogin"
             tooltip-text="每月签到"
             icon="mdi-calendar-month"
@@ -113,29 +98,6 @@ const closeWin = () => {
               })
             "
           />
-          <v-menu>
-            <template #activator="{ props }">
-              <v-btn v-bind="props" icon="mdi-link"></v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                @click="
-                  trpcClient.openLink.query({ url: appStore.setting.webHost })
-                "
-              >
-                <v-list-item-title>官方站点</v-list-item-title>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  trpcClient.openLink.query({
-                    url: appStore.setting.storeLink.web,
-                  })
-                "
-              >
-                <v-list-item-title>下载页面</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
           <template v-if="userInfo">
             <app-header-icon-btn
               tooltip-text="个人中心"
