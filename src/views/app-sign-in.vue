@@ -152,7 +152,7 @@ onSuccess(() => {
           :events="events"
         >
           <template #header>
-            <div class="wind-text-h6 wind-mb-4 wind-text-center">
+            <div class="text-h6 wind-mb-4 wind-text-center">
               本月已签到 {{ signInSumDay }} 天
             </div>
           </template>
@@ -212,7 +212,7 @@ onSuccess(() => {
   </v-card>
 </template>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
 .signCalendar {
   ::v-deep(.v-calendar-month__day) {
     min-height: 120px;

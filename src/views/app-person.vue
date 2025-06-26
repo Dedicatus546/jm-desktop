@@ -35,7 +35,7 @@ const tabList = [
                 :image="`${appStore.setting.imgHost}/media/users/${userInfo.avatar}`"
               >
               </v-avatar>
-              <div class="wind-text-h6">{{ userInfo.username }}</div>
+              <div class="text-h6">{{ userInfo.username }}</div>
             </div>
             <v-divider />
             <v-row>
