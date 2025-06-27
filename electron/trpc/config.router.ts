@@ -44,6 +44,7 @@ const saveConfigRpc = trpc.procedure
       readMode: z.enum(["scroll", "click"]),
       autoLogin: z.boolean(),
       loginUserInfo: z.string(),
+      currentShuntKey: z.number().optional(),
       zoomFactor: z.number(),
       windowInfo: z
         .object({

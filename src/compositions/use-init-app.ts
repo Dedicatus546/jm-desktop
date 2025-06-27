@@ -45,12 +45,9 @@ const useInitConfig = () => {
             )
           ) {
             info("检测到未选择图源，默认选择第一个");
-            appStore.updateConfigAction({
-              currentShuntKey: appStore.setting.shuntList[0].key,
-            });
             appStore.updateConfigAction(
               {
-                currentShuntKey: appStore.config.currentShuntKey,
+                currentShuntKey: appStore.setting.shuntList[0].key,
               },
               true,
             );
