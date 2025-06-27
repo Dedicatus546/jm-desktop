@@ -85,47 +85,56 @@ onMounted(() => {
           </div>
         </template>
         <template #header>
-          <div class="wind-mb-2 wind-flex">
-            <div class="wind-w-[200px]">
-              <v-select
-                v-model:model-value="formState.order"
-                hide-details
-                :items="[
-                  {
-                    title: '最新',
-                    value: 'mr',
-                  },
-                  {
-                    title: '最多收藏',
-                    value: 'mv',
-                  },
-                  {
-                    title: '最多图片',
-                    value: 'mp',
-                  },
-                  {
-                    title: '最多爱心',
-                    value: 'tf',
-                  },
-                ]"
-              ></v-select>
-            </div>
-            <div class="wind-flex-grow">
-              <v-text-field
-                v-model:model-value="formState.content"
-                placeholder="车牌号，名称，作者"
-                @keyup.enter="send(1, 80)"
-              >
-                <template #append>
-                  <v-btn
-                    variant="text"
-                    icon="mdi-magnify"
-                    @click="loading || send(1, 80)"
-                  />
-                </template>
-              </v-text-field>
-            </div>
-          </div>
+          <v-form @submit.prevent="search">
+            <v-text-field
+              v-model:model-value="formState.content"
+              color="primary"
+              variant="outlined"
+              hide-details
+              placeholder="车牌号，名称，作者"
+            >
+              <template #prepend>
+                <v-select
+                  v-model:model-value="formState.order"
+                  hide-details
+                  color="primary"
+                  variant="outlined"
+                  class="wind-w-[120px]"
+                  item-title="title"
+                  item-value="value"
+                  :items="[
+                    {
+                      title: '最新',
+                      value: 'mr',
+                    },
+                    {
+                      title: '最多收藏',
+                      value: 'mv',
+                    },
+                    {
+                      title: '最多图片',
+                      value: 'mp',
+                    },
+                    {
+                      title: '最多爱心',
+                      value: 'tf',
+                    },
+                  ]"
+                ></v-select>
+              </template>
+              <template #append-inner>
+                <v-btn
+                  color="primary"
+                  :disabled="!formState.content"
+                  type="submit"
+                  variant="text"
+                  icon="mdi-magnify"
+                  @click="search"
+                ></v-btn>
+              </template>
+            </v-text-field>
+          </v-form>
+          <div class="wind-h-8"></div>
         </template>
         <template #no-data>
           <v-empty-state
