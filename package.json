@@ -19,6 +19,7 @@
     "@trpc/client": "^11.4.2",
     "@trpc/server": "^11.4.2",
     "@vueuse/core": "^13.4.0",
+    "@vueuse/router": "^13.4.0",
     "alova": "^3.3.3",
     "archiver": "^7.0.1",
     "cors": "^2.8.5",
