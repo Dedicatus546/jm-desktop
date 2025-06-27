@@ -6,7 +6,7 @@ const hash = __COMIT_HASH__;
 const isDev = import.meta.env.DEV;
 
 const toRepo = () => {
-  trpcClient.openLink.query({
+  trpcClient.openLink.mutate({
     url: "https://github.com/Dedicatus546/jm-desktop",
   });
 };

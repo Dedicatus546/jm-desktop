@@ -1,7 +1,5 @@
 import { format, getDate, parse } from "date-fns";
 
-import { BaseComic } from "@/types";
-
 import http from "./http";
 import { trpcClient } from "./ipc";
 
@@ -415,7 +413,13 @@ export const getPromoteComicListApi = () => {
 // 该接口无返回total，无法做常规分页
 export const getLatestComicListApi = (page: number) => {
   return http.Get<
-    RespWrapper<Array<BaseComic>>,
+    RespWrapper<
+      Array<{
+        id: number;
+        author: string;
+        name: string;
+      }>
+    >,
     RespWrapper<
       Array<{
         id: string;

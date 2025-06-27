@@ -38,11 +38,11 @@ const logout = () => {
 };
 
 const minimizeWin = () => {
-  trpcClient.minimizeWin.query();
+  trpcClient.minimizeWin.mutate();
 };
 
 const closeWin = () => {
-  trpcClient.closeWin.query();
+  trpcClient.closeWin.mutate();
 };
 </script>
 

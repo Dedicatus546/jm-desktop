@@ -109,7 +109,7 @@ const useAppStore = defineStore("app", () => {
       ...config,
     };
     if (sync) {
-      await trpcClient.saveConfig.query(state.config);
+      await trpcClient.saveConfig.mutate(state.config);
     }
   };
 

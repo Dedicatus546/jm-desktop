@@ -1,8 +1,9 @@
 import { WatchHandle } from "vue";
 
-import { BaseComic } from "@/types";
-
-interface PendingItem extends BaseComic {
+interface PendingItem {
+  id: number;
+  name: string;
+  author: string;
   fileName: string;
   belongId: number;
   seriesName: string;

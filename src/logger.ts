@@ -8,7 +8,7 @@ export const createLogger = (...nameList: string[]) => {
       return {
         type,
         fn(message?: any, ...optionalParams: any[]) {
-          trpcClient.logger.query({
+          trpcClient.logger.mutate({
             nameList: [rendererName, ...nameList],
             type,
             msg: [message, ...optionalParams],
