@@ -2,7 +2,7 @@ import { getExpressServerPort } from "@electron/module/express-server";
 
 import { trpc } from "./trpc";
 
-const getProxyServerPortRpc = trpc.procedure.query(async () => {
+const getProxyServerPortRpc = trpc.procedure.mutation(async () => {
   return getExpressServerPort();
 });
 

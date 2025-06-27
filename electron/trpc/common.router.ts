@@ -5,12 +5,12 @@ import { z } from "zod";
 
 import { trpc } from "./trpc";
 
-const minimizeWinRpc = trpc.procedure.query(({ ctx }) => {
+const minimizeWinRpc = trpc.procedure.mutation(({ ctx }) => {
   const win = ctx.win;
   win.minimize();
 });
 
-const closeWinRpc = trpc.procedure.query(({ ctx }) => {
+const closeWinRpc = trpc.procedure.mutation(({ ctx }) => {
   const win = ctx.win;
   win.close();
 });
@@ -21,7 +21,7 @@ const openLinkRpc = trpc.procedure
       url: z.string(),
     }),
   )
-  .query(({ input }) => {
+  .mutation(({ input }) => {
     shell.openExternal(input.url);
   });
 
@@ -31,11 +31,11 @@ const showItemInFolderRpc = trpc.procedure
       path: z.string(),
     }),
   )
-  .query(({ input }) => {
+  .mutation(({ input }) => {
     shell.showItemInFolder(input.path);
   });
 
-const selectFolderRpc = trpc.procedure.query(async ({ ctx }) => {
+const selectFolderRpc = trpc.procedure.mutation(async ({ ctx }) => {
   const { win } = ctx;
   const result = await dialog.showOpenDialog(win, {
     properties: ["openDirectory"],

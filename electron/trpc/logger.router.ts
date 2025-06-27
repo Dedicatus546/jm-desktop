@@ -12,7 +12,7 @@ const loggerRpc = trpc.procedure
       msg: z.array(z.any()),
     }),
   )
-  .query(async ({ input }) => {
+  .mutation(async ({ input }) => {
     const { nameList } = input;
     const key = nameList.join("-");
     let instance = loggerInstanceMap[key];

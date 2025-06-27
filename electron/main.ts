@@ -59,6 +59,12 @@ const createWindow = async () => {
 
   await setSessionProxy();
 
+  const setZoomFactor = async () => {
+    // 必须先调用 setVisualZoomLevelLimits 解除缩放限制
+    await win!.webContents.setVisualZoomLevelLimits(1, 3);
+    win!.webContents.setZoomFactor(config.zoomFactor);
+  };
+
   const saveCurrentWindowInfo = debounce({ delay: 1000 }, async () => {
     const windowInfo = win!.getBounds();
     config.windowInfo = windowInfo;
@@ -76,6 +82,9 @@ const createWindow = async () => {
     win.loadURL(`http://localhost:${port}`);
   }
 
+  // 放在 loadURL 后，不然白屏
+  await setZoomFactor();
+
   createIPCHandler({
     router,
     windows: [win],
@@ -84,10 +93,11 @@ const createWindow = async () => {
     }),
   });
 
-  emitter.on("onProxyInfoChange", async () => {
-    info("proxyInfo 变化，重新设置 sessionProxy");
-    config = await getConfig();
+  emitter.on("configChange", async ([newConifg]) => {
+    info("检测到配置文件变化");
+    config = newConifg;
     await setSessionProxy();
+    await setZoomFactor();
   });
 };
 

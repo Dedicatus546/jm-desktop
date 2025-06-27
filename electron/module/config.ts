@@ -2,7 +2,9 @@ import { existsSync, writeFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import { emitter } from "@electron/shared/mitt";
 import { dataDir } from "@electron/shared/path";
+import { clone } from "radash";
 
 export type Theme = "light" | "dark" | "auto";
 export type ReadMode = "scroll" | "click";
@@ -50,15 +52,24 @@ export const defaultConfig: Config = {
   proxyInfo: undefined,
 };
 
+let config: Config;
+
 if (!existsSync(configFilepath)) {
   writeFileSync(configFilepath, JSON.stringify(defaultConfig, undefined, 2));
 }
 
 export const getConfig = async () => {
+  if (config) {
+    return config;
+  }
   const str = await readFile(configFilepath, { encoding: "utf-8" });
-  return JSON.parse(str) as Config;
+  config = JSON.parse(str) as Config;
+  return config;
 };
 
-export const saveConfig = async (config: Config) => {
+export const saveConfig = async (newConfig: Config) => {
+  const oldConfig = config;
+  config = clone(newConfig);
   await writeFile(configFilepath, JSON.stringify(config, undefined, 2));
+  emitter.emit("configChange", [config, oldConfig]);
 };
