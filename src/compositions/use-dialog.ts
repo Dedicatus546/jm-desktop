@@ -1,7 +1,4 @@
-import {
-  dialogProviderInjectKey,
-  DialogProviderInjectType,
-} from "@/types/dialog-provider";
+import { dialogProviderInjectKey, DialogProviderInjectType } from "@/types";
 
 export default function useDialog() {
   const fn = inject<DialogProviderInjectType>(dialogProviderInjectKey);
