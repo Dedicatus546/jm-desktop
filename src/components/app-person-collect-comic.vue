@@ -37,6 +37,8 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       <div class="mb-4 wind-flex wind-justify-end">
         <div class="wind-w-[200px]">
           <v-select
+            color="primary"
+            variant="outlined"
             v-model:model-value="formState.type"
             hide-details
             :items="[
