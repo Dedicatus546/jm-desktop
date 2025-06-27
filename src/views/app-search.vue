@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useRouteQuery } from "@vueuse/router";
 import { usePagination } from "alova/client";
 
 import { getComicListApi } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 
 const router = useRouter();
+const query = useRouteQuery("q");
 const formState = reactive({
   content: "",
   order: "mr",
@@ -32,6 +34,16 @@ const { page, pageSize, pageCount, data, send, loading, onSuccess } =
     },
   );
 
+const search = () => {
+  if (!formState.content) {
+    return;
+  }
+  query.value = formState.content;
+  data.value = [];
+  page.value = 1;
+  send(1, 80);
+};
+
 // 如果根据 id 搜索应该直接跳到指定详情页
 onSuccess(() => {
   if (redirectId.value) {
@@ -42,8 +54,17 @@ onSuccess(() => {
       },
     });
     formState.content = "";
+    query.value = "";
     redirectId.value = null;
     send(1, 80);
+  }
+});
+
+onMounted(() => {
+  if (query.value) {
+    formState.content = query.value as string;
+    query.value = null;
+    search();
   }
 });
 </script>
