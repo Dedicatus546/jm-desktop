@@ -48,12 +48,11 @@ const replyListOpen = ref(false);
     </div>
     <div class="wind-flex wind-flex-grow wind-flex-col wind-gap-2">
       <div class="wind-flex wind-flex-col">
-        <div class="wind-text">{{ comment.nickname }}</div>
-        <div class="wind-text">
+        <div class="wind-text-base">{{ comment.nickname }}</div>
+        <div class="wind-text-sm wind-text-gray-400">
           {{ comment.createTime }}
         </div>
       </div>
-      <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="comment.content"></div>
       <!-- <div class="flex items-center gap-2">
         <a-space class="cursor-pointer" @click="likeComment">
@@ -61,21 +60,24 @@ const replyListOpen = ref(false);
           {{ comment.likeCount }}
         </a-space>
       </div> -->
-      <div
-        v-if="comment.replyList && comment.replyList.length > 0"
-        class="wind-flex wind-gap-2 wind-cursor-pointer"
-        @click="replyListOpen = !replyListOpen"
-      >
-        <v-icon icon="mdi-reply" />
-        {{ comment.replyList.length }}
-      </div>
-      <div v-if="replyListOpen && comment.replyList" class="wind-mt-6">
-        <v-row>
-          <template
-            v-for="(subItem, index) of comment.replyList"
-            :key="subItem.id"
+      <v-row no-gutters class="wind-gap-2">
+        <v-col
+          cols="auto"
+          v-if="comment.replyList && comment.replyList.length > 0"
+        >
+          <v-btn
+            variant="tonal"
+            size="small"
+            @click="replyListOpen = !replyListOpen"
           >
-            <v-col v-if="index > 0" :cols="12">
+            {{ replyListOpen ? "收起评论" : "查看评论" }}
+          </v-btn>
+        </v-col>
+      </v-row>
+      <div v-if="replyListOpen && comment.replyList">
+        <v-row>
+          <template v-for="subItem of comment.replyList" :key="subItem.id">
+            <v-col :cols="12">
               <v-divider />
             </v-col>
             <v-col :cols="12">
