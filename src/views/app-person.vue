@@ -39,7 +39,7 @@ const tabList = [
             </div>
             <v-divider />
             <v-row>
-              <v-col :cols="3">
+              <v-col :cols="6" :lg="3">
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>经验值</div>
                   <div>
@@ -47,7 +47,7 @@ const tabList = [
                   </div>
                 </div>
               </v-col>
-              <v-col :cols="3">
+              <v-col :cols="6" :lg="3">
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>等级</div>
                   <div>
@@ -55,7 +55,7 @@ const tabList = [
                   </div>
                 </div>
               </v-col>
-              <v-col :cols="3">
+              <v-col :cols="6" :lg="3">
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>J Coins</div>
                   <div>
@@ -63,7 +63,7 @@ const tabList = [
                   </div>
                 </div>
               </v-col>
-              <v-col :cols="3">
+              <v-col :cols="6" :lg="3">
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>可收藏数量</div>
                   <div>
