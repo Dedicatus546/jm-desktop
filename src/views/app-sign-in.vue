@@ -156,24 +156,6 @@ onSuccess(() => {
               本月已签到 {{ signInSumDay }} 天
             </div>
           </template>
-          <template #intervalEvent="{ event }">
-            <div v-if="event.type === 1" class="wind-m-2">
-              <v-chip color="primary">
-                <template #prepend>
-                  <v-icon icon="mdi-heart" color="red"></v-icon>
-                </template>
-                <span class="wind-ml-1">额外奖励</span>
-              </v-chip>
-            </div>
-            <div v-else-if="event.type === 2" class="wind-m-2">
-              <v-chip color="primary">
-                <template #prepend>
-                  <v-icon icon="mdi-check" color="success"></v-icon>
-                </template>
-                <span class="wind-ml-1">已签到</span>
-              </v-chip>
-            </div>
-          </template>
         </v-calendar>
         <v-slider
           readonly
@@ -216,6 +198,12 @@ onSuccess(() => {
 .signCalendar {
   ::v-deep(.v-calendar-month__day) {
     min-height: 120px;
+  }
+
+  ::v-deep(.v-calendar-weekly__day-alldayevents-container) {
+    .v-chip {
+      --uno: wind-mt-2;
+    }
   }
 }
 </style>
