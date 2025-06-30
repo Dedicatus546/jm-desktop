@@ -52,17 +52,16 @@ onSuccess(() => {
 </script>
 
 <template>
-  <v-card>
+  <div
+    v-if="weekLoading"
+    class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
+  >
+    <v-progress-circular indeterminate></v-progress-circular>
+  </div>
+  <v-card v-else>
     <v-card-text>
       <v-row>
-        <v-col v-if="weekLoading" :cols="12">
-          <div
-            class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-          >
-            <v-progress-circular indeterminate></v-progress-circular>
-          </div>
-        </v-col>
-        <v-col v-else :cols="12">
+        <v-col :cols="12">
           <v-data-iterator
             :items-per-page="pageSize"
             :items="list ?? []"
