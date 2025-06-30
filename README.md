@@ -33,33 +33,46 @@
 由于需要截图原因，部分封面图片已屏蔽。
 
 ### 首页
-![](./readme-assets/首页.png)
+![](./readme-assets/首页1.png)
+
+![](./readme-assets/首页2.png)
+
+![](./readme-assets/首页3.png)
 
 ### 个人中心
+
 ![](./readme-assets/个人中心.png)
 
 ### 签到
+
 ![](./readme-assets/签到页.png)
 
 ### 详情（日间模式）
+
 ![](./readme-assets/详情页（日间模式）.png)
 
 ### 详情（夜间模式）
+
 ![](./readme-assets/详情页（夜间模式）.png)
 
 ### 阅读（翻页模式）
+
 ![](./readme-assets/阅读（翻页模式）.png)
 
 ### 阅读（滚动模式）
+
 ![](./readme-assets/阅读（滚动模式）.png)
 
 ### 名称搜索
+
 ![](./readme-assets/搜索页.png)
 
 ### 分类搜索排序
+
 ![](./readme-assets/分类搜索.png)
 
 ### 每周必看
+
 ![](./readme-assets/每周必看.png)
 
 ## 声明
@@ -68,9 +81,11 @@
 
 ## 安装包
 
-只提供 win 、 linux 的 x86 绿色包，所有数据只在解压的目录中，整体文件夹可随意拷贝移动（下载路径除外）。
+只提供 win 、 linux 的 x86 绿色包，所有数据（包含下载文件）只在解压的目录中，整体文件夹可随意拷贝移动。mac 用户请使用源码自行构建。
 
-mac 用户请使用源码自行构建。
+点击[这里](https://github.com/Dedicatus546/jm-desktop/releases)或者右侧的 Release 处下载最新的版本，解压后执行目录内的 jm-desktop 或者 jm-desktop.exe 即可。
+
+相关更新请查看项目的 CHANGELOG 文件。
 
 ## 相关帖子
 
