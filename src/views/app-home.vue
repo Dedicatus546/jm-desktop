@@ -48,7 +48,7 @@ const search = () => {
   router.push({
     name: "SEARCH",
     query: {
-      q: searchText.value,
+      content: searchText.value,
     },
   });
 };

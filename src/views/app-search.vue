@@ -6,67 +6,84 @@ import { getComicListApi } from "@/apis";
 import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
 
 const router = useRouter();
-const query = useRouteQuery("q");
+const content = useRouteQuery<string>("content", "", {
+  mode: "push",
+});
+const order = useRouteQuery<string>("order", "mr", {
+  mode: "push",
+});
+
 const formState = reactive({
   content: "",
   order: "mr",
 });
-const redirectId = ref<number | null>(null);
 
 const { page, pageSize, pageCount, data, send, loading, onSuccess } =
   usePagination(
     (page) =>
       getComicListApi({
         page,
-        content: formState.content,
-        order: formState.order,
+        content: content.value,
+        order: order.value,
       }),
     {
       initialPage: 1,
       initialPageSize: 80,
       data: (res) => {
         const list = res.data.content;
-        redirectId.value = res.data.redirect_aid;
+        if (res.data.redirect_aid) {
+          (list as any).redirectId = res.data.redirect_aid;
+        }
         return list;
       },
       total: (res) => res.data.total,
-      watchingStates: [() => formState.order],
+      watchingStates: [order, content],
+      immediate: false,
     },
   );
 
-const search = () => {
-  if (!formState.content) {
-    return;
-  }
-  query.value = formState.content;
-  data.value = [];
-  page.value = 1;
-  send(1, 80);
-};
-
 // 如果根据 id 搜索应该直接跳到指定详情页
-onSuccess(() => {
-  if (redirectId.value) {
-    router.push({
+onSuccess(async () => {
+  if ("redirectId" in data.value) {
+    const redirectId = data.value.redirectId as number;
+    // 这里使用 replace 数字不记录在路由历史中
+    // 因为数字类会自动重定向
+    router.replace({
       name: "COMIC_DETAIL",
       params: {
-        id: redirectId.value,
+        id: redirectId,
       },
     });
-    formState.content = "";
-    query.value = "";
-    redirectId.value = null;
-    send(1, 80);
   }
 });
 
-onMounted(() => {
-  if (query.value) {
-    formState.content = query.value as string;
-    query.value = null;
-    search();
-  }
-});
+const submit = () => {
+  content.value = formState.content;
+  order.value = formState.order;
+};
+
+watch(
+  [content, order],
+  ([content, order]) => {
+    formState.content = content;
+    formState.order = order;
+  },
+  {
+    immediate: true,
+  },
+);
+
+watch(
+  content,
+  (content) => {
+    if (content) {
+      send();
+    }
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <template>
@@ -85,13 +102,14 @@ onMounted(() => {
           </div>
         </template>
         <template #header>
-          <v-form @submit.prevent="search">
+          <v-form @submit.prevent="submit">
             <v-text-field
               v-model:model-value="formState.content"
               color="primary"
               variant="outlined"
               hide-details
               placeholder="车牌号，名称，作者"
+              @keyup.enter="submit"
             >
               <template #prepend>
                 <v-select
@@ -126,10 +144,9 @@ onMounted(() => {
                 <v-btn
                   color="primary"
                   :disabled="!formState.content"
-                  type="submit"
                   variant="text"
                   icon="mdi-magnify"
-                  @click="search"
+                  @click="submit"
                 ></v-btn>
               </template>
             </v-text-field>
