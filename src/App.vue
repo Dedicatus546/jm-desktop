@@ -12,7 +12,7 @@ useRefreshUser();
   <v-defaults-provider>
     <v-app>
       <app-dialog-provider>
-        <app-snackbar-provider location="top right">
+        <app-snackbar-provider location="top right" :timeout="1500">
           <app-header :simple="!!(loading || error)" />
           <v-main>
             <v-container
