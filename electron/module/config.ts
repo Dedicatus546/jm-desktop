@@ -37,8 +37,9 @@ export const configFilepath = resolve(dataDir, "config.json");
 
 export const defaultConfig: Config = {
   theme: "light",
-  apiUrl: "https://www.jmapiproxyxxx.vip",
+  apiUrl: "https://www.cdnmhwscc.vip",
   apiUrlList: [
+    "https://www.cdnmhwscc.vip",
     "https://www.jmapiproxyxxx.vip",
     "https://www.cdnxxx-proxy.xyz",
     "https://www.jmeadpoolcdn.life",
