@@ -14,6 +14,8 @@ const updateCurrentShuntKey = (value: number) => {
 
 <template>
   <v-select
+    color="primary"
+    variant="outlined"
     hide-details
     :model-value="appStore.config.currentShuntKey"
     class="wind-w-[150px]"
