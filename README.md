@@ -100,7 +100,7 @@
 
 ![](./readme-assets/启用代理.png)
 
-并将 api 添加到你的代理规则中，V2rayN 默认的 v3 路由规则已可以代理该域名，手动添加如下图
+并将 api 添加到你的代理规则中，V2rayN 默认的 v3 路由规则应该可以代理该域名，手动添加如下图
 
 ![](./readme-assets/V2rayN添加代理.png)
 
@@ -114,7 +114,7 @@ windows 百分百缩放设置下，请在设置中更改缩放等级，建议 2k
 
 很大概率是接口过期了，请提 issue ，或者可以通过以下方式自己更新。
 
-首先确保你已知道最新的 api 接口，这里推荐使用 MuMu 模拟器 + reqable 抓包，需要开启模拟器的 Root 权限以及存储读写，Reqable 需要放置生成的证书到指定位置，启动抓包后只需在 reqable 中搜索 /setting 路径，即可确定 api 。
+首先确保你已知道最新的 api 接口，这里推荐使用 MuMu 模拟器 + reqable 抓包，需要开启模拟器的 Root 权限以及存储读写，Reqable 需要将生成的证书放到指定位置，启动抓包后只需在 reqable 中搜索 /setting 路径，即可确定 api 。
 
 接着打开程序根目录的 /data/config.json 文件，在 apiUrl 处填上你抓包的接口，在 apiUrlList 处填入新的接口，如下：
 
