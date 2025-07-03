@@ -78,7 +78,7 @@ export const useDownloadStore = defineStore("download", () => {
       {
         id: downloadItem.id,
         comicName: downloadItem.comicName,
-        chapterName: "",
+        chapterName: downloadItem.chapterName,
         picUrlList: downloadItem.picUrlList,
       },
       {
