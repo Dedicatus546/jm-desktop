@@ -42,7 +42,7 @@ export default defineConfig({
             rollupOptions: {
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
-              external: ["better-sqlite3"],
+              external: ["skia-canvas"],
             },
           },
         },
