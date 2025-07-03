@@ -89,7 +89,7 @@ const openFile = (item: DownloadItem) => {
               <tr v-for="item in downloadStore.completeList" :key="item.id">
                 <td>
                   <template v-if="item.type === 'comic'">
-                    {{ item.comicName }}
+                    {{ item.comicName }} - {{ item.chapterName }}
                   </template>
                 </td>
                 <td>
