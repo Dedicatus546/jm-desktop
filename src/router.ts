@@ -5,6 +5,10 @@ import AppComicDetail from "@/views/app-comic-detail.vue";
 import AppComicRead from "@/views/app-comic-read.vue";
 import AppHome from "@/views/app-home.vue";
 
+import { createLogger } from "./logger";
+
+const { info } = createLogger("router");
+
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -95,6 +99,11 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior,
+});
+
+router.beforeEach((to, from, next) => {
+  info("router.beforeEach", "从", from.fullPath, "跳转到", to.fullPath);
+  next();
 });
 
 export default router;
