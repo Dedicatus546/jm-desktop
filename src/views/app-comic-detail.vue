@@ -14,15 +14,15 @@ const snackbar = useSnackbar();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const breakpoints = useBreakpoints(breakpointsAntDesign);
-const isGreaterLg = breakpoints.greater("lg");
+const isGreaterMd = breakpoints.greater("md");
 const buttonCols = computed(() => {
   if (!userStore.userInfo) {
-    return 12;
+    return [12, 12, 12];
   }
-  if (isGreaterLg.value) {
-    return 3;
+  if (isGreaterMd.value) {
+    return [12, 6, 6];
   }
-  return 6;
+  return [12, 12, 12];
 });
 
 const {
@@ -232,7 +232,7 @@ const cover = computed(() =>
               </div>
               <div class="wind-mt-auto">
                 <v-row>
-                  <v-col :cols="buttonCols">
+                  <v-col :cols="buttonCols[0]">
                     <router-link
                       v-slot="{ navigate }"
                       :to="{ name: 'COMIC_READ', params: { id } }"
@@ -257,7 +257,7 @@ const cover = computed(() =>
                     </router-link>
                   </v-col>
                   <template v-if="userStore.userInfo">
-                    <v-col :cols="buttonCols">
+                    <v-col :cols="buttonCols[1]">
                       <v-btn
                         color="primary"
                         variant="flat"
@@ -276,7 +276,7 @@ const cover = computed(() =>
                         {{ comicInfo.data.isLike ? "已喜欢" : "喜欢" }}
                       </v-btn>
                     </v-col>
-                    <v-col :cols="buttonCols">
+                    <v-col :cols="buttonCols[2]">
                       <v-btn
                         color="primary"
                         variant="flat"
