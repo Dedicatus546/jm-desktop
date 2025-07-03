@@ -4,6 +4,7 @@ import { isString } from "radash";
 import { getSettingApi, loginApi, trpcClient } from "@/apis";
 import { error, info, warn } from "@/logger";
 import useAppStore from "@/stores/use-app-store";
+import { useDownloadStore } from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
 import { delay } from "@/utils";
 
@@ -117,11 +118,28 @@ const useAutoLogin = () => {
   };
 };
 
+const useInitDownload = () => {
+  const downloadStore = useDownloadStore();
+  return {
+    init: async () => {
+      info("开始初始化下载任务");
+      try {
+        await downloadStore.initAction();
+        info("初始化下载任务成功");
+      } catch (e) {
+        error("初始化下载任务失败，原因", e);
+        throw new Error("初始化下载任务失败");
+      }
+    },
+  };
+};
+
 const useInitApp = () => {
   const appStore = useAppStore();
   const setting = useInitSetting();
   const config = useInitConfig();
   const autoLogin = useAutoLogin();
+  const download = useInitDownload();
   const loading = ref(true);
   const currentStatus = ref<string | null>(null);
   const error = ref<string | null>(null);
@@ -141,6 +159,9 @@ const useInitApp = () => {
         await autoLogin.init();
         await delay(300);
       }
+      currentStatus.value = "初始化下载任务";
+      await download.init();
+      await delay(300);
     } catch (e) {
       if (isString(e)) {
         error.value = e;
