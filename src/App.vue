@@ -50,6 +50,7 @@ useRefreshUser();
               </router-view>
             </v-container>
           </v-main>
+          <app-download-notice />
         </app-snackbar-provider>
       </app-dialog-provider>
     </v-app>

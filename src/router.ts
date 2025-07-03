@@ -84,6 +84,11 @@ const routes: RouteRecordRaw[] = [
     name: "ABOUT",
     component: () => import("@/views/app-about.vue"),
   },
+  {
+    path: "/download",
+    name: "DOWNLOAD",
+    component: () => import("@/views/app-download.vue"),
+  },
 ];
 
 const router = createRouter({

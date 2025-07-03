@@ -6,7 +6,7 @@ import { createLogger } from "@/logger";
 
 import { trpcClient } from "./ipc";
 
-const { info } = createLogger("api");
+const { info, error } = createLogger("api");
 
 const ts = Math.floor(Date.now() / 1000);
 const version = "1.8.0";
@@ -43,8 +43,11 @@ const http = createAlova({
   responded: {
     async onSuccess(response, method) {
       if (response.status >= 400) {
-        throw new Error(response.data.errorMsg ?? response.statusText);
+        const errorMsg = response.data.errorMsg ?? response.statusText;
+        error(method.url, response.status, errorMsg);
+        throw new Error(errorMsg);
       }
+      info(method.url, response.status);
       if (
         // 下载接口
         method.url.includes("dl_comic_zip") ||
@@ -63,7 +66,7 @@ const http = createAlova({
           key: tokenHash,
         }),
       );
-      info(method.url, response.status, json);
+      info(method.url, "解密成功");
       return json;
     },
   },

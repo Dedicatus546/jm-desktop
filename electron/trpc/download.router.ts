@@ -1,69 +1,58 @@
 import { createWriteStream, existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { dataDir } from "@electron/shared/path";
+import {
+  comicDownloadDir,
+  getDownloadCompleteList,
+  getDownloadDownloadingList,
+  saveDownloadCompleteList,
+  saveDownloadDownloadingList,
+} from "@electron/module/download";
+import { createLogger } from "@electron/module/logger";
+import { decodeImage } from "@electron/shared/decode-image";
 import archiver from "archiver";
 import { net } from "electron";
-// import Database from "better-sqlite3";
 import pLimit from "p-limit";
+import pathSanitizer from "path-sanitizer";
 import { z } from "zod";
 
 import { trpc } from "./trpc";
 
+const { info } = createLogger("download.router");
+
 const limit = pLimit(3);
 
-const downloadDir = resolve(dataDir, "download");
-// const dbFilepath = resolve(downloadDir, "data.db");
-// const db = new Database(dbFilepath);
-
-// db.exec(
-//   `CREATE TABLE IF NOT EXISTS download_comic (
-//     cover VARCHAR(255),
-//     path_word VARCHAR(255),
-//     name VARCHAR(255),
-//     group_path_word VARCHAR(255),
-//     group_name VARCHAR(255),
-//     chapter_id VARCHAR(255),
-//     PRIMARY KEY(path_word, group_path_word, chapter_id)
-//   );
-//   CREATE TABLE IF NOT EXISTS author (
-//     path_word VARCHAR(255) PRIMARY KEY,
-//     name VARCHAR(255)
-//   );
-//   CREATE TABLE IF NOT EXISTS download_comic_author (
-//     path_word VARCHAR(255),
-//     author_path_word VARCHAR(255)
-//   );`,
-// );
-
-// TODO
 const onDownloadComicRpc = trpc.procedure
   .input(
     z.object({
+      id: z.number(),
       comicName: z.string(),
-      comicPathWord: z.string(),
-      groupName: z.string(),
-      groupPathWord: z.string(),
-      chapterId: z.string(),
       chapterName: z.string(),
-      imageUrlList: z.array(z.string()),
+      picUrlList: z.array(z.string()),
     }),
   )
   .subscription(async function* (opts) {
     const query = opts.input;
+    info("%d 开始处理下载", query.id);
     const filename = query.chapterName + ".zip";
-    const fileDir = resolve(downloadDir, query.comicName, query.groupName);
-    const filepath = resolve(fileDir, filename);
+    info("%d 原始文件名称 %s", query.id, filename);
+    const fileDir = resolve(comicDownloadDir, pathSanitizer(query.comicName));
+    info("%d 标准化文件目录路径 %s", query.id, fileDir);
+    const filepath = resolve(fileDir, pathSanitizer(filename));
+    info("%d 标准化文件路径 %s", query.id, filepath);
     let complete = 0;
-    const total = query.imageUrlList.length;
-    const list = query.imageUrlList.map((url) =>
-      limit(() =>
-        net
-          .fetch(url, {
-            method: "GET",
-          })
-          .then((res) => res.arrayBuffer()),
-      ),
+    const total = query.picUrlList.length;
+    const list = query.picUrlList.map((url) =>
+      limit(async () => {
+        const res = await net.fetch(url, {
+          method: "GET",
+        });
+        const arrayBuffer = await res.arrayBuffer();
+        info("%d 已获取 %s 图片 arrayBuffer 数据", query.id, url);
+        const decodeArrayBuffer = await decodeImage(url, arrayBuffer, query.id);
+        info("%d 已解密 %s 图片数据", query.id, url);
+        return decodeArrayBuffer;
+      }),
     );
     for (const p of list) {
       await p;
@@ -77,6 +66,7 @@ const onDownloadComicRpc = trpc.procedure
       };
     }
     const arrayBufferList = await Promise.all(list);
+    info("%d 所有图片下载完成", query.id);
     const archive = archiver("zip", {
       zlib: { level: 9 },
     });
@@ -93,6 +83,7 @@ const onDownloadComicRpc = trpc.procedure
     const output = createWriteStream(filepath);
     archive.pipe(output);
     await archive.finalize();
+    info("%d 所有图片压缩完成，文件地址为 %s", query.id, filepath);
     yield {
       type: "complete",
       data: {
@@ -101,18 +92,30 @@ const onDownloadComicRpc = trpc.procedure
     };
   });
 
-// const getDownloadListRpc = trpc.procedure
-//   .input(
-//     z.object({
-//       page: z.number(),
-//       pageSize: z.number(),
-//     }),
-//   )
-//   .query(({ input }) => {
-//     const { page, pageSize } = input;
-//   });
+const getDownloadDownloadingListRpc = trpc.procedure.query(() => {
+  return getDownloadDownloadingList();
+});
+
+const getDownloadCompleteListRpc = trpc.procedure.query(() => {
+  return getDownloadCompleteList();
+});
+
+const saveDownloadDownloadingListRpc = trpc.procedure
+  .input(z.array(z.any()))
+  .query(({ input }) => {
+    return saveDownloadDownloadingList(input);
+  });
+
+const saveDownloadCompleteListRpc = trpc.procedure
+  .input(z.array(z.any()))
+  .query(({ input }) => {
+    return saveDownloadCompleteList(input);
+  });
 
 export const router = {
   onDownloadComic: onDownloadComicRpc,
-  // getDownloadList: getDownloadListRpc,
+  getDownloadDownloadingList: getDownloadDownloadingListRpc,
+  getDownloadCompleteList: getDownloadCompleteListRpc,
+  saveDownloadDownloadingList: saveDownloadDownloadingListRpc,
+  saveDownloadCompleteList: saveDownloadCompleteListRpc,
 };

@@ -38,7 +38,7 @@ watchEffect(() => {
   send(props.id);
 });
 
-const activeTabKey = ref<"relevant" | "comment" | "series">("relevant");
+const activeTabKey = ref<"relevant" | "comment" | "chapter">("relevant");
 const tabList = computed(() => {
   if (!comicInfo.value) {
     return [];
@@ -46,7 +46,7 @@ const tabList = computed(() => {
   const list = [];
   if (comicInfo.value.data.seriesList.length > 1) {
     list.push({
-      value: "series",
+      value: "chapter",
       tab: "目录",
     });
   }
@@ -65,7 +65,7 @@ const tabList = computed(() => {
 
 onSuccess(() => {
   if (comicInfo.value.data.seriesList.length > 1) {
-    activeTabKey.value = "series";
+    activeTabKey.value = "chapter";
   }
 });
 
@@ -296,22 +296,6 @@ const cover = computed(() =>
                         {{ comicInfo.data.isCollect ? "已收藏" : "收藏" }}
                       </v-btn>
                     </v-col>
-                    <v-col :cols="buttonCols">
-                      <!-- TODO 下载按钮 -->
-                      <!-- <app-comic-detail-download-button
-                          :comic="{
-                            id: comicInfo.data.id,
-                            name: comicInfo.data.name,
-                            author:
-                              comicInfo.data.authorList.length > 0
-                                ? comicInfo.data.authorList[0]
-                                : '',
-                            price: comicInfo.data.price,
-                            isBuy: comicInfo.data.isBuy,
-                            seriesList: comicInfo.data.seriesList,
-                          }"
-                        /> -->
-                    </v-col>
                   </template>
                 </v-row>
               </div>
@@ -329,10 +313,11 @@ const cover = computed(() =>
         </v-tabs>
         <v-card-text>
           <v-tabs-window v-model:model-value="activeTabKey">
-            <v-tabs-window-item value="series">
-              <app-comic-detail-series
-                :series-list="comicInfo.data.seriesList"
-                :current-series-id="comicInfo.data.currentSeriesId"
+            <v-tabs-window-item value="chapter">
+              <app-comic-detail-chapter
+                :comic-name="comicInfo.data.name"
+                :chapter-list="comicInfo.data.seriesList"
+                :current-chapter-id="comicInfo.data.currentSeriesId"
               />
             </v-tabs-window-item>
             <v-tabs-window-item value="relevant">

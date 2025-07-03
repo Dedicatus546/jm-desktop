@@ -129,8 +129,7 @@ const closeWin = () => {
                 </template>
                 <v-list-item-title>设置</v-list-item-title>
               </v-list-item>
-              <!-- TODO 下载 -->
-              <!-- <v-list-item
+              <v-list-item
                 @click="
                   router.push({
                     name: 'DOWNLOAD',
@@ -141,7 +140,7 @@ const closeWin = () => {
                   <v-icon icon="mdi-download"></v-icon>
                 </template>
                 <v-list-item-title>下载</v-list-item-title>
-              </v-list-item> -->
+              </v-list-item>
               <v-list-item
                 @click="
                   router.push({
@@ -237,8 +236,7 @@ const closeWin = () => {
               })
             "
           />
-          <!-- TODO 下载 -->
-          <!-- <app-header-icon-btn
+          <app-header-icon-btn
             tooltip-text="下载"
             icon="mdi-download"
             @click="
@@ -246,7 +244,7 @@ const closeWin = () => {
                 name: 'DOWNLOAD',
               })
             "
-          /> -->
+          />
           <app-header-icon-btn
             tooltip-text="关于"
             icon="mdi-information"
