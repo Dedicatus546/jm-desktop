@@ -1,0 +1,33 @@
+appId: com.par9uet.jm
+asar: true
+productName: jm-desktop
+
+directories:
+  output: release/${version}
+
+files:
+  - dist
+  - dist-electron
+
+linux:
+  icon: public/png/256x256.png
+  category: Utility
+  target:
+    - target: zip
+      arch:
+        - x64
+  artifactName: ${productName}-Linux-${version}.${ext}
+
+win:
+  icon: public/win/app-icon.ico
+  target:
+    - target: zip
+      arch:
+        - x64
+  artifactName: ${productName}-Windows-${version}.${ext}
+
+publish:
+  - provider: github
+    owner: Dedicatus546
+    repo: jm-desktop
+    releaseType: release
