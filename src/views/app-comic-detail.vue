@@ -89,9 +89,9 @@ const currentSeriesName = computed(() => {
     const item = comicInfo.value.data.seriesList.find(
       (item) => item.id === comicInfo.value.data.currentSeriesId,
     );
-    return item ? `从${item.name}阅读` : "阅读";
+    return item?.name;
   }
-  return "阅读";
+  return undefined;
 });
 
 const {
@@ -143,45 +143,50 @@ const { data, send: getComicPicList } = useRequest(
 );
 
 const download = async () => {
-  if (downloadStore.downloadingMap[comicInfo.value.data.id]) {
+  // TODO 这里 currentSeriesId 似乎不会根据点击阅读而记录
+  // 目前只会指向第一话
+  // 似乎还缺少接口？
+  const id = comicInfo.value.data.currentSeriesId ?? comicInfo.value.data.id;
+  const chapterName = currentSeriesName.value ?? comicInfo.value.data.name;
+  if (downloadStore.downloadingMap[id]) {
     snackbar.warning("任务正在下载中，请勿重复点击");
     return;
   }
-  if (downloadStore.completeMap[comicInfo.value.data.id]) {
+  if (downloadStore.completeMap[id]) {
     dialog({
       width: 300,
       title: "确认",
       content: "该漫画已下载，是否重新下载？",
       async onOk() {
-        await getComicPicList(comicInfo.value.data.id);
+        await getComicPicList(id);
         downloadStore.addDownloadTaskAction(
           {
             type: "comic",
-            id: comicInfo.value.data.id,
+            id,
             comicName: comicInfo.value.data.name,
-            chapterName: comicInfo.value.data.name,
+            chapterName,
             picUrlList: data.value.list,
             filepath: "",
           },
           true,
         );
         snackbar.success("添加下载任务成功");
-        info("添加 %s 下载任务", comicInfo.value.data.name);
+        info("添加 %s %s 下载任务", comicInfo.value.data.name, chapterName);
       },
     });
     return;
   }
-  await getComicPicList(comicInfo.value.data.id);
+  await getComicPicList(id);
   downloadStore.addDownloadTaskAction({
     type: "comic",
-    id: comicInfo.value.data.id,
+    id,
     comicName: comicInfo.value.data.name,
-    chapterName: comicInfo.value.data.name,
+    chapterName,
     picUrlList: data.value.list,
     filepath: "",
   });
   snackbar.success("添加下载任务成功");
-  info("添加 %s 下载任务", comicInfo.value.data.name);
+  info("添加 %s %s 下载任务", comicInfo.value.data.name, chapterName);
 };
 </script>
 
@@ -314,7 +319,7 @@ const download = async () => {
                         </template>
                         {{
                           comicInfo.data.currentSeriesId
-                            ? currentSeriesName
+                            ? "从" + currentSeriesName + "阅读"
                             : "阅读"
                         }}
                       </v-btn>
@@ -346,7 +351,10 @@ const download = async () => {
                               "%")
                           : downloadStore.completeMap[id]
                             ? "已下载"
-                            : "下载"
+                            : "下载" +
+                              (comicInfo.data.currentSeriesId
+                                ? currentSeriesName
+                                : "")
                       }}
                     </v-btn>
                   </v-col>
