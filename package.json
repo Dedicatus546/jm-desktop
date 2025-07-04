@@ -84,7 +84,7 @@
     "node": ">=24"
   },
   "simple-git-hooks": {
-    "pre-commit": ""
+    "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
   },
   "lint-staged": {
     "src/**": "eslint --fix",
