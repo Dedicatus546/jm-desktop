@@ -63,60 +63,66 @@ const search = () => {
   </div>
   <v-row v-else>
     <v-col :cols="12">
-      <v-row>
-        <v-col>
-          <v-form @submit.prevent="search">
-            <v-text-field
-              color="primary"
-              v-model:model-value="searchText"
-              variant="solo"
-              placeholder="输入漫画名称进行搜索"
-              hide-details
-            >
-              <template #append-inner>
-                <v-btn
-                  :disabled="!searchText"
+      <v-card>
+        <v-card-text>
+          <v-row no-gutters class="wind-gap-4">
+            <v-col>
+              <v-form @submit.prevent="search">
+                <v-text-field
                   color="primary"
-                  type="submit"
-                  variant="text"
-                  icon="mdi-magnify"
-                  @click="search"
-                ></v-btn>
-              </template>
-            </v-text-field>
-          </v-form>
-        </v-col>
-        <v-col cols="auto">
-          <v-tooltip text="本子分类" location="bottom">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                color="primary"
-                size="large"
-                icon="mdi-tag"
-                :to="{
-                  name: 'CATEGORY',
-                }"
-              ></v-btn>
-            </template>
-          </v-tooltip>
-        </v-col>
-        <v-col cols="auto">
-          <v-tooltip text="每周必看" location="bottom">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                color="primary"
-                size="large"
-                icon="mdi-eye"
-                :to="{
-                  name: 'WEEK',
-                }"
-              ></v-btn>
-            </template>
-          </v-tooltip>
-        </v-col>
-      </v-row>
+                  v-model:model-value="searchText"
+                  variant="outlined"
+                  placeholder="输入漫画名称进行搜索"
+                  hide-details
+                >
+                  <template #append-inner>
+                    <v-btn
+                      :disabled="!searchText"
+                      color="primary"
+                      type="submit"
+                      variant="text"
+                      icon="mdi-magnify"
+                      @click="search"
+                    ></v-btn>
+                  </template>
+                </v-text-field>
+              </v-form>
+            </v-col>
+            <v-col cols="auto">
+              <v-tooltip text="本子分类" location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    variant="flat"
+                    color="primary"
+                    size="large"
+                    icon="mdi-tag"
+                    :to="{
+                      name: 'CATEGORY',
+                    }"
+                  ></v-btn>
+                </template>
+              </v-tooltip>
+            </v-col>
+            <v-col cols="auto">
+              <v-tooltip text="每周必看" location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    variant="flat"
+                    color="primary"
+                    size="large"
+                    icon="mdi-eye"
+                    :to="{
+                      name: 'WEEK',
+                    }"
+                  ></v-btn>
+                </template>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </v-col>
     <v-col v-for="item of data.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
