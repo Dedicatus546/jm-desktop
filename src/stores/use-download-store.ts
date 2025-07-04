@@ -25,6 +25,16 @@ export const useDownloadStore = defineStore("download", () => {
     downloadingList: [],
   });
 
+  const completeMap = computed(() => {
+    return state.completeList.reduce(
+      (map, item) => {
+        map[item.id] = item;
+        return map;
+      },
+      {} as Record<DownloadItem["id"], DownloadItem | undefined>,
+    );
+  });
+
   const initAction = async () => {
     await Promise.allSettled([
       trpcClient.getDownloadDownloadingList.query().then((list) => {
@@ -133,6 +143,7 @@ export const useDownloadStore = defineStore("download", () => {
 
   return {
     ...toRefs(state),
+    completeMap,
     initAction,
     addDownloadTaskAction,
     downloadComicAction,

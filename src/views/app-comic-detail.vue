@@ -2,10 +2,19 @@
 import { breakpointsAntDesign } from "@vueuse/core";
 import { useRequest } from "alova/client";
 
-import { collectComicApi, getComicDetailApi, likeComicApi } from "@/apis";
+import {
+  collectComicApi,
+  getComicDetailApi,
+  getComicPicListApi,
+  likeComicApi,
+} from "@/apis";
 import useSnackbar from "@/compositions/use-snack-bar";
+import { createLogger } from "@/logger";
 import useAppStore from "@/stores/use-app-store";
+import { useDownloadStore } from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
+
+const { info } = createLogger("comic");
 
 const props = defineProps<{
   id: number;
@@ -13,16 +22,17 @@ const props = defineProps<{
 const snackbar = useSnackbar();
 const appStore = useAppStore();
 const userStore = useUserStore();
+const downloadStore = useDownloadStore();
 const breakpoints = useBreakpoints(breakpointsAntDesign);
 const isGreaterMd = breakpoints.greater("md");
 const buttonCols = computed(() => {
   if (!userStore.userInfo) {
-    return [12, 12, 12];
+    return [12, 12, 12, 12];
   }
   if (isGreaterMd.value) {
-    return [12, 6, 6];
+    return [12, 12, 6, 6];
   }
-  return [12, 12, 12];
+  return [12, 12, 12, 12];
 });
 
 const {
@@ -119,6 +129,30 @@ const cover = computed(() =>
     ? "/360x640.svg"
     : `${appStore.setting.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
 );
+
+const { data, send: getComicPicList } = useRequest(
+  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+  {
+    immediate: false,
+    initialData: {
+      list: [],
+    },
+  },
+);
+
+const download = async () => {
+  await getComicPicList(comicInfo.value.data.id);
+  downloadStore.addDownloadTaskAction({
+    type: "comic",
+    id: comicInfo.value.data.id,
+    comicName: comicInfo.value.data.name,
+    chapterName: comicInfo.value.data.name,
+    picUrlList: data.value.list,
+    filepath: "",
+  });
+  snackbar.success("添加下载任务成功");
+  info("添加 %s 下载任务", comicInfo.value.data.name);
+};
 </script>
 
 <template>
@@ -256,8 +290,24 @@ const cover = computed(() =>
                       </v-btn>
                     </router-link>
                   </v-col>
+                  <v-col :cols="buttonCols[1]">
+                    <v-btn
+                      :color="
+                        downloadStore.completeMap[id] ? 'success' : 'primary'
+                      "
+                      variant="flat"
+                      size="large"
+                      block
+                      @click="download"
+                    >
+                      <template #prepend>
+                        <v-icon icon="mdi-download"></v-icon>
+                      </template>
+                      {{ downloadStore.completeMap[id] ? "已下载" : "下载" }}
+                    </v-btn>
+                  </v-col>
                   <template v-if="userStore.userInfo">
-                    <v-col :cols="buttonCols[1]">
+                    <v-col :cols="buttonCols[2]">
                       <v-btn
                         color="primary"
                         variant="flat"
@@ -276,7 +326,7 @@ const cover = computed(() =>
                         {{ comicInfo.data.isLike ? "已喜欢" : "喜欢" }}
                       </v-btn>
                     </v-col>
-                    <v-col :cols="buttonCols[2]">
+                    <v-col :cols="buttonCols[3]">
                       <v-btn
                         color="primary"
                         variant="flat"

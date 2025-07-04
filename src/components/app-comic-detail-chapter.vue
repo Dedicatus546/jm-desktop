@@ -49,13 +49,7 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
 
 <template>
   <v-row class="wind-p-1">
-    <v-col
-      v-for="item of chapterList"
-      :key="item.id"
-      :cols="12"
-      :md="6"
-      :lg="4"
-    >
+    <v-col v-for="item of chapterList" :key="item.id" :cols="12" :lg="6">
       <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
         <template #default="{ navigate }">
           <v-row no-gutters class="wind-gap-2 wind-items-center">
@@ -78,13 +72,16 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
               </v-btn>
               <v-btn
                 variant="flat"
-                class="chapter-btn"
+                :color="
+                  downloadStore.completeMap[item.id] ? 'success' : undefined
+                "
+                class="chapter-btn wind-ml-2"
                 @click="downloadChapter(item)"
               >
                 <template #prepend>
                   <v-icon icon="mdi-download"></v-icon>
                 </template>
-                下载
+                {{ downloadStore.completeMap[item.id] ? "已下载" : "下载" }}
               </v-btn>
             </v-col>
           </v-row>
