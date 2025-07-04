@@ -69,12 +69,24 @@ export const useDownloadStore = defineStore("download", () => {
     }
   };
 
-  const addDownloadTaskAction = (item: DownloadItem) => {
+  const addDownloadTaskAction = async (
+    item: DownloadItem,
+    reDownload = false,
+  ) => {
+    if (reDownload) {
+      const index = state.completeList.findIndex(
+        (completeItem) => item.id === completeItem.id,
+      );
+      if (index > -1) {
+        state.completeList.splice(index, 1);
+      }
+    }
     state.downloadingList.push({
       ...item,
       status: "pending",
       percent: 0,
     });
+    await syncAction();
     tryStartDownloadAction();
   };
 
@@ -138,11 +150,7 @@ export const useDownloadStore = defineStore("download", () => {
         },
       },
     );
-    try {
-      await promise;
-    } catch (e) {
-      console.error(e);
-    }
+    await promise;
     await syncAction();
     emitter.emit("DownloadSuccess", downloadItem);
   };

@@ -2,6 +2,7 @@
 import { useRequest } from "alova/client";
 
 import { getComicPicListApi } from "@/apis";
+import useDialog from "@/compositions/use-dialog";
 import useSnackbar from "@/compositions/use-snack-bar";
 import { createLogger } from "@/logger";
 import useAppStore from "@/stores/use-app-store";
@@ -21,6 +22,7 @@ const props = defineProps<{
 const appStore = useAppStore();
 const downloadStore = useDownloadStore();
 const snackbar = useSnackbar();
+const dialog = useDialog();
 
 const { data, send } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
@@ -38,8 +40,28 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
     return;
   }
   if (downloadStore.completeMap[chapter.id]) {
-    // TODO
-    // 弹出提示确定是否重新下载
+    dialog({
+      width: 300,
+      title: "确认",
+      content: "该漫画已下载，是否重新下载？",
+      async onOk() {
+        await send(chapter.id);
+        downloadStore.addDownloadTaskAction(
+          {
+            type: "comic",
+            id: chapter.id,
+            comicName: props.comicName,
+            chapterName: chapter.name,
+            picUrlList: data.value.list,
+            filepath: "",
+          },
+          true,
+        );
+        snackbar.success("添加下载任务成功");
+        info("添加 %s %s 下载任务", props.comicName, chapter.name);
+      },
+    });
+    return;
   }
   await send(chapter.id);
   downloadStore.addDownloadTaskAction({

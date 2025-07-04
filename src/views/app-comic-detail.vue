@@ -8,6 +8,7 @@ import {
   getComicPicListApi,
   likeComicApi,
 } from "@/apis";
+import useDialog from "@/compositions/use-dialog";
 import useSnackbar from "@/compositions/use-snack-bar";
 import { createLogger } from "@/logger";
 import useAppStore from "@/stores/use-app-store";
@@ -20,6 +21,7 @@ const props = defineProps<{
   id: number;
 }>();
 const snackbar = useSnackbar();
+const dialog = useDialog();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const downloadStore = useDownloadStore();
@@ -146,8 +148,28 @@ const download = async () => {
     return;
   }
   if (downloadStore.completeMap[comicInfo.value.data.id]) {
-    // TODO
-    // 弹出提示确定是否重新下载
+    dialog({
+      width: 300,
+      title: "确认",
+      content: "该漫画已下载，是否重新下载？",
+      async onOk() {
+        await getComicPicList(comicInfo.value.data.id);
+        downloadStore.addDownloadTaskAction(
+          {
+            type: "comic",
+            id: comicInfo.value.data.id,
+            comicName: comicInfo.value.data.name,
+            chapterName: comicInfo.value.data.name,
+            picUrlList: data.value.list,
+            filepath: "",
+          },
+          true,
+        );
+        snackbar.success("添加下载任务成功");
+        info("添加 %s 下载任务", comicInfo.value.data.name);
+      },
+    });
+    return;
   }
   await getComicPicList(comicInfo.value.data.id);
   downloadStore.addDownloadTaskAction({
