@@ -4,6 +4,8 @@ import { useRequest } from "alova/client";
 
 import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
 
+const router = useRouter();
+
 const { loading, data } = useRequest(() => getPromoteComicListApi(), {
   initialData: {
     list: [],
@@ -37,16 +39,91 @@ const minListCount = computed(() => {
   }
   return 4;
 });
+
+const searchText = ref("");
+const search = () => {
+  if (!searchText.value) {
+    return;
+  }
+  router.push({
+    name: "SEARCH",
+    query: {
+      content: searchText.value,
+    },
+  });
+};
 </script>
 
 <template>
   <div
     v-if="loading || latestLoading"
-    class="absolute inset-0 flex items-center justify-center"
+    class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
   <v-row v-else>
+    <v-col :cols="12">
+      <v-card>
+        <v-card-text>
+          <v-row no-gutters class="wind-gap-4">
+            <v-col>
+              <v-form @submit.prevent="search">
+                <v-text-field
+                  color="primary"
+                  v-model:model-value="searchText"
+                  variant="outlined"
+                  placeholder="输入漫画名称进行搜索"
+                  hide-details
+                >
+                  <template #append-inner>
+                    <v-btn
+                      :disabled="!searchText"
+                      color="primary"
+                      type="submit"
+                      variant="text"
+                      icon="mdi-magnify"
+                      @click="search"
+                    ></v-btn>
+                  </template>
+                </v-text-field>
+              </v-form>
+            </v-col>
+            <v-col cols="auto">
+              <v-tooltip text="本子分类" location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    variant="flat"
+                    color="primary"
+                    size="large"
+                    icon="mdi-tag"
+                    :to="{
+                      name: 'CATEGORY',
+                    }"
+                  ></v-btn>
+                </template>
+              </v-tooltip>
+            </v-col>
+            <v-col cols="auto">
+              <v-tooltip text="每周必看" location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    variant="flat"
+                    color="primary"
+                    size="large"
+                    icon="mdi-eye"
+                    :to="{
+                      name: 'WEEK',
+                    }"
+                  ></v-btn>
+                </template>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col v-for="item of data.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
         <v-card-text>
@@ -59,7 +136,7 @@ const minListCount = computed(() => {
               :md="3"
               :lg="2"
             >
-              <comic-route-item :comic="subItem" />
+              <app-comic-list-item :comic="subItem" />
             </v-col>
           </v-row>
           <app-home-swiper
@@ -73,7 +150,7 @@ const minListCount = computed(() => {
     <v-col :cols="12">
       <v-card>
         <v-card-item>
-          <div class="flex items-center justify-between">
+          <div class="wind-flex wind-items-center wind-justify-between">
             <v-card-title>最新发布</v-card-title>
             <router-link custom :to="{ name: 'COMIC_LATEST' }">
               <template #default="{ navigate }">
@@ -92,7 +169,7 @@ const minListCount = computed(() => {
               :md="3"
               :lg="2"
             >
-              <comic-route-item :comic="item" />
+              <app-comic-list-item :comic="item" />
             </v-col>
           </v-row>
         </v-card-text>
@@ -100,11 +177,3 @@ const minListCount = computed(() => {
     </v-col>
   </v-row>
 </template>
-
-<style scoped lang="less">
-.title-skeleton {
-  :deep(.ant-skeleton-title) {
-    margin-bottom: 0;
-  }
-}
-</style>

@@ -13,6 +13,7 @@ import electron from "vite-plugin-electron/simple";
 import vueDevTools from "vite-plugin-vue-devtools";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const envDir = resolve(__dirname, "env");
 const currentCommitHash = execSync("git rev-parse HEAD")
   .toString()
   .substring(0, 8);
@@ -22,6 +23,7 @@ export default defineConfig({
   define: {
     __COMIT_HASH__: JSON.stringify(currentCommitHash),
   },
+  envDir,
   base: "/",
   plugins: [
     vue(),
@@ -30,11 +32,17 @@ export default defineConfig({
         // Shortcut of `build.lib.entry`.
         entry: "electron/main.ts",
         vite: {
+          resolve: {
+            alias: {
+              "@electron": resolve(__dirname, "electron"),
+            },
+          },
           build: {
+            target: "esnext",
             rollupOptions: {
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
-              external: ["better-sqlite3"],
+              external: ["skia-canvas"],
             },
           },
         },
@@ -75,10 +83,11 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
       "@electron": resolve(__dirname, "electron"),
-      "@@": resolve(__dirname),
     },
   },
   server: {
+    // 由于 jm 的接口以 cookie 形式来验证用户登录，所以这里我们在开发下只能做一层转发
+    // 生产下不受影响，由 electron 侧提供服务器来供访问
     proxy: {
       "^/api": {
         target: "http://localhost:6174",
@@ -87,5 +96,4 @@ export default defineConfig({
       },
     },
   },
-  envDir: resolve(__dirname, "env"),
 });

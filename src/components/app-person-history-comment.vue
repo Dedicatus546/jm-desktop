@@ -20,21 +20,23 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div class="h-[30vh] flex items-center justify-center">
+      <div
+        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
+      >
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
     </template>
     <template #no-data>
-      <app-empty-state
+      <v-empty-state
         title="看来不是很喜欢评论"
         :image="EMPTY_STATE_IMG"
-      ></app-empty-state>
+      ></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>
         <template v-for="item of items" :key="item.raw.id">
           <v-col cols="12">
-            <comment-item :comment="item.raw" />
+            <app-comment-list-item :comment="item.raw" />
           </v-col>
           <v-col>
             <v-divider />
@@ -43,7 +45,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
       </v-row>
     </template>
     <template #footer>
-      <div class="flex justify-end mt-4">
+      <div class="mt-4 wind-flex wind-justify-end">
         <v-pagination
           v-model="page"
           :length="pageCount"

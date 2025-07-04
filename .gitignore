@@ -33,3 +33,4 @@ data/
 less.json
 ajax-test.mjs
 .VSCodeCounter/
+components.d.ts

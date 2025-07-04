@@ -29,7 +29,7 @@ const next = () => {
   <v-row>
     <v-col :cols="12">
       <swiper
-        class="select-none"
+        class="wind-select-none"
         centered-slides
         loop
         :slides-per-view="slidesPerView"
@@ -37,7 +37,7 @@ const next = () => {
         @swiper="onSwiper"
       >
         <swiper-slide v-for="item of list" :key="item.id">
-          <comic-route-item :comic="item" />
+          <app-comic-list-item :comic="item" />
         </swiper-slide>
       </swiper>
     </v-col>

@@ -33,33 +33,46 @@
 由于需要截图原因，部分封面图片已屏蔽。
 
 ### 首页
-![](./readme-assets/首页.png)
+![](./readme-assets/首页1.png)
+
+![](./readme-assets/首页2.png)
+
+![](./readme-assets/首页3.png)
 
 ### 个人中心
+
 ![](./readme-assets/个人中心.png)
 
 ### 签到
+
 ![](./readme-assets/签到页.png)
 
 ### 详情（日间模式）
+
 ![](./readme-assets/详情页（日间模式）.png)
 
 ### 详情（夜间模式）
+
 ![](./readme-assets/详情页（夜间模式）.png)
 
 ### 阅读（翻页模式）
+
 ![](./readme-assets/阅读（翻页模式）.png)
 
 ### 阅读（滚动模式）
+
 ![](./readme-assets/阅读（滚动模式）.png)
 
 ### 名称搜索
+
 ![](./readme-assets/搜索页.png)
 
 ### 分类搜索排序
+
 ![](./readme-assets/分类搜索.png)
 
 ### 每周必看
+
 ![](./readme-assets/每周必看.png)
 
 ## 声明
@@ -68,9 +81,11 @@
 
 ## 安装包
 
-只提供 win 、 linux 的 x86 绿色包，所有数据只在解压的目录中，整体文件夹可随意拷贝移动（下载路径除外）。
+只提供 win 、 linux 的 x86 绿色包，所有数据（包含下载文件）只在解压的目录中，整体文件夹可随意拷贝移动。mac 用户请使用源码自行构建。
 
-mac 用户请使用源码自行构建。
+点击[这里](https://github.com/Dedicatus546/jm-desktop/releases)或者右侧的 Release 处下载最新的版本，解压后执行目录内的 jm-desktop 或者 jm-desktop.exe 即可。
+
+相关更新请查看项目的 CHANGELOG 文件。
 
 ## 相关帖子
 
@@ -85,7 +100,7 @@ mac 用户请使用源码自行构建。
 
 ![](./readme-assets/启用代理.png)
 
-并将 api 添加到你的代理规则中，V2rayN 默认的 v3 路由规则已可以代理该域名，手动添加如下图
+并将 api 添加到你的代理规则中，V2rayN 默认的 v3 路由规则应该可以代理该域名，手动添加如下图
 
 ![](./readme-assets/V2rayN添加代理.png)
 
@@ -94,6 +109,18 @@ mac 用户请使用源码自行构建。
 windows 百分百缩放设置下，请在设置中更改缩放等级，建议 2k 屏幕设置为 1.4 ， 4k 屏幕为 1.8 ，如下图
 
 ![](./readme-assets/设置缩放等级.png)
+
+### 漫画跳转不正确
+
+很大概率是接口过期了，请提 issue ，或者可以通过以下方式自己更新。
+
+首先确保你已知道最新的 api 接口，这里推荐使用 MuMu 模拟器 + reqable 抓包，需要开启模拟器的 Root 权限以及存储读写，Reqable 需要将生成的证书放到指定位置，启动抓包后只需在 reqable 中搜索 /setting 路径，即可确定 api 。
+
+接着打开程序根目录的 /data/config.json 文件，在 apiUrl 处填上你抓包的接口，在 apiUrlList 处填入新的接口，如下：
+
+![](./readme-assets/更新api.png)
+
+完成之后启动软件即可，注意以上操作请不要在软件打开的情况下操作，软件运行过程中会在必要的时候对该文件覆写，可能导致你的修改失效。
 
 ---
 

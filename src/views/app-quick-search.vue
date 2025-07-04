@@ -34,27 +34,29 @@ const { page, pageSize, pageCount, data, loading } = usePagination(
         :loading="loading"
       >
         <template #loader>
-          <div class="h-[30vh] flex items-center justify-center">
+          <div
+            class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
+          >
             <v-progress-circular indeterminate></v-progress-circular>
           </div>
         </template>
         <template #no-data>
-          <app-empty-state
+          <v-empty-state
             title="出现这个就大概率是出 BUG 了，请提 issue"
             :image="EMPTY_STATE_IMG"
-          ></app-empty-state>
+          ></v-empty-state>
         </template>
         <template #default="{ items }">
           <v-row>
             <template v-for="item of items" :key="item.raw.id">
               <v-col cols="6" :sm="4" :md="3" :lg="2">
-                <comic-route-item :comic="item.raw" />
+                <app-comic-list-item :comic="item.raw" />
               </v-col>
             </template>
           </v-row>
         </template>
         <template #footer>
-          <div class="flex justify-end mt-4">
+          <div class="wind-mt-4 wind-flex wind-justify-end">
             <v-pagination
               v-model="page"
               :length="pageCount"

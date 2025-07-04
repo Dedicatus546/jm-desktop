@@ -1,95 +1,173 @@
-import { WatchHandle } from "vue";
+import { DownloadComicItem, DownloadItem } from "@electron/module/download";
+import { omit } from "radash";
 
-import { BaseComic } from "@/types";
+import { trpcClient } from "@/apis/ipc";
+import { createLogger } from "@/logger";
+import { emitter } from "@/mitt";
 
-interface PendingItem extends BaseComic {
-  fileName: string;
-  belongId: number;
-  seriesName: string;
-  loaded: number;
-  total: number;
-}
+const { info, warn } = createLogger("download");
 
-interface State {
-  pendingMap: Map<
-    number,
-    PendingItem & {
-      watchHandler?: WatchHandle;
-    }
-  >;
-}
+type WithDownloadingInfo<T> = T & {
+  status: "downloading" | "pending" | "complete";
+  percent: number; // 0 - 1
+};
 
-const useDownloadStore = defineStore("download", () => {
-  const state = reactive<State>({
-    pendingMap: new Map(),
+export const useDownloadStore = defineStore("download", () => {
+  const state = reactive<{
+    activeTabKey: "downloading" | "complete";
+    loading: boolean;
+    completeList: Array<DownloadItem>;
+    downloadingList: Array<WithDownloadingInfo<DownloadItem>>;
+  }>({
+    activeTabKey: "downloading",
+    loading: false,
+    completeList: [],
+    downloadingList: [],
   });
 
-  // state.pendingMap.set(1044048, {
-  //   author: "森宫正幸",
-  //   belongId: 1044048,
-  //   seriesName: "",
-  //   fileName:
-  //     "[JM1044048] (C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码].zip",
-  //   id: 1044048,
-  //   loaded: 5000000,
-  //   name: "(C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码]",
-  //   total: 6710886.4,
-  // });
-  // state.pendingMap.set(1044049, {
-  //   author: "森宫正幸",
-  //   belongId: 1044048,
-  //   seriesName: "第二话",
-  //   fileName:
-  //     "[JM1044048] (C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码].zip",
-  //   id: 1044049,
-  //   loaded: 5000000,
-  //   name: "(C105) [森宫罐 (森宫正幸)] 变态黒髪ちゃんと生涯モブの僕 [中国翻译] [DL版] [禁漫去码]",
-  //   total: 6710886.4,
-  // });
+  const downloadingMap = computed(() => {
+    return state.downloadingList.reduce(
+      (map, item) => {
+        map[item.id] = item;
+        return map;
+      },
+      {} as Record<
+        DownloadItem["id"],
+        WithDownloadingInfo<DownloadItem> | undefined
+      >,
+    );
+  });
 
-  const pendingList = computed(() => [...state.pendingMap.values()]);
+  const completeMap = computed(() => {
+    return state.completeList.reduce(
+      (map, item) => {
+        map[item.id] = item;
+        return map;
+      },
+      {} as Record<DownloadItem["id"], DownloadItem | undefined>,
+    );
+  });
 
-  const addDownloadAction = (item: Omit<PendingItem, "loaded">) => {
-    if (state.pendingMap.has(item.id)) {
-      return;
+  const initAction = async () => {
+    await Promise.allSettled([
+      trpcClient.getDownloadDownloadingList.query().then((list) => {
+        state.downloadingList = list.map((item) => {
+          return {
+            ...item,
+            status: "pending",
+            percent: 0,
+          };
+        });
+      }),
+      trpcClient.getDownloadCompleteList.query().then((list) => {
+        state.completeList = list;
+      }),
+    ]);
+    if (state.downloadingList.length > 0) {
+      info("初始化检测到存在未完成下载任务，尝试开始下载。");
+      tryStartDownloadAction();
     }
-    state.pendingMap.set(item.id, {
-      ...item,
-      loaded: 0,
-    });
   };
 
-  const updateDonwloadProgressAction = (
-    id: number,
-    loaded: ComputedRef<number>,
+  const addDownloadTaskAction = async (
+    item: DownloadItem,
+    reDownload = false,
   ) => {
-    if (!state.pendingMap.has(id)) {
-      // TODO
-      return;
+    if (reDownload) {
+      const index = state.completeList.findIndex(
+        (completeItem) => item.id === completeItem.id,
+      );
+      if (index > -1) {
+        state.completeList.splice(index, 1);
+      }
     }
-    const item = state.pendingMap.get(id)!;
-    item.watchHandler = watchEffect(() => {
-      item.loaded = loaded.value;
+    state.downloadingList.push({
+      ...item,
+      status: "pending",
+      percent: 0,
     });
+    await syncAction();
+    tryStartDownloadAction();
   };
 
-  const removeDownloadAction = (id: number) => {
-    if (!state.pendingMap.has(id)) {
-      // TODO
+  const tryStartDownloadAction = async () => {
+    const first = state.downloadingList[0];
+    if (!first) {
+      warn("未检测到可下载的任务");
       return;
     }
-    const item = state.pendingMap.get(id)!;
-    item.watchHandler?.();
-    state.pendingMap.delete(id);
+    if (first.status === "pending") {
+      if (first.type === "comic") {
+        await downloadComicAction(first);
+      }
+    }
+    // 尝试下载下一项
+    tryStartDownloadAction();
+  };
+
+  const downloadComicAction = async (
+    downloadItem: WithDownloadingInfo<DownloadComicItem>,
+  ) => {
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    trpcClient.onDownloadComic.subscribe(
+      {
+        id: downloadItem.id,
+        comicName: downloadItem.comicName,
+        chapterName: downloadItem.chapterName,
+        picUrlList: downloadItem.picUrlList,
+      },
+      {
+        onStarted() {
+          downloadItem.status = "downloading";
+        },
+        onData(value) {
+          if (value.type === "downloading") {
+            downloadItem.percent = value.data.complete! / value.data.total!;
+          } else if (value.type === "complete") {
+            downloadItem.status = "complete";
+            downloadItem.filepath = value.data.filepath!;
+            const index = state.downloadingList.findIndex(
+              (item) => item.id === downloadItem.id,
+            );
+            if (index > -1) {
+              const [item] = state.downloadingList.splice(index, 1);
+              state.completeList.unshift(
+                omit(item as WithDownloadingInfo<DownloadComicItem>, [
+                  "status",
+                  "percent",
+                ]),
+              );
+              resolve();
+            } else {
+              reject(
+                new Error("下载列表内找不到对应项，uuid 为 " + downloadItem.id),
+              );
+            }
+          }
+        },
+        onError(err) {
+          reject(err);
+        },
+      },
+    );
+    await promise;
+    await syncAction();
+    emitter.emit("DownloadSuccess", downloadItem);
+  };
+
+  const syncAction = async () => {
+    await trpcClient.saveDownloadDownloadingList.query(
+      state.downloadingList.map((item) => omit(item, ["status", "percent"])),
+    );
+    await trpcClient.saveDownloadCompleteList.query(state.completeList);
   };
 
   return {
     ...toRefs(state),
-    pendingList,
-    addDownloadAction,
-    updateDonwloadProgressAction,
-    removeDownloadAction,
+    downloadingMap,
+    completeMap,
+    initAction,
+    addDownloadTaskAction,
+    downloadComicAction,
   };
 });
-
-export default useDownloadStore;

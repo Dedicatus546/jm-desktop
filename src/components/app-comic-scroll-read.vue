@@ -19,8 +19,8 @@ const onDecodeSuccess = inject<(index: number) => void>(
 </script>
 
 <template>
-  <div class="absolute inset-0">
-    <div class="absolute inset-0 p-4 overflow-auto">
+  <div class="wind-flex wind-flex-col wind-inset-0 wind-absolute">
+    <div class="wind-p-4 wind-flex-grow wind-min-h-0 wind-overflow-auto">
       <comic-vertical-pic
         v-for="(item, index) of picList"
         ref="comicVerticalPicListRef"
@@ -31,8 +31,9 @@ const onDecodeSuccess = inject<(index: number) => void>(
         @decode-success="onDecodeSuccess(index)"
       />
     </div>
-    <div class="absolute bottom-4 inset-x-4">
-      <v-card>
+    <div class="wind-flex-shrink-0">
+      <v-divider />
+      <v-card color="transparent" :elevation="0">
         <v-card-text>
           <v-slider
             v-model:model-value="sliderValue"
@@ -44,8 +45,8 @@ const onDecodeSuccess = inject<(index: number) => void>(
             @end="onSliderEnd"
           >
             <template #append>
-              <div class="flex items-center gap-2">
-                <shunt-select />
+              <div class="wind-flex wind-gap-2 wind-items-center">
+                <app-shunt-select />
                 <div>{{ sliderValue }} / {{ picList.length }}</div>
               </div>
             </template>

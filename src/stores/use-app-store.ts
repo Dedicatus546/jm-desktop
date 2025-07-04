@@ -1,6 +1,10 @@
-import { Config } from "@/types/base";
+import { Config } from "@electron/module/config";
+import { useTheme } from "vuetify";
+
+import { trpcClient } from "@/apis";
 
 interface State {
+  config: Config;
   signIn: {
     modalOpen: boolean;
     info: {
@@ -24,7 +28,6 @@ interface State {
       > | null;
     };
   };
-  config: Config;
   setting: {
     logoPath: string;
     webHost: string;
@@ -41,7 +44,21 @@ interface State {
 }
 
 const useAppStore = defineStore("app", () => {
+  const theme = useTheme();
+  const isDark = usePreferredDark();
   const state = reactive<State>({
+    config: {
+      theme: "dark",
+      apiUrl: "",
+      apiUrlList: [],
+      readMode: "scroll",
+      currentShuntKey: undefined,
+      autoLogin: false,
+      loginUserInfo: "",
+      windowInfo: undefined,
+      proxyInfo: undefined,
+      zoomFactor: 0,
+    },
     signIn: {
       modalOpen: false,
       info: {
@@ -56,16 +73,6 @@ const useAppStore = defineStore("app", () => {
         currentProgress: 0,
         dateMap: null,
       },
-    },
-    config: {
-      mode: "light",
-      apiUrl: "",
-      downloadDir: "",
-      readMode: 1,
-      currentShuntKey: undefined,
-      autoLogin: false,
-      loginUserInfo: "",
-      proxy: undefined,
     },
     setting: {
       logoPath: "",
@@ -86,8 +93,24 @@ const useAppStore = defineStore("app", () => {
     Object.assign(state.setting, setting);
   };
 
-  const updateConfigAction = (config: Partial<State["config"]>) => {
-    Object.assign(state.config, config);
+  const updateConfigAction = async (
+    config: Partial<State["config"]>,
+    sync = false,
+  ) => {
+    if (config.theme) {
+      if (config.theme === "auto") {
+        theme.global.name.value = isDark.value ? "dark" : "light";
+      } else {
+        theme.global.name.value = config.theme;
+      }
+    }
+    state.config = {
+      ...state.config,
+      ...config,
+    };
+    if (sync) {
+      await trpcClient.saveConfig.mutate(state.config);
+    }
   };
 
   return {

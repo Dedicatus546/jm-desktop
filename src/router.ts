@@ -5,6 +5,10 @@ import AppComicDetail from "@/views/app-comic-detail.vue";
 import AppComicRead from "@/views/app-comic-read.vue";
 import AppHome from "@/views/app-home.vue";
 
+import { createLogger } from "./logger";
+
+const { info } = createLogger("router");
+
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -70,11 +74,6 @@ const routes: RouteRecordRaw[] = [
     component: AppComicRead,
   },
   {
-    path: "/download",
-    name: "DOWNLOAD",
-    component: () => import("@/views/app-download.vue"),
-  },
-  {
     path: "/sign-in",
     name: "SIGN_IN",
     component: () => import("@/views/app-sign-in.vue"),
@@ -89,12 +88,22 @@ const routes: RouteRecordRaw[] = [
     name: "ABOUT",
     component: () => import("@/views/app-about.vue"),
   },
+  {
+    path: "/download",
+    name: "DOWNLOAD",
+    component: () => import("@/views/app-download.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior,
+});
+
+router.beforeEach((to, from, next) => {
+  info("router.beforeEach", "从", from.fullPath, "跳转到", to.fullPath);
+  next();
 });
 
 export default router;

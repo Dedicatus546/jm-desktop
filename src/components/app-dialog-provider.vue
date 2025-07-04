@@ -3,7 +3,7 @@ import {
   DialogInstanceOptions,
   dialogProviderInjectKey,
   DialogProviderInjectType,
-} from "@/types/dialog-provider";
+} from "@/types";
 import { delay } from "@/utils";
 
 let id = 0;

@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { openLinkIpc } from "@/apis";
-import { version } from "@@/package.json";
+import { trpcClient } from "@/apis";
+
+import { version } from "../../package.json";
 const hash = __COMIT_HASH__;
 const isDev = import.meta.env.DEV;
 
 const toRepo = () => {
-  openLinkIpc("https://github.com/Dedicatus546/jm-desktop");
+  trpcClient.openLink.mutate({
+    url: "https://github.com/Dedicatus546/jm-desktop",
+  });
 };
 </script>
 
 <template>
   <v-card title="关于">
     <v-card-text>
-      <div class="flex flex-col gap-4 items-center py-4">
+      <div
+        class="wind-py-4 wind-flex wind-flex-col wind-gap-4 wind-items-center"
+      >
         <v-avatar size="100" image="/png/512x512.png" rounded="0" />
         <div class="text-h5">jm-desktop</div>
       </div>
@@ -30,7 +35,7 @@ const toRepo = () => {
         </v-list-item>
         <v-list-item title="仓库地址">
           <template #append>
-            <div class="cursor-pointer" @click="toRepo">
+            <div class="wind-cursor-pointer" @click="toRepo">
               https://github.com/Dedicatus546/jm-desktop
             </div>
           </template>

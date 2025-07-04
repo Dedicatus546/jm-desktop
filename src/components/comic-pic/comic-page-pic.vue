@@ -20,13 +20,14 @@ onMounted(async () => {
 
 <template>
   <div
-    class="w-full h-full object-contain"
-    :class="{ 'aspect-[9/16]': !isLoaded }"
+    class="wind-h-full wind-w-full wind-object-contain"
+    :class="{ 'wind-aspect-[9/16]': !isLoaded }"
   >
     <img
       v-if="imgSrc"
-      class="block w-full h-full object-contain"
+      class="wind-h-full wind-w-full wind-block wind-object-contain"
       :src="imgSrc"
+      :data-original-src="src"
       alt=""
       @load="isLoaded = true"
     />

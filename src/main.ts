@@ -10,7 +10,7 @@ import { createVuetify } from "vuetify";
 import { Intersect } from "vuetify/directives";
 
 import App from "./App.vue";
-import logger from "./logger";
+import { error } from "./logger";
 import router from "./router";
 import pinia from "./store";
 import { normalizeError } from "./utils";
@@ -43,7 +43,7 @@ const vuetify = createVuetify({
 const app = createApp(App);
 
 app.config.errorHandler = (err) => {
-  logger.error(`[vue] ${normalizeError(err)}`);
+  error(`[vue] ${normalizeError(err)}`);
 };
 
 app.config.performance = true;

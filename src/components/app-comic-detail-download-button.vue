@@ -1,19 +1,12 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { useRequest } from "alova/client";
 
-import {
-  buyComicApi,
-  downloadComicApi,
-  getComicDownloadInfoApi,
-  insertDownloadComicIpc,
-  saveDownloadComicIpc,
-} from "@/apis";
+import { buyComicApi, downloadComicApi, getComicDownloadInfoApi } from "@/apis";
 import useDialog from "@/compositions/use-dialog";
-import useIpcRendererInvoke from "@/compositions/use-ipc-renderer-invoke";
 import useSnackbar from "@/compositions/use-snack-bar";
-import logger from "@/logger";
+import { error } from "@/logger";
 import { emitter } from "@/mitt";
-import useDownloadStore from "@/stores/use-download-store";
+import { useDownloadStore } from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
 import { resolveDownloadFileName } from "@/utils";
 
@@ -47,33 +40,37 @@ const percent = computed(() => {
   return item.total === 0 ? 0 : +((item.loaded / item.total) * 100).toFixed(0);
 });
 
-const { invoke: insertDownload } = useIpcRendererInvoke(
-  (query: {
-    id: number;
-    name: string;
-    belongId: number;
-    fileName: string;
-    seriesName: string;
-  }) =>
-    insertDownloadComicIpc({
-      id: query.id,
-      belongId: query.belongId,
-      name: query.name,
-      fileName: query.fileName,
-      seriesName: query.seriesName,
-      author: props.comic.author,
-    }),
-  {
-    immediate: false,
-  },
-);
+// const insertDownload = async () => {};
 
-const { invoke: saveDownloadFile } = useIpcRendererInvoke(
-  (buffer: ArrayBuffer, name: string) => saveDownloadComicIpc(buffer, name),
-  {
-    immediate: false,
-  },
-);
+// const { invoke: insertDownload } = useIpcRendererInvoke(
+//   (query: {
+//     id: number;
+//     name: string;
+//     belongId: number;
+//     fileName: string;
+//     seriesName: string;
+//   }) =>
+//     insertDownloadComicIpc({
+//       id: query.id,
+//       belongId: query.belongId,
+//       name: query.name,
+//       fileName: query.fileName,
+//       seriesName: query.seriesName,
+//       author: props.comic.author,
+//     }),
+//   {
+//     immediate: false,
+//   },
+// );
+
+// const saveDownloadFile = async () => {};
+
+// const { invoke: saveDownloadFile } = useIpcRendererInvoke(
+//   (buffer: ArrayBuffer, name: string) => saveDownloadComicIpc(buffer, name),
+//   {
+//     immediate: false,
+//   },
+// );
 
 const { data: comicDownloadInfo, send: getComicDownloadInfo } = useRequest(
   (id: number) => getComicDownloadInfoApi(id),
@@ -83,7 +80,7 @@ const { data: comicDownloadInfo, send: getComicDownloadInfo } = useRequest(
 );
 
 const {
-  data: file,
+  // data: file,
   send: downloadComic,
   downloading,
 } = useRequest(
@@ -147,13 +144,13 @@ const buy = async () => {
     snackbar.warning(
       `当前的 JCoin 数量 ${userStore.userInfo!.jCoin} 不足以支付`,
     );
-    logger.error(`购买漫画失败，原因 JCoin 不足`);
+    error(`购买漫画失败，原因 JCoin 不足`);
     return;
   }
   try {
     await buyComic();
   } catch (e) {
-    logger.error(`购买漫画失败，原因 ${String(e)}`);
+    error(`购买漫画失败，原因 ${String(e)}`);
     return;
   }
   download();
@@ -190,19 +187,19 @@ const download = async (series?: { id: number; name: string }) => {
       expires: comicDownloadInfo.value.data.expires,
     });
     downloadStore.removeDownloadAction(id);
-    await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
-    await insertDownload({
-      id,
-      name,
-      belongId,
-      fileName,
-      seriesName: series ? series.name : "",
-    });
+    // await saveDownloadFile(await file.value.arrayBuffer(), file.value.name);
+    // await insertDownload({
+    //   id,
+    //   name,
+    //   belongId,
+    //   fileName,
+    //   seriesName: series ? series.name : "",
+    // });
     emitter.emit("RefreshCompleteDownloadList");
     snackbar.success("下载成功");
   } catch (e) {
     snackbar.error("下载出错，请打开日志查看详细错误");
-    logger.error(`下载出错，原因 ${String(e)}`);
+    error(`下载出错，原因 ${String(e)}`);
   }
 };
 </script>
@@ -226,7 +223,7 @@ const download = async (series?: { id: number; name: string }) => {
   </v-btn>
   <v-dialog v-model:model-value="showSeriesSelectDialog" width="80%">
     <v-card title="选择下载章节">
-      <v-card-text class="h-[60vh] overflow-auto">
+      <v-card-text class="wind-h-[60vh] wind-overflow-auto">
         <v-row>
           <v-col
             v-for="item of comic.seriesList"
@@ -245,4 +242,8 @@ const download = async (series?: { id: number; name: string }) => {
   </v-dialog>
 </template>
 
-<style scoped></style>
+<style scoped></style> -->
+
+<template>
+  <div>该组件已废弃，下载不再使用 jm 的下载接口</div>
+</template>

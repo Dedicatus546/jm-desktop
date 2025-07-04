@@ -1,9 +1,7 @@
-import CryptoJS from "crypto-js";
-import dayjs from "dayjs";
-
-import { BaseComic } from "@/types";
+import { format, getDate, parse } from "date-fns";
 
 import http from "./http";
+import { trpcClient } from "./ipc";
 
 type RespWrapper<T> = {
   code: number;
@@ -79,10 +77,10 @@ export const getSettingApi = () => {
   });
 };
 
-export const loginApi = (username: string, password: string) => {
+export const loginApi = (query: { username: string; password: string }) => {
   const formData = new FormData();
-  formData.append("username", username);
-  formData.append("password", password);
+  formData.append("username", query.username);
+  formData.append("password", query.password);
   return http.Post<
     RespWrapper<{
       uid: number;
@@ -415,7 +413,13 @@ export const getPromoteComicListApi = () => {
 // 该接口无返回total，无法做常规分页
 export const getLatestComicListApi = (page: number) => {
   return http.Get<
-    RespWrapper<Array<BaseComic>>,
+    RespWrapper<
+      Array<{
+        id: number;
+        author: string;
+        name: string;
+      }>
+    >,
     RespWrapper<
       Array<{
         id: string;
@@ -460,7 +464,6 @@ export const getComicDetailApi = (id: number) => {
       workList: string[];
       isCollect: boolean;
       isLike: boolean;
-      isDownload: boolean;
       relateList: Array<{
         id: number;
         name: string;
@@ -526,7 +529,6 @@ export const getComicDetailApi = (id: number) => {
           workList: res.data.works,
           isCollect: res.data.is_favorite,
           isLike: res.data.liked,
-          isDownload: await ipcRenderer.invoke("app/isDownload", res.data.id),
           relateList: res.data.related_list.map((item) => {
             return {
               id: Number.parseInt(item.id),
@@ -748,12 +750,12 @@ const getAvatar = (str: string) => {
   }
   return str;
 };
-const getAvatarColor = (nickname: string) => {
+const getAvatarColor = async (nickname: string) => {
   let color: string | undefined = undefined;
   if ((color = avatarColorCache.get(nickname))) {
     return color;
   }
-  const hash = CryptoJS.MD5(nickname).toString().substring(0, 6);
+  const hash = (await trpcClient.md5.query(nickname)).substring(0, 6);
   color = `#${hash}`;
   avatarColorCache.set(nickname, color);
   return color;
@@ -772,13 +774,13 @@ export const getComicCommentListApi = (query: {
         content: string;
         avatar: string | null;
         avatarColor: string;
-        createTime: number;
+        createTime: string;
         replyList: Array<{
           id: number;
           parentId: number;
           nickname: string;
           likeCount: number;
-          createTime: number;
+          createTime: string;
           content: string;
           avatar: string | null;
           avatarColor: string;
@@ -796,41 +798,52 @@ export const getComicCommentListApi = (query: {
       mode: "manhua",
       aid: query.comicId,
     },
-    transform(res) {
+    async transform(res) {
       return {
         code: res.code,
         data: {
-          list: res.data.list.map((item) => {
-            const avatar = getAvatar(item.photo);
-            const avatarColor =
-              avatar === null ? getAvatarColor(item.username) : "#eee";
-            return {
-              id: Number.parseInt(item.CID),
-              parentId: Number.parseInt(item.parent_CID),
-              nickname: item.username,
-              likeCount: Number.parseInt(item.likes),
-              content: item.content,
-              avatar,
-              avatarColor,
-              createTime: Number.parseInt(item.update_at) * 1000,
-              replyList:
-                item.replys?.map((item) => {
-                  const avatar = getAvatar(item.photo);
-                  const avatarColor =
-                    avatar === null ? getAvatarColor(item.username) : "#eee";
-                  return {
-                    id: Number.parseInt(item.CID),
-                    parentId: Number.parseInt(item.parent_CID),
-                    nickname: item.username,
-                    likeCount: Number.parseInt(item.likes),
-                    createTime: Number.parseInt(item.update_at) * 1000,
-                    content: item.content,
-                    avatar,
-                    avatarColor,
-                  };
-                }) ?? [],
-            };
-          }),
+          list: await Promise.all(
+            res.data.list.map(async (item) => {
+              const avatar = getAvatar(item.photo);
+              const avatarColor =
+                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              return {
+                id: Number.parseInt(item.CID),
+                parentId: Number.parseInt(item.parent_CID),
+                nickname: item.username,
+                likeCount: Number.parseInt(item.likes),
+                content: item.content,
+                avatar,
+                avatarColor,
+                createTime: format(
+                  parse(item.addtime, "MMM d, yyyy", new Date()),
+                  "yyyy-MM-dd",
+                ),
+                replyList: await Promise.all(
+                  item.replys?.map(async (item) => {
+                    const avatar = getAvatar(item.photo);
+                    const avatarColor =
+                      avatar === null
+                        ? await getAvatarColor(item.username)
+                        : "#eee";
+                    return {
+                      id: Number.parseInt(item.CID),
+                      parentId: Number.parseInt(item.parent_CID),
+                      nickname: item.username,
+                      likeCount: Number.parseInt(item.likes),
+                      createTime: format(
+                        parse(item.addtime, "MMM d, yyyy", new Date()),
+                        "yyyy-MM-dd",
+                      ),
+                      content: item.content,
+                      avatar,
+                      avatarColor,
+                    };
+                  }) ?? [],
+                ),
+              };
+            }),
+          ),
           total: Number.parseInt(res.data.total),
         },
       };
@@ -850,13 +863,13 @@ export const getUserCommentListApi = (page: number, userId: number) => {
         content: string;
         avatar: string | null;
         avatarColor: string;
-        createTime: number;
+        createTime: string;
         replyList: Array<{
           id: number;
           parentId: number;
           nickname: string;
           likeCount: number;
-          createTime: number;
+          createTime: string;
           content: string;
           avatar: string | null;
           avatarColor: string;
@@ -874,41 +887,52 @@ export const getUserCommentListApi = (page: number, userId: number) => {
       mode: undefined,
       uid: userId,
     },
-    transform(res) {
+    async transform(res) {
       return {
         code: res.code,
         data: {
-          list: res.data.list.map((item) => {
-            const avatar = getAvatar(item.photo);
-            const avatarColor =
-              avatar === null ? getAvatarColor(item.username) : "#eee";
-            return {
-              id: Number.parseInt(item.CID),
-              parentId: Number.parseInt(item.parent_CID),
-              nickname: item.username,
-              likeCount: Number.parseInt(item.likes),
-              content: item.content,
-              avatar,
-              avatarColor,
-              createTime: Number.parseInt(item.update_at) * 1000,
-              replyList:
-                item.replys?.map((item) => {
-                  const avatar = getAvatar(item.photo);
-                  const avatarColor =
-                    avatar === null ? getAvatarColor(item.username) : "#eee";
-                  return {
-                    id: Number.parseInt(item.CID),
-                    parentId: Number.parseInt(item.parent_CID),
-                    nickname: item.username,
-                    likeCount: Number.parseInt(item.likes),
-                    createTime: Number.parseInt(item.update_at) * 1000,
-                    content: item.content,
-                    avatar,
-                    avatarColor,
-                  };
-                }) ?? [],
-            };
-          }),
+          list: await Promise.all(
+            res.data.list.map(async (item) => {
+              const avatar = getAvatar(item.photo);
+              const avatarColor =
+                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              return {
+                id: Number.parseInt(item.CID),
+                parentId: Number.parseInt(item.parent_CID),
+                nickname: item.username,
+                likeCount: Number.parseInt(item.likes),
+                content: item.content,
+                avatar,
+                avatarColor,
+                createTime: format(
+                  parse(item.addtime, "MMM d, yyyy", new Date()),
+                  "yyyy-MM-dd",
+                ),
+                replyList: await Promise.all(
+                  item.replys?.map(async (item) => {
+                    const avatar = getAvatar(item.photo);
+                    const avatarColor =
+                      avatar === null
+                        ? await getAvatarColor(item.username)
+                        : "#eee";
+                    return {
+                      id: Number.parseInt(item.CID),
+                      parentId: Number.parseInt(item.parent_CID),
+                      nickname: item.username,
+                      likeCount: Number.parseInt(item.likes),
+                      createTime: format(
+                        parse(item.addtime, "MMM d, yyyy", new Date()),
+                        "yyyy-MM-dd",
+                      ),
+                      content: item.content,
+                      avatar,
+                      avatarColor,
+                    };
+                  }) ?? [],
+                ),
+              };
+            }),
+          ),
           total: Number.parseInt(res.data.total),
         },
       };
@@ -990,7 +1014,7 @@ export const getSignInDataApi = (userId: number) => {
           hasExtraBonus: boolean;
         }
       > = {};
-      const currentDate = dayjs().date().toString().padStart(2, "0");
+      const currentDate = getDate(new Date(), {}).toString().padStart(2, "0");
       return {
         code: res.code,
         data: {
@@ -1102,23 +1126,48 @@ export const getComicPicListApi = (
       page: 0,
       app_img_shunt: shuntKey,
       express: "off",
-      v: Date.now(),
+      v: Math.floor(Date.now() / 1000),
       // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
     async transform(htmlStr) {
-      // 正则解析
-      const regex = /data-original="(.*)"/g;
-      const matches = [];
-      let match;
-
-      while ((match = regex.exec(htmlStr)) !== null) {
-        matches.push(match[1]);
+      // 2025.06.15 新版匹配方式
+      // 正则表达式匹配 result 对象
+      const resultRegex = /const result\s*=\s*({[\s\S]*?});/;
+      const resultMatch = htmlStr.match(resultRegex);
+      let result: { images: Array<string> } | null = null;
+      if (resultMatch) {
+        try {
+          result = eval(`(${resultMatch[1]})`);
+        } catch (e) {
+          console.error("Error parsing result object:", e);
+        }
       }
 
-      const list = matches.filter((item) => item.includes(".webp"));
-
+      // 正则表达式匹配 config 对象
+      const configRegex = /const config\s*=\s*({[\s\S]*?});/;
+      const configMatch = htmlStr.match(configRegex);
+      let config: {
+        cache: string;
+        imghost: string;
+        jmid: string;
+      } | null = null;
+      if (configMatch) {
+        try {
+          config = eval(`(${configMatch[1]})`);
+        } catch (e) {
+          console.error("Error parsing config object:", e);
+        }
+      }
+      if (!result || !config) {
+        return {
+          list: [],
+        };
+      }
       return {
-        list,
+        list: result.images.map(
+          (item) =>
+            `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
+        ),
       };
     },
   });

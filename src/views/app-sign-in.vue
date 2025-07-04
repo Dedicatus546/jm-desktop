@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
-import dayjs from "dayjs";
+import { set } from "date-fns";
 import { VCalendar } from "vuetify/labs/VCalendar";
 
 import { getSignInDataApi, signInApi } from "@/apis";
@@ -89,13 +89,13 @@ const events = computed(() => {
   for (let i = 1; i <= days; i++) {
     const key = `${i}`.padStart(2, "0");
     const data = dateMap.value[key];
-    const d = dayjs(currentDate)
-      .date(i)
-      .hour(0)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toDate();
+    const d = set(currentDate, {
+      date: i,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
     if (data.hasExtraBonus) {
       events.push({
         type: 1,
@@ -144,7 +144,7 @@ onSuccess(() => {
 <template>
   <v-card>
     <v-card-text>
-      <div class="flex flex-col gap-4">
+      <div class="wind-flex wind-flex-col wind-gap-4">
         <v-calendar
           ref="calendar"
           :model-value="value"
@@ -152,26 +152,8 @@ onSuccess(() => {
           :events="events"
         >
           <template #header>
-            <div class="text-h6 text-center mb-4">
+            <div class="text-h6 wind-mb-4 wind-text-center">
               本月已签到 {{ signInSumDay }} 天
-            </div>
-          </template>
-          <template #intervalEvent="{ event }">
-            <div v-if="event.type === 1" class="m-2">
-              <v-chip>
-                <template #prepend>
-                  <v-icon icon="mdi-heart" color="red"></v-icon>
-                </template>
-                <span class="ml-1">额外奖励</span>
-              </v-chip>
-            </div>
-            <div v-else-if="event.type === 2" class="m-2">
-              <v-chip>
-                <template #prepend>
-                  <v-icon icon="mdi-check" color="success"></v-icon>
-                </template>
-                <span class="ml-1">已签到</span>
-              </v-chip>
             </div>
           </template>
         </v-calendar>
@@ -188,11 +170,11 @@ onSuccess(() => {
         ></v-slider>
         <v-alert type="info" title="连续签到奖励">
           <template #text>
-            <div class="text">
+            <div class="wind-text">
               连续签到三天额外得 {{ data?.data.threeDaysCoinCount ?? 0 }} JCoins
               和 {{ data?.data.threeDaysExpCount ?? 0 }} 经验
             </div>
-            <div class="text">
+            <div class="wind-text">
               连续签到七天额外得 {{ data?.data.sevenDaysCoinCount ?? 0 }} JCoins
               和 {{ data?.data.sevenDaysExpCount ?? 0 }} 经验
             </div>
@@ -212,10 +194,16 @@ onSuccess(() => {
   </v-card>
 </template>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .signCalendar {
   ::v-deep(.v-calendar-month__day) {
     min-height: 120px;
+  }
+
+  ::v-deep(.v-calendar-weekly__day-alldayevents-container) {
+    .v-chip {
+      --uno: wind-mt-2;
+    }
   }
 }
 </style>

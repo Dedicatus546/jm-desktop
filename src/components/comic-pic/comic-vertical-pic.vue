@@ -41,7 +41,11 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="elRef" class="relative" :class="{ 'aspect-[9/16]': !isLoaded }">
+  <div
+    ref="elRef"
+    class="wind-relative"
+    :class="{ 'wind-aspect-[9/16]': !isLoaded }"
+  >
     <div
       v-intersect="{
         handler: onScrollImageIntersect,
@@ -49,13 +53,17 @@ defineExpose({
           rootMargin: '-50% 0% -50% 0%',
         },
       }"
-      class="absolute inset-0"
+      class="wind-inset-0 wind-absolute"
     ></div>
-    <div v-intersect.once="onLoadImageIntersect" class="absolute inset-0"></div>
+    <div
+      v-intersect.once="onLoadImageIntersect"
+      class="wind-inset-0 wind-absolute"
+    ></div>
     <img
       v-if="imgSrc"
-      class="block w-full h-full object-contain"
+      class="wind-h-full wind-w-full wind-block wind-object-contain"
       :src="imgSrc"
+      :data-original-src="src"
       alt=""
       @load="isLoaded = true"
     />

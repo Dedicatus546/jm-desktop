@@ -1,2 +1,2 @@
-export * from "./base";
+export * from "./dialog-provider";
 export * from "./snackbar-provider";

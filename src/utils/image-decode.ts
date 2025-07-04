@@ -1,7 +1,6 @@
 // jm 的从 220980 之后的图都经过混淆
 // 需要通过 canvas 重绘
-
-import CryptoJS from "crypto-js";
+import { trpcClient } from "@/apis";
 
 import { getLoadedImage } from ".";
 
@@ -10,9 +9,9 @@ export const needDecode = (comicId: number): boolean => {
 };
 
 const seedMap = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const getSeed = (comicId: number, pageStr: string) => {
+const getSeed = async (comicId: number, pageStr: string) => {
   const key = comicId + pageStr;
-  const keyMd5 = CryptoJS.MD5(key).toString();
+  const keyMd5 = await trpcClient.md5.query(key);
   let charCodeOfLastChar = keyMd5[keyMd5.length - 1].charCodeAt(0);
   // window.atob("MjY4ODUw")
   const left = 268850;
@@ -20,7 +19,7 @@ const getSeed = (comicId: number, pageStr: string) => {
   const right = 421925;
   if (comicId >= left && comicId <= right) {
     charCodeOfLastChar = charCodeOfLastChar % 10;
-  } else if (comicId >= right) {
+  } else if (comicId >= right + 1) {
     charCodeOfLastChar = charCodeOfLastChar % 8;
   }
   return seedMap[charCodeOfLastChar] ?? 10; // 默认 seed
@@ -50,7 +49,7 @@ export const decodeImage = async (src: string, comicId: number) => {
   canvas.width = naturalWidth;
   canvas.height = naturalHeight;
   const ctx = canvas.getContext("2d");
-  const seed = getSeed(comicId, page);
+  const seed = await getSeed(comicId, page);
   const remainder = naturalHeight % seed;
   // 源图片被切成多行然后乱序
   for (let i = 0; i < seed; i++) {
