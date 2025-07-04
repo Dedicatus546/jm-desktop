@@ -44,7 +44,10 @@ const openFile = (item: DownloadItem) => {
               <tr v-for="item in downloadStore.downloadingList" :key="item.id">
                 <td>
                   <template v-if="item.type === 'comic'">
-                    {{ item.comicName }} - {{ item.chapterName }}
+                    {{ item.comicName }}
+                    <template v-if="item.chapterName !== item.comicName">
+                      - {{ item.chapterName }}
+                    </template>
                   </template>
                 </td>
                 <td>
@@ -89,7 +92,10 @@ const openFile = (item: DownloadItem) => {
               <tr v-for="item in downloadStore.completeList" :key="item.id">
                 <td>
                   <template v-if="item.type === 'comic'">
-                    {{ item.comicName }} - {{ item.chapterName }}
+                    {{ item.comicName }}
+                    <template v-if="item.chapterName !== item.comicName">
+                      - {{ item.chapterName }}
+                    </template>
                   </template>
                 </td>
                 <td>

@@ -141,6 +141,14 @@ const { data, send: getComicPicList } = useRequest(
 );
 
 const download = async () => {
+  if (downloadStore.downloadingMap[comicInfo.value.data.id]) {
+    snackbar.warning("任务正在下载中，请勿重复点击");
+    return;
+  }
+  if (downloadStore.completeMap[comicInfo.value.data.id]) {
+    // TODO
+    // 弹出提示确定是否重新下载
+  }
   await getComicPicList(comicInfo.value.data.id);
   downloadStore.addDownloadTaskAction({
     type: "comic",
@@ -293,7 +301,11 @@ const download = async () => {
                   <v-col :cols="buttonCols[1]">
                     <v-btn
                       :color="
-                        downloadStore.completeMap[id] ? 'success' : 'primary'
+                        downloadStore.downloadingMap[id]
+                          ? 'info'
+                          : downloadStore.completeMap[id]
+                            ? 'success'
+                            : 'primary'
                       "
                       variant="flat"
                       size="large"
@@ -303,7 +315,17 @@ const download = async () => {
                       <template #prepend>
                         <v-icon icon="mdi-download"></v-icon>
                       </template>
-                      {{ downloadStore.completeMap[id] ? "已下载" : "下载" }}
+                      {{
+                        downloadStore.downloadingMap[id]
+                          ? "正在下载 " +
+                            ((
+                              downloadStore.downloadingMap[id]!.percent * 100
+                            ).toFixed(2) +
+                              "%")
+                          : downloadStore.completeMap[id]
+                            ? "已下载"
+                            : "下载"
+                      }}
                     </v-btn>
                   </v-col>
                   <template v-if="userStore.userInfo">

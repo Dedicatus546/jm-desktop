@@ -25,6 +25,19 @@ export const useDownloadStore = defineStore("download", () => {
     downloadingList: [],
   });
 
+  const downloadingMap = computed(() => {
+    return state.downloadingList.reduce(
+      (map, item) => {
+        map[item.id] = item;
+        return map;
+      },
+      {} as Record<
+        DownloadItem["id"],
+        WithDownloadingInfo<DownloadItem> | undefined
+      >,
+    );
+  });
+
   const completeMap = computed(() => {
     return state.completeList.reduce(
       (map, item) => {
@@ -143,6 +156,7 @@ export const useDownloadStore = defineStore("download", () => {
 
   return {
     ...toRefs(state),
+    downloadingMap,
     completeMap,
     initAction,
     addDownloadTaskAction,

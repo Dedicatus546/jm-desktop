@@ -33,6 +33,14 @@ const { data, send } = useRequest(
 );
 
 const downloadChapter = async (chapter: { id: number; name: string }) => {
+  if (downloadStore.downloadingMap[chapter.id]) {
+    snackbar.warning("任务正在下载中，请勿重复点击");
+    return;
+  }
+  if (downloadStore.completeMap[chapter.id]) {
+    // TODO
+    // 弹出提示确定是否重新下载
+  }
   await send(chapter.id);
   downloadStore.addDownloadTaskAction({
     type: "comic",
@@ -73,7 +81,11 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
               <v-btn
                 variant="flat"
                 :color="
-                  downloadStore.completeMap[item.id] ? 'success' : undefined
+                  downloadStore.downloadingMap[item.id]
+                    ? 'info'
+                    : downloadStore.completeMap[item.id]
+                      ? 'success'
+                      : undefined
                 "
                 class="chapter-btn wind-ml-2"
                 @click="downloadChapter(item)"
@@ -81,7 +93,17 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
                 <template #prepend>
                   <v-icon icon="mdi-download"></v-icon>
                 </template>
-                {{ downloadStore.completeMap[item.id] ? "已下载" : "下载" }}
+                {{
+                  downloadStore.downloadingMap[item.id]
+                    ? "正在下载 " +
+                      ((
+                        downloadStore.downloadingMap[item.id]!.percent * 100
+                      ).toFixed(2) +
+                        "%")
+                    : downloadStore.completeMap[item.id]
+                      ? "已下载"
+                      : "下载"
+                }}
               </v-btn>
             </v-col>
           </v-row>
