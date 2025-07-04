@@ -67,6 +67,9 @@ const http = createAlova({
         }),
       );
       info(method.url, "解密成功");
+      if (import.meta.env.DEV) {
+        console.log(method.url, "解密成功", json);
+      }
       return json;
     },
   },
