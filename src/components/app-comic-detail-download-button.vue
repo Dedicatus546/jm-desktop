@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { useRequest } from "alova/client";
 
 import { buyComicApi, downloadComicApi, getComicDownloadInfoApi } from "@/apis";
@@ -6,7 +6,7 @@ import useDialog from "@/compositions/use-dialog";
 import useSnackbar from "@/compositions/use-snack-bar";
 import { error } from "@/logger";
 import { emitter } from "@/mitt";
-import useDownloadStore from "@/stores/use-download-store";
+import { useDownloadStore } from "@/stores/use-download-store";
 import useUserStore from "@/stores/use-user-store";
 import { resolveDownloadFileName } from "@/utils";
 
@@ -242,4 +242,8 @@ const download = async (series?: { id: number; name: string }) => {
   </v-dialog>
 </template>
 
-<style scoped></style>
+<style scoped></style> -->
+
+<template>
+  <div>该组件已废弃，下载不再使用 jm 的下载接口</div>
+</template>
