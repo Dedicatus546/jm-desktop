@@ -222,7 +222,13 @@ onMounted(() => {
             </v-col>
           </template>
           <v-col :cols="12">
-            <v-btn size="large" block color="primary" type="submit">
+            <v-btn
+              variant="flat"
+              size="large"
+              block
+              color="primary"
+              type="submit"
+            >
               保存
             </v-btn>
           </v-col>
