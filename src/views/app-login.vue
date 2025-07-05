@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
+import { SubmitEventPromise } from "vuetify";
 
 import { loginApi, trpcClient } from "@/apis";
 import useSnackbar from "@/compositions/use-snack-bar";
@@ -26,6 +27,17 @@ const { loading, data, onSuccess, onError, send } = useRequest(
     immediate: false,
   },
 );
+
+const submit = async (e: SubmitEventPromise) => {
+  const res = await e;
+  if (!res.valid) {
+    const { errors } = res;
+    const [error] = errors;
+    snackbar.error(error.errorMessages[0]);
+    return;
+  }
+  send();
+};
 
 const snackbar = useSnackbar();
 
@@ -65,7 +77,7 @@ onError((e) => {
 <template>
   <v-card title="登录到">
     <v-card-text>
-      <v-form validate-on="submit" :disabled="loading" @submit.prevent="send">
+      <v-form validate-on="submit" :disabled="loading" @submit.prevent="submit">
         <v-row>
           <v-col :cols="12">
             <v-text-field
