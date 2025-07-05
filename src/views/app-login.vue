@@ -65,10 +65,12 @@ onError((e) => {
 <template>
   <v-card title="登录到">
     <v-card-text>
-      <v-form :disabled="loading" @submit.prevent="send">
+      <v-form validate-on="submit" :disabled="loading" @submit.prevent="send">
         <v-row>
           <v-col :cols="12">
             <v-text-field
+              variant="outlined"
+              hide-details
               v-model:model-value="formState.username"
               label="用户名"
               placeholder="请输入用户名"
@@ -77,6 +79,8 @@ onError((e) => {
           </v-col>
           <v-col :cols="12">
             <v-text-field
+              variant="outlined"
+              hide-details
               v-model:model-value="formState.password"
               label="密码"
               placeholder="请输入密码"
@@ -91,6 +95,8 @@ onError((e) => {
               hide-details
               label="自动登录"
             ></v-checkbox>
+          </v-col>
+          <v-col :cols="12">
             <v-alert
               border="start"
               density="compact"
@@ -111,6 +117,7 @@ onError((e) => {
           </v-col>
           <v-col :cols="12">
             <v-btn
+              variant="flat"
               :loading="loading"
               type="submit"
               size="large"
