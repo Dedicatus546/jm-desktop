@@ -190,6 +190,7 @@ const onCategoryClick = (slug: string) => {
         <template #footer>
           <div class="wind-mt-4 wind-flex wind-justify-end">
             <v-pagination
+              color="primary"
               v-model="page"
               :length="pageCount"
               :disabled="loading"
