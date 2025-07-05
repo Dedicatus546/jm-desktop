@@ -42,12 +42,12 @@ const next = () => {
       </swiper>
     </v-col>
     <v-col :cols="6">
-      <v-btn color="primary" size="large" variant="tonal" block @click="prev">
+      <v-btn color="primary" size="large" variant="flat" block @click="prev">
         <v-icon icon="mdi-chevron-left"></v-icon>
       </v-btn>
     </v-col>
     <v-col :cols="6">
-      <v-btn color="primary" size="large" variant="tonal" block @click="next">
+      <v-btn color="primary" size="large" variant="flat" block @click="next">
         <v-icon icon="mdi-chevron-right"></v-icon>
       </v-btn>
     </v-col>
