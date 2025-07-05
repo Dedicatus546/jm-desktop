@@ -10,6 +10,7 @@ import {
 } from "@electron/module/download";
 import { createLogger } from "@electron/module/logger";
 import { decodeImage } from "@electron/shared/decode-image";
+import { delay } from "@electron/shared/utils";
 import archiver from "archiver";
 import { net } from "electron";
 import pLimit from "p-limit";
@@ -51,6 +52,7 @@ const onDownloadComicRpc = trpc.procedure
         info("%d 已获取 %s 图片 arrayBuffer 数据", query.id, url);
         const decodeArrayBuffer = await decodeImage(url, arrayBuffer, query.id);
         info("%d 已解密 %s 图片数据", query.id, url);
+        await delay(1000);
         return decodeArrayBuffer;
       }),
     );

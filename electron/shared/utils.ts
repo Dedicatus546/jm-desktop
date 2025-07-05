@@ -11,3 +11,11 @@ export const resolveProxyUrl = (proxyInfo?: ProxyInfo) => {
   // 去除末尾斜杠
   return url.toString().slice(0, -1);
 };
+
+export const delay = async (ts: number) => {
+  await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ts);
+  });
+};
