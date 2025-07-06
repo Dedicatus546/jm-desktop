@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from "alova/client";
+import { SubmitEventPromise } from "vuetify";
 
 import { loginApi, trpcClient } from "@/apis";
 import useSnackbar from "@/compositions/use-snack-bar";
@@ -26,6 +27,17 @@ const { loading, data, onSuccess, onError, send } = useRequest(
     immediate: false,
   },
 );
+
+const submit = async (e: SubmitEventPromise) => {
+  const res = await e;
+  if (!res.valid) {
+    const { errors } = res;
+    const [error] = errors;
+    snackbar.error(error.errorMessages[0]);
+    return;
+  }
+  send();
+};
 
 const snackbar = useSnackbar();
 
@@ -65,10 +77,12 @@ onError((e) => {
 <template>
   <v-card title="登录到">
     <v-card-text>
-      <v-form :disabled="loading" @submit.prevent="send">
+      <v-form validate-on="submit" :disabled="loading" @submit.prevent="submit">
         <v-row>
           <v-col :cols="12">
             <v-text-field
+              variant="outlined"
+              hide-details
               v-model:model-value="formState.username"
               label="用户名"
               placeholder="请输入用户名"
@@ -77,6 +91,8 @@ onError((e) => {
           </v-col>
           <v-col :cols="12">
             <v-text-field
+              variant="outlined"
+              hide-details
               v-model:model-value="formState.password"
               label="密码"
               placeholder="请输入密码"
@@ -91,6 +107,8 @@ onError((e) => {
               hide-details
               label="自动登录"
             ></v-checkbox>
+          </v-col>
+          <v-col :cols="12">
             <v-alert
               border="start"
               density="compact"
@@ -111,6 +129,7 @@ onError((e) => {
           </v-col>
           <v-col :cols="12">
             <v-btn
+              variant="flat"
               :loading="loading"
               type="submit"
               size="large"

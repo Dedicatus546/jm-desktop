@@ -146,7 +146,10 @@ const download = async () => {
   // TODO 这里 currentSeriesId 似乎不会根据点击阅读而记录
   // 目前只会指向第一话
   // 似乎还缺少接口？
-  const id = comicInfo.value.data.currentSeriesId ?? comicInfo.value.data.id;
+  const id =
+    comicInfo.value.data.currentSeriesId > 0
+      ? comicInfo.value.data.currentSeriesId
+      : comicInfo.value.data.id;
   const chapterName = currentSeriesName.value ?? comicInfo.value.data.name;
   if (downloadStore.downloadingMap[id]) {
     snackbar.warning("任务正在下载中，请勿重复点击");

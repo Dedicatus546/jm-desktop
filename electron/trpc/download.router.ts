@@ -10,10 +10,11 @@ import {
 } from "@electron/module/download";
 import { createLogger } from "@electron/module/logger";
 import { decodeImage } from "@electron/shared/decode-image";
+import { delay } from "@electron/shared/utils";
 import archiver from "archiver";
 import { net } from "electron";
 import pLimit from "p-limit";
-import pathSanitizer from "path-sanitizer";
+import nameSanitizer from "sanitize-filename";
 import { z } from "zod";
 
 import { trpc } from "./trpc";
@@ -34,11 +35,11 @@ const onDownloadComicRpc = trpc.procedure
   .subscription(async function* (opts) {
     const query = opts.input;
     info("%d 开始处理下载", query.id);
-    const filename = query.chapterName + ".zip";
-    info("%d 原始文件名称 %s", query.id, filename);
-    const fileDir = resolve(comicDownloadDir, pathSanitizer(query.comicName));
+    const dirname = `${query.comicName}`;
+    const filename = `[${query.id}] ${query.chapterName}.zip`;
+    const fileDir = resolve(comicDownloadDir, nameSanitizer(dirname));
     info("%d 标准化文件目录路径 %s", query.id, fileDir);
-    const filepath = resolve(fileDir, pathSanitizer(filename));
+    const filepath = resolve(fileDir, nameSanitizer(filename));
     info("%d 标准化文件路径 %s", query.id, filepath);
     let complete = 0;
     const total = query.picUrlList.length;
@@ -51,6 +52,7 @@ const onDownloadComicRpc = trpc.procedure
         info("%d 已获取 %s 图片 arrayBuffer 数据", query.id, url);
         const decodeArrayBuffer = await decodeImage(url, arrayBuffer, query.id);
         info("%d 已解密 %s 图片数据", query.id, url);
+        await delay(1000);
         return decodeArrayBuffer;
       }),
     );

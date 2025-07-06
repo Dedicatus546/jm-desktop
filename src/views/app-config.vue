@@ -9,8 +9,6 @@ import useAppStore from "@/stores/use-app-store.ts";
 
 const appStore = useAppStore();
 
-const formValid = ref<boolean | null>(null);
-
 const formState = reactive<
   Omit<Config, "windowInfo" | "loginUserInfo" | "autoLogin"> & {
     useProxy: boolean;
@@ -79,11 +77,7 @@ onMounted(() => {
 <template>
   <v-card title="软件设置">
     <v-card-text>
-      <v-form
-        validate-on="submit"
-        v-model:model-value="formValid"
-        @submit.prevent="submit"
-      >
+      <v-form validate-on="submit" @submit.prevent="submit">
         <v-row>
           <v-col :cols="12">
             <v-select
@@ -222,7 +216,13 @@ onMounted(() => {
             </v-col>
           </template>
           <v-col :cols="12">
-            <v-btn size="large" block color="primary" type="submit">
+            <v-btn
+              variant="flat"
+              size="large"
+              block
+              color="primary"
+              type="submit"
+            >
               保存
             </v-btn>
           </v-col>

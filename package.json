@@ -5,7 +5,7 @@
     "name": "Par9uet",
     "email": "par9uet@qq.com"
   },
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,9 +29,9 @@
     "https-proxy-agent": "^7.0.6",
     "mitt": "^3.0.1",
     "p-limit": "^6.2.0",
-    "path-sanitizer": "^3.1.0",
     "pinia": "^3.0.3",
     "radash": "^12.1.1",
+    "sanitize-filename": "^1.6.3",
     "scroll-into-view-if-needed": "^3.1.0",
     "skia-canvas": "^2.0.2",
     "superjson": "^2.2.2",
@@ -41,7 +41,7 @@
     "vue": "^3.5.17",
     "vue-router": "^4.5.1",
     "vuetify": "^3.8.12",
-    "zod": "^3.25.72"
+    "zod": "^3.25.74"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -52,7 +52,7 @@
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.10",
-    "@unocss/eslint-config": "^66.3.2",
+    "@unocss/eslint-config": "^66.3.3",
     "@vitejs/plugin-vue": "^6.0.0",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
