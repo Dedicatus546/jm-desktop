@@ -1,3 +1,5 @@
+import { access } from "node:fs/promises";
+
 import { ProxyInfo } from "@electron/module/config";
 
 export const resolveProxyUrl = (proxyInfo?: ProxyInfo) => {
@@ -18,4 +20,13 @@ export const delay = async (ts: number) => {
       resolve();
     }, ts);
   });
+};
+
+export const exists = async (path: string) => {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
 };

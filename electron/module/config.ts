@@ -1,9 +1,9 @@
-import { existsSync, writeFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { emitter } from "@electron/shared/mitt";
 import { dataDir } from "@electron/shared/path";
+import { exists } from "@electron/shared/utils";
 import { clone } from "radash";
 
 export type Theme = "light" | "dark" | "auto";
@@ -55,8 +55,8 @@ export const defaultConfig: Config = {
 
 let config: Config;
 
-if (!existsSync(configFilepath)) {
-  writeFileSync(configFilepath, JSON.stringify(defaultConfig, undefined, 2));
+if (!(await exists(configFilepath))) {
+  await writeFile(configFilepath, JSON.stringify(defaultConfig, undefined, 2));
 }
 
 export const getConfig = async () => {

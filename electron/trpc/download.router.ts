@@ -1,4 +1,5 @@
-import { createWriteStream, existsSync, mkdirSync } from "node:fs";
+import { createWriteStream } from "node:fs";
+import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import {
@@ -10,7 +11,7 @@ import {
 } from "@electron/module/download";
 import { createLogger } from "@electron/module/logger";
 import { decodeImage } from "@electron/shared/decode-image";
-import { delay } from "@electron/shared/utils";
+import { delay, exists } from "@electron/shared/utils";
 import archiver from "archiver";
 import { net } from "electron";
 import pLimit from "p-limit";
@@ -77,8 +78,8 @@ const onDownloadComicRpc = trpc.procedure
         name: `${index + 1}.webp`,
       });
     });
-    if (!existsSync(fileDir)) {
-      mkdirSync(fileDir, {
+    if (!(await exists(fileDir))) {
+      await mkdir(fileDir, {
         recursive: true,
       });
     }
