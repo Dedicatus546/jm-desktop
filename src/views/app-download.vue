@@ -59,10 +59,16 @@ const openFile = (item: DownloadItem) => {
                       <v-col cols="auto">正在下载中</v-col>
                       <v-col>
                         <v-progress-linear
+                          rounded
+                          height="25"
                           color="primary"
                           :model-value="item.percent * 100"
                           size="large"
-                        />
+                        >
+                          <template #default="{ value }">
+                            <strong>{{ value.toFixed(2) }}%</strong>
+                          </template>
+                        </v-progress-linear>
                       </v-col>
                     </v-row>
                   </template>
