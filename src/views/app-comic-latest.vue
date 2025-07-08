@@ -7,7 +7,6 @@ import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
 const { loading, data, page } = usePagination(
   (page) => getLatestComicListApi(page),
   {
-    preloadPreviousPage: false,
     append: true,
     initialPage: 1,
     initialPageSize: 80,
