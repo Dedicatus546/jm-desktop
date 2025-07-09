@@ -99,9 +99,9 @@ const useAppStore = defineStore("app", () => {
   ) => {
     if (config.theme) {
       if (config.theme === "auto") {
-        theme.global.name.value = isDark.value ? "dark" : "light";
+        theme.change(isDark.value ? "dark" : "light");
       } else {
-        theme.global.name.value = config.theme;
+        theme.change(config.theme);
       }
     }
     state.config = {
