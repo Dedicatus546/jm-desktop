@@ -113,6 +113,12 @@ const useAppStore = defineStore("app", () => {
     }
   };
 
+  watch(isDark, (isDark) => {
+    if (state.config.theme === "auto") {
+      theme.change(isDark ? "dark" : "light");
+    }
+  });
+
   return {
     ...toRefs(state),
     updateSettingAction,
