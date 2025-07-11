@@ -1,8 +1,7 @@
 onlyBuiltDependencies:
   - '@parcel/watcher'
-  - better-sqlite3
   - electron
-  - esbuild
+  - electron-winstaller
   - simple-git-hooks
   - skia-canvas
   - vue-demi
