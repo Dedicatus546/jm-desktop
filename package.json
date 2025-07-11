@@ -79,7 +79,7 @@
     "vue-tsc": "^3.0.1"
   },
   "main": "dist-electron/main.js",
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac",
+  "packageManager": "pnpm@10.13.0+sha512.e08cbfa5d0c47e148d9d92965513af3d06a42ff99b6e0e82a7d10512858d0fb680a03c1e6772d369a2305c79306c9257989a3576b7057d6877469c9a1c7563f0",
   "engines": {
     "node": ">=24"
   },
