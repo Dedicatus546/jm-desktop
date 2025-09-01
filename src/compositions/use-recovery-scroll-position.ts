@@ -22,7 +22,7 @@ const useRecoveryScrollPosition = (
       = scrollEl.value instanceof HTMLElement
         ? scrollEl.value
         : (scrollEl.value.$el as HTMLElement)
-    scrollPosition[from.path] = {
+    scrollPosition[from.fullPath] = {
       top: el.scrollTop,
       left: el.scrollLeft,
     }
@@ -35,20 +35,14 @@ export const scrollBehavior: RouterScrollBehavior = async (to) => {
   if (!scrollView) {
     return
   }
-  if (['COMIC_DETAIL', 'COMIC_READ'].includes(to.name as string)) {
-    await nextTick()
+  const { shouldRecoveryScoll } = to.meta
+  if (scrollPosition[to.fullPath] && shouldRecoveryScoll) {
+    const { promise, resolve } = Promise.withResolvers<void>()
+    to.meta.scrollPromise = resolve
+    await promise
     scrollView.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
-    return
-  }
-  if (scrollPosition[to.path]) {
-    await nextTick()
-    scrollView.scrollTo({
-      top: scrollPosition[to.path].top,
-      left: scrollPosition[to.path].left,
+      top: scrollPosition[to.fullPath].top,
+      left: scrollPosition[to.fullPath].left,
       behavior: 'smooth',
     })
   }

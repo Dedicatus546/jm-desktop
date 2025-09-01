@@ -1,3 +1,5 @@
+// import 'vue-router'
+
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import { scrollBehavior } from '@/compositions/use-recovery-scroll-position'
@@ -8,6 +10,13 @@ import AppHome from '@/views/app-home.vue'
 import { createLogger } from './logger'
 
 const { info } = createLogger('router')
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    shouldRecoveryScoll: boolean
+    scrollPromiseResolve?: () => void
+  }
+}
 
 const routes: RouteRecordRaw[] = [
   {
