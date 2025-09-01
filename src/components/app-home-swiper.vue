@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { Swiper as SwiperInst } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Swiper as SwiperInst } from 'swiper'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 
 defineProps<{
-  slidesPerView: number;
+  slidesPerView: number
   list: Array<{
-    id: number;
-    name: string;
-    author: string;
-  }>;
-}>();
+    id: number
+    name: string
+    author: string
+  }>
+}>()
 
-const swiperInst = ref<SwiperInst | null>(null);
+const swiperInst = ref<SwiperInst | null>(null)
 const onSwiper = (swiper: SwiperInst) => {
-  swiperInst.value = swiper;
-};
+  swiperInst.value = swiper
+}
 
 const prev = () => {
-  swiperInst.value?.slidePrev();
-};
+  swiperInst.value?.slidePrev()
+}
 
 const next = () => {
-  swiperInst.value?.slideNext();
-};
+  swiperInst.value?.slideNext()
+}
 </script>
 
 <template>

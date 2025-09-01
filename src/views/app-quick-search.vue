@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { usePagination } from 'alova/client'
 
-import { getComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
 const props = defineProps<{
-  query: string;
-}>();
+  query: string
+}>()
 
 const { page, pageSize, pageCount, data, loading } = usePagination(
-  (page) =>
+  page =>
     getComicListApi({
       content: props.query,
       page,
-      order: "mr",
+      order: 'mr',
     }),
   {
     initialPage: 1,
     initialPageSize: 80,
-    data: (res) => res.data.content,
-    total: (res) => res.data.total,
+    data: res => res.data.content,
+    total: res => res.data.total,
   },
-);
+)
 </script>
 
 <template>

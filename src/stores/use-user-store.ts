@@ -1,49 +1,49 @@
 interface State {
   userInfo: {
-    uid: number;
-    username: string;
-    email: string;
-    avatar: string;
-    jCoin: number;
-    level: [number, string];
-    currentExp: number;
-    nextLevelExp: number;
-    collectCount: number;
-    maxCollectCount: number;
-  } | null;
+    uid: number
+    username: string
+    email: string
+    avatar: string
+    jCoin: number
+    level: [number, string]
+    currentExp: number
+    nextLevelExp: number
+    collectCount: number
+    maxCollectCount: number
+  } | null
   loginInfo: {
-    username: string;
-    password: string;
-  } | null;
+    username: string
+    password: string
+  } | null
 }
 
-const useUserStore = defineStore("user", () => {
+const useUserStore = defineStore('user', () => {
   const state = reactive<State>({
     userInfo: null,
     loginInfo: null,
-  });
+  })
 
-  const isLogin = computed(() => !!state.userInfo);
+  const isLogin = computed(() => !!state.userInfo)
 
-  const updateUserInfoAction = (userInfo: NonNullable<State["userInfo"]>) => {
+  const updateUserInfoAction = (userInfo: NonNullable<State['userInfo']>) => {
     if (state.userInfo) {
-      Object.assign(state.userInfo, userInfo);
-      return;
+      Object.assign(state.userInfo, userInfo)
+      return
     }
-    state.userInfo = Object.assign({}, userInfo);
-  };
+    state.userInfo = Object.assign({}, userInfo)
+  }
 
   const updateLoginInfoAction = (username: string, password: string) => {
     state.loginInfo = {
       username,
       password,
-    };
-  };
+    }
+  }
 
   const logoutAction = () => {
-    state.userInfo = null;
-    state.loginInfo = null;
-  };
+    state.userInfo = null
+    state.loginInfo = null
+  }
 
   return {
     ...toRefs(state),
@@ -51,7 +51,7 @@ const useUserStore = defineStore("user", () => {
     updateUserInfoAction,
     updateLoginInfoAction,
     logoutAction,
-  };
-});
+  }
+})
 
-export default useUserStore;
+export default useUserStore

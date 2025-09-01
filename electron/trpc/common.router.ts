@@ -1,19 +1,19 @@
-import { createCipheriv, createDecipheriv, createHash } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
 
-import { dialog, shell } from "electron";
-import { z } from "zod";
+import { dialog, shell } from 'electron'
+import { z } from 'zod'
 
-import { trpc } from "./trpc";
+import { trpc } from './trpc'
 
 const minimizeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win;
-  win.minimize();
-});
+  const win = ctx.win
+  win.minimize()
+})
 
 const closeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win;
-  win.close();
-});
+  const win = ctx.win
+  win.close()
+})
 
 const openLinkRpc = trpc.procedure
   .input(
@@ -22,8 +22,8 @@ const openLinkRpc = trpc.procedure
     }),
   )
   .mutation(({ input }) => {
-    shell.openExternal(input.url);
-  });
+    shell.openExternal(input.url)
+  })
 
 const showItemInFolderRpc = trpc.procedure
   .input(
@@ -32,20 +32,20 @@ const showItemInFolderRpc = trpc.procedure
     }),
   )
   .mutation(({ input }) => {
-    shell.showItemInFolder(input.path);
-  });
+    shell.showItemInFolder(input.path)
+  })
 
 const selectFolderRpc = trpc.procedure.mutation(async ({ ctx }) => {
-  const { win } = ctx;
+  const { win } = ctx
   const result = await dialog.showOpenDialog(win, {
-    properties: ["openDirectory"],
-  });
-  return result.filePaths[0];
-});
+    properties: ['openDirectory'],
+  })
+  return result.filePaths[0]
+})
 
 const md5Rpc = trpc.procedure.input(z.string()).query(async ({ input }) => {
-  return createHash("md5").update(input).digest("hex");
-});
+  return createHash('md5').update(input).digest('hex')
+})
 
 const decodeHttpDataRpc = trpc.procedure
   .input(
@@ -55,29 +55,29 @@ const decodeHttpDataRpc = trpc.procedure
     }),
   )
   .query(async ({ input }) => {
-    const { data, key } = input;
+    const { data, key } = input
     const decipher = createDecipheriv(
-      "aes-256-ecb",
-      Buffer.from(key, "utf-8"),
+      'aes-256-ecb',
+      Buffer.from(key, 'utf-8'),
       null,
-    );
-    let result = decipher.update(data, "base64", "utf8");
-    result += decipher.final("utf8");
-    decipher.destroy();
-    return result;
-  });
+    )
+    let result = decipher.update(data, 'base64', 'utf8')
+    result += decipher.final('utf8')
+    decipher.destroy()
+    return result
+  })
 
 // 32 位
 const key = Buffer.from(
-  createHash("sha256").update("cm-desktop-key").digest("hex").slice(0, 32),
-  "utf-8",
-);
+  createHash('sha256').update('cm-desktop-key').digest('hex').slice(0, 32),
+  'utf-8',
+)
 
 // 16位
 const iv = Buffer.from(
-  createHash("sha256").update("cm-desktop-iv").digest("hex").slice(0, 16),
-  "utf-8",
-);
+  createHash('sha256').update('cm-desktop-iv').digest('hex').slice(0, 16),
+  'utf-8',
+)
 
 const encryptLoginUserRpc = trpc.procedure
   .input(
@@ -87,29 +87,29 @@ const encryptLoginUserRpc = trpc.procedure
     }),
   )
   .query(async ({ input }) => {
-    const { username, password } = input;
-    const cipher = createCipheriv("aes-256-cbc", key, iv);
+    const { username, password } = input
+    const cipher = createCipheriv('aes-256-cbc', key, iv)
     let result = cipher.update(
       JSON.stringify({
         username,
         password,
       }),
-      "utf-8",
-      "base64",
-    );
-    result += cipher.final("base64");
+      'utf-8',
+      'base64',
+    )
+    result += cipher.final('base64')
 
-    return result;
-  });
+    return result
+  })
 
 export const decryptLoginUserRpc = trpc.procedure
   .input(z.string())
   .query(async ({ input }) => {
-    const decipher = createDecipheriv("aes-256-cbc", key, iv);
-    let result = decipher.update(input, "base64", "utf-8");
-    result += decipher.final("utf-8");
-    return JSON.parse(result) as { username: string; password: string };
-  });
+    const decipher = createDecipheriv('aes-256-cbc', key, iv)
+    let result = decipher.update(input, 'base64', 'utf-8')
+    result += decipher.final('utf-8')
+    return JSON.parse(result) as { username: string, password: string }
+  })
 
 export const router = {
   minimizeWin: minimizeWinRpc,
@@ -121,4 +121,4 @@ export const router = {
   decodeHttpData: decodeHttpDataRpc,
   encryptLoginUser: encryptLoginUserRpc,
   decryptLoginUser: decryptLoginUserRpc,
-};
+}

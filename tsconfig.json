@@ -35,7 +35,8 @@
     "src/**/*.vue",
     "electron",
     "auto-imports.d.ts",
-    "components.d.ts"
+    "components.d.ts",
+    "eslint.config.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

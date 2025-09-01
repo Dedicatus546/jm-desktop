@@ -3,12 +3,12 @@ import {
   DialogInstanceOptions,
   dialogProviderInjectKey,
   DialogProviderInjectType,
-} from "@/types";
-import { delay } from "@/utils";
+} from '@/types'
+import { delay } from '@/utils'
 
-let id = 0;
+let id = 0
 
-const instanceList = ref<Array<DialogInstanceOptions>>([]);
+const instanceList = ref<Array<DialogInstanceOptions>>([])
 
 const provideValue: DialogProviderInjectType = (options) => {
   const instance = reactive({
@@ -17,47 +17,49 @@ const provideValue: DialogProviderInjectType = (options) => {
     width: options.width,
     title: options.title,
     content: options.content,
-    okText: options.okText ?? "确认",
+    okText: options.okText ?? '确认',
     okLoading: false,
-    cancelText: options.cancelText ?? "取消",
+    cancelText: options.cancelText ?? '取消',
     cancelLoading: false,
     onOk: async () => {
       if (options.onOk) {
-        instance.okLoading = true;
+        instance.okLoading = true
         try {
-          await options.onOk();
-        } catch (e) {
-          console.error(e);
+          await options.onOk()
         }
-        instance.okLoading = false;
+        catch (e) {
+          console.error(e)
+        }
+        instance.okLoading = false
       }
-      instance.modelValue = false;
+      instance.modelValue = false
     },
     onCancel: async () => {
       if (options.onCancel) {
-        instance.cancelLoading = true;
+        instance.cancelLoading = true
         try {
-          await options.onCancel();
-        } catch (e) {
-          console.error(e);
+          await options.onCancel()
         }
-        instance.cancelLoading = false;
+        catch (e) {
+          console.error(e)
+        }
+        instance.cancelLoading = false
       }
-      instance.modelValue = false;
+      instance.modelValue = false
     },
-  });
-  instanceList.value.push(instance);
-};
+  })
+  instanceList.value.push(instance)
+}
 
-provide<DialogProviderInjectType>(dialogProviderInjectKey, provideValue);
+provide<DialogProviderInjectType>(dialogProviderInjectKey, provideValue)
 
 const removeInstance = async (id: number) => {
-  delay(1000);
-  const index = instanceList.value.findIndex((instance) => instance.id === id);
+  delay(1000)
+  const index = instanceList.value.findIndex(instance => instance.id === id)
   if (index > -1) {
-    instanceList.value.splice(index, 1);
+    instanceList.value.splice(index, 1)
   }
-};
+}
 </script>
 
 <template>

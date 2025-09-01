@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { DownloadItem } from "@electron/module/download";
+import { DownloadItem } from '@electron/module/download'
 
-import { trpcClient } from "@/apis/ipc";
-import EMPTY_STATE_IMG_1 from "@/assets/empty-state/1.jpg";
-import EMPTY_STATE_IMG_2 from "@/assets/empty-state/2.jpg";
-import { useDownloadStore } from "@/stores/use-download-store";
+import { trpcClient } from '@/apis/ipc'
+import EMPTY_STATE_IMG_1 from '@/assets/empty-state/1.jpg'
+import EMPTY_STATE_IMG_2 from '@/assets/empty-state/2.jpg'
+import { useDownloadStore } from '@/stores/use-download-store'
 
-const downloadStore = useDownloadStore();
+const downloadStore = useDownloadStore()
 
 const openFile = (item: DownloadItem) => {
   trpcClient.showItemInFolder.mutate({
     path: item.filepath,
-  });
-};
+  })
+}
 </script>
 
 <template>

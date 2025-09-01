@@ -1,21 +1,21 @@
 <script setup lang="ts">
 defineProps<{
-  comicId: number;
-  picList: Array<string>;
-}>();
+  comicId: number
+  picList: Array<string>
+}>()
 
-const sliderValue = ref(0);
-const comicVerticalPicListRef = ref<Array<{ scrollIntoView: () => void }>>([]);
+const sliderValue = ref(0)
+const comicVerticalPicListRef = ref<Array<{ scrollIntoView: () => void }>>([])
 
 const onSliderEnd = (value: number) => {
-  const index = value - 1;
-  comicVerticalPicListRef.value?.[index].scrollIntoView();
-};
+  const index = value - 1
+  comicVerticalPicListRef.value?.[index].scrollIntoView()
+}
 
 const onDecodeSuccess = inject<(index: number) => void>(
-  "onDecodeSuccess",
+  'onDecodeSuccess',
   () => {},
-);
+)
 </script>
 
 <template>

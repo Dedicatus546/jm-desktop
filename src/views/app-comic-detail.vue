@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import { breakpointsAntDesign } from "@vueuse/core";
-import { useRequest } from "alova/client";
+import { breakpointsAntDesign } from '@vueuse/core'
+import { useRequest } from 'alova/client'
 
 import {
   collectComicApi,
   getComicDetailApi,
   getComicPicListApi,
   likeComicApi,
-} from "@/apis";
-import useDialog from "@/compositions/use-dialog";
-import useSnackbar from "@/compositions/use-snack-bar";
-import { createLogger } from "@/logger";
-import useAppStore from "@/stores/use-app-store";
-import { useDownloadStore } from "@/stores/use-download-store";
-import useUserStore from "@/stores/use-user-store";
+} from '@/apis'
+import useDialog from '@/compositions/use-dialog'
+import useSnackbar from '@/compositions/use-snack-bar'
+import { createLogger } from '@/logger'
+import useAppStore from '@/stores/use-app-store'
+import { useDownloadStore } from '@/stores/use-download-store'
+import useUserStore from '@/stores/use-user-store'
 
-const { info } = createLogger("comic");
+const { info } = createLogger('comic')
 
 const props = defineProps<{
-  id: number;
-}>();
-const snackbar = useSnackbar();
-const dialog = useDialog();
-const appStore = useAppStore();
-const userStore = useUserStore();
-const downloadStore = useDownloadStore();
-const breakpoints = useBreakpoints(breakpointsAntDesign);
-const isGreaterMd = breakpoints.greater("md");
+  id: number
+}>()
+const snackbar = useSnackbar()
+const dialog = useDialog()
+const appStore = useAppStore()
+const userStore = useUserStore()
+const downloadStore = useDownloadStore()
+const breakpoints = useBreakpoints(breakpointsAntDesign)
+const isGreaterMd = breakpoints.greater('md')
 const buttonCols = computed(() => {
   if (!userStore.userInfo) {
-    return [12, 12, 12, 12];
+    return [12, 12, 12, 12]
   }
   if (isGreaterMd.value) {
-    return [12, 12, 6, 6];
+    return [12, 12, 6, 6]
   }
-  return [12, 12, 12, 12];
-});
+  return [12, 12, 12, 12]
+})
 
 const {
   loading,
@@ -44,55 +44,55 @@ const {
   onSuccess,
 } = useRequest((id: number) => getComicDetailApi(id), {
   immediate: false,
-});
+})
 
 watchEffect(() => {
-  send(props.id);
-});
+  send(props.id)
+})
 
-const activeTabKey = ref<"relevant" | "comment" | "chapter">("relevant");
+const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
   if (!comicInfo.value) {
-    return [];
+    return []
   }
-  const list = [];
+  const list = []
   if (comicInfo.value.data.seriesList.length > 1) {
     list.push({
-      value: "chapter",
-      tab: "目录",
-    });
+      value: 'chapter',
+      tab: '目录',
+    })
   }
   list.push(
     {
-      value: "relevant",
-      tab: "相关漫画",
+      value: 'relevant',
+      tab: '相关漫画',
     },
     {
-      value: "comment",
-      tab: comicInfo.value.data.commentCount + "条评论",
+      value: 'comment',
+      tab: comicInfo.value.data.commentCount + '条评论',
     },
-  );
-  return list;
-});
+  )
+  return list
+})
 
 onSuccess(() => {
   if (comicInfo.value.data.seriesList.length > 1) {
-    activeTabKey.value = "chapter";
+    activeTabKey.value = 'chapter'
   }
-});
+})
 
 const currentSeriesName = computed(() => {
   if (
-    comicInfo.value.data.currentSeriesId &&
-    comicInfo.value.data.seriesList.length > 1
+    comicInfo.value.data.currentSeriesId
+    && comicInfo.value.data.seriesList.length > 1
   ) {
     const item = comicInfo.value.data.seriesList.find(
-      (item) => item.id === comicInfo.value.data.currentSeriesId,
-    );
-    return item?.name;
+      item => item.id === comicInfo.value.data.currentSeriesId,
+    )
+    return item?.name
   }
-  return undefined;
-});
+  return undefined
+})
 
 const {
   loading: likeComicLoading,
@@ -101,12 +101,12 @@ const {
   data: likeComicData,
 } = useRequest(() => likeComicApi(props.id), {
   immediate: false,
-});
+})
 
 likeComicOnSuccess(() => {
-  comicInfo.value.data.isLike = true;
-  snackbar.primary(likeComicData.value.data.msg);
-});
+  comicInfo.value.data.isLike = true
+  snackbar.primary(likeComicData.value.data.msg)
+})
 
 const {
   loading: collectComicLoading,
@@ -115,22 +115,22 @@ const {
   data: collectComicData,
 } = useRequest(() => collectComicApi(props.id), {
   immediate: false,
-});
+})
 
 collectComicSuccess(() => {
-  comicInfo.value.data.isCollect = true;
-  snackbar.primary(collectComicData.value.data.msg);
-});
+  comicInfo.value.data.isCollect = true
+  snackbar.primary(collectComicData.value.data.msg)
+})
 
 const toQuickQueryPage = (query: string) => {
-  return { name: "QUICK_SEARCH", query: { query } };
-};
+  return { name: 'QUICK_SEARCH', query: { query } }
+}
 
 const cover = computed(() =>
-  import.meta.env.VITE_NSFW === "on"
-    ? "/360x640.svg"
+  import.meta.env.VITE_NSFW === 'on'
+    ? '/360x640.svg'
     : `${appStore.setting.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
-);
+)
 
 const { data, send: getComicPicList } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
@@ -140,57 +140,57 @@ const { data, send: getComicPicList } = useRequest(
       list: [],
     },
   },
-);
+)
 
 const download = async () => {
   // TODO 这里 currentSeriesId 似乎不会根据点击阅读而记录
   // 目前只会指向第一话
   // 似乎还缺少接口？
-  const id =
-    comicInfo.value.data.currentSeriesId > 0
+  const id
+    = comicInfo.value.data.currentSeriesId > 0
       ? comicInfo.value.data.currentSeriesId
-      : comicInfo.value.data.id;
-  const chapterName = currentSeriesName.value ?? comicInfo.value.data.name;
+      : comicInfo.value.data.id
+  const chapterName = currentSeriesName.value ?? comicInfo.value.data.name
   if (downloadStore.downloadingMap[id]) {
-    snackbar.warning("任务正在下载中，请勿重复点击");
-    return;
+    snackbar.warning('任务正在下载中，请勿重复点击')
+    return
   }
   if (downloadStore.completeMap[id]) {
     dialog({
       width: 300,
-      title: "确认",
-      content: "该漫画已下载，是否重新下载？",
+      title: '确认',
+      content: '该漫画已下载，是否重新下载？',
       async onOk() {
-        await getComicPicList(id);
+        await getComicPicList(id)
         downloadStore.addDownloadTaskAction(
           {
-            type: "comic",
+            type: 'comic',
             id,
             comicName: comicInfo.value.data.name,
             chapterName,
             picUrlList: data.value.list,
-            filepath: "",
+            filepath: '',
           },
           true,
-        );
-        snackbar.success("添加下载任务成功");
-        info("添加 %s %s 下载任务", comicInfo.value.data.name, chapterName);
+        )
+        snackbar.success('添加下载任务成功')
+        info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
       },
-    });
-    return;
+    })
+    return
   }
-  await getComicPicList(id);
+  await getComicPicList(id)
   downloadStore.addDownloadTaskAction({
-    type: "comic",
+    type: 'comic',
     id,
     comicName: comicInfo.value.data.name,
     chapterName,
     picUrlList: data.value.list,
-    filepath: "",
-  });
-  snackbar.success("添加下载任务成功");
-  info("添加 %s %s 下载任务", comicInfo.value.data.name, chapterName);
-};
+    filepath: '',
+  })
+  snackbar.success('添加下载任务成功')
+  info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
+}
 </script>
 
 <template>

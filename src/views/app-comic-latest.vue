@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { usePagination } from 'alova/client'
 
-import { getLatestComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getLatestComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
 const { loading, data, page } = usePagination(
-  (page) => getLatestComicListApi(page),
+  page => getLatestComicListApi(page),
   {
     append: true,
     initialPage: 1,
     initialPageSize: 80,
-    data: (res) => res.data,
+    data: res => res.data,
     total: () => 0,
     initialData: {
       data: [],
     },
   },
-);
+)
 </script>
 
 <template>

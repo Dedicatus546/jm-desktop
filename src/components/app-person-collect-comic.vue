@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { usePagination } from 'alova/client'
 
-import { getCollectComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/5.jpg";
+import { getCollectComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/5.jpg'
 
 const formState = reactive({
-  type: "mr",
-});
+  type: 'mr',
+})
 
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) =>
+  page =>
     getCollectComicListApi({
       page,
       order: formState.type,
@@ -17,11 +17,11 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
   {
     initialPage: 1,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
     watchingStates: [() => formState.type],
   },
-);
+)
 </script>
 
 <template>

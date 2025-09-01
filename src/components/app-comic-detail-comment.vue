@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { usePagination, useRequest } from "alova/client";
+import { usePagination, useRequest } from 'alova/client'
 
-import { commentComicApi, getComicCommentListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
-import useSnackbar from "@/compositions/use-snack-bar";
-import useUserStore from "@/stores/use-user-store";
+import { commentComicApi, getComicCommentListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/1.jpg'
+import useSnackbar from '@/compositions/use-snack-bar'
+import useUserStore from '@/stores/use-user-store'
 
 const props = defineProps<{
-  comicId: number;
-}>();
+  comicId: number
+}>()
 
 const {
   loading,
@@ -18,7 +18,7 @@ const {
   data,
   send: refresh,
 } = usePagination(
-  (page) =>
+  page =>
     getComicCommentListApi({
       page,
       comicId: props.comicId,
@@ -26,15 +26,15 @@ const {
   {
     initialPage: 1,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 const formState = reactive({
-  content: "",
-});
+  content: '',
+})
 const {
   loading: commentComicLoading,
   send,
@@ -45,13 +45,13 @@ const {
   {
     immediate: false,
   },
-);
-const snackbar = useSnackbar();
+)
+const snackbar = useSnackbar()
 
 onSuccess(() => {
-  snackbar.success(commentData.value.data.msg);
-  refresh(1, 0);
-});
+  snackbar.success(commentData.value.data.msg)
+  refresh(1, 0)
+})
 </script>
 
 <template>

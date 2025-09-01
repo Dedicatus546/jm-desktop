@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
 defineProps<{
-  relateList: Array<any>;
-}>();
+  relateList: Array<any>
+}>()
 </script>
 
 <template>

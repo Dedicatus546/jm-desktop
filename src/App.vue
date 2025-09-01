@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import useInitApp from "./compositions/use-init-app";
-import useRefreshUser from "./compositions/use-refresh-user";
+import useInitApp from './compositions/use-init-app'
+import useRefreshUser from './compositions/use-refresh-user'
 
-const { loading, error, currentStatus, init: reInit } = useInitApp();
+const { loading, error, currentStatus, init: reInit } = useInitApp()
 // const scrollViewRef = ref<ComponentPublicInstance | null>(null);
 // useRecoveryScrollPosition(scrollViewRef);
-useRefreshUser();
+useRefreshUser()
 </script>
 
 <template>

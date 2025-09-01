@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import useAppStore from "@/stores/use-app-store";
+import useAppStore from '@/stores/use-app-store'
 
 const props = withDefaults(
   defineProps<{
     comic: {
-      id: number;
-      name: string;
-      author: string;
-    };
-    replace?: boolean;
+      id: number
+      name: string
+      author: string
+    }
+    replace?: boolean
   }>(),
   {
     replace: false,
   },
-);
+)
 
-const appStore = useAppStore();
-const route = useRoute();
+const appStore = useAppStore()
+const route = useRoute()
 
 const cover = computed(() =>
-  import.meta.env.VITE_NSFW === "on"
-    ? "/360x640.svg"
+  import.meta.env.VITE_NSFW === 'on'
+    ? '/360x640.svg'
     : `${appStore.setting.imgHost}/media/albums/${props.comic.id}_3x4.jpg`,
-);
+)
 </script>
 
 <template>

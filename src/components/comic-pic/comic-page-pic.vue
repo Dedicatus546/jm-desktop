@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { decodeImage } from "@/utils/image-decode";
+import { decodeImage } from '@/utils/image-decode'
 
 const props = defineProps<{
-  src: string;
-  comicId: number;
-}>();
+  src: string
+  comicId: number
+}>()
 const emits = defineEmits<{
-  (e: "decodeSuccess"): void;
-}>();
+  (e: 'decodeSuccess'): void
+}>()
 
-const isLoaded = ref(false);
-const imgSrc = ref<string>("");
+const isLoaded = ref(false)
+const imgSrc = ref<string>('')
 
 onMounted(async () => {
-  imgSrc.value = await decodeImage(props.src, props.comicId);
-  emits("decodeSuccess");
-});
+  imgSrc.value = await decodeImage(props.src, props.comicId)
+  emits('decodeSuccess')
+})
 </script>
 
 <template>

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { useRouteQuery } from "@vueuse/router";
-import { usePagination } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/3.jpg";
+import { getComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/3.jpg'
 
-const router = useRouter();
-const content = useRouteQuery<string>("content", "", {
-  mode: "push",
-});
-const order = useRouteQuery<string>("order", "mr", {
-  mode: "push",
-});
+const router = useRouter()
+const content = useRouteQuery<string>('content', '', {
+  mode: 'push',
+})
+const order = useRouteQuery<string>('order', 'mr', {
+  mode: 'push',
+})
 
 const formState = reactive({
-  content: "",
-  order: "mr",
-});
+  content: '',
+  order: 'mr',
+})
 
-const { page, pageSize, pageCount, data, send, loading, onSuccess } =
-  usePagination(
-    (page) =>
+const { page, pageSize, pageCount, data, send, loading, onSuccess }
+  = usePagination(
+    page =>
       getComicListApi({
         page,
         content: content.value,
@@ -30,60 +30,60 @@ const { page, pageSize, pageCount, data, send, loading, onSuccess } =
       initialPage: 1,
       initialPageSize: 80,
       data: (res) => {
-        const list = res.data.content;
+        const list = res.data.content
         if (res.data.redirect_aid) {
-          (list as any).redirectId = res.data.redirect_aid;
+          (list as any).redirectId = res.data.redirect_aid
         }
-        return list;
+        return list
       },
-      total: (res) => res.data.total,
+      total: res => res.data.total,
       watchingStates: [order, content],
       immediate: false,
     },
-  );
+  )
 
 // 如果根据 id 搜索应该直接跳到指定详情页
 onSuccess(async () => {
-  if ("redirectId" in data.value) {
-    const redirectId = data.value.redirectId as number;
+  if ('redirectId' in data.value) {
+    const redirectId = data.value.redirectId as number
     // 这里使用 replace 数字不记录在路由历史中
     // 因为数字类会自动重定向
     router.replace({
-      name: "COMIC_DETAIL",
+      name: 'COMIC_DETAIL',
       params: {
         id: redirectId,
       },
-    });
+    })
   }
-});
+})
 
 const submit = () => {
-  content.value = formState.content;
-  order.value = formState.order;
-};
+  content.value = formState.content
+  order.value = formState.order
+}
 
 watch(
   [content, order],
   ([content, order]) => {
-    formState.content = content;
-    formState.order = order;
+    formState.content = content
+    formState.order = order
   },
   {
     immediate: true,
   },
-);
+)
 
 watch(
   content,
   (content) => {
     if (content) {
-      send();
+      send()
     }
   },
   {
     immediate: true,
   },
-);
+)
 </script>
 
 <template>

@@ -1,45 +1,45 @@
 <script setup lang="ts">
 const props = defineProps<{
-  comicId: number;
-  picList: Array<string>;
-}>();
+  comicId: number
+  picList: Array<string>
+}>()
 
-const page = ref(0); // [0, picList.length - 1]
-const sliderValue = ref(1); // [1, picList.length]
+const page = ref(0) // [0, picList.length - 1]
+const sliderValue = ref(1) // [1, picList.length]
 
-const hasLastPage = computed(() => page.value > 0);
+const hasLastPage = computed(() => page.value > 0)
 const lastPage = () => {
   if (page.value === 0) {
-    return;
+    return
   }
-  page.value--;
-  sliderValue.value = page.value + 1;
-};
+  page.value--
+  sliderValue.value = page.value + 1
+}
 
-const hasNextPage = computed(() => page.value < props.picList.length - 1);
+const hasNextPage = computed(() => page.value < props.picList.length - 1)
 const nextPage = () => {
   if (page.value === props.picList.length - 1) {
-    return;
+    return
   }
-  page.value++;
-  sliderValue.value = page.value + 1;
-};
+  page.value++
+  sliderValue.value = page.value + 1
+}
 
 const onDecodeSuccess = inject<(index: number) => void>(
-  "onDecodeSuccess",
+  'onDecodeSuccess',
   () => {},
-);
+)
 
-onKeyStroke("ArrowRight", () => nextPage(), {
+onKeyStroke('ArrowRight', () => nextPage(), {
   dedupe: true,
-});
-onKeyStroke("ArrowLeft", () => lastPage(), {
+})
+onKeyStroke('ArrowLeft', () => lastPage(), {
   dedupe: true,
-});
+})
 
 const onSliderEnd = (value: [number, number] | number) => {
-  page.value = (value as number) - 1;
-};
+  page.value = (value as number) - 1
+}
 </script>
 
 <template>

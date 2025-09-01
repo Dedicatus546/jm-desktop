@@ -1,36 +1,36 @@
-import "@mdi/font/css/materialdesignicons.css";
-import "swiper/swiper-bundle.css";
-import "typeface-roboto";
-import "vuetify/styles";
-import "virtual:uno.css";
-import "./style.css";
+import '@mdi/font/css/materialdesignicons.css'
+import 'swiper/swiper-bundle.css'
+import 'typeface-roboto'
+import 'vuetify/styles'
+import 'virtual:uno.css'
+import './style.css'
 
-import { createApp } from "vue";
-import { createVuetify } from "vuetify";
-import { Intersect } from "vuetify/directives";
+import { createApp } from 'vue'
+import { createVuetify } from 'vuetify'
+import { Intersect } from 'vuetify/directives'
 
-import App from "./App.vue";
-import { error } from "./logger";
-import router from "./router";
-import pinia from "./store";
-import { normalizeError } from "./utils";
+import App from './App.vue'
+import { error } from './logger'
+import router from './router'
+import pinia from './store'
+import { normalizeError } from './utils'
 
 const vuetify = createVuetify({
   theme: {
-    defaultTheme: "light",
+    defaultTheme: 'light',
     themes: {
       light: {
         dark: false,
         colors: {
-          primary: "#ff9800",
-          "on-primary": "#ffffff",
+          'primary': '#ff9800',
+          'on-primary': '#ffffff',
         },
       },
       dark: {
         dark: true,
         colors: {
-          primary: "#633b00",
-          "on-primary": "#ffffff",
+          'primary': '#633b00',
+          'on-primary': '#ffffff',
         },
       },
     },
@@ -38,16 +38,16 @@ const vuetify = createVuetify({
   directives: {
     Intersect,
   },
-});
+})
 
-const app = createApp(App);
+const app = createApp(App)
 
 app.config.errorHandler = (err) => {
-  error(`[vue] ${normalizeError(err)}`);
-};
+  error(`[vue] ${normalizeError(err)}`)
+}
 
-app.config.performance = true;
+app.config.performance = true
 
-app.use(vuetify).use(pinia).use(router);
+app.use(vuetify).use(pinia).use(router)
 
-app.mount("#root");
+app.mount('#root')

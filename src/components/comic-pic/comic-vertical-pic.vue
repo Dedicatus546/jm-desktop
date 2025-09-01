@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import scrollIntoViewIfNeed from "scroll-into-view-if-needed";
+import scrollIntoViewIfNeed from 'scroll-into-view-if-needed'
 
-import { decodeImage } from "@/utils/image-decode";
+import { decodeImage } from '@/utils/image-decode'
 
 const props = defineProps<{
-  src: string;
-  comicId: number;
-}>();
+  src: string
+  comicId: number
+}>()
 const emits = defineEmits<{
-  (e: "intersect"): void;
-  (e: "decodeSuccess"): void;
-}>();
+  (e: 'intersect'): void
+  (e: 'decodeSuccess'): void
+}>()
 
-const elRef = ref<HTMLDivElement | null>(null);
-const isLoaded = ref(false);
-const imgSrc = ref<string>("");
+const elRef = ref<HTMLDivElement | null>(null)
+const isLoaded = ref(false)
+const imgSrc = ref<string>('')
 
 const onLoadImageIntersect = async (isIntersecting: boolean) => {
   if (isIntersecting) {
-    imgSrc.value = await decodeImage(props.src, props.comicId);
-    emits("decodeSuccess");
+    imgSrc.value = await decodeImage(props.src, props.comicId)
+    emits('decodeSuccess')
   }
-};
+}
 
 const onScrollImageIntersect = (isIntersecting: boolean) => {
   if (isIntersecting) {
-    emits("intersect");
+    emits('intersect')
   }
-};
+}
 
 defineExpose({
   scrollIntoView() {
     if (elRef.value) {
       scrollIntoViewIfNeed(elRef.value, {
-        block: "start",
-      });
+        block: 'start',
+      })
     }
   },
-});
+})
 </script>
 
 <template>

@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { useRouteQuery } from "@vueuse/router";
-import { usePagination, useRequest } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination, useRequest } from 'alova/client'
 
-import { getWeekComicListApi, getWeekListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getWeekComicListApi, getWeekListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
-const category = useRouteQuery("category", "", {
-  mode: "push",
+const category = useRouteQuery('category', '', {
+  mode: 'push',
   transform: {
-    get: (v) => (!v ? -1 : Number.parseInt(v)),
+    get: v => (!v ? -1 : Number.parseInt(v)),
   },
-});
-const type = useRouteQuery("type", "manga", {
-  mode: "push",
-});
+})
+const type = useRouteQuery('type', 'manga', {
+  mode: 'push',
+})
 
 const {
   data,
   onSuccess,
   loading: weekLoading,
-} = useRequest(() => getWeekListApi());
+} = useRequest(() => getWeekListApi())
 
 const {
   // page,
@@ -29,7 +29,7 @@ const {
   loading,
   send,
 } = usePagination(
-  (page) =>
+  page =>
     getWeekComicListApi({
       page,
       category: category.value,
@@ -41,23 +41,24 @@ const {
     immediate: false,
     initialPage: 1,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
     watchingStates: [category, type],
   },
-);
+)
 
 onSuccess(() => {
   if (data.value.data.categoryList.length > 0 && category.value === -1) {
-    category.value = data.value.data.categoryList[0].id;
-  } else {
-    send(1, 20);
+    category.value = data.value.data.categoryList[0].id
+  }
+  else {
+    send(1, 20)
   }
   // if (data.value.data.typeList.length > 0) {
   //   formState.type = data.value.data.typeList[0].id;
   // }
   // send(1, 80);
-});
+})
 </script>
 
 <template>

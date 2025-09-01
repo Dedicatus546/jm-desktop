@@ -1,12 +1,12 @@
 <script setup lang="ts">
 defineProps<{
-  tooltipText: string;
-  icon: string;
-}>();
+  tooltipText: string
+  icon: string
+}>()
 
 defineEmits<{
-  (e: "click"): void;
-}>();
+  (e: 'click'): void
+}>()
 </script>
 
 <template>

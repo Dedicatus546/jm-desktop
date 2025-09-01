@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { usePagination, useRequest } from "alova/client";
+import { usePagination, useRequest } from 'alova/client'
 
-import { getCategoryFilterListApi, getCategoryListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getCategoryFilterListApi, getCategoryListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
-const router = useRouter();
+const router = useRouter()
 
 const formState = reactive({
-  order: "",
-  category: "",
-  subCategory: "",
-});
+  order: '',
+  category: '',
+  subCategory: '',
+})
 
 const orderList = [
-  { label: "最新", value: "" },
-  { label: "最多爱心", value: "tf" },
-  { label: "总排行", value: "mv" },
-  { label: "月排行", value: "mv_m" },
-  { label: "周排行", value: "mv_w" },
-  { label: "日排行", value: "mv_t" },
-];
+  { label: '最新', value: '' },
+  { label: '最多爱心', value: 'tf' },
+  { label: '总排行', value: 'mv' },
+  { label: '月排行', value: 'mv_m' },
+  { label: '周排行', value: 'mv_w' },
+  { label: '日排行', value: 'mv_t' },
+]
 
 const { loading, pageCount, pageSize, data, page } = usePagination(
-  (page) =>
+  page =>
     getCategoryFilterListApi({
       page,
       category: [formState.category, formState.subCategory]
         .filter(Boolean)
-        .join("_"),
+        .join('_'),
       order: formState.order,
     }),
   {
@@ -38,10 +38,10 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
       () => formState.category,
       () => formState.subCategory,
     ],
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
 
 const { loading: categoryLoading, data: category } = useRequest(
   () => getCategoryListApi(),
@@ -53,39 +53,40 @@ const { loading: categoryLoading, data: category } = useRequest(
       },
     },
   },
-);
+)
 
 const tagList = computed(() =>
-  category.value.data.tagTypeList.flatMap((item) => item.list),
-);
+  category.value.data.tagTypeList.flatMap(item => item.list),
+)
 
 const subCategoryList = computed(() => {
   return (
     category.value.data.categoryList.find(
-      (item) => item.type === "slug" && item.slug === formState.category,
+      item => item.type === 'slug' && item.slug === formState.category,
     )?.subCategoryList ?? []
-  );
-});
+  )
+})
 
 const onCategoryClick = (slug: string) => {
   const item = category.value.data.categoryList.find(
-    (item) => item.slug == slug,
-  );
+    item => item.slug == slug,
+  )
   if (!item) {
-    return;
+    return
   }
-  if (item.type === "slug") {
-    formState.subCategory = "";
-    formState.category = item.slug;
-  } else {
+  if (item.type === 'slug') {
+    formState.subCategory = ''
+    formState.category = item.slug
+  }
+  else {
     router.push({
-      name: "QUICK_SEARCH",
+      name: 'QUICK_SEARCH',
       query: {
         query: item.name,
       },
-    });
+    })
   }
-};
+}
 </script>
 
 <template>

@@ -1,67 +1,67 @@
-import { format, getDate, parse } from "date-fns";
+import { format, getDate, parse } from 'date-fns'
 
-import http from "./http";
-import { trpcClient } from "./ipc";
+import http from './http'
+import { trpcClient } from './ipc'
 
 type RespWrapper<T> = {
-  code: number;
-  data: T;
-  errorMsg?: string;
-};
+  code: number
+  data: T
+  errorMsg?: string
+}
 
 export const getSettingApi = () => {
   return http.Get<
     RespWrapper<{
-      logoPath: string;
-      webHost: string;
-      imgHost: string;
-      baseUrl: string;
-      cnBaseUrl: string;
-      version: string;
+      logoPath: string
+      webHost: string
+      imgHost: string
+      baseUrl: string
+      cnBaseUrl: string
+      version: string
       storeLink: {
-        google: string;
-        web: string;
-      };
+        google: string
+        web: string
+      }
       shuntList: Array<{
-        title: string;
-        key: number;
-      }>;
+        title: string
+        key: number
+      }>
     }>,
     RespWrapper<{
-      logo_path: string;
-      main_web_host: string;
-      img_host: string;
-      base_url: string;
-      is_cn: number;
-      cn_base_url: string;
-      version: string;
-      test_version: string;
-      store_link: string;
-      ios_version: string;
-      ios_test_version: string;
-      ios_store_link: string;
-      ad_cache_version: number;
-      bundle_url: string;
-      is_hot_update: string;
-      api_banner_path: string;
-      version_info: string;
+      logo_path: string
+      main_web_host: string
+      img_host: string
+      base_url: string
+      is_cn: number
+      cn_base_url: string
+      version: string
+      test_version: string
+      store_link: string
+      ios_version: string
+      ios_test_version: string
+      ios_store_link: string
+      ad_cache_version: number
+      bundle_url: string
+      is_hot_update: string
+      api_banner_path: string
+      version_info: string
       app_shunts: Array<{
-        title: string;
-        key: number;
-      }>;
-      download_url: string;
-      app_landing_page: string;
-      float_ad: boolean;
-      newYearEvent: boolean;
-      foolsDayEvent: boolean;
+        title: string
+        key: number
+      }>
+      download_url: string
+      app_landing_page: string
+      float_ad: boolean
+      newYearEvent: boolean
+      foolsDayEvent: boolean
     }>
-  >("setting", {
+  >('setting', {
     transform(res) {
       return {
         code: res.code,
         data: {
           logoPath: res.data.logo_path,
-          webHost: "http://" + res.data.main_web_host,
+          webHost: 'http://' + res.data.main_web_host,
           imgHost: res.data.img_host,
           baseUrl: res.data.base_url,
           cnBaseUrl: res.data.cn_base_url,
@@ -72,53 +72,53 @@ export const getSettingApi = () => {
           },
           shuntList: res.data.app_shunts,
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
-export const loginApi = (query: { username: string; password: string }) => {
-  const formData = new FormData();
-  formData.append("username", query.username);
-  formData.append("password", query.password);
+export const loginApi = (query: { username: string, password: string }) => {
+  const formData = new FormData()
+  formData.append('username', query.username)
+  formData.append('password', query.password)
   return http.Post<
     RespWrapper<{
-      uid: number;
-      username: string;
-      email: string;
-      avatar: string;
-      jCoin: number;
-      level: [number, string];
-      currentExp: number;
-      nextLevelExp: number;
-      collectCount: number;
-      maxCollectCount: number;
+      uid: number
+      username: string
+      email: string
+      avatar: string
+      jCoin: number
+      level: [number, string]
+      currentExp: number
+      nextLevelExp: number
+      collectCount: number
+      maxCollectCount: number
     }>,
     RespWrapper<{
-      uid: string;
-      username: string;
-      email: string;
-      emailverified: string;
-      photo: string;
-      fname: string;
-      gender: string;
-      message: string;
-      coin: number;
-      album_favorites: number;
-      s: string;
-      level_name: string;
-      level: number;
-      nextLevelExp: number;
-      exp: string;
-      expPercent: number;
-      badges: unknown[];
-      album_favorites_max: number;
-      ad_free: boolean;
-      ad_free_before: unknown;
-      charge: string;
-      jar: string;
+      uid: string
+      username: string
+      email: string
+      emailverified: string
+      photo: string
+      fname: string
+      gender: string
+      message: string
+      coin: number
+      album_favorites: number
+      s: string
+      level_name: string
+      level: number
+      nextLevelExp: number
+      exp: string
+      expPercent: number
+      badges: unknown[]
+      album_favorites_max: number
+      ad_free: boolean
+      ad_free_before: unknown
+      charge: string
+      jar: string
     }>
-  >("login", formData, {
+  >('login', formData, {
     transform(res) {
       return {
         code: res.code,
@@ -134,60 +134,60 @@ export const loginApi = (query: { username: string; password: string }) => {
           collectCount: res.data.album_favorites,
           maxCollectCount: res.data.album_favorites_max,
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getComicListApi = (query: {
-  page: number;
-  order: string;
-  content: string;
+  page: number
+  order: string
+  content: string
 }) => {
   return http.Get<
     RespWrapper<{
-      total: number;
-      redirect_aid: number | null;
+      total: number
+      redirect_aid: number | null
       content: Array<{
-        id: number;
-        author: string;
-        name: string;
-        liked: boolean;
-        isCollect: boolean;
-        updateAt: number;
-      }>;
+        id: number
+        author: string
+        name: string
+        liked: boolean
+        isCollect: boolean
+        updateAt: number
+      }>
     }>,
     RespWrapper<
       | {
-          search_query: string;
-          total: string;
-          redirect_aid: string;
-          content: [];
-        }
+        search_query: string
+        total: string
+        redirect_aid: string
+        content: []
+      }
       | {
-          search_query: string;
-          total: string;
-          content: Array<{
-            id: string;
-            author: string;
-            description: string | null;
-            name: string;
-            image: string;
-            category: {
-              id: string;
-              title: string;
-            };
-            category_sub: {
-              id: string;
-              title: string;
-            };
-            liked: boolean;
-            is_favorite: boolean;
-            update_at: number;
-          }>;
-        }
+        search_query: string
+        total: string
+        content: Array<{
+          id: string
+          author: string
+          description: string | null
+          name: string
+          image: string
+          category: {
+            id: string
+            title: string
+          }
+          category_sub: {
+            id: string
+            title: string
+          }
+          liked: boolean
+          is_favorite: boolean
+          update_at: number
+        }>
+      }
     >
-  >("search", {
+  >('search', {
     params: {
       search_query: query.content,
       page: query.page,
@@ -199,7 +199,7 @@ export const getComicListApi = (query: {
         data: {
           total: Number.parseInt(res.data.total),
           redirect_aid:
-            "redirect_aid" in res.data
+            'redirect_aid' in res.data
               ? Number.parseInt(res.data.redirect_aid)
               : null,
           content: res.data.content.map((item) => {
@@ -210,51 +210,51 @@ export const getComicListApi = (query: {
               liked: item.liked,
               isCollect: item.is_favorite,
               updateAt: item.update_at,
-            };
+            }
           }),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getCollectComicListApi = (query: {
-  page: number;
-  order: string;
+  page: number
+  order: string
   // folder_id: number;
 }) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
-        id: number;
-        author: string;
-        name: string;
-      }>;
-      total: number;
+        id: number
+        author: string
+        name: string
+      }>
+      total: number
     }>,
     RespWrapper<{
-      count: number;
-      folder_list: [];
+      count: number
+      folder_list: []
       list: Array<{
-        id: string;
-        author: string;
-        description: string | null;
-        name: string;
-        image: string;
+        id: string
+        author: string
+        description: string | null
+        name: string
+        image: string
         category: {
-          id: string;
-          title: string;
-        };
+          id: string
+          title: string
+        }
         category_sub: {
-          id: string;
-          title: string;
-        };
-        latest_ep: unknown;
-        latest_ep_aid: unknown;
-      }>;
-      total: string;
+          id: string
+          title: string
+        }
+        latest_ep: unknown
+        latest_ep_aid: unknown
+      }>
+      total: string
     }>
-  >("favorite", {
+  >('favorite', {
     params: {
       page: query.page,
       size: 8,
@@ -273,48 +273,48 @@ export const getCollectComicListApi = (query: {
               // liked: item.liked,
               // isCollect: item.is_favorite,
               // updateAt: item.update_at,
-            };
+            }
           }),
           total: Number.parseInt(res.data.total),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getHistoryComicListApi = (query: { page: number }) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
-        id: number;
-        author: string;
-        name: string;
-      }>;
-      total: number;
+        id: number
+        author: string
+        name: string
+      }>
+      total: number
     }>,
     RespWrapper<{
-      count: number;
-      folder_list: [];
+      count: number
+      folder_list: []
       list: Array<{
-        id: string;
-        author: string;
-        description: string | null;
-        name: string;
-        image: string;
+        id: string
+        author: string
+        description: string | null
+        name: string
+        image: string
         category: {
-          id: string;
-          title: string;
-        };
+          id: string
+          title: string
+        }
         category_sub: {
-          id: string;
-          title: string;
-        };
-        latest_ep: unknown;
-        latest_ep_aid: unknown;
-      }>;
-      total: number;
+          id: string
+          title: string
+        }
+        latest_ep: unknown
+        latest_ep_aid: unknown
+      }>
+      total: number
     }>
-  >("watch_list", {
+  >('watch_list', {
     params: {
       page: query.page,
     },
@@ -330,66 +330,66 @@ export const getHistoryComicListApi = (query: { page: number }) => {
               // liked: item.liked,
               // isCollect: item.is_favorite,
               // updateAt: item.update_at,
-            };
+            }
           }),
           total: res.data.total,
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getPromoteComicListApi = () => {
   return http.Get<
     RespWrapper<
       Array<{
-        id: number;
-        title: string;
-        filterValue: string;
+        id: number
+        title: string
+        filterValue: string
         list: Array<{
-          id: number;
-          author: string;
-          name: string;
-          liked: boolean;
-          isCollect: boolean;
-          updateAt: number;
-        }>;
+          id: number
+          author: string
+          name: string
+          liked: boolean
+          isCollect: boolean
+          updateAt: number
+        }>
       }>
     >,
     RespWrapper<
       Array<{
-        id: number | string;
-        title: string;
-        slug: string;
-        type: string;
-        filter_val: string;
+        id: number | string
+        title: string
+        slug: string
+        type: string
+        filter_val: string
         content: Array<{
-          id: string;
-          author: string;
-          description: string | null;
-          name: string;
-          image: string;
+          id: string
+          author: string
+          description: string | null
+          name: string
+          image: string
           category: {
-            id: string;
-            title: string;
-          };
+            id: string
+            title: string
+          }
           category_sub: {
-            id: string;
-            title: string;
-          };
-          liked: boolean;
-          is_favorite: boolean;
-          update_at: number;
-        }>;
+            id: string
+            title: string
+          }
+          liked: boolean
+          is_favorite: boolean
+          update_at: number
+        }>
       }>
     >
-  >("promote", {
+  >('promote', {
     transform(res) {
       return {
         code: res.code,
         data: res.data.map((item) => {
           return {
-            id: Number.parseInt(item.id + ""),
+            id: Number.parseInt(item.id + ''),
             title: item.title,
             filterValue: item.filter_val,
             list: item.content.map((item) => {
@@ -400,14 +400,14 @@ export const getPromoteComicListApi = () => {
                 liked: item.liked,
                 isCollect: item.is_favorite,
                 updateAt: item.update_at,
-              };
+              }
             }),
-          };
+          }
         }),
-      };
+      }
     },
-  });
-};
+  })
+}
 
 // 最新漫画
 // 该接口无返回total，无法做常规分页
@@ -415,19 +415,19 @@ export const getLatestComicListApi = (page: number) => {
   return http.Get<
     RespWrapper<
       Array<{
-        id: number;
-        author: string;
-        name: string;
+        id: number
+        author: string
+        name: string
       }>
     >,
     RespWrapper<
       Array<{
-        id: string;
-        author: string;
-        name: string;
+        id: string
+        author: string
+        name: string
       }>
     >
-  >("latest", {
+  >('latest', {
     params: {
       page,
     },
@@ -442,78 +442,78 @@ export const getLatestComicListApi = (page: number) => {
             // liked: item.liked,
             // isCollect: item.is_favorite,
             // updateAt: item.update_at,
-          };
+          }
         }),
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getComicDetailApi = (id: number) => {
   return http.Get<
     RespWrapper<{
-      id: number;
-      authorList: string[];
-      description: string;
-      name: string;
-      lookCount: number;
-      likeCount: number;
-      commentCount: number;
-      tagList: string[];
-      roleList: string[];
-      workList: string[];
-      isCollect: boolean;
-      isLike: boolean;
+      id: number
+      authorList: string[]
+      description: string
+      name: string
+      lookCount: number
+      likeCount: number
+      commentCount: number
+      tagList: string[]
+      roleList: string[]
+      workList: string[]
+      isCollect: boolean
+      isLike: boolean
       relateList: Array<{
-        id: number;
-        name: string;
-        author: string;
-      }>;
+        id: number
+        name: string
+        author: string
+      }>
       seriesList: Array<{
-        id: number;
-        name: string;
-      }>;
-      currentSeriesId: number;
-      price: number;
-      isBuy: boolean;
+        id: number
+        name: string
+      }>
+      currentSeriesId: number
+      price: number
+      isBuy: boolean
     }>,
     RespWrapper<{
-      id: number;
-      name: string;
-      images: unknown[];
-      addtime: string;
-      description: string;
-      total_views: string;
-      likes: string;
+      id: number
+      name: string
+      images: unknown[]
+      addtime: string
+      description: string
+      total_views: string
+      likes: string
       series: Array<{
-        id: string;
-        name: string;
-        sort: string;
-      }>;
-      series_id: string;
-      comment_total: string; // 评论总数
-      author: string[]; // 作者
-      tags: string[]; // 标签
-      works: string[]; // 作品
-      actors: string[]; // 角色
+        id: string
+        name: string
+        sort: string
+      }>
+      series_id: string
+      comment_total: string // 评论总数
+      author: string[] // 作者
+      tags: string[] // 标签
+      works: string[] // 作品
+      actors: string[] // 角色
       related_list: Array<{
-        id: string;
-        author: string;
-        name: string;
-        image: string;
-      }>;
-      liked: boolean;
-      is_favorite: boolean;
-      price: number | string;
-      purchased: boolean;
-      is_aids: unknown;
+        id: string
+        author: string
+        name: string
+        image: string
+      }>
+      liked: boolean
+      is_favorite: boolean
+      price: number | string
+      purchased: boolean
+      is_aids: unknown
     }>
-  >("album", {
+  >('album', {
     params: {
       id,
     },
     async transform(res) {
-      res.data.series.sort((s1, s2) => +s1.sort - +s2.sort);
+      res.data.series.sort((s1, s2) => +s1.sort - +s2.sort)
       return {
         code: res.code,
         data: {
@@ -534,66 +534,66 @@ export const getComicDetailApi = (id: number) => {
               id: Number.parseInt(item.id),
               name: item.name,
               author: item.author,
-            };
+            }
           }),
           seriesList: res.data.series.map((item, index) => {
             return {
               id: Number.parseInt(item.id),
-              name: `第${index + 1}话${item.name ? "（" + item.name + "）" : ""}`,
-            };
+              name: `第${index + 1}话${item.name ? '（' + item.name + '）' : ''}`,
+            }
           }),
           currentSeriesId: Number.parseInt(res.data.series_id),
-          price: Number.parseInt(res.data.price + ""),
+          price: Number.parseInt(res.data.price + ''),
           isBuy: !!res.data.purchased,
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getCollectTagListApi = async () => {
-  return http.Get<RespWrapper<string[]>>("tag_favorite");
-};
+  return http.Get<RespWrapper<string[]>>('tag_favorite')
+}
 
 export const getCategoryListApi = () => {
   return http.Get<
     RespWrapper<{
       categoryList: Array<{
-        id: number;
-        name: string;
-        type: "slug" | "search";
-        slug: string;
+        id: number
+        name: string
+        type: 'slug' | 'search'
+        slug: string
         subCategoryList: Array<{
-          id: number;
-          name: string;
-          slug: string;
-        }>;
-      }>;
+          id: number
+          name: string
+          slug: string
+        }>
+      }>
       tagTypeList: Array<{
-        title: string;
-        list: Array<string>;
-      }>;
+        title: string
+        list: Array<string>
+      }>
     }>,
     RespWrapper<{
       categories: Array<{
-        id: string;
-        name: string;
-        slug: string;
-        total_albums: string;
-        type: "slug" | "search";
+        id: string
+        name: string
+        slug: string
+        total_albums: string
+        type: 'slug' | 'search'
         sub_categories?: Array<{
-          CID: string;
-          name: string;
-          slug: string;
-        }>;
-      }>;
+          CID: string
+          name: string
+          slug: string
+        }>
+      }>
       // 快速搜索
       blocks: Array<{
-        title: string;
-        content: Array<string>;
-      }>;
+        title: string
+        content: Array<string>
+      }>
     }>
-  >("categories", {
+  >('categories', {
     transform(res) {
       return {
         code: res.code,
@@ -610,61 +610,61 @@ export const getCategoryListApi = () => {
                   id: Number.parseInt(item.CID),
                   name: item.name,
                   slug: item.slug,
-                };
+                }
               }),
-            };
+            }
           }),
           tagTypeList: res.data.blocks.map((item) => {
             return {
               title: item.title,
               list: item.content,
-            };
+            }
           }),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getCategoryFilterListApi = (query: {
-  page: number;
-  category: string;
-  order: string;
+  page: number
+  category: string
+  order: string
 }) => {
   return http.Get<
     RespWrapper<{
-      total: number;
+      total: number
       list: Array<{
-        id: number;
-        author: string;
-        name: string;
-        liked: boolean;
-        isCollect: boolean;
-        updateAt: number;
-      }>;
+        id: number
+        author: string
+        name: string
+        liked: boolean
+        isCollect: boolean
+        updateAt: number
+      }>
     }>,
     RespWrapper<{
-      total: string;
+      total: string
       content: Array<{
-        id: string;
-        author: string;
-        description: string | null;
-        name: string;
-        image: string;
+        id: string
+        author: string
+        description: string | null
+        name: string
+        image: string
         category: {
-          id: string;
-          title: string;
-        };
+          id: string
+          title: string
+        }
         category_sub: {
-          id: string;
-          title: string;
-        };
-        liked: boolean;
-        is_favorite: boolean;
-        update_at: number;
-      }>;
+          id: string
+          title: string
+        }
+        liked: boolean
+        is_favorite: boolean
+        update_at: number
+      }>
     }>
-  >("categories/filter", {
+  >('categories/filter', {
     params: {
       page: query.page,
       // TODO 未知参数名
@@ -685,117 +685,117 @@ export const getCategoryFilterListApi = (query: {
               liked: item.liked,
               isCollect: item.is_favorite,
               updateAt: item.update_at,
-            };
+            }
           }),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getHotTagListApi = () => {
-  return http.Get<RespWrapper<Array<string>>>("hot_tags").then();
-};
+  return http.Get<RespWrapper<Array<string>>>('hot_tags').then()
+}
 
 // 等级相关
 export const getForumApi = async () => {
-  return http.Get("forum", {
+  return http.Get('forum', {
     params: {
       page: 1,
       // mode: "all",
       // mode: "manhua",
       aid: 416130,
     },
-  });
-};
+  })
+}
 
 // getForumApi();
 
 type Comment = {
-  AID: string;
-  BID: unknown;
-  CID: string;
-  UID: string;
-  username: string;
-  nickname: string;
-  likes: string;
-  gender: string;
-  update_at: string;
-  addtime: string;
-  parent_CID: string;
+  AID: string
+  BID: unknown
+  CID: string
+  UID: string
+  username: string
+  nickname: string
+  likes: string
+  gender: string
+  update_at: string
+  addtime: string
+  parent_CID: string
   expinfo: {
-    level_name: string;
-    level: number;
-    nextLevelExp: number;
-    exp: string;
-    expPercent: number; // 100
-    uid: string;
+    level_name: string
+    level: number
+    nextLevelExp: number
+    exp: string
+    expPercent: number // 100
+    uid: string
     badges: Array<{
-      content: string;
-      name: string;
-      id: string;
-    }>;
-  };
-  name: string;
-  content: string;
-  photo: string;
-  spoiler: unknown; // 是否剧透
-  replys?: Array<Comment>;
-};
+      content: string
+      name: string
+      id: string
+    }>
+  }
+  name: string
+  content: string
+  photo: string
+  spoiler: unknown // 是否剧透
+  replys?: Array<Comment>
+}
 
-const avatarColorCache = new Map<string, string>();
+const avatarColorCache = new Map<string, string>()
 const getAvatar = (str: string) => {
-  if (["nopic-Male.gif", "nopic-Female.gif"].includes(str)) {
-    return null;
+  if (['nopic-Male.gif', 'nopic-Female.gif'].includes(str)) {
+    return null
   }
-  return str;
-};
+  return str
+}
 const getAvatarColor = async (nickname: string) => {
-  let color: string | undefined = undefined;
+  let color: string | undefined = undefined
   if ((color = avatarColorCache.get(nickname))) {
-    return color;
+    return color
   }
-  const hash = (await trpcClient.md5.query(nickname)).substring(0, 6);
-  color = `#${hash}`;
-  avatarColorCache.set(nickname, color);
-  return color;
-};
+  const hash = (await trpcClient.md5.query(nickname)).substring(0, 6)
+  color = `#${hash}`
+  avatarColorCache.set(nickname, color)
+  return color
+}
 export const getComicCommentListApi = (query: {
-  page: number;
-  comicId: number;
+  page: number
+  comicId: number
 }) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
-        id: number;
-        parentId: number;
-        nickname: string;
-        likeCount: number;
-        content: string;
-        avatar: string | null;
-        avatarColor: string;
-        createTime: string;
+        id: number
+        parentId: number
+        nickname: string
+        likeCount: number
+        content: string
+        avatar: string | null
+        avatarColor: string
+        createTime: string
         replyList: Array<{
-          id: number;
-          parentId: number;
-          nickname: string;
-          likeCount: number;
-          createTime: string;
-          content: string;
-          avatar: string | null;
-          avatarColor: string;
-        }>;
-      }>;
-      total: number;
+          id: number
+          parentId: number
+          nickname: string
+          likeCount: number
+          createTime: string
+          content: string
+          avatar: string | null
+          avatarColor: string
+        }>
+      }>
+      total: number
     }>,
     RespWrapper<{
-      list: Array<Comment>;
-      total: string;
+      list: Array<Comment>
+      total: string
     }>
-  >("forum", {
+  >('forum', {
     params: {
       page: query.page,
-      mode: "manhua",
+      mode: 'manhua',
       aid: query.comicId,
     },
     async transform(res) {
@@ -804,9 +804,9 @@ export const getComicCommentListApi = (query: {
         data: {
           list: await Promise.all(
             res.data.list.map(async (item) => {
-              const avatar = getAvatar(item.photo);
-              const avatarColor =
-                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              const avatar = getAvatar(item.photo)
+              const avatarColor
+                = avatar === null ? await getAvatarColor(item.username) : '#eee'
               return {
                 id: Number.parseInt(item.CID),
                 parentId: Number.parseInt(item.parent_CID),
@@ -816,72 +816,72 @@ export const getComicCommentListApi = (query: {
                 avatar,
                 avatarColor,
                 createTime: format(
-                  parse(item.addtime, "MMM d, yyyy", new Date()),
-                  "yyyy-MM-dd",
+                  parse(item.addtime, 'MMM d, yyyy', new Date()),
+                  'yyyy-MM-dd',
                 ),
                 replyList: await Promise.all(
                   item.replys?.map(async (item) => {
-                    const avatar = getAvatar(item.photo);
-                    const avatarColor =
-                      avatar === null
+                    const avatar = getAvatar(item.photo)
+                    const avatarColor
+                      = avatar === null
                         ? await getAvatarColor(item.username)
-                        : "#eee";
+                        : '#eee'
                     return {
                       id: Number.parseInt(item.CID),
                       parentId: Number.parseInt(item.parent_CID),
                       nickname: item.username,
                       likeCount: Number.parseInt(item.likes),
                       createTime: format(
-                        parse(item.addtime, "MMM d, yyyy", new Date()),
-                        "yyyy-MM-dd",
+                        parse(item.addtime, 'MMM d, yyyy', new Date()),
+                        'yyyy-MM-dd',
                       ),
                       content: item.content,
                       avatar,
                       avatarColor,
-                    };
+                    }
                   }) ?? [],
                 ),
-              };
+              }
             }),
           ),
           total: Number.parseInt(res.data.total),
         },
-      };
+      }
     },
     cacheFor: null,
-  });
-};
+  })
+}
 
 export const getUserCommentListApi = (page: number, userId: number) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
-        id: number;
-        parentId: number;
-        nickname: string;
-        likeCount: number;
-        content: string;
-        avatar: string | null;
-        avatarColor: string;
-        createTime: string;
+        id: number
+        parentId: number
+        nickname: string
+        likeCount: number
+        content: string
+        avatar: string | null
+        avatarColor: string
+        createTime: string
         replyList: Array<{
-          id: number;
-          parentId: number;
-          nickname: string;
-          likeCount: number;
-          createTime: string;
-          content: string;
-          avatar: string | null;
-          avatarColor: string;
-        }>;
-      }>;
-      total: number;
+          id: number
+          parentId: number
+          nickname: string
+          likeCount: number
+          createTime: string
+          content: string
+          avatar: string | null
+          avatarColor: string
+        }>
+      }>
+      total: number
     }>,
     RespWrapper<{
-      list: Array<Comment>;
-      total: string;
+      list: Array<Comment>
+      total: string
     }>
-  >("forum", {
+  >('forum', {
     params: {
       page: page,
       mode: undefined,
@@ -893,9 +893,9 @@ export const getUserCommentListApi = (page: number, userId: number) => {
         data: {
           list: await Promise.all(
             res.data.list.map(async (item) => {
-              const avatar = getAvatar(item.photo);
-              const avatarColor =
-                avatar === null ? await getAvatarColor(item.username) : "#eee";
+              const avatar = getAvatar(item.photo)
+              const avatarColor
+                = avatar === null ? await getAvatarColor(item.username) : '#eee'
               return {
                 id: Number.parseInt(item.CID),
                 parentId: Number.parseInt(item.parent_CID),
@@ -905,101 +905,101 @@ export const getUserCommentListApi = (page: number, userId: number) => {
                 avatar,
                 avatarColor,
                 createTime: format(
-                  parse(item.addtime, "MMM d, yyyy", new Date()),
-                  "yyyy-MM-dd",
+                  parse(item.addtime, 'MMM d, yyyy', new Date()),
+                  'yyyy-MM-dd',
                 ),
                 replyList: await Promise.all(
                   item.replys?.map(async (item) => {
-                    const avatar = getAvatar(item.photo);
-                    const avatarColor =
-                      avatar === null
+                    const avatar = getAvatar(item.photo)
+                    const avatarColor
+                      = avatar === null
                         ? await getAvatarColor(item.username)
-                        : "#eee";
+                        : '#eee'
                     return {
                       id: Number.parseInt(item.CID),
                       parentId: Number.parseInt(item.parent_CID),
                       nickname: item.username,
                       likeCount: Number.parseInt(item.likes),
                       createTime: format(
-                        parse(item.addtime, "MMM d, yyyy", new Date()),
-                        "yyyy-MM-dd",
+                        parse(item.addtime, 'MMM d, yyyy', new Date()),
+                        'yyyy-MM-dd',
                       ),
                       content: item.content,
                       avatar,
                       avatarColor,
-                    };
+                    }
                   }) ?? [],
                 ),
-              };
+              }
             }),
           ),
           total: Number.parseInt(res.data.total),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const commentComicApi = (content: string, comicId: number) => {
-  const formData = new FormData();
-  formData.append("comment", content);
+  const formData = new FormData()
+  formData.append('comment', content)
   // TODO 剧透功能
-  formData.append("status", "1"); // 1 无剧透 2 有剧透
-  formData.append("aid", comicId + "");
+  formData.append('status', '1') // 1 无剧透 2 有剧透
+  formData.append('aid', comicId + '')
   return http.Post<
     RespWrapper<{
-      msg: string;
-      status: string;
-      aid: number;
-      cid: number;
-      spoiler: string;
+      msg: string
+      status: string
+      aid: number
+      cid: number
+      spoiler: string
     }>
-  >("comment", formData);
-};
+  >('comment', formData)
+}
 
 // 签到情况
 export const getSignInDataApi = (userId: number) => {
   return http.Get<
     RespWrapper<{
-      id: number;
-      name: string;
-      threeDaysCoinCount: number;
-      threeDaysExpCount: number;
-      sevenDaysCoinCount: number;
-      sevenDaysExpCount: number;
-      pcBackground: string;
-      mobileBackground: string;
-      currentProgress: number;
+      id: number
+      name: string
+      threeDaysCoinCount: number
+      threeDaysExpCount: number
+      sevenDaysCoinCount: number
+      sevenDaysExpCount: number
+      pcBackground: string
+      mobileBackground: string
+      currentProgress: number
       dateMap: Record<
         string,
         {
-          isNextDaySign: boolean;
-          isLastDaySign: boolean;
-          isSign: boolean;
-          isLast: boolean;
-          hasExtraBonus: boolean;
+          isNextDaySign: boolean
+          isLastDaySign: boolean
+          isSign: boolean
+          isLast: boolean
+          hasExtraBonus: boolean
         }
-      >;
+      >
     }>,
     RespWrapper<{
-      daily_id: number;
-      three_days_coin: string;
-      three_days_exp: string;
-      seven_days_coin: string;
-      seven_days_exp: string;
-      event_name: string;
-      background_pc: string;
-      background_phone: string;
-      currentProgress: string;
+      daily_id: number
+      three_days_coin: string
+      three_days_exp: string
+      seven_days_coin: string
+      seven_days_exp: string
+      event_name: string
+      background_pc: string
+      background_phone: string
+      currentProgress: string
       record: Array<
         Array<{
-          date: string;
-          signed: boolean;
-          bonus: boolean;
+          date: string
+          signed: boolean
+          bonus: boolean
         }>
-      >;
+      >
     }>
-  >("daily", {
+  >('daily', {
     params: {
       user_id: userId,
     },
@@ -1007,14 +1007,14 @@ export const getSignInDataApi = (userId: number) => {
       const map: Record<
         string,
         {
-          isNextDaySign: boolean;
-          isLastDaySign: boolean;
-          isSign: boolean;
-          isLast: boolean;
-          hasExtraBonus: boolean;
+          isNextDaySign: boolean
+          isLastDaySign: boolean
+          isSign: boolean
+          isLast: boolean
+          hasExtraBonus: boolean
         }
-      > = {};
-      const currentDate = getDate(new Date(), {}).toString().padStart(2, "0");
+      > = {}
+      const currentDate = getDate(new Date(), {}).toString().padStart(2, '0')
       return {
         code: res.code,
         data: {
@@ -1044,7 +1044,7 @@ export const getSignInDataApi = (userId: number) => {
                 isLast: currentDate >= item.date,
                 // isSign,
                 hasExtraBonus: item.bonus,
-              };
+              }
             })
             .map((item, index, array) => {
               return {
@@ -1052,7 +1052,7 @@ export const getSignInDataApi = (userId: number) => {
                 isNextDaySign:
                   index < array.length - 1 && array[index + 1].isSign,
                 isLastDaySign: index > 0 && array[index - 1].isSign,
-              };
+              }
             })
             .reduce((map, item) => {
               map[item.date] = {
@@ -1061,116 +1061,118 @@ export const getSignInDataApi = (userId: number) => {
                 isSign: item.isSign,
                 isLast: item.isLast,
                 hasExtraBonus: item.hasExtraBonus,
-              };
-              return map;
+              }
+              return map
             }, map),
         },
-      };
+      }
     },
     cacheFor: null,
-  });
-};
+  })
+}
 
 // 收藏和取消收藏
 export const collectComicApi = (comicId: number) => {
-  const formData = new FormData();
-  formData.set("aid", comicId + "");
+  const formData = new FormData()
+  formData.set('aid', comicId + '')
   return http.Post<
     RespWrapper<{
-      msg: string;
-      status: "ok" | string;
-      type: "remove" | "add";
+      msg: string
+      status: 'ok' | string
+      type: 'remove' | 'add'
     }>
-  >("favorite", formData);
-};
+  >('favorite', formData)
+}
 
 // 喜欢，一次性操作
 export const likeComicApi = (comicId: number) => {
-  const formData = new FormData();
-  formData.set("id", comicId + "");
+  const formData = new FormData()
+  formData.set('id', comicId + '')
   return http.Post<
     RespWrapper<{
-      code: number;
-      msg: string;
-      status: string;
+      code: number
+      msg: string
+      status: string
     }>
-  >("like", formData);
-};
+  >('like', formData)
+}
 
 // 2024.09.28
 // 该接口目前为停用状态
 export const likeCommentApi = async (commentId: number) => {
-  const formData = new FormData();
-  formData.set("c_id", commentId + "");
-  return http.Post<void, RespWrapper<unknown>>("comment_vote", formData);
-};
+  const formData = new FormData()
+  formData.set('c_id', commentId + '')
+  return http.Post<void, RespWrapper<unknown>>('comment_vote', formData)
+}
 
 // 签到 TODO 未签的数据结构未知
 // 已签 data: {msg: string} data.msg: 你今天已经签过了
 export const signInApi = (userId: number, dayId: number) => {
-  const formData = new FormData();
-  formData.set("user_id", userId + "");
-  formData.set("daily_id", dayId + "");
-  return http.Post<RespWrapper<{ msg: string }>>("daily_chk", formData);
-};
+  const formData = new FormData()
+  formData.set('user_id', userId + '')
+  formData.set('daily_id', dayId + '')
+  return http.Post<RespWrapper<{ msg: string }>>('daily_chk', formData)
+}
 
 // 获取图片列表，需要通过正则来解析 html 文件内容
 export const getComicPicListApi = (
   comicId: number,
   shuntKey: number | undefined,
 ) => {
-  return http.Get<{ list: string[] }, string>("chapter_view_template", {
+  return http.Get<{ list: string[] }, string>('chapter_view_template', {
     params: {
       id: comicId,
-      mode: "vertical",
+      mode: 'vertical',
       page: 0,
       app_img_shunt: shuntKey,
-      express: "off",
+      express: 'off',
       v: Math.floor(Date.now() / 1000),
       // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
     },
     async transform(htmlStr) {
       // 2025.06.15 新版匹配方式
       // 正则表达式匹配 result 对象
-      const resultRegex = /const result\s*=\s*({[\s\S]*?});/;
-      const resultMatch = htmlStr.match(resultRegex);
-      let result: { images: Array<string> } | null = null;
+      const resultRegex = /const result\s*=\s*({[\s\S]*?});/
+      const resultMatch = htmlStr.match(resultRegex)
+      let result: { images: Array<string> } | null = null
       if (resultMatch) {
         try {
-          result = eval(`(${resultMatch[1]})`);
-        } catch (e) {
-          console.error("Error parsing result object:", e);
+          result = eval(`(${resultMatch[1]})`)
+        }
+        catch (e) {
+          console.error('Error parsing result object:', e)
         }
       }
 
       // 正则表达式匹配 config 对象
-      const configRegex = /const config\s*=\s*({[\s\S]*?});/;
-      const configMatch = htmlStr.match(configRegex);
+      const configRegex = /const config\s*=\s*({[\s\S]*?});/
+      const configMatch = htmlStr.match(configRegex)
       let config: {
-        cache: string;
-        imghost: string;
-        jmid: string;
-      } | null = null;
+        cache: string
+        imghost: string
+        jmid: string
+      } | null = null
       if (configMatch) {
         try {
-          config = eval(`(${configMatch[1]})`);
-        } catch (e) {
-          console.error("Error parsing config object:", e);
+          config = eval(`(${configMatch[1]})`)
+        }
+        catch (e) {
+          console.error('Error parsing config object:', e)
         }
       }
       if (!result || !config) {
         return {
           list: [],
-        };
+        }
       }
       return {
         list: result.images.map(
-          (item) =>
+          item =>
             `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
         ),
-      };
+      }
     },
-  });
+  })
   // .then(() => {
   //   return [
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00001.webp",
@@ -1180,39 +1182,39 @@ export const getComicPicListApi = (
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00005.webp",
   //   ];
   // });
-};
+}
 
 // getComicPicList(416130);
 
 export const getComicDownloadInfoApi = (comicId: number) => {
   return http.Get<
     RespWrapper<{
-      fileSize: number;
-      downloadUrl: string;
-      md5: string;
-      expires: number;
+      fileSize: number
+      downloadUrl: string
+      md5: string
+      expires: number
     }>,
     RespWrapper<{
-      title: string;
-      fileSize: string;
-      download_url: string;
-      img_url: string;
+      title: string
+      fileSize: string
+      download_url: string
+      img_url: string
     }>
   >(`album_download_2/${comicId}`, {
     transform(res) {
-      const url = new URL(res.data.download_url);
+      const url = new URL(res.data.download_url)
       return {
         code: res.code,
         data: {
           fileSize: Number.parseFloat(res.data.fileSize) * 1024 * 1024,
           downloadUrl: res.data.download_url,
-          md5: url.searchParams.get("md5")!,
-          expires: Number.parseInt(url.searchParams.get("expires")!),
+          md5: url.searchParams.get('md5')!,
+          expires: Number.parseInt(url.searchParams.get('expires')!),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 // export const downloadComicApi = async (
 //   comicId: number,
@@ -1264,13 +1266,13 @@ export const getComicDownloadInfoApi = (comicId: number) => {
 // downloadComicApi(416130);
 
 export const downloadComicApi = (query: {
-  md5: string;
-  expires: number;
-  comicId: number;
-  fileName: string;
+  md5: string
+  expires: number
+  comicId: number
+  fileName: string
 }) => {
-  return http.Get<File, Blob>("dl_comic_zip", {
-    responseType: "blob",
+  return http.Get<File, Blob>('dl_comic_zip', {
+    responseType: 'blob',
     params: {
       md5: query.md5,
       expires: query.expires,
@@ -1278,37 +1280,37 @@ export const downloadComicApi = (query: {
     },
     transform(blob) {
       const file = new File([blob], query.fileName, {
-        type: "application/zip",
-      });
-      return file;
+        type: 'application/zip',
+      })
+      return file
     },
-  });
-};
+  })
+}
 
 export const getWeekListApi = () => {
   return http.Get<
     RespWrapper<{
       categoryList: Array<{
-        id: number;
-        name: string;
-      }>;
+        id: number
+        name: string
+      }>
       typeList: Array<{
-        id: string;
-        name: string;
-      }>;
+        id: string
+        name: string
+      }>
     }>,
     RespWrapper<{
       categories: Array<{
-        id: string;
-        time: string;
-        title: string;
-      }>;
+        id: string
+        time: string
+        title: string
+      }>
       type: Array<{
-        id: string;
-        title: string;
-      }>;
+        id: string
+        title: string
+      }>
     }>
-  >("week", {
+  >('week', {
     transform(res) {
       return {
         code: res.code,
@@ -1317,59 +1319,59 @@ export const getWeekListApi = () => {
             return {
               id: Number.parseInt(item.id),
               name: item.time,
-            };
+            }
           }),
           typeList: res.data.type.map((item) => {
             return {
               id: item.id,
               name: item.title,
-            };
+            }
           }),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const getWeekComicListApi = (query: {
-  page: number;
-  category: number;
-  type: string;
+  page: number
+  category: number
+  type: string
 }) => {
   return http.Get<
     RespWrapper<{
-      total: number;
+      total: number
       list: Array<{
-        id: number;
-        author: string;
-        name: string;
-        liked: boolean;
-        isCollect: boolean;
-        updateAt: number;
-      }>;
+        id: number
+        author: string
+        name: string
+        liked: boolean
+        isCollect: boolean
+        updateAt: number
+      }>
     }>,
     RespWrapper<{
-      total: number;
+      total: number
       list: Array<{
-        id: string;
-        author: string;
-        description: string;
-        name: string;
-        image: string;
+        id: string
+        author: string
+        description: string
+        name: string
+        image: string
         category: {
-          id: string;
-          title: string;
-        };
+          id: string
+          title: string
+        }
         category_sub: {
-          id: null;
-          title: null;
-        };
-        liked: boolean;
-        is_favorite: boolean;
-        update_at: number;
-      }>;
+          id: null
+          title: null
+        }
+        liked: boolean
+        is_favorite: boolean
+        update_at: number
+      }>
     }>
-  >("week/filter", {
+  >('week/filter', {
     params: {
       page: query.page,
       id: query.category,
@@ -1388,21 +1390,21 @@ export const getWeekComicListApi = (query: {
               liked: item.liked,
               isCollect: item.is_favorite,
               updateAt: item.update_at,
-            };
+            }
           }),
         },
-      };
+      }
     },
-  });
-};
+  })
+}
 
 export const buyComicApi = (comicId: number) => {
-  const formData = new FormData();
-  formData.set("id", comicId + "");
+  const formData = new FormData()
+  formData.set('id', comicId + '')
   return http.Post<
     RespWrapper<{
-      msg: string;
-      status: "ok" | "error";
+      msg: string
+      status: 'ok' | 'error'
     }>
-  >("coin_buy_comics", formData);
-};
+  >('coin_buy_comics', formData)
+}

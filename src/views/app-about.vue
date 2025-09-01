@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { trpcClient } from "@/apis";
+import { trpcClient } from '@/apis'
 
-import { version } from "../../package.json";
-const hash = __COMIT_HASH__;
-const isDev = import.meta.env.DEV;
+import { version } from '../../package.json'
+const hash = __COMIT_HASH__
+const isDev = import.meta.env.DEV
 
 const toRepo = () => {
   trpcClient.openLink.mutate({
-    url: "https://github.com/Dedicatus546/jm-desktop",
-  });
-};
+    url: 'https://github.com/Dedicatus546/jm-desktop',
+  })
+}
 </script>
 
 <template>

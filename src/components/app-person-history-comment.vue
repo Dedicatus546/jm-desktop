@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { usePagination } from 'alova/client'
 
-import { getUserCommentListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
-import useUserStore from "@/stores/use-user-store";
+import { getUserCommentListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/1.jpg'
+import useUserStore from '@/stores/use-user-store'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) => getUserCommentListApi(page, userStore.userInfo!.uid),
+  page => getUserCommentListApi(page, userStore.userInfo!.uid),
   {
     initialPage: 1,
     initialPageSize: 10,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
 </script>
 
 <template>
