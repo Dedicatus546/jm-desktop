@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination } from 'alova/client'
 
 import { getComicListApi } from '@/apis'
@@ -8,6 +9,10 @@ const props = defineProps<{
   query: string
 }>()
 
+const routePage = useRouteQuery('page', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const { page, pageSize, pageCount, data, loading } = usePagination(
   page =>
     getComicListApi({
@@ -22,6 +27,7 @@ const { page, pageSize, pageCount, data, loading } = usePagination(
     total: res => res.data.total,
   },
 )
+syncRef(page, routePage)
 </script>
 
 <template>

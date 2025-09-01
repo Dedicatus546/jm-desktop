@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination } from 'alova/client'
 
 import { getUserCommentListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/1.jpg'
 import useUserStore from '@/stores/use-user-store'
 
+const routePage = useRouteQuery('historyCommentPage', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
   page => getUserCommentListApi(page, userStore.userInfo!.uid),
@@ -15,6 +20,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
     total: res => res.data.total,
   },
 )
+syncRef(routePage, page)
 </script>
 
 <template>

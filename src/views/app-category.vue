@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination, useRequest } from 'alova/client'
 
 import { getCategoryFilterListApi, getCategoryListApi } from '@/apis'
@@ -21,6 +22,10 @@ const orderList = [
   { label: '日排行', value: 'mv_t' },
 ]
 
+const routePage = useRouteQuery('page', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const { loading, pageCount, pageSize, data, page } = usePagination(
   page =>
     getCategoryFilterListApi({
@@ -42,6 +47,7 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
     total: res => res.data.total,
   },
 )
+syncRef(page, routePage)
 
 const { loading: categoryLoading, data: category } = useRequest(
   () => getCategoryListApi(),

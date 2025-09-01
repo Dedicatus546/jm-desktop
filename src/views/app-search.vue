@@ -14,10 +14,13 @@ const order = useRouteQuery<string>('order', 'mr', {
 })
 
 const formState = reactive({
-  content: '',
-  order: 'mr',
+  content: content.value,
 })
 
+const routePage = useRouteQuery('page', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const { page, pageSize, pageCount, data, send, loading, onSuccess }
   = usePagination(
     page =>
@@ -27,7 +30,7 @@ const { page, pageSize, pageCount, data, send, loading, onSuccess }
         order: order.value,
       }),
     {
-      initialPage: 1,
+      initialPage: routePage.value,
       initialPageSize: 80,
       data: (res) => {
         const list = res.data.content
@@ -41,6 +44,7 @@ const { page, pageSize, pageCount, data, send, loading, onSuccess }
       immediate: false,
     },
   )
+syncRef(page, routePage)
 
 // 如果根据 id 搜索应该直接跳到指定详情页
 onSuccess(async () => {
@@ -59,31 +63,11 @@ onSuccess(async () => {
 
 const submit = () => {
   content.value = formState.content
-  order.value = formState.order
 }
 
-watch(
-  [content, order],
-  ([content, order]) => {
-    formState.content = content
-    formState.order = order
-  },
-  {
-    immediate: true,
-  },
-)
-
-watch(
-  content,
-  (content) => {
-    if (content) {
-      send()
-    }
-  },
-  {
-    immediate: true,
-  },
-)
+if (formState.content) {
+  send()
+}
 </script>
 
 <template>
@@ -113,7 +97,7 @@ watch(
             >
               <template #prepend>
                 <v-select
-                  v-model:model-value="formState.order"
+                  v-model:model-value="order"
                   hide-details
                   color="primary"
                   variant="outlined"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination, useRequest } from 'alova/client'
 
 import { commentComicApi, getComicCommentListApi } from '@/apis'
@@ -9,6 +10,11 @@ import useUserStore from '@/stores/use-user-store'
 const props = defineProps<{
   comicId: number
 }>()
+
+const routePage = useRouteQuery('commentPage', '1', {
+  mode: 'push',
+  transform: val => Number.parseInt(val),
+})
 
 const {
   loading,
@@ -24,12 +30,14 @@ const {
       comicId: props.comicId,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
     data: res => res.data.list,
     total: res => res.data.total,
   },
 )
+
+syncRef(routePage, page)
 
 const userStore = useUserStore()
 const formState = reactive({

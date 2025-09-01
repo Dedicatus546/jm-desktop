@@ -1,21 +1,27 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination } from 'alova/client'
 
 import { getHistoryComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/6.jpg'
 
+const routePage = useRouteQuery('historyComicPage', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const { page, pageCount, pageSize, loading, data } = usePagination(
   page =>
     getHistoryComicListApi({
       page,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
     data: res => res.data.list,
     total: res => res.data.total,
   },
 )
+syncRef(routePage, page)
 </script>
 
 <template>

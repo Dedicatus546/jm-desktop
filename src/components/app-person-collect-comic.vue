@@ -1,27 +1,33 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
 import { usePagination } from 'alova/client'
 
 import { getCollectComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/5.jpg'
 
-const formState = reactive({
-  type: 'mr',
+const order = useRouteQuery<'mr' | 'mp'>('collectComicType', 'mr', {
+  mode: 'push',
 })
 
+const routePage = useRouteQuery('collectComicPage', '1', {
+  transform: val => Number.parseInt(val),
+  mode: 'push',
+})
 const { page, pageCount, pageSize, loading, data } = usePagination(
   page =>
     getCollectComicListApi({
       page,
-      order: formState.type,
+      order: order.value,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
     data: res => res.data.list,
     total: res => res.data.total,
-    watchingStates: [() => formState.type],
+    watchingStates: [order],
   },
 )
+syncRef(routePage, page)
 </script>
 
 <template>
@@ -39,7 +45,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
           <v-select
             color="primary"
             variant="outlined"
-            v-model:model-value="formState.type"
+            v-model:model-value="order"
             hide-details
             :items="[
               {
