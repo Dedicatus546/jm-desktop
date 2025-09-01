@@ -40,6 +40,10 @@ const http = createAlova({
     // method.config.headers["Content-Type"] = "application/x-www-form-urlencoded";
     method.config.headers.tokenparam = `${ts},${version}`
     method.config.headers.token = tokenHash
+    // 设置 20 分钟缓存
+    if (method.type === 'GET') {
+      method.config.cacheFor = 1000 * 60 * 20
+    }
   },
   responded: {
     async onSuccess(response, method) {
