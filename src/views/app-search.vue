@@ -117,7 +117,7 @@ watch(
                   hide-details
                   color="primary"
                   variant="outlined"
-                  class="wind-w-[120px]"
+                  class="wind-w-[150px]"
                   item-title="title"
                   item-value="value"
                   :items="[
