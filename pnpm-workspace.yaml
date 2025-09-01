@@ -2,6 +2,7 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - electron
   - electron-winstaller
+  - esbuild
   - simple-git-hooks
   - skia-canvas
   - vue-demi
