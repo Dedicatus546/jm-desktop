@@ -1,22 +1,13 @@
-// import 'vue-router'
-
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import { scrollBehavior } from '@/compositions/use-recovery-scroll-position'
 import AppComicDetail from '@/views/app-comic-detail.vue'
 import AppComicRead from '@/views/app-comic-read.vue'
 import AppHome from '@/views/app-home.vue'
 
 import { createLogger } from './logger'
+import { scrollManager } from './utils/scroll-manager'
 
 const { info } = createLogger('router')
-
-declare module 'vue-router' {
-  interface RouteMeta {
-    shouldRecoveryScoll: boolean
-    scrollPromiseResolve?: () => void
-  }
-}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -107,11 +98,24 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior,
+  scrollBehavior: scrollManager.getScrollBehavior(),
 })
 
 router.beforeEach((to, from, next) => {
   info('router.beforeEach', '从', from.fullPath, '跳转到', to.fullPath)
+  next()
+})
+
+router.beforeEach((_to, from, next) => {
+  const scrollEl = document.getElementById('scroll-view') as HTMLDivElement
+  if (!scrollEl) {
+    next()
+    return
+  }
+  scrollManager.setPosition(from.fullPath, {
+    top: scrollEl.scrollTop,
+    left: scrollEl.scrollLeft,
+  })
   next()
 })
 
