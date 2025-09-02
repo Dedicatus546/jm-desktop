@@ -23,13 +23,29 @@ const cover = computed(() =>
     ? '/360x640.svg'
     : `${appStore.setting.imgHost}/media/albums/${props.comic.id}_3x4.jpg`,
 )
+
+const visibleRef = useTemplateRef('visibleRef')
+const isVisible = useElementVisibility(visibleRef, {
+  once: true,
+  rootMargin: '100px 0px 100px 0px',
+  scrollTarget() {
+    return document.getElementById('scroll-view')
+  },
+})
+const isInside = ref(false)
+watch(isVisible, (nVal, oVal) => {
+  if (oVal || nVal) {
+    isInside.value = true
+  }
+})
 </script>
 
 <template>
   <router-link
     :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
   >
-    <v-card color="primary">
+    <div ref="visibleRef"></div>
+    <v-card color="primary" v-if="isInside">
       <v-img
         :aspect-ratio="3 / 4"
         cover
@@ -56,6 +72,7 @@ const cover = computed(() =>
         </v-card-subtitle>
       </v-card-item>
     </v-card>
+    <div class="wind-aspect-ratio-[0.57978]" v-else></div>
   </router-link>
 </template>
 
