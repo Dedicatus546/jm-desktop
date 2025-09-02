@@ -17,11 +17,15 @@ const formState = reactive({
   content: content.value,
 })
 
-const routePage = useRouteQuery('page', '1', {
-  transform: val => Number.parseInt(val),
+const routePage = useRouteQuery<string, number>('page', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
   mode: 'push',
 })
-const { page, pageSize, pageCount, data, send, loading, onSuccess }
+const { page, pageSize, pageCount, send, data, loading, onSuccess }
   = usePagination(
     page =>
       getComicListApi({

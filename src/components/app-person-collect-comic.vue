@@ -9,8 +9,12 @@ const order = useRouteQuery<'mr' | 'mp'>('collectComicType', 'mr', {
   mode: 'push',
 })
 
-const routePage = useRouteQuery('collectComicPage', '1', {
-  transform: val => Number.parseInt(val),
+const routePage = useRouteQuery<string, number>('collectComicPage', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
   mode: 'push',
 })
 const { page, pageCount, pageSize, loading, data } = usePagination(
