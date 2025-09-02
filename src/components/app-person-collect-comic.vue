@@ -37,11 +37,11 @@ syncRef(routePage, page)
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">
+          <app-comic-skeleten-list-item />
+        </v-col>
+      </v-row>
     </template>
     <template #header>
       <div class="mb-4 wind-flex wind-justify-end">
@@ -73,11 +73,9 @@ syncRef(routePage, page)
     </template>
     <template #default="{ items }">
       <v-row>
-        <template v-for="item of items" :key="item.raw.id">
-          <v-col :cols="6" :sm="4" :md="3" :lg="2">
-            <app-comic-list-item :comic="item.raw" />
-          </v-col>
-        </template>
+        <v-col v-for="item of items" :key="item.raw.id" :cols="6" :sm="4" :md="3" :lg="2">
+          <app-comic-list-item :comic="item.raw" />
+        </v-col>
       </v-row>
     </template>
     <template #footer>

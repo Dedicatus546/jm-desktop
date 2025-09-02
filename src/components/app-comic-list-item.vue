@@ -37,14 +37,17 @@ watch(isVisible, (nVal, oVal) => {
   if (oVal || nVal) {
     isInside.value = true
   }
+},
+{
+  immediate: true,
 })
 </script>
 
 <template>
   <router-link
+    class="wind-relative"
     :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
   >
-    <div ref="visibleRef"></div>
     <v-card color="primary" v-if="isInside">
       <v-img
         :aspect-ratio="3 / 4"
@@ -73,6 +76,7 @@ watch(isVisible, (nVal, oVal) => {
       </v-card-item>
     </v-card>
     <div class="wind-aspect-ratio-[0.57978]" v-else></div>
+    <div class="wind-pointer-events-none wind-inset-0 wind-absolute" ref="visibleRef"></div>
   </router-link>
 </template>
 
