@@ -41,6 +41,16 @@ interface State {
     }
     shuntList: Array<{ title: string, key: number }>
   }
+  data: {
+    weekCategoryList: Array<{
+      id: number
+      name: string
+    }>
+    weekTypeList: Array<{
+      id: string
+      name: string
+    }>
+  }
 }
 
 const useAppStore = defineStore('app', () => {
@@ -86,6 +96,10 @@ const useAppStore = defineStore('app', () => {
         web: '',
       },
       shuntList: [],
+    },
+    data: {
+      weekCategoryList: [],
+      weekTypeList: [],
     },
   })
 

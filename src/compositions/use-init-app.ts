@@ -1,7 +1,7 @@
 import { useRequest } from 'alova/client'
 import { isString } from 'radash'
 
-import { getSettingApi, loginApi, trpcClient } from '@/apis'
+import { getSettingApi, getWeekListApi, loginApi, trpcClient } from '@/apis'
 import { error, info, warn } from '@/logger'
 import useAppStore from '@/stores/use-app-store'
 import { useDownloadStore } from '@/stores/use-download-store'
@@ -138,11 +138,40 @@ const useInitDownload = () => {
   }
 }
 
+const useInitData = () => {
+  const appStore = useAppStore()
+  const {
+    data: weekData,
+    send,
+  } = useRequest(() => getWeekListApi(), {
+    immediate: false,
+  })
+
+  return {
+    init: async () => {
+      info('初始化全局数据')
+      try {
+        await send()
+        Object.assign(appStore.data, {
+          weekCategoryList: weekData.value.data.categoryList,
+          weekTypeList: weekData.value.data.typeList,
+        })
+        info('初始化全局数据成功')
+      }
+      catch (e) {
+        error('初始化全局数据失败，原因', e)
+        throw new Error('初始化全局数据失败')
+      }
+    },
+  }
+}
+
 const useInitApp = () => {
   const appStore = useAppStore()
   const setting = useInitSetting()
   const config = useInitConfig()
   const autoLogin = useAutoLogin()
+  const data = useInitData()
   const download = useInitDownload()
   const loading = ref(true)
   const currentStatus = ref<string | null>(null)
@@ -165,6 +194,9 @@ const useInitApp = () => {
       }
       currentStatus.value = '初始化下载任务'
       await download.init()
+      await delay(300)
+      currentStatus.value = '初始化全局数据'
+      await data.init()
       await delay(300)
     }
     catch (e) {

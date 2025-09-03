@@ -1,25 +1,23 @@
 <script setup lang="ts">
 import { useRouteQuery } from '@vueuse/router'
-import { usePagination, useRequest } from 'alova/client'
+import { usePagination } from 'alova/client'
 
-import { getWeekComicListApi, getWeekListApi } from '@/apis'
+import { getWeekComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
+import useAppStore from '@/stores/use-app-store'
 
-const category = useRouteQuery('category', '', {
+const appStore = useAppStore()
+
+const category = useRouteQuery<string, number>('category', appStore.data.weekCategoryList[0].id + '', {
   mode: 'push',
   transform: {
-    get: v => (!v ? -1 : Number.parseInt(v)),
+    get: v => Number.parseInt(v),
+    set: v => String(v),
   },
 })
-const type = useRouteQuery('type', 'manga', {
+const type = useRouteQuery('type', appStore.data.weekTypeList.at(-1)!.id, {
   mode: 'push',
 })
-
-const {
-  data,
-  onSuccess,
-  loading: weekLoading,
-} = useRequest(() => getWeekListApi())
 
 const {
   // page,
@@ -27,7 +25,6 @@ const {
   pageSize,
   data: list,
   loading,
-  send,
 } = usePagination(
   page =>
     getWeekComicListApi({
@@ -38,7 +35,6 @@ const {
   {
     // 一般只有一页
     preloadNextPage: false,
-    immediate: false,
     initialPage: 1,
     initialPageSize: 20,
     data: res => res.data.list,
@@ -46,29 +42,10 @@ const {
     watchingStates: [category, type],
   },
 )
-
-onSuccess(() => {
-  if (data.value.data.categoryList.length > 0 && category.value === -1) {
-    category.value = data.value.data.categoryList[0].id
-  }
-  else {
-    send(1, 20)
-  }
-  // if (data.value.data.typeList.length > 0) {
-  //   formState.type = data.value.data.typeList[0].id;
-  // }
-  // send(1, 80);
-})
 </script>
 
 <template>
-  <div
-    v-if="weekLoading"
-    class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
-  >
-    <v-progress-circular indeterminate></v-progress-circular>
-  </div>
-  <v-card v-else>
+  <v-card>
     <v-card-text>
       <v-row>
         <v-col :cols="12">
@@ -94,7 +71,7 @@ onSuccess(() => {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="data?.data.categoryList ?? []"
+                    :items="appStore.data.weekCategoryList"
                   ></v-select>
                 </v-col>
                 <v-col :cols="6">
@@ -105,7 +82,7 @@ onSuccess(() => {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="data?.data.typeList ?? []"
+                    :items="appStore.data.weekTypeList"
                   ></v-select>
                 </v-col>
               </v-row>
