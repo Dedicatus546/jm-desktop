@@ -31,10 +31,10 @@ let win: BrowserWindow | null
 
 const createWindow = async () => {
   let config = await getConfig()
-  let { windowInfo } = config
-  if (windowInfo && !isWindowInAvailableDisplayList(windowInfo)) {
+  if (config.windowInfo && !isWindowInAvailableDisplayList(config.windowInfo)) {
     info('存在已记录的窗口位置且不在当前的显示器列表中，使用默认的窗口位置')
-    windowInfo = undefined
+    config.windowInfo = undefined
+    await saveConfig(config)
   }
 
   win = new BrowserWindow({
@@ -45,10 +45,16 @@ const createWindow = async () => {
     },
     autoHideMenuBar: true,
     frame: false,
-    ...(windowInfo ?? {}),
+    ...(config.windowInfo ?? {}),
     minWidth: 1200,
     minHeight: 600,
   })
+
+  // 第一次启动后要记录 electron 默认设置的位置
+  if (!config.windowInfo) {
+    config.windowInfo = win.getBounds()
+    await saveConfig(config)
+  }
 
   const setSessionProxy = async () => {
     if (config.proxyInfo) {
