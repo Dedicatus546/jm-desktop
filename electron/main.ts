@@ -36,6 +36,8 @@ const createWindow = async () => {
     info('存在已记录的窗口位置且不在当前的显示器列表中，使用默认的窗口位置')
     windowInfo = undefined
   }
+  const { minWidth, minHeight } = getMinWidthAndMinHeight()
+  info('基于主显示器使用的最小宽度和最小高度 %d %d', minWidth, minHeight)
 
   win = new BrowserWindow({
     icon: join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
@@ -46,6 +48,8 @@ const createWindow = async () => {
     autoHideMenuBar: true,
     frame: false,
     ...(windowInfo ?? {}),
+    minWidth,
+    minHeight,
   })
 
   const setSessionProxy = async () => {
@@ -147,4 +151,14 @@ const isWindowInfoInDisplayList = (windowInfo: WindowInfo) => {
     const area = windowWidth * windowHeight
     return overlapArea / area > 0.3
   })
+}
+
+const getMinWidthAndMinHeight = () => {
+  const display = screen.getPrimaryDisplay()
+  const { width, height } = display.bounds
+  // 这里要 Math.round 需要使用整数
+  return {
+    minWidth: Math.round(width * 0.7),
+    minHeight: Math.round(height * 0.85),
+  }
 }
