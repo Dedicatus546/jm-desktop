@@ -45,7 +45,10 @@ const createWindow = async () => {
     },
     autoHideMenuBar: true,
     frame: false,
-    ...(config.windowInfo ?? {}),
+    ...(config.windowInfo ?? {
+      width: 1200,
+      height: 600,
+    }),
     minWidth: 1200,
     minHeight: 600,
   })
