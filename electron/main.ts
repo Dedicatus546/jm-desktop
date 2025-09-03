@@ -1,11 +1,11 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { app, BrowserWindow, session } from 'electron'
+import { app, BrowserWindow, screen, session } from 'electron'
 import { debounce } from 'radash'
 import { createIPCHandler } from 'trpc-electron-fork/main'
 
-import { getConfig, saveConfig } from './module/config'
+import { getConfig, saveConfig, WindowInfo } from './module/config'
 import { getExpressServerPort } from './module/express-server'
 import { createLogger } from './module/logger'
 import { emitter } from './shared/mitt'
@@ -31,6 +31,11 @@ let win: BrowserWindow | null
 
 const createWindow = async () => {
   let config = await getConfig()
+  let { windowInfo } = config
+  if (windowInfo && !isWindowInfoInDisplayList(windowInfo)) {
+    info('存在已记录的窗口位置且不在当前的显示器列表中，使用默认的窗口位置')
+    windowInfo = undefined
+  }
 
   win = new BrowserWindow({
     icon: join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
@@ -40,7 +45,7 @@ const createWindow = async () => {
     },
     autoHideMenuBar: true,
     frame: false,
-    ...(config.windowInfo ?? {}),
+    ...(windowInfo ?? {}),
   })
 
   const setSessionProxy = async () => {
@@ -122,3 +127,24 @@ app.on('activate', () => {
 })
 
 app.whenReady().then(createWindow)
+
+// 如果窗口位置在某个已存在的 screen 内占据大于 30% 时，则合法
+// 否则我们需要将窗口复位
+const isWindowInfoInDisplayList = (windowInfo: WindowInfo) => {
+  const displayList = screen.getAllDisplays()
+  return displayList.some((display) => {
+    const { x, y, width, height } = display.bounds
+    const { x: windowX, y: windowY, width: windowWidth, height: windowHeight } = windowInfo
+    const left = Math.max(x, windowX)
+    const right = Math.min(x + width, windowX + windowWidth)
+    const top = Math.max(y, windowY)
+    const bottom = Math.min(y + height, windowY + windowHeight)
+
+    const overlapWidth = right - left
+    const overlapHeight = bottom - top
+
+    const overlapArea = Math.max(0, overlapWidth) * Math.max(0, overlapHeight)
+    const area = windowWidth * windowHeight
+    return overlapArea / area > 0.3
+  })
+}
