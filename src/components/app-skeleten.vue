@@ -9,6 +9,7 @@
 <style lang="scss" scoped>
 .app-skeleten {
   position: relative;
+  overflow: hidden;
 
   &::after {
     content: "";
@@ -21,6 +22,12 @@
     background: linear-gradient(90deg,rgba(var(--v-theme-surface),0),rgba(var(--v-theme-surface),.3),rgba(var(--v-theme-surface),0));
     transform: translate(-100%);
     z-index: 1;
+  }
+}
+
+@keyframes loading {
+  100% {
+    transform: translateX(100%);
   }
 }
 </style>
