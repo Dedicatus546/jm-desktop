@@ -52,26 +52,25 @@ watchEffect(() => {
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
-  if (!comicInfo.value) {
-    return []
-  }
-  const list = []
-  if (comicInfo.value.data.seriesList.length > 1) {
-    list.push({
-      value: 'chapter',
-      tab: '目录',
-    })
-  }
-  list.push(
+  const list = [
     {
       value: 'relevant',
       tab: '相关漫画',
     },
     {
       value: 'comment',
-      tab: comicInfo.value.data.commentCount + '条评论',
+      tab: comicInfo.value && comicInfo.value.data.commentCount > 0 ? (comicInfo.value.data.commentCount + '条评论') : '评论',
     },
-  )
+  ]
+  if (loading.value || !comicInfo.value) {
+    return list
+  }
+  if (comicInfo.value.data.seriesList.length > 1) {
+    list.unshift({
+      value: 'chapter',
+      tab: '目录',
+    })
+  }
   return list
 })
 
@@ -194,17 +193,12 @@ const download = async () => {
 </script>
 
 <template>
-  <div
-    v-if="loading || !comicInfo"
-    class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
-  >
-    <v-progress-circular indeterminate></v-progress-circular>
-  </div>
-  <v-row v-else>
+  <v-row>
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <div class="wind-flex wind-gap-4">
+          <app-comic-detail-skeleten v-if="loading" />
+          <div class="wind-flex wind-gap-4" v-else>
             <div
               class="wind-flex-shrink-0 wind-max-w-[300px] wind-min-w-[200px] wind-w-1/4"
             >
@@ -420,14 +414,16 @@ const download = async () => {
           <v-tabs-window v-model:model-value="activeTabKey">
             <v-tabs-window-item value="chapter">
               <app-comic-detail-chapter
-                :comic-name="comicInfo.data.name"
-                :chapter-list="comicInfo.data.seriesList"
-                :current-chapter-id="comicInfo.data.currentSeriesId"
+                :loading="loading"
+                :comic-name="comicInfo?.data.name ?? ''"
+                :chapter-list="comicInfo?.data.seriesList ?? []"
+                :current-chapter-id="comicInfo?.data.currentSeriesId"
               />
             </v-tabs-window-item>
             <v-tabs-window-item value="relevant">
               <app-comic-detail-relevant
-                :relate-list="comicInfo.data.relateList"
+                :loading="loading"
+                :relate-list="comicInfo?.data.relateList ?? []"
               />
             </v-tabs-window-item>
             <v-tabs-window-item value="comment">

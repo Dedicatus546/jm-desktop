@@ -21,17 +21,13 @@ watch(isVisible, (nVal, oVal) => {
 <template>
   <div class="wind-relative">
     <v-card color="primary" v-if="isInside">
-      <div class="v-skeleton-loader__bone wind-bg-[rgba(var(--v-theme-on-surface),var(--v-border-opacity))] wind-w-full wind-aspect-ratio-[0.75]"></div>
+      <app-skeleten class="wind-aspect-ratio-[0.75]"></app-skeleten>
       <v-card-item class="wind-pb-[.425rem]! wind-pt-[.425rem]!">
         <v-card-title class="wind-mb-[.4rem]">
-          <div class="v-skeleton-loader__bone wind-bg-[rgba(var(--v-theme-on-surface),var(--v-border-opacity))] wind-w-full wind-rounded-[4px]!">
-            &#12288;
-          </div>
+          <app-skeleten>&#12288;</app-skeleten>
         </v-card-title>
         <v-card-subtitle>
-          <div class="v-skeleton-loader__bone wind-bg-[rgba(var(--v-theme-on-surface),var(--v-border-opacity))] wind-w-full wind-rounded-[4px]!">
-            &#12288;
-          </div>
+          <app-skeleten>&#12288;</app-skeleten>
         </v-card-subtitle>
       </v-card-item>
     </v-card>
