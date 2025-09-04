@@ -4,6 +4,9 @@ import { usePagination } from 'alova/client'
 
 import { getComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/3.jpg'
+import useAppStore from '@/stores/use-app-store'
+
+const appStore = useAppStore()
 
 const router = useRouter()
 const content = useRouteQuery<string>('content', '', {
@@ -108,24 +111,7 @@ if (formState.content) {
                   class="wind-w-[150px]"
                   item-title="title"
                   item-value="value"
-                  :items="[
-                    {
-                      title: '最新',
-                      value: 'mr',
-                    },
-                    {
-                      title: '最多收藏',
-                      value: 'mv',
-                    },
-                    {
-                      title: '最多图片',
-                      value: 'mp',
-                    },
-                    {
-                      title: '最多爱心',
-                      value: 'tf',
-                    },
-                  ]"
+                  :items="appStore.data.searchOrderList"
                 ></v-select>
               </template>
               <template #append-inner>

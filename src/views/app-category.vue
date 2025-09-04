@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import { useRouteQuery } from '@vueuse/router'
-import { usePagination, useRequest } from 'alova/client'
+import { usePagination } from 'alova/client'
 
-import { getCategoryFilterListApi, getCategoryListApi } from '@/apis'
+import { getCategoryFilterListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
+import useAppStore from '@/stores/use-app-store'
 
+const appStore = useAppStore()
 const router = useRouter()
 
-const formState = reactive({
-  order: '',
-  category: '',
-  subCategory: '',
-})
-
-const orderList = [
-  { label: '最新', value: '' },
-  { label: '最多爱心', value: 'tf' },
-  { label: '总排行', value: 'mv' },
-  { label: '月排行', value: 'mv_m' },
-  { label: '周排行', value: 'mv_w' },
-  { label: '日排行', value: 'mv_t' },
-]
+const order = useRouteQuery<string, string>('order', appStore.data.categoryOrderList[0].value)
+const category = useRouteQuery<string, string>('category', '')
+const subCategory = useRouteQuery<string, string>('subCategory', '')
 
 const routePage = useRouteQuery<string, number>('page', '1', {
   transform: {
@@ -34,18 +25,18 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
   page =>
     getCategoryFilterListApi({
       page,
-      category: [formState.category, formState.subCategory]
+      category: [category.value, subCategory.value]
         .filter(Boolean)
         .join('_'),
-      order: formState.order,
+      order: order.value,
     }),
   {
     initialPage: 1,
     initialPageSize: 80,
     watchingStates: [
-      () => formState.order,
-      () => formState.category,
-      () => formState.subCategory,
+      order,
+      category,
+      subCategory,
     ],
     data: res => res.data.list,
     total: res => res.data.total,
@@ -53,40 +44,28 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
 )
 syncRef(page, routePage)
 
-const { loading: categoryLoading, data: category } = useRequest(
-  () => getCategoryListApi(),
-  {
-    initialData: {
-      data: {
-        categoryList: [],
-        tagTypeList: [],
-      },
-    },
-  },
-)
-
 const tagList = computed(() =>
-  category.value.data.tagTypeList.flatMap(item => item.list),
+  appStore.data.categoryTagList.flatMap(item => item.list),
 )
 
 const subCategoryList = computed(() => {
   return (
-    category.value.data.categoryList.find(
-      item => item.type === 'slug' && item.slug === formState.category,
+    appStore.data.categoryCategoryList.find(
+      item => item.type === 'slug' && item.slug === category.value,
     )?.subCategoryList ?? []
   )
 })
 
 const onCategoryClick = (slug: string) => {
-  const item = category.value.data.categoryList.find(
+  const item = appStore.data.categoryCategoryList.find(
     item => item.slug == slug,
   )
   if (!item) {
     return
   }
-  if (item.type === 'slug') {
-    formState.subCategory = ''
-    formState.category = item.slug
+  if (item.type === 'slug' || item.id === 0) {
+    subCategory.value = ''
+    category.value = item.slug
   }
   else {
     router.push({
@@ -116,76 +95,74 @@ const onCategoryClick = (slug: string) => {
         </template>
         <template #header>
           <div class="wind-mb-4">
-            <template v-if="!categoryLoading">
-              <v-chip-group
-                color="primary"
-                v-model:model-value="formState.order"
-                column
-                filter
+            <v-chip-group
+              color="primary"
+              v-model:model-value="order"
+              column
+              filter
+            >
+              <v-chip
+                v-for="item of appStore.data.categoryOrderList"
+                :key="item.value"
+                :value="item.value"
               >
-                <v-chip
-                  v-for="item of orderList"
-                  :key="item.value"
-                  :value="item.value"
-                >
-                  {{ item.label }}
-                </v-chip>
-              </v-chip-group>
+                {{ item.title }}
+              </v-chip>
+            </v-chip-group>
+            <v-divider />
+            <v-chip-group
+              color="primary"
+              :model-value="category"
+              @update:model-value="onCategoryClick"
+              column
+              filter
+            >
+              <v-chip
+                v-for="item of appStore.data.categoryCategoryList"
+                :key="item.slug"
+                :value="item.slug"
+              >
+                {{ item.name }}
+              </v-chip>
+            </v-chip-group>
+            <template v-if="subCategoryList.length > 0">
               <v-divider />
               <v-chip-group
                 color="primary"
-                :model-value="formState.category"
-                @update:model-value="onCategoryClick"
+                v-model:model-value="subCategory"
                 column
                 filter
               >
                 <v-chip
-                  v-for="item of category.data.categoryList"
+                  v-for="item of subCategoryList"
                   :key="item.slug"
                   :value="item.slug"
                 >
                   {{ item.name }}
                 </v-chip>
               </v-chip-group>
-              <template v-if="subCategoryList.length > 0">
-                <v-divider />
-                <v-chip-group
-                  color="primary"
-                  v-model:model-value="formState.subCategory"
-                  column
-                  filter
-                >
-                  <v-chip
-                    v-for="item of subCategoryList"
-                    :key="item.slug"
-                    :value="item.slug"
-                  >
-                    {{ item.name }}
-                  </v-chip>
-                </v-chip-group>
-              </template>
-              <v-divider />
-              <v-chip-group color="primary" column>
-                <router-link
-                  v-for="item of tagList"
-                  :key="item"
-                  custom
-                  :to="{ name: 'QUICK_SEARCH', query: { query: item } }"
-                >
-                  <template #default="{ navigate }">
-                    <v-chip @click="navigate()">
-                      {{ item }}
-                    </v-chip>
-                  </template>
-                </router-link>
-              </v-chip-group>
-              <v-divider />
             </template>
+            <v-divider />
+            <v-chip-group color="primary" column>
+              <router-link
+                v-for="item of tagList"
+                :key="item"
+                custom
+                :to="{ name: 'QUICK_SEARCH', query: { query: item } }"
+              >
+                <template #default="{ navigate }">
+                  <v-chip @click="navigate()">
+                    {{ item }}
+                  </v-chip>
+                </template>
+              </router-link>
+            </v-chip-group>
+            <v-divider />
           </div>
         </template>
         <template #no-data>
           <v-empty-state
-            title="出现这个就大概率是出 BUG 了，请提 issue"
+            title="来到了一个无人区"
             :image="EMPTY_STATE_IMG"
           ></v-empty-state>
         </template>

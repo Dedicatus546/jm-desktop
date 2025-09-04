@@ -50,6 +50,29 @@ interface State {
       id: string
       name: string
     }>
+    searchOrderList: Array<{
+      title: string
+      value: string
+    }>
+    categoryOrderList: Array<{
+      title: string
+      value: string
+    }>
+    categoryTagList: Array<{
+      title: string
+      list: Array<string>
+    }>
+    categoryCategoryList: Array<{
+      id: number
+      name: string
+      type: 'slug' | 'search'
+      slug: string
+      subCategoryList: Array<{
+        id: number
+        name: string
+        slug: string
+      }>
+    }>
   }
 }
 
@@ -100,6 +123,34 @@ const useAppStore = defineStore('app', () => {
     data: {
       weekCategoryList: [],
       weekTypeList: [],
+      searchOrderList: [
+        {
+          title: '最新',
+          value: 'mr',
+        },
+        {
+          title: '最多收藏',
+          value: 'mv',
+        },
+        {
+          title: '最多图片',
+          value: 'mp',
+        },
+        {
+          title: '最多爱心',
+          value: 'tf',
+        },
+      ],
+      categoryOrderList: [
+        { title: '最新', value: '' },
+        { title: '最多爱心', value: 'tf' },
+        { title: '总排行', value: 'mv' },
+        { title: '月排行', value: 'mv_m' },
+        { title: '周排行', value: 'mv_w' },
+        { title: '日排行', value: 'mv_t' },
+      ],
+      categoryTagList: [],
+      categoryCategoryList: [],
     },
   })
 

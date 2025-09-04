@@ -1,7 +1,7 @@
 import { useRequest } from 'alova/client'
 import { isString } from 'radash'
 
-import { getSettingApi, getWeekListApi, loginApi, trpcClient } from '@/apis'
+import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi, trpcClient } from '@/apis'
 import { error, info, warn } from '@/logger'
 import useAppStore from '@/stores/use-app-store'
 import { useDownloadStore } from '@/stores/use-download-store'
@@ -142,8 +142,15 @@ const useInitData = () => {
   const appStore = useAppStore()
   const {
     data: weekData,
-    send,
+    send: weekSend,
   } = useRequest(() => getWeekListApi(), {
+    immediate: false,
+  })
+
+  const {
+    data: categoryData,
+    send: categorySend,
+  } = useRequest(() => getCategoryListApi(), {
     immediate: false,
   })
 
@@ -151,10 +158,17 @@ const useInitData = () => {
     init: async () => {
       info('初始化全局数据')
       try {
-        await send()
+        await Promise.all([
+          weekSend(),
+          categorySend(),
+        ])
         Object.assign(appStore.data, {
           weekCategoryList: weekData.value.data.categoryList,
           weekTypeList: weekData.value.data.typeList,
+        })
+        Object.assign(appStore.data, {
+          categoryTagList: categoryData.value.data.tagTypeList,
+          categoryCategoryList: categoryData.value.data.categoryList,
         })
         info('初始化全局数据成功')
       }
