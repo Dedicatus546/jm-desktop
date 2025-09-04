@@ -41,8 +41,8 @@ watch(isVisible, (nVal, oVal) => {
 </script>
 
 <template>
-  <div ref="visibleRef"></div>
-  <v-row>
+  <v-row class="wind-relative">
+    <div ref="visibleRef" class="wind-pointer-events-none wind-inset-0 wind-absolute"></div>
     <v-col :cols="12">
       <swiper
         v-if="isInside"
