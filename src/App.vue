@@ -20,31 +20,20 @@ useRefreshUser()
                 class="wind-h-full wind-w-full wind-relative"
               >
                 <div
-                  v-if="loading || error"
-                  class="wind-flex wind-h-full wind-w-full wind-items-center wind-justify-center"
+                  v-if="loading"
+                  class="wind-flex wind-flex-col wind-gap-4 wind-h-full wind-w-full wind-items-center wind-justify-center"
                 >
-                  <div
-                    v-if="loading"
-                    class="wind-flex wind-flex-col wind-gap-4 wind-items-center"
-                  >
-                    <v-progress-circular indeterminate></v-progress-circular>
-                    <span>{{ currentStatus }}</span>
-                  </div>
-                  <div
-                    v-if="error"
-                    class="wind-flex wind-flex-col wind-gap-4 wind-items-center"
-                  >
-                    {{ error }}
-                    <v-btn type="primary" @click="reInit()">重新加载</v-btn>
-                  </div>
+                  <v-progress-circular indeterminate></v-progress-circular>
+                  <span>{{ currentStatus }}</span>
                 </div>
-                <router-view v-else v-slot="{ Component }">
-                  <!-- <keep-alive
-                    include="app-home,app-search,app-person,app-category"
-                  > -->
-                  <component :is="Component" />
-                  <!-- </keep-alive> -->
-                </router-view>
+                <div
+                  v-else-if="error"
+                  class="wind-flex wind-flex-col wind-gap-4 wind-h-full wind-w-full wind-items-center wind-justify-center"
+                >
+                  <span>{{ error }}</span>
+                  <v-btn type="primary" @click="reInit()">重新加载</v-btn>
+                </div>
+                <router-view v-else></router-view>
               </v-container>
             </div>
           </v-main>
