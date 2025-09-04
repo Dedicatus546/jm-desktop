@@ -96,11 +96,16 @@ onSuccess(() => {
   </v-form>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <template v-for="item of pageSize" :key="item">
+          <v-col cols="12">
+            <app-comment-skeleten-list-item />
+          </v-col>
+          <v-col>
+            <v-divider />
+          </v-col>
+        </template>
+      </v-row>
     </template>
     <template #no-data>
       <v-empty-state
