@@ -1,31 +1,41 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getHistoryComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/6.jpg";
+import { getHistoryComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/6.jpg'
 
+const routePage = useRouteQuery<string, number>('historyComicPage', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
+  mode: 'push',
+})
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) =>
+  page =>
     getHistoryComicListApi({
       page,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
+syncRef(routePage, page)
 </script>
 
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">
+          <app-comic-skeleten-list-item />
+        </v-col>
+      </v-row>
     </template>
     <template #no-data>
       <v-empty-state

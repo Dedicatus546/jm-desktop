@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { useRequest } from "alova/client";
-import { SubmitEventPromise } from "vuetify";
+import { useRequest } from 'alova/client'
+import { SubmitEventPromise } from 'vuetify'
 
-import { loginApi, trpcClient } from "@/apis";
-import useSnackbar from "@/compositions/use-snack-bar";
-import useAppStore from "@/stores/use-app-store";
-import useUserStore from "@/stores/use-user-store";
+import { loginApi, trpcClient } from '@/apis'
+import useSnackbar from '@/compositions/use-snack-bar'
+import useAppStore from '@/stores/use-app-store'
+import useUserStore from '@/stores/use-user-store'
 
-const router = useRouter();
-const userStore = useUserStore();
-const appStore = useAppStore();
+const router = useRouter()
+const userStore = useUserStore()
+const appStore = useAppStore()
 
 const formState = reactive({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
   autoLogin: false,
-});
+})
 
 const { loading, data, onSuccess, onError, send } = useRequest(
   () =>
@@ -26,52 +26,53 @@ const { loading, data, onSuccess, onError, send } = useRequest(
   {
     immediate: false,
   },
-);
+)
 
 const submit = async (e: SubmitEventPromise) => {
-  const res = await e;
+  const res = await e
   if (!res.valid) {
-    const { errors } = res;
-    const [error] = errors;
-    snackbar.error(error.errorMessages[0]);
-    return;
+    const { errors } = res
+    const [error] = errors
+    snackbar.error(error.errorMessages[0])
+    return
   }
-  send();
-};
+  send()
+}
 
-const snackbar = useSnackbar();
+const snackbar = useSnackbar()
 
 onSuccess(async () => {
-  snackbar.primary("登录成功");
-  userStore.updateUserInfoAction(data.value.data);
-  userStore.updateLoginInfoAction(formState.username, formState.password);
+  snackbar.primary('登录成功')
+  userStore.updateUserInfoAction(data.value.data)
+  userStore.updateLoginInfoAction(formState.username, formState.password)
   if (formState.autoLogin) {
     const encryptStr = await trpcClient.encryptLoginUser.query({
       username: formState.username,
       password: formState.password,
-    });
+    })
     appStore.updateConfigAction(
       {
         loginUserInfo: encryptStr,
         autoLogin: true,
       },
       true,
-    );
-  } else {
+    )
+  }
+  else {
     appStore.updateConfigAction(
       {
-        loginUserInfo: "",
+        loginUserInfo: '',
         autoLogin: false,
       },
       true,
-    );
+    )
   }
-  router.replace({ name: "PERSON" });
-});
+  router.replace({ name: 'PERSON' })
+})
 
 onError((e) => {
-  snackbar.error((e.error as Error).message);
-});
+  snackbar.error((e.error as Error).message)
+})
 </script>
 
 <template>

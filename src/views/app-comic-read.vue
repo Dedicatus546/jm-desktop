@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useRequest } from "alova/client";
+import { useRequest } from 'alova/client'
 
-import { getComicPicListApi } from "@/apis";
-import useAppStore from "@/stores/use-app-store";
-import { decodeImage } from "@/utils/image-decode";
+import { getComicPicListApi } from '@/apis'
+import useAppStore from '@/stores/use-app-store'
+import { decodeImage } from '@/utils/image-decode'
 
 const props = defineProps<{
-  id: number;
-}>();
-const appStore = useAppStore();
+  id: number
+}>()
+const appStore = useAppStore()
 
 const { loading, data, send } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
@@ -18,23 +18,23 @@ const { loading, data, send } = useRequest(
       list: [],
     },
   },
-);
+)
 
-const cacheCount = 3;
+const cacheCount = 3
 const onDecodeSuccess = (index: number) => {
-  const list = data.value.list ?? [];
-  const start = Math.max(0, index - cacheCount);
-  const end = Math.min(index + cacheCount, list.length - 1);
+  const list = data.value.list ?? []
+  const start = Math.max(0, index - cacheCount)
+  const end = Math.min(index + cacheCount, list.length - 1)
   for (let i = start; i <= end; i++) {
     // 缓存前后图片，这样翻页可以立马查看
-    decodeImage(list[i], props.id);
+    decodeImage(list[i], props.id)
   }
-};
-provide("onDecodeSuccess", onDecodeSuccess);
+}
+provide('onDecodeSuccess', onDecodeSuccess)
 
 watchEffect(() => {
-  send(props.id);
-});
+  send(props.id)
+})
 </script>
 
 <template>

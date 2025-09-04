@@ -1,52 +1,52 @@
-import { DownloadComicItem, DownloadItem } from "@electron/module/download";
-import { omit } from "radash";
+import { DownloadComicItem, DownloadItem } from '@electron/module/download'
+import { omit } from 'radash'
 
-import { trpcClient } from "@/apis/ipc";
-import { createLogger } from "@/logger";
-import { emitter } from "@/mitt";
+import { trpcClient } from '@/apis/ipc'
+import { createLogger } from '@/logger'
+import { emitter } from '@/mitt'
 
-const { info, warn } = createLogger("download");
+const { info, warn } = createLogger('download')
 
 type WithDownloadingInfo<T> = T & {
-  status: "downloading" | "pending" | "complete";
-  percent: number; // 0 - 1
-};
+  status: 'downloading' | 'pending' | 'complete'
+  percent: number // 0 - 1
+}
 
-export const useDownloadStore = defineStore("download", () => {
+export const useDownloadStore = defineStore('download', () => {
   const state = reactive<{
-    activeTabKey: "downloading" | "complete";
-    loading: boolean;
-    completeList: Array<DownloadItem>;
-    downloadingList: Array<WithDownloadingInfo<DownloadItem>>;
+    activeTabKey: 'downloading' | 'complete'
+    loading: boolean
+    completeList: Array<DownloadItem>
+    downloadingList: Array<WithDownloadingInfo<DownloadItem>>
   }>({
-    activeTabKey: "downloading",
+    activeTabKey: 'downloading',
     loading: false,
     completeList: [],
     downloadingList: [],
-  });
+  })
 
   const downloadingMap = computed(() => {
     return state.downloadingList.reduce(
       (map, item) => {
-        map[item.id] = item;
-        return map;
+        map[item.id] = item
+        return map
       },
       {} as Record<
-        DownloadItem["id"],
+        DownloadItem['id'],
         WithDownloadingInfo<DownloadItem> | undefined
       >,
-    );
-  });
+    )
+  })
 
   const completeMap = computed(() => {
     return state.completeList.reduce(
       (map, item) => {
-        map[item.id] = item;
-        return map;
+        map[item.id] = item
+        return map
       },
-      {} as Record<DownloadItem["id"], DownloadItem | undefined>,
-    );
-  });
+      {} as Record<DownloadItem['id'], DownloadItem | undefined>,
+    )
+  })
 
   const initAction = async () => {
     await Promise.allSettled([
@@ -54,20 +54,20 @@ export const useDownloadStore = defineStore("download", () => {
         state.downloadingList = list.map((item) => {
           return {
             ...item,
-            status: "pending",
+            status: 'pending',
             percent: 0,
-          };
-        });
+          }
+        })
       }),
       trpcClient.getDownloadCompleteList.query().then((list) => {
-        state.completeList = list;
+        state.completeList = list
       }),
-    ]);
+    ])
     if (state.downloadingList.length > 0) {
-      info("初始化检测到存在未完成下载任务，尝试开始下载。");
-      tryStartDownloadAction();
+      info('初始化检测到存在未完成下载任务，尝试开始下载。')
+      tryStartDownloadAction()
     }
-  };
+  }
 
   const addDownloadTaskAction = async (
     item: DownloadItem,
@@ -75,40 +75,40 @@ export const useDownloadStore = defineStore("download", () => {
   ) => {
     if (reDownload) {
       const index = state.completeList.findIndex(
-        (completeItem) => item.id === completeItem.id,
-      );
+        completeItem => item.id === completeItem.id,
+      )
       if (index > -1) {
-        state.completeList.splice(index, 1);
+        state.completeList.splice(index, 1)
       }
     }
     state.downloadingList.push({
       ...item,
-      status: "pending",
+      status: 'pending',
       percent: 0,
-    });
-    await syncAction();
-    tryStartDownloadAction();
-  };
+    })
+    await syncAction()
+    tryStartDownloadAction()
+  }
 
   const tryStartDownloadAction = async () => {
-    const first = state.downloadingList[0];
+    const first = state.downloadingList[0]
     if (!first) {
-      warn("未检测到可下载的任务");
-      return;
+      warn('未检测到可下载的任务')
+      return
     }
-    if (first.status === "pending") {
-      if (first.type === "comic") {
-        await downloadComicAction(first);
+    if (first.status === 'pending') {
+      if (first.type === 'comic') {
+        await downloadComicAction(first)
       }
     }
     // 尝试下载下一项
-    tryStartDownloadAction();
-  };
+    tryStartDownloadAction()
+  }
 
   const downloadComicAction = async (
     downloadItem: WithDownloadingInfo<DownloadComicItem>,
   ) => {
-    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const { promise, resolve, reject } = Promise.withResolvers<void>()
     trpcClient.onDownloadComic.subscribe(
       {
         id: downloadItem.id,
@@ -118,49 +118,51 @@ export const useDownloadStore = defineStore("download", () => {
       },
       {
         onStarted() {
-          downloadItem.status = "downloading";
+          downloadItem.status = 'downloading'
         },
         onData(value) {
-          if (value.type === "downloading") {
-            downloadItem.percent = value.data.complete! / value.data.total!;
-          } else if (value.type === "complete") {
-            downloadItem.status = "complete";
-            downloadItem.filepath = value.data.filepath!;
+          if (value.type === 'downloading') {
+            downloadItem.percent = value.data.complete! / value.data.total!
+          }
+          else if (value.type === 'complete') {
+            downloadItem.status = 'complete'
+            downloadItem.filepath = value.data.filepath!
             const index = state.downloadingList.findIndex(
-              (item) => item.id === downloadItem.id,
-            );
+              item => item.id === downloadItem.id,
+            )
             if (index > -1) {
-              const [item] = state.downloadingList.splice(index, 1);
+              const [item] = state.downloadingList.splice(index, 1)
               state.completeList.unshift(
                 omit(item as WithDownloadingInfo<DownloadComicItem>, [
-                  "status",
-                  "percent",
+                  'status',
+                  'percent',
                 ]),
-              );
-              resolve();
-            } else {
+              )
+              resolve()
+            }
+            else {
               reject(
-                new Error("下载列表内找不到对应项，uuid 为 " + downloadItem.id),
-              );
+                new Error('下载列表内找不到对应项，uuid 为 ' + downloadItem.id),
+              )
             }
           }
         },
         onError(err) {
-          reject(err);
+          reject(err)
         },
       },
-    );
-    await promise;
-    await syncAction();
-    emitter.emit("DownloadSuccess", downloadItem);
-  };
+    )
+    await promise
+    await syncAction()
+    emitter.emit('DownloadSuccess', downloadItem)
+  }
 
   const syncAction = async () => {
     await trpcClient.saveDownloadDownloadingList.query(
-      state.downloadingList.map((item) => omit(item, ["status", "percent"])),
-    );
-    await trpcClient.saveDownloadCompleteList.query(state.completeList);
-  };
+      state.downloadingList.map(item => omit(item, ['status', 'percent'])),
+    )
+    await trpcClient.saveDownloadCompleteList.query(state.completeList)
+  }
 
   return {
     ...toRefs(state),
@@ -169,5 +171,5 @@ export const useDownloadStore = defineStore("download", () => {
     initAction,
     addDownloadTaskAction,
     downloadComicAction,
-  };
-});
+  }
+})

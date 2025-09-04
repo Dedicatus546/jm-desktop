@@ -1,30 +1,45 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getUserCommentListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
-import useUserStore from "@/stores/use-user-store";
+import { getUserCommentListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/1.jpg'
+import useUserStore from '@/stores/use-user-store'
 
-const userStore = useUserStore();
+const routePage = useRouteQuery<string, number>('historyCommentPage', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
+  mode: 'push',
+})
+const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) => getUserCommentListApi(page, userStore.userInfo!.uid),
+  page => getUserCommentListApi(page, userStore.userInfo!.uid),
   {
     initialPage: 1,
     initialPageSize: 10,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
+syncRef(routePage, page)
 </script>
 
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <template v-for="item of pageSize" :key="item">
+          <v-col cols="12">
+            <app-comment-skeleten-list-item />
+          </v-col>
+          <v-col>
+            <v-divider />
+          </v-col>
+        </template>
+      </v-row>
     </template>
     <template #no-data>
       <v-empty-state

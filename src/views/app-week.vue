@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { useRouteQuery } from "@vueuse/router";
-import { usePagination, useRequest } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getWeekComicListApi, getWeekListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getWeekComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
+import useAppStore from '@/stores/use-app-store'
 
-const category = useRouteQuery("category", "", {
-  mode: "push",
+const appStore = useAppStore()
+
+const category = useRouteQuery<string, number>('category', appStore.data.weekCategoryList[0].id + '', {
+  mode: 'push',
   transform: {
-    get: (v) => (!v ? -1 : Number.parseInt(v)),
+    get: v => Number.parseInt(v),
+    set: v => String(v),
   },
-});
-const type = useRouteQuery("type", "manga", {
-  mode: "push",
-});
-
-const {
-  data,
-  onSuccess,
-  loading: weekLoading,
-} = useRequest(() => getWeekListApi());
+})
+const type = useRouteQuery('type', appStore.data.weekTypeList.at(-1)!.id, {
+  mode: 'push',
+})
 
 const {
   // page,
@@ -27,9 +25,8 @@ const {
   pageSize,
   data: list,
   loading,
-  send,
 } = usePagination(
-  (page) =>
+  page =>
     getWeekComicListApi({
       page,
       category: category.value,
@@ -38,36 +35,17 @@ const {
   {
     // 一般只有一页
     preloadNextPage: false,
-    immediate: false,
     initialPage: 1,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
     watchingStates: [category, type],
   },
-);
-
-onSuccess(() => {
-  if (data.value.data.categoryList.length > 0 && category.value === -1) {
-    category.value = data.value.data.categoryList[0].id;
-  } else {
-    send(1, 20);
-  }
-  // if (data.value.data.typeList.length > 0) {
-  //   formState.type = data.value.data.typeList[0].id;
-  // }
-  // send(1, 80);
-});
+)
 </script>
 
 <template>
-  <div
-    v-if="weekLoading"
-    class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
-  >
-    <v-progress-circular indeterminate></v-progress-circular>
-  </div>
-  <v-card v-else>
+  <v-card>
     <v-card-text>
       <v-row>
         <v-col :cols="12">
@@ -77,11 +55,11 @@ onSuccess(() => {
             :loading="loading"
           >
             <template #loader>
-              <div
-                class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-              >
-                <v-progress-circular indeterminate></v-progress-circular>
-              </div>
+              <v-row>
+                <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">
+                  <app-comic-skeleten-list-item />
+                </v-col>
+              </v-row>
             </template>
             <template #header>
               <v-row>
@@ -93,7 +71,7 @@ onSuccess(() => {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="data?.data.categoryList ?? []"
+                    :items="appStore.data.weekCategoryList"
                   ></v-select>
                 </v-col>
                 <v-col :cols="6">
@@ -104,7 +82,7 @@ onSuccess(() => {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="data?.data.typeList ?? []"
+                    :items="appStore.data.weekTypeList"
                   ></v-select>
                 </v-col>
               </v-row>

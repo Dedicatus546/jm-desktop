@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import useAppStore from "@/stores/use-app-store";
+import useAppStore from '@/stores/use-app-store'
 
 defineProps<{
   comment: {
-    id: number;
-    parentId: number;
-    nickname: string;
-    likeCount: number;
-    content: string;
-    avatar: string | null;
-    avatarColor: string;
-    createTime: string;
+    id: number
+    parentId: number
+    nickname: string
+    likeCount: number
+    content: string
+    avatar: string | null
+    avatarColor: string
+    createTime: string
     replyList?: Array<{
-      id: number;
-      parentId: number;
-      nickname: string;
-      likeCount: number;
-      createTime: string;
-      content: string;
-      avatar: string | null;
-      avatarColor: string;
-    }>;
-  };
-}>();
+      id: number
+      parentId: number
+      nickname: string
+      likeCount: number
+      createTime: string
+      content: string
+      avatar: string | null
+      avatarColor: string
+    }>
+  }
+}>()
 
-const appStore = useAppStore();
-const replyListOpen = ref(false);
+const appStore = useAppStore()
+const replyListOpen = ref(false)
 </script>
 
 <template>

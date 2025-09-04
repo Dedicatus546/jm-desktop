@@ -1,49 +1,49 @@
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
+import { useDisplay } from 'vuetify'
 
-import { trpcClient } from "@/apis";
-import useAppStore from "@/stores/use-app-store";
-import useUserStore from "@/stores/use-user-store";
+import { trpcClient } from '@/apis'
+import useAppStore from '@/stores/use-app-store'
+import useUserStore from '@/stores/use-user-store'
 
 defineProps<{
-  simple: boolean;
-}>();
+  simple: boolean
+}>()
 
-const appStore = useAppStore();
-const userStore = useUserStore();
-const userInfo = computed(() => userStore.userInfo);
-const router = useRouter();
-const { smAndDown } = useDisplay();
+const appStore = useAppStore()
+const userStore = useUserStore()
+const userInfo = computed(() => userStore.userInfo)
+const router = useRouter()
+const { smAndDown } = useDisplay()
 
 onKeyStroke(
-  "Escape",
+  'Escape',
   () => {
-    router.back();
+    router.back()
   },
   {
     dedupe: true,
   },
-);
+)
 
 const logout = () => {
-  userStore.logoutAction();
+  userStore.logoutAction()
   appStore.updateConfigAction(
     {
       autoLogin: false,
-      loginUserInfo: "",
+      loginUserInfo: '',
     },
     true,
-  );
-  router.push({ name: "LOGIN" });
-};
+  )
+  router.push({ name: 'LOGIN' })
+}
 
 const minimizeWin = () => {
-  trpcClient.minimizeWin.mutate();
-};
+  trpcClient.minimizeWin.mutate()
+}
 
 const closeWin = () => {
-  trpcClient.closeWin.mutate();
-};
+  trpcClient.closeWin.mutate()
+}
 </script>
 
 <template>

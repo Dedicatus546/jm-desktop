@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { usePagination, useRequest } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination, useRequest } from 'alova/client'
 
-import { commentComicApi, getComicCommentListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/1.jpg";
-import useSnackbar from "@/compositions/use-snack-bar";
-import useUserStore from "@/stores/use-user-store";
+import { commentComicApi, getComicCommentListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/1.jpg'
+import useSnackbar from '@/compositions/use-snack-bar'
+import useUserStore from '@/stores/use-user-store'
 
 const props = defineProps<{
-  comicId: number;
-}>();
+  comicId: number
+}>()
+
+const routePage = useRouteQuery<string, number>('commentPage', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
+  mode: 'push',
+})
 
 const {
   loading,
@@ -18,23 +28,25 @@ const {
   data,
   send: refresh,
 } = usePagination(
-  (page) =>
+  page =>
     getComicCommentListApi({
       page,
       comicId: props.comicId,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
+    data: res => res.data.list,
+    total: res => res.data.total,
   },
-);
+)
 
-const userStore = useUserStore();
+syncRef(routePage, page)
+
+const userStore = useUserStore()
 const formState = reactive({
-  content: "",
-});
+  content: '',
+})
 const {
   loading: commentComicLoading,
   send,
@@ -45,13 +57,13 @@ const {
   {
     immediate: false,
   },
-);
-const snackbar = useSnackbar();
+)
+const snackbar = useSnackbar()
 
 onSuccess(() => {
-  snackbar.success(commentData.value.data.msg);
-  refresh(1, 0);
-});
+  snackbar.success(commentData.value.data.msg)
+  refresh(1, 0)
+})
 </script>
 
 <template>
@@ -84,11 +96,16 @@ onSuccess(() => {
   </v-form>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <template v-for="item of pageSize" :key="item">
+          <v-col cols="12">
+            <app-comment-skeleten-list-item />
+          </v-col>
+          <v-col>
+            <v-divider />
+          </v-col>
+        </template>
+      </v-row>
     </template>
     <template #no-data>
       <v-empty-state

@@ -1,27 +1,37 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/2.jpg";
+import { getComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
 const props = defineProps<{
-  query: string;
-}>();
+  query: string
+}>()
 
+const routePage = useRouteQuery<string, number>('page', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
+  mode: 'push',
+})
 const { page, pageSize, pageCount, data, loading } = usePagination(
-  (page) =>
+  page =>
     getComicListApi({
       content: props.query,
       page,
-      order: "mr",
+      order: 'mr',
     }),
   {
     initialPage: 1,
     initialPageSize: 80,
-    data: (res) => res.data.content,
-    total: (res) => res.data.total,
+    data: res => res.data.content,
+    total: res => res.data.total,
   },
-);
+)
+syncRef(page, routePage)
 </script>
 
 <template>
@@ -34,11 +44,11 @@ const { page, pageSize, pageCount, data, loading } = usePagination(
         :loading="loading"
       >
         <template #loader>
-          <div
-            class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-          >
-            <v-progress-circular indeterminate></v-progress-circular>
-          </div>
+          <v-row>
+            <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">
+              <app-comic-skeleten-list-item />
+            </v-col>
+          </v-row>
         </template>
         <template #no-data>
           <v-empty-state

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import useAppStore from "@/stores/use-app-store";
-import useUserStore from "@/stores/use-user-store";
+import useAppStore from '@/stores/use-app-store'
+import useUserStore from '@/stores/use-user-store'
 
-const userStore = useUserStore();
-const appStore = useAppStore();
-const userInfo = computed(() => userStore.userInfo);
+const userStore = useUserStore()
+const appStore = useAppStore()
+const userInfo = computed(() => userStore.userInfo)
 
-const activeTabKey = ref<"collect" | "history">("collect");
+const activeTabKey = ref<'collect' | 'history'>('collect')
 const tabList = [
   {
-    value: "collect",
-    tab: "我的收藏",
+    value: 'collect',
+    tab: '我的收藏',
   },
   {
-    value: "history",
-    tab: "历史记录",
+    value: 'history',
+    tab: '历史记录',
   },
   {
-    value: "comment",
-    tab: "评论",
+    value: 'comment',
+    tab: '评论',
   },
-];
+]
 </script>
 
 <template>

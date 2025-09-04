@@ -1,57 +1,61 @@
 <script setup lang="ts">
-import { breakpointsVuetifyV3 } from "@vueuse/core";
-import { useRequest } from "alova/client";
+import { breakpointsVuetifyV3 } from '@vueuse/core'
+import { useRequest } from 'alova/client'
 
-import { getLatestComicListApi, getPromoteComicListApi } from "@/apis";
+import { getLatestComicListApi, getPromoteComicListApi } from '@/apis'
 
-const router = useRouter();
+const router = useRouter()
 
 const { loading, data } = useRequest(() => getPromoteComicListApi(), {
   initialData: {
     list: [],
   },
-});
+})
 const { loading: latestLoading, data: latestData } = useRequest(() =>
   getLatestComicListApi(1),
-);
+)
 
-const breakpoints = useBreakpoints(breakpointsVuetifyV3);
-const isGreaterXXL = breakpoints.greater("xxl");
-const isGreaterXL = breakpoints.greater("xl");
-const isGreaterSM = breakpoints.greater("sm");
+const breakpoints = useBreakpoints(breakpointsVuetifyV3)
+const isGreaterXXL = breakpoints.greater('xxl')
+const isGreaterXL = breakpoints.greater('xl')
+const isGreaterSM = breakpoints.greater('sm')
 const slidesPerView = computed(() => {
   if (isGreaterXXL.value) {
-    return 6.3;
-  } else if (isGreaterXL.value) {
-    return 5.3;
-  } else if (isGreaterSM.value) {
-    return 4.3;
+    return 6.3
   }
-  return 3.3;
-});
+  else if (isGreaterXL.value) {
+    return 5.3
+  }
+  else if (isGreaterSM.value) {
+    return 4.3
+  }
+  return 3.3
+})
 const minListCount = computed(() => {
   if (isGreaterXXL.value) {
-    return 7;
-  } else if (isGreaterXL.value) {
-    return 6;
-  } else if (isGreaterSM.value) {
-    return 5;
+    return 7
   }
-  return 4;
-});
+  else if (isGreaterXL.value) {
+    return 6
+  }
+  else if (isGreaterSM.value) {
+    return 5
+  }
+  return 4
+})
 
-const searchText = ref("");
+const searchText = ref('')
 const search = () => {
   if (!searchText.value) {
-    return;
+    return
   }
   router.push({
-    name: "SEARCH",
+    name: 'SEARCH',
     query: {
       content: searchText.value,
     },
-  });
-};
+  })
+}
 </script>
 
 <template>

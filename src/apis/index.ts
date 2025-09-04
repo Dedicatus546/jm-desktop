@@ -1,2 +1,2 @@
-export * from "./ajax";
-export * from "./ipc";
+export * from './ajax'
+export * from './ipc'

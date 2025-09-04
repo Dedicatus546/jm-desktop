@@ -1,60 +1,93 @@
-import { Config } from "@electron/module/config";
-import { useTheme } from "vuetify";
+import { Config } from '@electron/module/config'
+import { useTheme } from 'vuetify'
 
-import { trpcClient } from "@/apis";
+import { trpcClient } from '@/apis'
 
 interface State {
-  config: Config;
+  config: Config
   signIn: {
-    modalOpen: boolean;
+    modalOpen: boolean
     info: {
-      id: number;
-      name: string;
-      threeDaysCoinCount: number;
-      threeDaysExpCount: number;
-      sevenDaysCoinCount: number;
-      sevenDaysExpCount: number;
-      pcBackground: string;
-      mobileBackground: string;
-      currentProgress: number;
+      id: number
+      name: string
+      threeDaysCoinCount: number
+      threeDaysExpCount: number
+      sevenDaysCoinCount: number
+      sevenDaysExpCount: number
+      pcBackground: string
+      mobileBackground: string
+      currentProgress: number
       dateMap: Record<
         string,
         {
-          isNextDaySign: boolean;
-          isLastDaySign: boolean;
-          isSign: boolean;
-          hasExtraBonus: boolean;
+          isNextDaySign: boolean
+          isLastDaySign: boolean
+          isSign: boolean
+          hasExtraBonus: boolean
         }
-      > | null;
-    };
-  };
+      > | null
+    }
+  }
   setting: {
-    logoPath: string;
-    webHost: string;
-    imgHost: string;
-    baseUrl: string;
-    cnBaseUrl: string;
-    version: string;
+    logoPath: string
+    webHost: string
+    imgHost: string
+    baseUrl: string
+    cnBaseUrl: string
+    version: string
     storeLink: {
-      google: string;
-      web: string;
-    };
-    shuntList: Array<{ title: string; key: number }>;
-  };
+      google: string
+      web: string
+    }
+    shuntList: Array<{ title: string, key: number }>
+  }
+  data: {
+    weekCategoryList: Array<{
+      id: number
+      name: string
+    }>
+    weekTypeList: Array<{
+      id: string
+      name: string
+    }>
+    searchOrderList: Array<{
+      title: string
+      value: string
+    }>
+    categoryOrderList: Array<{
+      title: string
+      value: string
+    }>
+    categoryTagList: Array<{
+      title: string
+      list: Array<string>
+    }>
+    categoryCategoryList: Array<{
+      id: number
+      name: string
+      type: 'slug' | 'search'
+      slug: string
+      subCategoryList: Array<{
+        id: number
+        name: string
+        slug: string
+      }>
+    }>
+  }
 }
 
-const useAppStore = defineStore("app", () => {
-  const theme = useTheme();
-  const isDark = usePreferredDark();
+const useAppStore = defineStore('app', () => {
+  const theme = useTheme()
+  const isDark = usePreferredDark()
   const state = reactive<State>({
     config: {
-      theme: "dark",
-      apiUrl: "",
+      theme: 'dark',
+      apiUrl: '',
       apiUrlList: [],
-      readMode: "scroll",
+      readMode: 'scroll',
       currentShuntKey: undefined,
       autoLogin: false,
-      loginUserInfo: "",
+      loginUserInfo: '',
       windowInfo: undefined,
       proxyInfo: undefined,
       zoomFactor: 0,
@@ -63,61 +96,100 @@ const useAppStore = defineStore("app", () => {
       modalOpen: false,
       info: {
         id: 0,
-        name: "",
+        name: '',
         threeDaysCoinCount: 0,
         threeDaysExpCount: 0,
         sevenDaysCoinCount: 0,
         sevenDaysExpCount: 0,
-        pcBackground: "",
-        mobileBackground: "",
+        pcBackground: '',
+        mobileBackground: '',
         currentProgress: 0,
         dateMap: null,
       },
     },
     setting: {
-      logoPath: "",
-      webHost: "",
-      imgHost: "",
-      baseUrl: "",
-      cnBaseUrl: "",
-      version: "",
+      logoPath: '',
+      webHost: '',
+      imgHost: '',
+      baseUrl: '',
+      cnBaseUrl: '',
+      version: '',
       storeLink: {
-        google: "",
-        web: "",
+        google: '',
+        web: '',
       },
       shuntList: [],
     },
-  });
+    data: {
+      weekCategoryList: [],
+      weekTypeList: [],
+      searchOrderList: [
+        {
+          title: '最新',
+          value: 'mr',
+        },
+        {
+          title: '最多收藏',
+          value: 'mv',
+        },
+        {
+          title: '最多图片',
+          value: 'mp',
+        },
+        {
+          title: '最多爱心',
+          value: 'tf',
+        },
+      ],
+      categoryOrderList: [
+        { title: '最新', value: '' },
+        { title: '最多爱心', value: 'tf' },
+        { title: '总排行', value: 'mv' },
+        { title: '月排行', value: 'mv_m' },
+        { title: '周排行', value: 'mv_w' },
+        { title: '日排行', value: 'mv_t' },
+      ],
+      categoryTagList: [],
+      categoryCategoryList: [],
+    },
+  })
 
-  const updateSettingAction = (setting: Partial<State["setting"]>) => {
-    Object.assign(state.setting, setting);
-  };
+  const updateSettingAction = (setting: Partial<State['setting']>) => {
+    Object.assign(state.setting, setting)
+  }
 
   const updateConfigAction = async (
-    config: Partial<State["config"]>,
+    config: Partial<State['config']>,
     sync = false,
   ) => {
     if (config.theme) {
-      if (config.theme === "auto") {
-        theme.global.name.value = isDark.value ? "dark" : "light";
-      } else {
-        theme.global.name.value = config.theme;
+      if (config.theme === 'auto') {
+        theme.change(isDark.value ? 'dark' : 'light')
+      }
+      else {
+        theme.change(config.theme)
       }
     }
     state.config = {
       ...state.config,
       ...config,
-    };
-    if (sync) {
-      await trpcClient.saveConfig.mutate(state.config);
     }
-  };
+    if (sync) {
+      await trpcClient.saveConfig.mutate(state.config)
+    }
+  }
+
+  watch(isDark, (isDark) => {
+    if (state.config.theme === 'auto') {
+      theme.change(isDark ? 'dark' : 'light')
+    }
+  })
 
   return {
     ...toRefs(state),
     updateSettingAction,
     updateConfigAction,
-  };
-});
+  }
+})
 
-export default useAppStore;
+export default useAppStore

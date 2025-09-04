@@ -1,77 +1,81 @@
 <script setup lang="ts">
-import { Config } from "@electron/module/config";
-import { clone } from "radash";
-import { SubmitEventPromise } from "vuetify";
+import { Config } from '@electron/module/config'
+import { clone } from 'radash'
+import { SubmitEventPromise } from 'vuetify'
 
-import { trpcClient } from "@/apis/ipc";
-import useSnackbar from "@/compositions/use-snack-bar";
-import useAppStore from "@/stores/use-app-store.ts";
+import { trpcClient } from '@/apis/ipc'
+import useSnackbar from '@/compositions/use-snack-bar'
+import useAppStore from '@/stores/use-app-store.ts'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 const formState = reactive<
-  Omit<Config, "windowInfo" | "loginUserInfo" | "autoLogin"> & {
-    useProxy: boolean;
+  Omit<Config, 'windowInfo' | 'loginUserInfo' | 'autoLogin'> & {
+    useProxy: boolean
   }
 >({
-  theme: "light",
-  apiUrl: "",
+  theme: 'light',
+  apiUrl: '',
   apiUrlList: [],
-  readMode: "click",
+  readMode: 'click',
   zoomFactor: 0,
   proxyInfo: undefined,
   useProxy: false,
-});
+})
 
 const getConfig = async () => {
   try {
-    const config = await trpcClient.getConfig.query();
-    await appStore.updateConfigAction(config);
-    Object.assign(formState, clone(appStore.config));
+    const config = await trpcClient.getConfig.query()
+    await appStore.updateConfigAction(config)
+    Object.assign(formState, clone(appStore.config))
     if (formState.proxyInfo) {
-      formState.useProxy = true;
-    } else {
-      formState.useProxy = false;
+      formState.useProxy = true
     }
-  } catch (e) {
-    console.error("读取配置文件失败", e);
+    else {
+      formState.useProxy = false
+    }
   }
-};
+  catch (e) {
+    console.error('读取配置文件失败', e)
+  }
+}
 
-const snackbar = useSnackbar();
+const snackbar = useSnackbar()
 const submit = async (e: SubmitEventPromise) => {
-  const res = await e;
+  const res = await e
   if (!res.valid) {
-    const { errors } = res;
-    const [error] = errors;
-    snackbar.error(error.errorMessages[0]);
-    return;
+    const { errors } = res
+    const [error] = errors
+    snackbar.error(error.errorMessages[0])
+    return
   }
   try {
-    await appStore.updateConfigAction(formState, true);
-    snackbar.success("更新成功");
-  } catch (e) {
-    console.error("保存配置失败", e);
+    await appStore.updateConfigAction(formState, true)
+    snackbar.success('更新成功')
   }
-};
+  catch (e) {
+    console.error('保存配置失败', e)
+  }
+}
 
 const onUseProxyChange = (useProxy: boolean) => {
-  formState.useProxy = useProxy;
+  formState.useProxy = useProxy
   if (formState.useProxy) {
     formState.proxyInfo = {
-      host: "",
+      host: '',
       port: 0,
-      username: "",
-      password: "",
-    };
-  } else {
-    formState.proxyInfo = undefined;
+      username: '',
+      password: '',
+    }
   }
-};
+  else {
+    formState.proxyInfo = undefined
+  }
+}
 
 onMounted(() => {
-  getConfig();
-});
+  getConfig()
+})
 </script>
 
 <template>

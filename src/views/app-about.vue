@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { trpcClient } from "@/apis";
+import { trpcClient } from '@/apis'
 
-import { version } from "../../package.json";
-const hash = __COMIT_HASH__;
-const isDev = import.meta.env.DEV;
+import { version } from '../../package.json'
+
+const hash = __COMIT_HASH__
+const isDev = import.meta.env.DEV
+const repoUrl = import.meta.env.VITE_GIT_REPO_URL
 
 const toRepo = () => {
   trpcClient.openLink.mutate({
-    url: "https://github.com/Dedicatus546/jm-desktop",
-  });
-};
+    url: repoUrl,
+  })
+}
 </script>
 
 <template>
@@ -36,7 +38,7 @@ const toRepo = () => {
         <v-list-item title="仓库地址">
           <template #append>
             <div class="wind-cursor-pointer" @click="toRepo">
-              https://github.com/Dedicatus546/jm-desktop
+              {{ repoUrl }}
             </div>
           </template>
         </v-list-item>

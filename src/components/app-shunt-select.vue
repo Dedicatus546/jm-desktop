@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import useAppStore from "@/stores/use-app-store";
-const appStore = useAppStore();
+import useAppStore from '@/stores/use-app-store'
+const appStore = useAppStore()
 
 const updateCurrentShuntKey = (value: number) => {
   appStore.updateConfigAction(
@@ -8,8 +8,8 @@ const updateCurrentShuntKey = (value: number) => {
       currentShuntKey: value as number,
     },
     true,
-  );
-};
+  )
+}
 </script>
 
 <template>

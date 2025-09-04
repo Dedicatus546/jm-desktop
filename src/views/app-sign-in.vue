@@ -1,127 +1,128 @@
 <script setup lang="ts">
-import { useRequest } from "alova/client";
-import { set } from "date-fns";
-import { VCalendar } from "vuetify/labs/VCalendar";
+import { useRequest } from 'alova/client'
+import { set } from 'date-fns'
+import { VCalendar } from 'vuetify/labs/VCalendar'
 
-import { getSignInDataApi, signInApi } from "@/apis";
-import useSnackbar from "@/compositions/use-snack-bar";
-import useUserStore from "@/stores/use-user-store";
+import { getSignInDataApi, signInApi } from '@/apis'
+import useSnackbar from '@/compositions/use-snack-bar'
+import useUserStore from '@/stores/use-user-store'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
-const currentDate = new Date();
-const value = [currentDate];
+const currentDate = new Date()
+const value = [currentDate]
 
 const { data, send } = useRequest(() =>
   getSignInDataApi(userStore.userInfo?.uid ?? 0),
-);
+)
 const sliderTickMap = computed(() => {
   const o = {
-    3: "三",
-    6: "七",
-  };
+    3: '三',
+    6: '七',
+  }
   if (data.value) {
-    o["3"] +=
-      `(${data.value.data.threeDaysCoinCount},${data.value.data.threeDaysExpCount})`;
-    o["6"] +=
-      `(${data.value.data.sevenDaysCoinCount},${data.value.data.sevenDaysExpCount})`;
+    o['3']
+      += `(${data.value.data.threeDaysCoinCount},${data.value.data.threeDaysExpCount})`
+    o['6']
+      += `(${data.value.data.sevenDaysCoinCount},${data.value.data.sevenDaysExpCount})`
   }
   return {
-    1: "一",
-    2: "二",
-    3: o["3"],
-    4: "四",
-    5: "五",
-    6: "六",
-    7: o["6"],
-  };
-});
+    1: '一',
+    2: '二',
+    3: o['3'],
+    4: '四',
+    5: '五',
+    6: '六',
+    7: o['6'],
+  }
+})
 const continuousSignInDay = computed(() => {
   if (!data.value) {
-    return 1;
+    return 1
   }
   const dateArr = Object.entries(data.value.data.dateMap)
     .sort((i1, i2) => +i1[0] - +i2[0])
-    .map((i) => i[1]);
+    .map(i => i[1])
   return dateArr.reduce(
     (r, item) => {
       if (item.isSign) {
-        r.current++;
-        r.max = Math.max(r.max, r.current);
-      } else {
-        r.current = 0;
+        r.current++
+        r.max = Math.max(r.max, r.current)
       }
-      return r;
+      else {
+        r.current = 0
+      }
+      return r
     },
     { current: 0, max: 0 },
-  ).max;
-});
+  ).max
+})
 const signInSumDay = computed(() => {
   if (!data.value) {
-    return 0;
+    return 0
   }
-  const dateArr = Object.values(data.value.data.dateMap);
+  const dateArr = Object.values(data.value.data.dateMap)
   return dateArr.reduce((r, item) => {
     if (item.isSign) {
-      return r + 1;
+      return r + 1
     }
-    return r;
-  }, 0);
-});
+    return r
+  }, 0)
+})
 const dateMap = computed(() => {
   if (!data.value) {
-    return null;
+    return null
   }
-  return data.value.data.dateMap;
-});
+  return data.value.data.dateMap
+})
 
 const events = computed(() => {
   if (!dateMap.value) {
-    return [];
+    return []
   }
   // 当前月份的天数
   const days = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1,
     0,
-  ).getDate();
-  const events = [];
+  ).getDate()
+  const events = []
   for (let i = 1; i <= days; i++) {
-    const key = `${i}`.padStart(2, "0");
-    const data = dateMap.value[key];
+    const key = `${i}`.padStart(2, '0')
+    const data = dateMap.value[key]
     const d = set(currentDate, {
       date: i,
       hours: 0,
       minutes: 0,
       seconds: 0,
       milliseconds: 0,
-    });
+    })
     if (data.hasExtraBonus) {
       events.push({
         type: 1,
-        title: "额外奖励",
+        title: '额外奖励',
         start: d,
         end: d,
-        color: "primary",
+        color: 'primary',
         allDay: true,
-      });
+      })
     }
     if (data.isLast) {
       if (data.isSign) {
         events.push({
           type: 2,
-          title: "已签到",
+          title: '已签到',
           start: d,
           end: d,
-          color: "success",
+          color: 'success',
           allDay: true,
-        });
+        })
       }
     }
   }
 
-  return events;
-});
+  return events
+})
 
 const {
   loading: signInLoading,
@@ -133,12 +134,12 @@ const {
   {
     immediate: false,
   },
-);
-const snackbar = useSnackbar();
+)
+const snackbar = useSnackbar()
 onSuccess(() => {
-  snackbar.primary(signInData.value.data.msg);
-  send();
-});
+  snackbar.primary(signInData.value.data.msg)
+  send()
+})
 </script>
 
 <template>

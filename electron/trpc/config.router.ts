@@ -1,19 +1,19 @@
-import { Config, getConfig, saveConfig } from "@electron/module/config";
-import { z } from "zod";
+import { Config, getConfig, saveConfig } from '@electron/module/config'
+import { z } from 'zod'
 
-import { trpc } from "./trpc";
+import { trpc } from './trpc'
 
 const getConfigRpc = trpc.procedure.query(async () => {
-  return getConfig();
-});
+  return getConfig()
+})
 
 const saveConfigRpc = trpc.procedure
   .input(
     z.object({
-      theme: z.enum(["light", "dark", "auto"]),
+      theme: z.enum(['light', 'dark', 'auto']),
       apiUrl: z.string(),
       apiUrlList: z.array(z.string()),
-      readMode: z.enum(["scroll", "click"]),
+      readMode: z.enum(['scroll', 'click']),
       autoLogin: z.boolean(),
       loginUserInfo: z.string(),
       currentShuntKey: z.number().optional(),
@@ -37,10 +37,10 @@ const saveConfigRpc = trpc.procedure
     }) satisfies z.ZodType<Config>,
   )
   .mutation(async ({ input: newConfig }) => {
-    await saveConfig(newConfig);
-  });
+    await saveConfig(newConfig)
+  })
 
 export const router = {
   getConfig: getConfigRpc,
   saveConfig: saveConfigRpc,
-};
+}

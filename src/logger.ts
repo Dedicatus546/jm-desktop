@@ -1,9 +1,9 @@
-import { trpcClient } from "./apis/ipc";
+import { trpcClient } from './apis/ipc'
 
-const rendererName = "renderer";
+const rendererName = 'renderer'
 
 export const createLogger = (...nameList: string[]) => {
-  return (["info", "error", "warn"] as const)
+  return (['info', 'error', 'warn'] as const)
     .map((type) => {
       return {
         type,
@@ -12,24 +12,24 @@ export const createLogger = (...nameList: string[]) => {
             nameList: [rendererName, ...nameList],
             type,
             msg: [message, ...optionalParams],
-          });
+          })
           if (import.meta.env.DEV) {
-            console[type](message, ...optionalParams);
+            console[type](message, ...optionalParams)
           }
         },
-      };
+      }
     })
     .reduce(
       (logger, item) => {
-        logger[item.type] = item.fn;
-        return logger;
+        logger[item.type] = item.fn
+        return logger
       },
       {} as {
-        info: (message?: any, ...optionalParams: any[]) => void;
-        warn: (message?: any, ...optionalParams: any[]) => void;
-        error: (message?: any, ...optionalParams: any[]) => void;
+        info: (message?: any, ...optionalParams: any[]) => void
+        warn: (message?: any, ...optionalParams: any[]) => void
+        error: (message?: any, ...optionalParams: any[]) => void
       },
-    );
-};
+    )
+}
 
-export const { info, warn, error } = createLogger();
+export const { info, warn, error } = createLogger()

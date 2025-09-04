@@ -1,34 +1,51 @@
 <script setup lang="ts">
-import { Swiper as SwiperInst } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Swiper as SwiperInst } from 'swiper'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 
 defineProps<{
-  slidesPerView: number;
+  slidesPerView: number
   list: Array<{
-    id: number;
-    name: string;
-    author: string;
-  }>;
-}>();
+    id: number
+    name: string
+    author: string
+  }>
+}>()
 
-const swiperInst = ref<SwiperInst | null>(null);
+const swiperInst = ref<SwiperInst | null>(null)
 const onSwiper = (swiper: SwiperInst) => {
-  swiperInst.value = swiper;
-};
+  swiperInst.value = swiper
+}
 
 const prev = () => {
-  swiperInst.value?.slidePrev();
-};
+  swiperInst.value?.slidePrev()
+}
 
 const next = () => {
-  swiperInst.value?.slideNext();
-};
+  swiperInst.value?.slideNext()
+}
+
+const visibleRef = useTemplateRef('visibleRef')
+const isVisible = useElementVisibility(visibleRef, {
+  once: true,
+  rootMargin: '100px 0px 100px 0px',
+  scrollTarget() {
+    return document.getElementById('scroll-view')
+  },
+})
+const isInside = ref(false)
+watch(isVisible, (nVal, oVal) => {
+  if (oVal || nVal) {
+    isInside.value = true
+  }
+})
 </script>
 
 <template>
-  <v-row>
+  <v-row class="wind-relative">
+    <div ref="visibleRef" class="wind-pointer-events-none wind-inset-0 wind-absolute"></div>
     <v-col :cols="12">
       <swiper
+        v-if="isInside"
         class="wind-select-none"
         centered-slides
         loop
@@ -40,6 +57,8 @@ const next = () => {
           <app-comic-list-item :comic="item" />
         </swiper-slide>
       </swiper>
+      <div v-else class="wind-aspect-ratio-[2.65569]">
+      </div>
     </v-col>
     <v-col :cols="6">
       <v-btn color="primary" size="large" variant="flat" block @click="prev">

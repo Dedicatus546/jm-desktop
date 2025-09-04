@@ -1,37 +1,47 @@
 <script setup lang="ts">
-import { usePagination } from "alova/client";
+import { useRouteQuery } from '@vueuse/router'
+import { usePagination } from 'alova/client'
 
-import { getCollectComicListApi } from "@/apis";
-import EMPTY_STATE_IMG from "@/assets/empty-state/5.jpg";
+import { getCollectComicListApi } from '@/apis'
+import EMPTY_STATE_IMG from '@/assets/empty-state/5.jpg'
 
-const formState = reactive({
-  type: "mr",
-});
+const order = useRouteQuery<'mr' | 'mp'>('collectComicType', 'mr', {
+  mode: 'push',
+})
 
+const routePage = useRouteQuery<string, number>('collectComicPage', '1', {
+  transform: {
+    get: val => Number.parseInt(val),
+    // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
+    set: val => String(val),
+  },
+  mode: 'push',
+})
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) =>
+  page =>
     getCollectComicListApi({
       page,
-      order: formState.type,
+      order: order.value,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 20,
-    data: (res) => res.data.list,
-    total: (res) => res.data.total,
-    watchingStates: [() => formState.type],
+    data: res => res.data.list,
+    total: res => res.data.total,
+    watchingStates: [order],
   },
-);
+)
+syncRef(routePage, page)
 </script>
 
 <template>
   <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
-      <div
-        class="wind-flex wind-h-[30vh] wind-items-center wind-justify-center"
-      >
-        <v-progress-circular indeterminate></v-progress-circular>
-      </div>
+      <v-row>
+        <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">
+          <app-comic-skeleten-list-item />
+        </v-col>
+      </v-row>
     </template>
     <template #header>
       <div class="mb-4 wind-flex wind-justify-end">
@@ -39,7 +49,7 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
           <v-select
             color="primary"
             variant="outlined"
-            v-model:model-value="formState.type"
+            v-model:model-value="order"
             hide-details
             :items="[
               {
@@ -63,11 +73,9 @@ const { page, pageCount, pageSize, loading, data } = usePagination(
     </template>
     <template #default="{ items }">
       <v-row>
-        <template v-for="item of items" :key="item.raw.id">
-          <v-col :cols="6" :sm="4" :md="3" :lg="2">
-            <app-comic-list-item :comic="item.raw" />
-          </v-col>
-        </template>
+        <v-col v-for="item of items" :key="item.raw.id" :cols="6" :sm="4" :md="3" :lg="2">
+          <app-comic-list-item :comic="item.raw" />
+        </v-col>
       </v-row>
     </template>
     <template #footer>
