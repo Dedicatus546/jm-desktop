@@ -29,11 +29,11 @@ export type DialogProviderUserOptions = Omit<
   | 'onCancel'
 >
 & Partial<
-    Pick<
-      DialogInstanceOptions,
+  Pick<
+    DialogInstanceOptions,
       'width' | 'okText' | 'cancelText' | 'onOk' | 'onCancel'
-    >
   >
+>
 
 export type DialogProviderInjectType = (
   options: DialogProviderUserOptions,
