@@ -40,15 +40,8 @@ const buttonCols = computed(() => {
 const {
   loading,
   data: comicInfo,
-  send,
   onSuccess,
-} = useRequest((id: number) => getComicDetailApi(id), {
-  immediate: false,
-})
-
-watchEffect(() => {
-  send(props.id)
-})
+} = useRequest(() => getComicDetailApi(props.id))
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
