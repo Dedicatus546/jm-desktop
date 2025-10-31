@@ -10,7 +10,7 @@ import useUserStore from '@/stores/use-user-store'
 const userStore = useUserStore()
 
 const currentDate = new Date()
-const value = [currentDate]
+const value = new Date(currentDate)
 
 const { data, send } = useRequest(() =>
   getSignInDataApi(userStore.userInfo?.uid ?? 0),
@@ -99,23 +99,23 @@ const events = computed(() => {
     })
     if (data.hasExtraBonus) {
       events.push({
-        type: 1,
+        name: '额外奖励',
         title: '额外奖励',
         start: d,
         end: d,
         color: 'primary',
-        allDay: true,
+        timed: false,
       })
     }
     if (data.isLast) {
       if (data.isSign) {
         events.push({
-          type: 2,
+          name: '已签到',
           title: '已签到',
           start: d,
           end: d,
           color: 'success',
-          allDay: true,
+          timed: false,
         })
       }
     }
@@ -146,17 +146,16 @@ onSuccess(() => {
   <v-card>
     <v-card-text>
       <div class="wind-flex wind-flex-col wind-gap-4">
+        <div class="text-h6 wind-text-center">
+          本月已签到 {{ signInSumDay }} 天
+        </div>
         <v-calendar
+          style="height: 500px"
           ref="calendar"
           :model-value="value"
           class="signCalendar"
           :events="events"
         >
-          <template #header>
-            <div class="text-h6 wind-mb-4 wind-text-center">
-              本月已签到 {{ signInSumDay }} 天
-            </div>
-          </template>
         </v-calendar>
         <v-slider
           readonly
@@ -194,17 +193,3 @@ onSuccess(() => {
     </v-card-text>
   </v-card>
 </template>
-
-<style lang="scss" scoped>
-.signCalendar {
-  ::v-deep(.v-calendar-month__day) {
-    min-height: 120px;
-  }
-
-  ::v-deep(.v-calendar-weekly__day-alldayevents-container) {
-    .v-chip {
-      --uno: wind-mt-2;
-    }
-  }
-}
-</style>
