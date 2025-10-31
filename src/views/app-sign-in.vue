@@ -12,7 +12,7 @@ const userStore = useUserStore()
 const currentDate = new Date()
 const value = new Date(currentDate)
 
-const { data, send } = useRequest(() =>
+const { loading, data, send } = useRequest(() =>
   getSignInDataApi(userStore.userInfo?.uid ?? 0),
 )
 const sliderTickMap = computed(() => {
@@ -143,7 +143,7 @@ onSuccess(() => {
 </script>
 
 <template>
-  <v-card>
+  <v-card :loading="loading">
     <v-card-text>
       <div class="wind-flex wind-flex-col wind-gap-4">
         <div class="text-h6 wind-text-center">
@@ -181,6 +181,7 @@ onSuccess(() => {
           </template>
         </v-alert>
         <v-btn
+          :disabled="loading"
           :loading="signInLoading"
           size="large"
           block
