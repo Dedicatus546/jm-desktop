@@ -18,7 +18,7 @@ const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
   page => getUserCommentListApi(page, userStore.userInfo!.uid),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 10,
     data: res => res.data.list,
     total: res => res.data.total,

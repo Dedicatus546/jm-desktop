@@ -31,7 +31,7 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
       order: order.value,
     }),
   {
-    initialPage: 1,
+    initialPage: routePage.value,
     initialPageSize: 80,
     watchingStates: [
       order,
