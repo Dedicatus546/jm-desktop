@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useRequest } from 'alova/client'
 import { set } from 'date-fns'
-import { VCalendar } from 'vuetify/labs/VCalendar'
 
 import { getSignInDataApi, signInApi } from '@/apis'
 import useSnackbar from '@/compositions/use-snack-bar'
