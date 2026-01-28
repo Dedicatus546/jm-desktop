@@ -4,6 +4,7 @@ import { useTheme } from 'vuetify'
 import { trpcClient } from '@/apis'
 
 interface State {
+  isInit: boolean
   config: Config
   signIn: {
     modalOpen: boolean
@@ -80,6 +81,7 @@ const useAppStore = defineStore('app', () => {
   const theme = useTheme()
   const isDark = usePreferredDark()
   const state = reactive<State>({
+    isInit: false,
     config: {
       theme: 'dark',
       apiUrl: '',
