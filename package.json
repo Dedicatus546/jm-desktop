@@ -12,7 +12,8 @@
     "dev": "vite",
     "build": "vite build && electron-builder --publish always",
     "build:latest": "vue-tsc && vite build && electron-builder --publish never",
-    "lint": "oxlint --fix .",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
     "postinstall": "electron-builder install-app-deps && simple-git-hooks"
   },
   "dependencies": {
@@ -73,8 +74,8 @@
     "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
   },
   "lint-staged": {
-    "src/**": "oxlint --fix",
-    "electron/**": "oxlint --fix"
+    "src/**": ["oxlint", "oxfmt"],
+    "electron/**": ["oxlint", "oxfmt"]
   },
   "engines": {
     "node": ">=24"
