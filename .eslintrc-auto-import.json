@@ -63,7 +63,6 @@
     "isRef": true,
     "isShallow": true,
     "makeDestructurable": true,
-    "manualResetRef": true,
     "mapActions": true,
     "mapGetters": true,
     "mapState": true,
