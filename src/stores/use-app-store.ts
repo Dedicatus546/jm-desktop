@@ -40,7 +40,7 @@ interface State {
       google: string
       web: string
     }
-    shuntList: Array<{ title: string, key: number }>
+    shuntList: Array<{ title: string; key: number }>
   }
   data: {
     weekCategoryList: Array<{
@@ -160,15 +160,11 @@ const useAppStore = defineStore('app', () => {
     Object.assign(state.setting, setting)
   }
 
-  const updateConfigAction = async (
-    config: Partial<State['config']>,
-    sync = false,
-  ) => {
+  const updateConfigAction = async (config: Partial<State['config']>, sync = false) => {
     if (config.theme) {
       if (config.theme === 'auto') {
         theme.change(isDark.value ? 'dark' : 'light')
-      }
-      else {
+      } else {
         theme.change(config.theme)
       }
     }

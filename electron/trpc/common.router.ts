@@ -56,11 +56,7 @@ const decodeHttpDataRpc = trpc.procedure
   )
   .query(async ({ input }) => {
     const { data, key } = input
-    const decipher = createDecipheriv(
-      'aes-256-ecb',
-      Buffer.from(key, 'utf-8'),
-      null,
-    )
+    const decipher = createDecipheriv('aes-256-ecb', Buffer.from(key, 'utf-8'), null)
     let result = decipher.update(data, 'base64', 'utf8')
     result += decipher.final('utf8')
     decipher.destroy()
@@ -102,14 +98,12 @@ const encryptLoginUserRpc = trpc.procedure
     return result
   })
 
-export const decryptLoginUserRpc = trpc.procedure
-  .input(z.string())
-  .query(async ({ input }) => {
-    const decipher = createDecipheriv('aes-256-cbc', key, iv)
-    let result = decipher.update(input, 'base64', 'utf-8')
-    result += decipher.final('utf-8')
-    return JSON.parse(result) as { username: string, password: string }
-  })
+export const decryptLoginUserRpc = trpc.procedure.input(z.string()).query(async ({ input }) => {
+  const decipher = createDecipheriv('aes-256-cbc', key, iv)
+  let result = decipher.update(input, 'base64', 'utf-8')
+  result += decipher.final('utf-8')
+  return JSON.parse(result) as { username: string; password: string }
+})
 
 export const router = {
   minimizeWin: minimizeWinRpc,

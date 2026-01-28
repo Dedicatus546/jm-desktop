@@ -22,14 +22,14 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          'primary': '#ff9800',
+          primary: '#ff9800',
           'on-primary': '#ffffff',
         },
       },
       dark: {
         dark: true,
         colors: {
-          'primary': '#633b00',
+          primary: '#633b00',
           'on-primary': '#ffffff',
         },
       },

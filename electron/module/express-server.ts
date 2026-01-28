@@ -51,8 +51,7 @@ const getExpressInstance = async () => {
   if (proxyUrl) {
     info('代理已配置，地址为：%s', proxyUrl)
     agent = new HttpsProxyAgent(proxyUrl)
-  }
-  else {
+  } else {
     info('代理未配置')
   }
 
@@ -126,9 +125,7 @@ export const restartExpressServer = async () => {
   const express = await getExpressInstance()
   await (expressServerInitPromise = new Promise<void>((resolve, reject) => {
     const devServerUrl = process.env['VITE_DEV_SERVER_URL']
-    const port = devServerUrl
-      ? (info('server 端口为 6174'), 6174)
-      : (info('server 端口随机'), 0)
+    const port = devServerUrl ? (info('server 端口为 6174'), 6174) : (info('server 端口随机'), 0)
     expressServer = express.listen(port, async () => {
       info('server 启动成功')
       resolve()

@@ -33,6 +33,7 @@
 由于需要截图原因，部分封面图片已屏蔽。
 
 ### 首页
+
 ![](./readme-assets/首页1.png)
 
 ![](./readme-assets/首页2.png)

@@ -8,13 +8,17 @@ import useAppStore from '@/stores/use-app-store'
 
 const appStore = useAppStore()
 
-const category = useRouteQuery<string, number>('category', appStore.data.weekCategoryList[0].id + '', {
-  mode: 'push',
-  transform: {
-    get: v => Number.parseInt(v),
-    set: v => String(v),
+const category = useRouteQuery<string, number>(
+  'category',
+  appStore.data.weekCategoryList[0].id + '',
+  {
+    mode: 'push',
+    transform: {
+      get: (v) => Number.parseInt(v),
+      set: (v) => String(v),
+    },
   },
-})
+)
 const type = useRouteQuery('type', appStore.data.weekTypeList.at(-1)!.id, {
   mode: 'push',
 })
@@ -26,7 +30,7 @@ const {
   data: list,
   loading,
 } = usePagination(
-  page =>
+  (page) =>
     getWeekComicListApi({
       page,
       category: category.value,
@@ -37,8 +41,8 @@ const {
     preloadNextPage: false,
     initialPage: 1,
     initialPageSize: 20,
-    data: res => res.data.list,
-    total: res => res.data.total,
+    data: (res) => res.data.list,
+    total: (res) => res.data.total,
     watchingStates: [category, type],
   },
 )
@@ -49,11 +53,7 @@ const {
     <v-card-text>
       <v-row>
         <v-col :cols="12">
-          <v-data-iterator
-            :items-per-page="pageSize"
-            :items="list ?? []"
-            :loading="loading"
-          >
+          <v-data-iterator :items-per-page="pageSize" :items="list ?? []" :loading="loading">
             <template #loader>
               <v-row>
                 <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">

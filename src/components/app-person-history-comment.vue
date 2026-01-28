@@ -8,20 +8,20 @@ import useUserStore from '@/stores/use-user-store'
 
 const routePage = useRouteQuery<string, number>('historyCommentPage', '1', {
   transform: {
-    get: val => Number.parseInt(val),
+    get: (val) => Number.parseInt(val),
     // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
-    set: val => String(val),
+    set: (val) => String(val),
   },
   mode: 'push',
 })
 const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  page => getUserCommentListApi(page, userStore.userInfo!.uid),
+  (page) => getUserCommentListApi(page, userStore.userInfo!.uid),
   {
     initialPage: routePage.value,
     initialPageSize: 10,
-    data: res => res.data.list,
-    total: res => res.data.total,
+    data: (res) => res.data.list,
+    total: (res) => res.data.total,
   },
 )
 syncRef(routePage, page)
@@ -42,10 +42,7 @@ syncRef(routePage, page)
       </v-row>
     </template>
     <template #no-data>
-      <v-empty-state
-        title="看来不是很喜欢评论"
-        :image="EMPTY_STATE_IMG"
-      ></v-empty-state>
+      <v-empty-state title="看来不是很喜欢评论" :image="EMPTY_STATE_IMG"></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>

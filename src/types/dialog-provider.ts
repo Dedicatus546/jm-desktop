@@ -27,14 +27,7 @@ export type DialogProviderUserOptions = Omit<
   | 'cancelText'
   | 'onOk'
   | 'onCancel'
->
-& Partial<
-  Pick<
-    DialogInstanceOptions,
-      'width' | 'okText' | 'cancelText' | 'onOk' | 'onCancel'
-  >
->
+> &
+  Partial<Pick<DialogInstanceOptions, 'width' | 'okText' | 'cancelText' | 'onOk' | 'onCancel'>>
 
-export type DialogProviderInjectType = (
-  options: DialogProviderUserOptions,
-) => void
+export type DialogProviderInjectType = (options: DialogProviderUserOptions) => void

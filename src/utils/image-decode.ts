@@ -19,8 +19,7 @@ const getSeed = async (comicId: number, pageStr: string) => {
   const right = 421925
   if (comicId >= left && comicId <= right) {
     charCodeOfLastChar = charCodeOfLastChar % 10
-  }
-  else if (comicId >= right + 1) {
+  } else if (comicId >= right + 1) {
     charCodeOfLastChar = charCodeOfLastChar % 8
   }
   return seedMap[charCodeOfLastChar] ?? 10 // 默认 seed
@@ -29,10 +28,7 @@ const getSeed = async (comicId: number, pageStr: string) => {
 const decodeSrcMap = new Map<string, string>()
 const decodePromiseMap = new Map<string, Promise<string>>()
 export const decodeImage = async (src: string, comicId: number) => {
-  const key
-    = comicId
-      + '-'
-      + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
+  const key = comicId + '-' + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
   if (decodeSrcMap.has(key)) {
     return decodeSrcMap.get(key)!
   }
@@ -59,8 +55,7 @@ export const decodeImage = async (src: string, comicId: number) => {
     const sy = naturalHeight - height * (i + 1) - remainder
     if (i == 0) {
       height = height + remainder
-    }
-    else {
+    } else {
       dy = dy + remainder
     }
     ctx?.drawImage(
@@ -87,9 +82,8 @@ export const decodeImage = async (src: string, comicId: number) => {
           const decodeUrl = URL.createObjectURL(file)
           decodeSrcMap.set(key, decodeUrl)
           resolve(decodeUrl)
-        }
-        else {
-          reject('canvas not output a blob by invoking \'toBlob\' method.')
+        } else {
+          reject("canvas not output a blob by invoking 'toBlob' method.")
         }
       },
       'image/webp',

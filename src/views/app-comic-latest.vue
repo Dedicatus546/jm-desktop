@@ -4,29 +4,22 @@ import { usePagination } from 'alova/client'
 import { getLatestComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
-const { loading, data, page, pageSize } = usePagination(
-  page => getLatestComicListApi(page),
-  {
-    append: true,
-    initialPage: 1,
-    initialPageSize: 80,
-    data: res => res.data,
-    total: () => 0,
-    initialData: {
-      data: [],
-    },
+const { loading, data, page, pageSize } = usePagination((page) => getLatestComicListApi(page), {
+  append: true,
+  initialPage: 1,
+  initialPageSize: 80,
+  data: (res) => res.data,
+  total: () => 0,
+  initialData: {
+    data: [],
   },
-)
+})
 </script>
 
 <template>
   <v-card title="最新发布">
     <v-card-text>
-      <v-data-iterator
-        :items="data"
-        :items-per-page="data.length"
-        :loading="loading"
-      >
+      <v-data-iterator :items="data" :items-per-page="data.length" :loading="loading">
         <template #loader>
           <v-row>
             <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">

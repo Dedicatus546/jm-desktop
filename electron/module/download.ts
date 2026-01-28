@@ -22,10 +22,7 @@ export const downloadDir = resolve(dataDir, 'download')
 
 export const comicDownloadDir = resolve(downloadDir, 'comic')
 
-export const downloadDownloadingFilepath = resolve(
-  downloadDir,
-  'downloading.json',
-)
+export const downloadDownloadingFilepath = resolve(downloadDir, 'downloading.json')
 export const downloadCompleteFilepath = resolve(downloadDir, 'complete.json')
 
 await Promise.all(
@@ -53,16 +50,10 @@ export const getDownloadDownloadingList = async () => {
   return JSON.parse(content) as Array<DownloadItem>
 }
 
-export const saveDownloadDownloadingList = async (
-  list: Array<DownloadItem>,
-) => {
-  await writeFile(
-    downloadDownloadingFilepath,
-    JSON.stringify(list, undefined, 2),
-    {
-      encoding: 'utf-8',
-    },
-  )
+export const saveDownloadDownloadingList = async (list: Array<DownloadItem>) => {
+  await writeFile(downloadDownloadingFilepath, JSON.stringify(list, undefined, 2), {
+    encoding: 'utf-8',
+  })
 }
 
 export const getDownloadCompleteList = async () => {
@@ -73,11 +64,7 @@ export const getDownloadCompleteList = async () => {
 }
 
 export const saveDownloadCompleteList = async (list: Array<DownloadItem>) => {
-  await writeFile(
-    downloadCompleteFilepath,
-    JSON.stringify(list, undefined, 2),
-    {
-      encoding: 'utf-8',
-    },
-  )
+  await writeFile(downloadCompleteFilepath, JSON.stringify(list, undefined, 2), {
+    encoding: 'utf-8',
+  })
 }

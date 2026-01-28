@@ -11,13 +11,13 @@ export interface closable {
 
 export type VSnackbarProps = ExtractPropTypes<VSnackbar>
 
-export type SnackbarLocation
-  = | 'top left'
-    | 'top center'
-    | 'top right'
-    | 'bottom left'
-    | 'bottom center'
-    | 'bottom right'
+export type SnackbarLocation =
+  | 'top left'
+  | 'top center'
+  | 'top right'
+  | 'bottom left'
+  | 'bottom center'
+  | 'bottom right'
 
 export interface SnackbarOptions {
   color?: VSnackbarProps['color']
@@ -46,18 +46,14 @@ export interface SnackbarBottomInstance extends SnackbarBaseInstance {
 
 export type SnackbarInstance = SnackbarTopInstance | SnackbarBottomInstance
 
-export const isSnackbarTopInstance = (
-  inst: SnackbarBaseInstance,
-): inst is SnackbarTopInstance => {
+export const isSnackbarTopInstance = (inst: SnackbarBaseInstance): inst is SnackbarTopInstance => {
   return inst.location.startsWith('top')
 }
 
 export interface Snackbar<T = any> {
   (
     text: TextType,
-    config?: T extends string
-      ? Omit<SnackbarOptions, 'color'>
-      : SnackbarOptions,
+    config?: T extends string ? Omit<SnackbarOptions, 'color'> : SnackbarOptions,
   ): closable
 }
 

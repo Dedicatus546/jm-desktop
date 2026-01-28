@@ -29,8 +29,7 @@ const tokenHash = (await trpcClient.md5.query(`${ts}${token}`)).toLowerCase()
 let baseURL = ''
 if (import.meta.env.DEV) {
   baseURL = '/api'
-}
-else {
+} else {
   const port = await trpcClient.getProxyServerPort.query()
   baseURL = `http://localhost:${port}/api`
 }
@@ -43,8 +42,7 @@ const initSetting = async () => {
   try {
     await send()
     appStore.updateSettingAction(data.value.data)
-  }
-  catch (e) {
+  } catch (e) {
     error(e)
     throw new Error('读取网址设置失败')
   }
@@ -59,12 +57,10 @@ const initConfig = async () => {
     info('读取本地配置文件成功')
     if (appStore.setting.shuntList.length > 0) {
       if (
-      // 第一次启动未选择图源
-        appStore.config.currentShuntKey === undefined
+        // 第一次启动未选择图源
+        appStore.config.currentShuntKey === undefined ||
         // 接口的图源列表可能发生变化，回退到第一个图源
-        || appStore.setting.shuntList.every(
-          item => item.key !== appStore.config.currentShuntKey,
-        )
+        appStore.setting.shuntList.every((item) => item.key !== appStore.config.currentShuntKey)
       ) {
         info('检测到未选择图源，默认选择第一个')
         appStore.updateConfigAction(
@@ -75,8 +71,7 @@ const initConfig = async () => {
         )
       }
     }
-  }
-  catch (e) {
+  } catch (e) {
     error('读取本地配置文件失败，原因', e)
     throw new Error('读取本地配置文件失败')
   }
@@ -101,24 +96,20 @@ const autoLogin = async () => {
   // 开发环境下读 env 直接登录，该 env 为 .local ，不上传仓库
   info('开始处理自动登录')
   if (
-    import.meta.env.DEV
-      && import.meta.env.VITE_AUTO_LOGIN_DEV === '1'
-      && import.meta.env.VITE_LOGIN_USERNAME
-      && import.meta.env.VITE_LOGIN_PASSWORD
+    import.meta.env.DEV &&
+    import.meta.env.VITE_AUTO_LOGIN_DEV === '1' &&
+    import.meta.env.VITE_LOGIN_USERNAME &&
+    import.meta.env.VITE_LOGIN_PASSWORD
   ) {
     info('检测到开发环境且配置了自动登录开关以及用户信息，使用该信息登录')
     username = import.meta.env.VITE_LOGIN_USERNAME
     password = import.meta.env.VITE_LOGIN_PASSWORD
-  }
-  else if (appStore.config.loginUserInfo) {
+  } else if (appStore.config.loginUserInfo) {
     info('检测到本地配置中开启了自动登录，使用本地配置中的用户信息')
-    const loginInfo = await trpcClient.decryptLoginUser.query(
-      appStore.config.loginUserInfo,
-    )
+    const loginInfo = await trpcClient.decryptLoginUser.query(appStore.config.loginUserInfo)
     username = loginInfo.username
     password = loginInfo.password
-  }
-  else {
+  } else {
     warn('未读取到相应的用户信息，跳过自动登录')
     return
   }
@@ -127,8 +118,7 @@ const autoLogin = async () => {
     userStore.updateUserInfoAction(data.value.data)
     userStore.updateLoginInfoAction(username, password)
     info('自动登录成功')
-  }
-  catch (e) {
+  } catch (e) {
     error('自动登录失败，跳过自动登录，原因：', e)
   }
 }
@@ -139,8 +129,7 @@ const initDownload = async () => {
   try {
     await downloadStore.initAction()
     info('初始化下载任务成功')
-  }
-  catch (e) {
+  } catch (e) {
     error('初始化下载任务失败，原因', e)
     throw new Error('初始化下载任务失败')
   }
@@ -148,25 +137,16 @@ const initDownload = async () => {
 
 const initData = async () => {
   const appStore = useAppStore()
-  const {
-    data: weekData,
-    send: weekSend,
-  } = useRequest(() => getWeekListApi(), {
+  const { data: weekData, send: weekSend } = useRequest(() => getWeekListApi(), {
     immediate: false,
   })
 
-  const {
-    data: categoryData,
-    send: categorySend,
-  } = useRequest(() => getCategoryListApi(), {
+  const { data: categoryData, send: categorySend } = useRequest(() => getCategoryListApi(), {
     immediate: false,
   })
   info('初始化全局数据')
   try {
-    await Promise.all([
-      weekSend(),
-      categorySend(),
-    ])
+    await Promise.all([weekSend(), categorySend()])
     Object.assign(appStore.data, {
       weekCategoryList: weekData.value.data.categoryList,
       weekTypeList: weekData.value.data.typeList,
@@ -176,8 +156,7 @@ const initData = async () => {
       categoryCategoryList: categoryData.value.data.categoryList,
     })
     info('初始化全局数据成功')
-  }
-  catch (e) {
+  } catch (e) {
     error('初始化全局数据失败，原因', e)
     throw new Error('初始化全局数据失败')
   }
@@ -213,12 +192,10 @@ const http = createAlova({
           })()
           await initPromise
           appStore.isInit = true
-        }
-        finally {
+        } finally {
           initPromise = undefined
         }
-      }
-      else {
+      } else {
         const url = method.url
         if (!['setting', 'login', 'week', 'categories'].includes(url)) {
           await initPromise
@@ -236,9 +213,9 @@ const http = createAlova({
       info(method.url, response.status)
       if (
         // 下载接口
-        method.url.includes('dl_comic_zip')
+        method.url.includes('dl_comic_zip') ||
         // jm 的阅读页是返回 html 填充的，必须解析 html 来获取相关数据
-        || method.url.includes('chapter_view_template')
+        method.url.includes('chapter_view_template')
       ) {
         return response.data
       }

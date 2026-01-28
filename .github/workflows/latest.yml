@@ -21,11 +21,11 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "latest"
-      
+          node-version: 'latest'
+
       - name: Enable Corepack
         run: corepack enable
-      
+
       - name: Cache Linux pnpm
         if: matrix.os == 'ubuntu-latest'
         uses: actions/cache@v4
@@ -34,7 +34,7 @@ jobs:
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-
-      
+
       - name: Cache Windows pnpm
         if: matrix.os == 'windows-latest'
         uses: actions/cache@v4
@@ -49,14 +49,14 @@ jobs:
 
       - name: Build Electron App
         run: pnpm run build:latest
-      
+
       - name: Upload Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: linux-release-assets-${{ github.sha }}
           path: release/*/jm-desktop-Linux-*.zip
-  
+
       - name: Upload Windows Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4

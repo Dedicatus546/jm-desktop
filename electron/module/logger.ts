@@ -32,30 +32,21 @@ const getDatetime = () => {
 const logger = {
   async info(message?: any, ...optionalParams: any[]) {
     const datetime = getDatetime()
-    const messageFormated = stringFormat(
-      `[${datetime}] ${message}`,
-      ...optionalParams,
-    )
+    const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.info(messageFormated)
     await writeFile(infoLogFd, messageFormated)
     await writeFile(infoLogFd, EOL)
   },
   async error(message?: any, ...optionalParams: any[]) {
     const datetime = getDatetime()
-    const messageFormated = stringFormat(
-      `[${datetime}] ${message}`,
-      ...optionalParams,
-    )
+    const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.error(messageFormated)
     await writeFile(errorLogFd, messageFormated)
     await writeFile(errorLogFd, EOL)
   },
   async warn(message?: any, ...optionalParams: any[]) {
     const datetime = getDatetime()
-    const messageFormated = stringFormat(
-      `[${datetime}] ${message}`,
-      ...optionalParams,
-    )
+    const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.error(messageFormated)
     await writeFile(warnLogFd, messageFormated)
     await writeFile(warnLogFd, EOL)
@@ -65,7 +56,7 @@ const logger = {
 export type LoggerLevel = keyof typeof logger
 
 export const createLogger = (...nameList: string[]) => {
-  const prefix = nameList.map(item => `[${item}]`).join(' ')
+  const prefix = nameList.map((item) => `[${item}]`).join(' ')
   return {
     info(message?: any, ...optionalParams: any[]) {
       logger.info(`${prefix} ` + message, ...optionalParams)

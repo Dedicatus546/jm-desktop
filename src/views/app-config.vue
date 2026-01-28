@@ -30,12 +30,10 @@ const getConfig = async () => {
     Object.assign(formState, clone(appStore.config))
     if (formState.proxyInfo) {
       formState.useProxy = true
-    }
-    else {
+    } else {
       formState.useProxy = false
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.error('读取配置文件失败', e)
   }
 }
@@ -52,8 +50,7 @@ const submit = async (e: SubmitEventPromise) => {
   try {
     await appStore.updateConfigAction(formState, true)
     snackbar.success('更新成功')
-  }
-  catch (e) {
+  } catch (e) {
     console.error('保存配置失败', e)
   }
 }
@@ -67,8 +64,7 @@ const onUseProxyChange = (useProxy: boolean) => {
       username: '',
       password: '',
     }
-  }
-  else {
+  } else {
     formState.proxyInfo = undefined
   }
 }
@@ -220,15 +216,7 @@ onMounted(() => {
             </v-col>
           </template>
           <v-col :cols="12">
-            <v-btn
-              variant="flat"
-              size="large"
-              block
-              color="primary"
-              type="submit"
-            >
-              保存
-            </v-btn>
+            <v-btn variant="flat" size="large" block color="primary" type="submit"> 保存 </v-btn>
           </v-col>
         </v-row>
       </v-form>

@@ -14,9 +14,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const envDir = resolve(__dirname, 'env')
-const currentCommitHash = execSync('git rev-parse HEAD')
-  .toString()
-  .substring(0, 8)
+const currentCommitHash = execSync('git rev-parse HEAD').toString().substring(0, 8)
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -58,7 +56,7 @@ export default defineConfig({
       renderer:
         process.env.NODE_ENV === 'test'
           ? // https://github.com/electron-vite/vite-plugin-electron-renderer/issues/78#issuecomment-2053600808
-          undefined
+            undefined
           : {},
     }),
     autoImport({

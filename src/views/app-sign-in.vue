@@ -11,19 +11,15 @@ const userStore = useUserStore()
 const currentDate = new Date()
 const value = new Date(currentDate)
 
-const { loading, data, send } = useRequest(() =>
-  getSignInDataApi(userStore.userInfo?.uid ?? 0),
-)
+const { loading, data, send } = useRequest(() => getSignInDataApi(userStore.userInfo?.uid ?? 0))
 const sliderTickMap = computed(() => {
   const o = {
     3: '三',
     6: '七',
   }
   if (data.value) {
-    o['3']
-      += `(${data.value.data.threeDaysCoinCount},${data.value.data.threeDaysExpCount})`
-    o['6']
-      += `(${data.value.data.sevenDaysCoinCount},${data.value.data.sevenDaysExpCount})`
+    o['3'] += `(${data.value.data.threeDaysCoinCount},${data.value.data.threeDaysExpCount})`
+    o['6'] += `(${data.value.data.sevenDaysCoinCount},${data.value.data.sevenDaysExpCount})`
   }
   return {
     1: '一',
@@ -41,14 +37,13 @@ const continuousSignInDay = computed(() => {
   }
   const dateArr = Object.entries(data.value.data.dateMap)
     .sort((i1, i2) => +i1[0] - +i2[0])
-    .map(i => i[1])
+    .map((i) => i[1])
   return dateArr.reduce(
     (r, item) => {
       if (item.isSign) {
         r.current++
         r.max = Math.max(r.max, r.current)
-      }
-      else {
+      } else {
         r.current = 0
       }
       return r
@@ -80,11 +75,7 @@ const events = computed(() => {
     return []
   }
   // 当前月份的天数
-  const days = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0,
-  ).getDate()
+  const days = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
   const events = []
   for (let i = 1; i <= days; i++) {
     const key = `${i}`.padStart(2, '0')
@@ -128,12 +119,9 @@ const {
   onSuccess,
   data: signInData,
   send: signIn,
-} = useRequest(
-  () => signInApi(userStore.userInfo?.uid ?? 0, data.value.data.id),
-  {
-    immediate: false,
-  },
-)
+} = useRequest(() => signInApi(userStore.userInfo?.uid ?? 0, data.value.data.id), {
+  immediate: false,
+})
 const snackbar = useSnackbar()
 onSuccess(() => {
   snackbar.primary(signInData.value.data.msg)
@@ -145,9 +133,7 @@ onSuccess(() => {
   <v-card :loading="loading">
     <v-card-text>
       <div class="wind-flex wind-flex-col wind-gap-4">
-        <div class="text-h6 wind-text-center">
-          本月已签到 {{ signInSumDay }} 天
-        </div>
+        <div class="text-h6 wind-text-center">本月已签到 {{ signInSumDay }} 天</div>
         <v-calendar
           style="height: 500px"
           ref="calendar"
@@ -170,12 +156,12 @@ onSuccess(() => {
         <v-alert type="info" title="连续签到奖励">
           <template #text>
             <div class="wind-text">
-              连续签到三天额外得 {{ data?.data.threeDaysCoinCount ?? 0 }} JCoins
-              和 {{ data?.data.threeDaysExpCount ?? 0 }} 经验
+              连续签到三天额外得 {{ data?.data.threeDaysCoinCount ?? 0 }} JCoins 和
+              {{ data?.data.threeDaysExpCount ?? 0 }} 经验
             </div>
             <div class="wind-text">
-              连续签到七天额外得 {{ data?.data.sevenDaysCoinCount ?? 0 }} JCoins
-              和 {{ data?.data.sevenDaysExpCount ?? 0 }} 经验
+              连续签到七天额外得 {{ data?.data.sevenDaysCoinCount ?? 0 }} JCoins 和
+              {{ data?.data.sevenDaysExpCount ?? 0 }} 经验
             </div>
           </template>
         </v-alert>

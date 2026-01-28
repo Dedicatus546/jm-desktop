@@ -27,8 +27,7 @@ const getSeed = async (comicId: number, pageStr: string) => {
   const right = 421925
   if (comicId >= left && comicId <= right) {
     charCodeOfLastChar = charCodeOfLastChar % 10
-  }
-  else if (comicId >= right + 1) {
+  } else if (comicId >= right + 1) {
     charCodeOfLastChar = charCodeOfLastChar % 8
   }
   return seedMap[charCodeOfLastChar] ?? 10 // 默认 seed
@@ -36,15 +35,8 @@ const getSeed = async (comicId: number, pageStr: string) => {
 
 const decodeSrcMap = new Map<string, Buffer>()
 const decodePromiseMap = new Map<string, Promise<Buffer>>()
-export const decodeImage = async (
-  src: string,
-  arrayBuffer: ArrayBuffer,
-  comicId: number,
-) => {
-  const key
-    = comicId
-      + '-'
-      + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
+export const decodeImage = async (src: string, arrayBuffer: ArrayBuffer, comicId: number) => {
+  const key = comicId + '-' + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
   if (decodeSrcMap.has(key)) {
     return decodeSrcMap.get(key)!
   }
@@ -71,8 +63,7 @@ export const decodeImage = async (
     const sy = naturalHeight - height * (i + 1) - remainder
     if (i == 0) {
       height = height + remainder
-    }
-    else {
+    } else {
       dy = dy + remainder
     }
     const image = new Image()

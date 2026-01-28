@@ -8,14 +8,17 @@ const isVisible = useElementVisibility(visibleRef, {
   },
 })
 const isInside = ref(false)
-watch(isVisible, (nVal, oVal) => {
-  if (oVal || nVal) {
-    isInside.value = true
-  }
-},
-{
-  immediate: true,
-})
+watch(
+  isVisible,
+  (nVal, oVal) => {
+    if (oVal || nVal) {
+      isInside.value = true
+    }
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>

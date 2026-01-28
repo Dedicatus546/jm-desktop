@@ -57,8 +57,7 @@ watch(isVisible, (nVal, oVal) => {
           <app-comic-list-item :comic="item" />
         </swiper-slide>
       </swiper>
-      <div v-else class="wind-aspect-ratio-[2.65569]">
-      </div>
+      <div v-else class="wind-aspect-ratio-[2.65569]"></div>
     </v-col>
     <v-col :cols="6">
       <v-btn color="primary" size="large" variant="flat" block @click="prev">

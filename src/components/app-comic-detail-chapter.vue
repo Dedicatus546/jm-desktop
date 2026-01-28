@@ -10,17 +10,20 @@ import { useDownloadStore } from '@/stores/use-download-store'
 
 const { info } = createLogger('comic')
 
-const props = withDefaults(defineProps<{
-  loading?: boolean
-  chapterList: Array<{
-    id: number
-    name: string
-  }>
-  currentChapterId?: number
-  comicName: string
-}>(), {
-  loading: false,
-})
+const props = withDefaults(
+  defineProps<{
+    loading?: boolean
+    chapterList: Array<{
+      id: number
+      name: string
+    }>
+    currentChapterId?: number
+    comicName: string
+  }>(),
+  {
+    loading: false,
+  },
+)
 
 const appStore = useAppStore()
 const downloadStore = useDownloadStore()
@@ -37,7 +40,7 @@ const { data, send } = useRequest(
   },
 )
 
-const downloadChapter = async (chapter: { id: number, name: string }) => {
+const downloadChapter = async (chapter: { id: number; name: string }) => {
   if (downloadStore.downloadingMap[chapter.id]) {
     snackbar.warning('任务正在下载中，请勿重复点击')
     return
@@ -130,14 +133,11 @@ const downloadChapter = async (chapter: { id: number, name: string }) => {
                   </template>
                   {{
                     downloadStore.downloadingMap[item.id]
-                      ? "正在下载 " +
-                        ((
-                          downloadStore.downloadingMap[item.id]!.percent * 100
-                        ).toFixed(2) +
-                          "%")
+                      ? '正在下载 ' +
+                        ((downloadStore.downloadingMap[item.id]!.percent * 100).toFixed(2) + '%')
                       : downloadStore.completeMap[item.id]
-                        ? "已下载"
-                        : "下载"
+                        ? '已下载'
+                        : '下载'
                   }}
                 </v-btn>
               </v-col>

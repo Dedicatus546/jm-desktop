@@ -57,8 +57,7 @@ onSuccess(async () => {
       },
       true,
     )
-  }
-  else {
+  } else {
     appStore.updateConfigAction(
       {
         loginUserInfo: '',
@@ -110,20 +109,13 @@ onError((e) => {
             ></v-checkbox>
           </v-col>
           <v-col :cols="12">
-            <v-alert
-              border="start"
-              density="compact"
-              title="警告"
-              type="warning"
-            >
+            <v-alert border="start" density="compact" title="警告" type="warning">
               <template #text>
                 <div class="wind-py-2 wind-flex wind-flex-col wind-gap-2">
                   <div>
                     1.自动登录会使用对称加密的方式将你的账号和密码写在本地，如果不希望这么做请勿开启。
                   </div>
-                  <div>
-                    2.建议在官方web站上修改密码（比如通过谷歌生成随机密码）后再开启此功能。
-                  </div>
+                  <div>2.建议在官方web站上修改密码（比如通过谷歌生成随机密码）后再开启此功能。</div>
                 </div>
               </template>
             </v-alert>

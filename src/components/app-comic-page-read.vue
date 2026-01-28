@@ -25,10 +25,7 @@ const nextPage = () => {
   sliderValue.value = page.value + 1
 }
 
-const onDecodeSuccess = inject<(index: number) => void>(
-  'onDecodeSuccess',
-  () => {},
-)
+const onDecodeSuccess = inject<(index: number) => void>('onDecodeSuccess', () => {})
 
 onKeyStroke('ArrowRight', () => nextPage(), {
   dedupe: true,
@@ -45,10 +42,7 @@ const onSliderEnd = (value: [number, number] | number) => {
 <template>
   <div class="wind-inset-0 wind-absolute">
     <div class="wind-flex wind-flex-col wind-gap-4 wind-h-full">
-      <div
-        v-if="picList.length > 0"
-        class="wind-p-4 wind-flex-grow wind-min-h-0"
-      >
+      <div v-if="picList.length > 0" class="wind-p-4 wind-flex-grow wind-min-h-0">
         <comic-page-pic
           :key="picList[page]"
           :comic-id="comicId"

@@ -203,11 +203,7 @@ const closeWin = () => {
                 })
               "
             />
-            <app-header-icon-btn
-              tooltip-text="退出"
-              icon="mdi-logout"
-              @click="logout"
-            />
+            <app-header-icon-btn tooltip-text="退出" icon="mdi-logout" @click="logout" />
           </template>
           <app-header-icon-btn
             v-else
@@ -247,16 +243,8 @@ const closeWin = () => {
             "
           />
         </template>
-        <app-header-icon-btn
-          tooltip-text="最小化"
-          icon="mdi-minus"
-          @click="minimizeWin()"
-        />
-        <app-header-icon-btn
-          tooltip-text="关闭"
-          icon="mdi-close"
-          @click="closeWin()"
-        />
+        <app-header-icon-btn tooltip-text="最小化" icon="mdi-minus" @click="minimizeWin()" />
+        <app-header-icon-btn tooltip-text="关闭" icon="mdi-close" @click="closeWin()" />
       </div>
     </template>
   </v-app-bar>
