@@ -81,6 +81,7 @@ onError((e) => {
         <v-row>
           <v-col :cols="12">
             <v-text-field
+              color="primary"
               variant="outlined"
               hide-details
               v-model:model-value="formState.username"
@@ -91,6 +92,7 @@ onError((e) => {
           </v-col>
           <v-col :cols="12">
             <v-text-field
+              color="primary"
               variant="outlined"
               hide-details
               v-model:model-value="formState.password"
