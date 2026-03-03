@@ -1108,6 +1108,7 @@ export const getComicPicListApi = (comicId: number, shuntKey: number | undefined
       let result: { images: Array<string> } | null = null
       if (resultMatch) {
         try {
+          // oxlint-disable-next-line
           result = eval(`(${resultMatch[1]})`)
         } catch (e) {
           console.error('Error parsing result object:', e)
@@ -1124,6 +1125,7 @@ export const getComicPicListApi = (comicId: number, shuntKey: number | undefined
       } | null = null
       if (configMatch) {
         try {
+          // oxlint-disable-next-line
           config = eval(`(${configMatch[1]})`)
         } catch (e) {
           console.error('Error parsing config object:', e)
