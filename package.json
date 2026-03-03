@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.3.1",
-    "@trpc/client": "^11.9.0",
-    "@trpc/server": "^11.9.0",
-    "@vueuse/core": "^14.1.0",
-    "@vueuse/router": "^14.1.0",
-    "alova": "^3.5.0",
+    "@trpc/client": "^11.11.0",
+    "@trpc/server": "^11.11.0",
+    "@vueuse/core": "^14.2.1",
+    "@vueuse/router": "^14.2.1",
+    "alova": "^3.5.1",
     "archiver": "^7.0.1",
     "cors": "^2.8.6",
     "date-fns": "^4.1.0",
@@ -30,19 +30,19 @@
     "http-proxy-middleware": "^3.0.5",
     "https-proxy-agent": "^7.0.6",
     "mitt": "^3.0.1",
-    "p-limit": "^7.2.0",
+    "p-limit": "^7.3.0",
     "pinia": "^3.0.4",
     "radash": "^12.1.1",
     "sanitize-filename": "^1.6.3",
     "scroll-into-view-if-needed": "^3.1.0",
     "skia-canvas": "^3.0.8",
     "superjson": "^2.2.6",
-    "swiper": "^12.0.3",
+    "swiper": "^12.1.2",
     "trpc-electron-fork": "^1.0.2",
     "typeface-roboto": "^1.1.13",
-    "vue": "^3.5.27",
-    "vue-router": "^4.6.4",
-    "vuetify": "^3.11.8",
+    "vue": "^3.5.29",
+    "vue-router": "^5.0.3",
+    "vuetify": "^4.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -51,13 +51,13 @@
     "@types/cors": "^2.8.19",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.10",
-    "@vitejs/plugin-vue": "^6.0.3",
-    "electron": "^40.0.0",
-    "electron-builder": "^26.4.0",
-    "lint-staged": "^16.2.7",
-    "oxfmt": "^0.27.0",
-    "oxlint": "^1.42.0",
+    "@types/node": "^25.3.3",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "electron": "^40.6.1",
+    "electron-builder": "^26.8.1",
+    "lint-staged": "^16.3.1",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0",
     "sass-embedded": "^1.97.3",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^5.9.3",
@@ -67,18 +67,24 @@
     "vite": "^7.3.1",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "vite-plugin-vue-devtools": "^8.0.5",
-    "vue-tsc": "^3.2.4"
+    "vite-plugin-vue-devtools": "^8.0.7",
+    "vue-tsc": "^3.2.5"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
   },
   "lint-staged": {
-    "src/**": ["oxlint", "oxfmt"],
-    "electron/**": ["oxlint", "oxfmt"]
+    "src/**": [
+      "oxlint",
+      "oxfmt"
+    ],
+    "electron/**": [
+      "oxlint",
+      "oxfmt"
+    ]
   },
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@10.28.2"
+  "packageManager": "pnpm@10.30.3"
 }
