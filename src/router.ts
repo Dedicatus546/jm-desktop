@@ -101,22 +101,19 @@ const router = createRouter({
   scrollBehavior: scrollManager.getScrollBehavior(),
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   info('router.beforeEach', '从', from.fullPath, '跳转到', to.fullPath)
-  next()
 })
 
-router.beforeEach((_to, from, next) => {
+router.beforeEach((_to, from) => {
   const scrollEl = document.getElementById('scroll-view') as HTMLDivElement
   if (!scrollEl) {
-    next()
     return
   }
   scrollManager.setPosition(from.fullPath, {
     top: scrollEl.scrollTop,
     left: scrollEl.scrollLeft,
   })
-  next()
 })
 
 export default router
