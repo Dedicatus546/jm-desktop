@@ -35,7 +35,7 @@ const buttonCols = computed(() => {
         </div>
       </div>
       <div>
-        <v-row no-gutters class="wind-gap-2">
+        <v-row density="compact" class="wind-gap-2">
           <v-col :cols="12">
             <app-skeleten class="wind-h-[30px] wind-w-[180px]"></app-skeleten>
           </v-col>

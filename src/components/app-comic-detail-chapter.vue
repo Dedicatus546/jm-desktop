@@ -98,7 +98,7 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
       <v-col v-for="item of chapterList" :key="item.id" :cols="12" :lg="6">
         <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
           <template #default="{ navigate }">
-            <v-row no-gutters class="wind-gap-4 wind-items-center">
+            <v-row density="compact" class="wind-gap-4 wind-items-center">
               <v-col class="wind-min-w-0">
                 <app-scroll-wrapper>
                   {{ item.name }}

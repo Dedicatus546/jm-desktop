@@ -63,7 +63,7 @@ const search = () => {
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <v-row no-gutters class="wind-gap-4">
+          <v-row density="compact" class="wind-gap-4">
             <v-col>
               <v-form @submit.prevent="search">
                 <v-text-field

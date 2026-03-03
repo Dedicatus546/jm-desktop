@@ -60,7 +60,7 @@ const replyListOpen = ref(false)
           {{ comment.likeCount }}
         </a-space>
       </div> -->
-      <v-row no-gutters class="wind-gap-2">
+      <v-row density="compact" class="wind-gap-2">
         <v-col cols="auto" v-if="comment.replyList && comment.replyList.length > 0">
           <v-btn variant="tonal" size="small" @click="replyListOpen = !replyListOpen">
             {{ replyListOpen ? '收起评论' : '查看评论' }}

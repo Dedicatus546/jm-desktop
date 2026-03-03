@@ -205,7 +205,7 @@ const download = async () => {
                 </div>
               </div>
               <div>
-                <v-row no-gutters class="wind-gap-2">
+                <v-row density="compact" class="wind-gap-2">
                   <v-col v-if="comicInfo.data.authorList.length > 0" :cols="12">
                     <div class="wind-flex">
                       <div class="wind-text-nowrap">作者：</div>
