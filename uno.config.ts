@@ -6,6 +6,9 @@ export default defineConfig({
       prefix: 'wind-',
     }),
   ],
+  outputToCssLayers: {
+    cssLayerName: () => "unocss"
+  },
   rules: [
     [
       'app-region-drag',

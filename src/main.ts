@@ -1,8 +1,8 @@
 import '@mdi/font/css/materialdesignicons.css'
 import 'swiper/swiper-bundle.css'
 import 'typeface-roboto'
-import 'vuetify/styles'
 import 'virtual:uno.css'
+import 'vuetify/styles'
 import './style.css'
 
 import { createApp } from 'vue'
