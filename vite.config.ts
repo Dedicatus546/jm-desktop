@@ -8,8 +8,8 @@ import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
 import component from 'unplugin-vue-components/vite'
-import { defineConfig } from 'vite'
-import electron from 'vite-plugin-electron/simple'
+import { defineConfig, esmExternalRequirePlugin } from 'vite'
+import electron from './vite-plugins/vite-plugin-electron/simple'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -30,6 +30,17 @@ export default defineConfig({
         // Shortcut of `build.lib.entry`.
         entry: 'electron/main.ts',
         vite: {
+          optimizeDeps: {
+            // 由于 vite8 不再将 require 转为 import 这里我们要让 vite 强制预构建（从 commonjs 转为 esm）某些包
+            include: [
+              'sanitize-filename',
+              'archiver',
+              'https-proxy-agent',
+              'cors',
+              'express',
+              'http-proxy-middleware',
+            ],
+          },
           resolve: {
             alias: {
               '@electron': resolve(__dirname, 'electron'),
@@ -37,7 +48,7 @@ export default defineConfig({
           },
           build: {
             target: 'esnext',
-            rollupOptions: {
+            rolldownOptions: {
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
               external: ['skia-canvas'],

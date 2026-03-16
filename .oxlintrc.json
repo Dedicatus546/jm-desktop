@@ -108,7 +108,7 @@
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-extra-non-null-assertion": "error",
         "@typescript-eslint/no-misused-new": "error",
-        "@typescript-eslint/no-namespace": "error",
+        // "@typescript-eslint/no-namespace": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
         "@typescript-eslint/no-require-imports": "error",
         "@typescript-eslint/no-this-alias": "error",
@@ -119,7 +119,7 @@
         "no-unused-vars": "error",
         "@typescript-eslint/no-wrapper-object-types": "error",
         "@typescript-eslint/prefer-as-const": "error",
-        "@typescript-eslint/prefer-namespace-keyword": "error",
+        // "@typescript-eslint/prefer-namespace-keyword": "error",
         "@typescript-eslint/triple-slash-reference": "error"
       },
       "plugins": ["typescript"]
