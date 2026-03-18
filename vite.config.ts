@@ -30,17 +30,6 @@ export default defineConfig({
         // Shortcut of `build.lib.entry`.
         entry: 'electron/main.ts',
         vite: {
-          optimizeDeps: {
-            // 由于 vite8 不再将 require 转为 import 这里我们要让 vite 强制预构建（从 commonjs 转为 esm）某些包
-            include: [
-              'sanitize-filename',
-              'archiver',
-              'https-proxy-agent',
-              'cors',
-              'express',
-              'http-proxy-middleware',
-            ],
-          },
           resolve: {
             alias: {
               '@electron': resolve(__dirname, 'electron'),
@@ -49,6 +38,8 @@ export default defineConfig({
           build: {
             target: 'esnext',
             rolldownOptions: {
+              // 关键，这样才会生成 var __require = /* @__PURE__ */ createRequire(import.meta.url); 垫片
+              platform: 'node',
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
               external: ['skia-canvas'],
