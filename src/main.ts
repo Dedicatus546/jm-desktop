@@ -1,3 +1,4 @@
+import './layer.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'swiper/swiper-bundle.css'
 import 'typeface-roboto'

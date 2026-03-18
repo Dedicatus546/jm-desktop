@@ -7,7 +7,7 @@ export default defineConfig({
     }),
   ],
   outputToCssLayers: {
-    cssLayerName: () => "unocss"
+    cssLayerName: (layer) => `unocss-${layer}`
   },
   rules: [
     [
