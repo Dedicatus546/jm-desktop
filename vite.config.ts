@@ -8,8 +8,8 @@ import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
 import component from 'unplugin-vue-components/vite'
-import { defineConfig } from 'vite'
-import electron from 'vite-plugin-electron/simple'
+import { defineConfig, esmExternalRequirePlugin } from 'vite'
+import electron from './vite-plugins/vite-plugin-electron/simple'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -37,7 +37,9 @@ export default defineConfig({
           },
           build: {
             target: 'esnext',
-            rollupOptions: {
+            rolldownOptions: {
+              // 关键，这样才会生成 var __require = /* @__PURE__ */ createRequire(import.meta.url); 垫片
+              platform: 'node',
               // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
               // Here are some C/C++ modules them can't be built properly.
               external: ['skia-canvas'],
