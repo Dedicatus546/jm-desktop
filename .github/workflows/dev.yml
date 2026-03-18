@@ -1,4 +1,4 @@
-name: Latest
+name: Dev
 
 on:
   workflow_dispatch:
