@@ -2,7 +2,7 @@ import { Server } from 'node:http'
 import { AddressInfo } from 'node:net'
 import { join } from 'node:path'
 
-import { distElectron, distRenderer } from '@electron/shared/path'
+import { distRenderer } from '@electron/shared/path'
 import { resolveProxyUrl } from '@electron/shared/utils'
 import cors from 'cors'
 import Express from 'express'
@@ -84,7 +84,7 @@ const getExpressInstance = async () => {
   )
 
   // vue 路由
-  const filepath = join(distElectron, 'index.html')
+  const filepath = join(distRenderer, 'index.html')
   info('设置剩余路由跳转 index.html ，路径为 %s', filepath)
   express.get('/:rest', (_req, res) => {
     res.sendFile(filepath)
