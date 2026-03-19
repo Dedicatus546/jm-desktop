@@ -1,23 +1,26 @@
-import { defineConfig, presetWind4 } from "unocss";
+import { defineConfig, presetWind4 } from 'unocss'
 
 export default defineConfig({
   presets: [
     presetWind4({
-      prefix: "wind-",
+      prefix: 'wind-',
     }),
   ],
+  outputToCssLayers: {
+    cssLayerName: (layer) => `unocss-${layer}`
+  },
   rules: [
     [
-      "app-region-drag",
+      'app-region-drag',
       {
-        "-webkit-app-region": "drag",
+        '-webkit-app-region': 'drag',
       },
     ],
     [
-      "app-region-nodrag",
+      'app-region-nodrag',
       {
-        "-webkit-app-region": "no-drag",
+        '-webkit-app-region': 'no-drag',
       },
     ],
   ],
-});
+})

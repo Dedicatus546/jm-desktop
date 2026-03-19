@@ -12,10 +12,7 @@ const onSliderEnd = (value: number) => {
   comicVerticalPicListRef.value?.[index].scrollIntoView()
 }
 
-const onDecodeSuccess = inject<(index: number) => void>(
-  'onDecodeSuccess',
-  () => {},
-)
+const onDecodeSuccess = inject<(index: number) => void>('onDecodeSuccess', () => {})
 </script>
 
 <template>

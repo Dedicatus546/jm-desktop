@@ -30,9 +30,7 @@ const componentOptions = withDefaults(defineProps<SnackbarOptions>(), {
 
 let id = 0
 
-const instanceLocationMap = ref<
-  Record<SnackbarLocation, Array<SnackbarInstance> | null>
->({
+const instanceLocationMap = ref<Record<SnackbarLocation, Array<SnackbarInstance> | null>>({
   'top left': null,
   'top center': null,
   'top right': null,
@@ -63,22 +61,19 @@ const remove = (instance: SnackbarInstance) => {
   if (!instanceList) {
     return
   }
-  const index = instanceList.findIndex(inst => inst.id === id)
+  const index = instanceList.findIndex((inst) => inst.id === id)
   if (index > -1) {
     patchPosition(instanceList[index], index)
     instanceList.splice(index, 1)
   }
 }
 
-const close = (
-  id: SnackbarInstance['id'],
-  location: SnackbarInstance['location'],
-) => {
+const close = (id: SnackbarInstance['id'], location: SnackbarInstance['location']) => {
   const instanceList = instanceLocationMap.value[location]
   if (!instanceList) {
     return
   }
-  const index = instanceList.findIndex(inst => inst.id === id)
+  const index = instanceList.findIndex((inst) => inst.id === id)
   if (index > -1) {
     instanceList[index].modelValue = false
   }
@@ -95,8 +90,7 @@ const patchPosition = (removeInst: SnackbarInstance, index: number) => {
     for (let i = topInstanceList.length - 1; i > index; i--) {
       topInstanceList[i].top = topInstanceList[i - 1].top
     }
-  }
-  else {
+  } else {
     const bottomInstanceList = instanceList as Array<SnackbarBottomInstance>
     for (let i = bottomInstanceList.length - 1; i > index; i--) {
       bottomInstanceList[i].bottom = bottomInstanceList[i - 1].bottom
@@ -111,7 +105,7 @@ const getNextDistance = (inst: SnackbarBaseInstance, gutter: number = 10) => {
     return 0
   }
   return instanceList
-    .map(inst => instanceDomMap.value.get(inst.id))
+    .map((inst) => instanceDomMap.value.get(inst.id))
     .reduce<number>((pos, el) => {
       return pos + (el ? el.offsetHeight : 0) + gutter
     }, 0)
@@ -123,8 +117,7 @@ const getStyle = (inst: SnackbarInstance) => {
   } as CSSProperties
   if (isSnackbarTopInstance(inst)) {
     style.top = inst.top + 'px'
-  }
-  else {
+  } else {
     style.bottom = inst.bottom + 'px'
   }
   return style
@@ -132,12 +125,7 @@ const getStyle = (inst: SnackbarInstance) => {
 
 const snackbar: SnackbarProviderInjectValue = ((text, messageOptions) => {
   const configs = {} as SnackbarOptions
-  Object.assign(
-    configs,
-    defaultSnackbarOptions,
-    componentOptions,
-    messageOptions,
-  )
+  Object.assign(configs, defaultSnackbarOptions, componentOptions, messageOptions)
 
   const location = configs.location!
 
@@ -159,8 +147,7 @@ const snackbar: SnackbarProviderInjectValue = ((text, messageOptions) => {
   const nextPostion = getNextDistance(messageInstance)
   if (isSnackbarTopInstance(messageInstance)) {
     messageInstance.top = nextPostion
-  }
-  else {
+  } else {
     messageInstance.bottom = nextPostion
   }
 
@@ -171,9 +158,9 @@ const snackbar: SnackbarProviderInjectValue = ((text, messageOptions) => {
       close(messageInstance.id, messageInstance.location)
     },
   }
-}) as SnackbarProviderInjectValue;
+}) as SnackbarProviderInjectValue
 
-(['primary', 'success', 'warning', 'error'] as const).forEach((key) => {
+;(['primary', 'success', 'warning', 'error'] as const).forEach((key) => {
   snackbar[key] = (text, config) => {
     config = Object.assign({}, config, {
       color: key,
@@ -195,7 +182,7 @@ provide<SnackbarProviderInjectValue>(snackbarProviderInjectKey, snackbar)
       v-for="inst of instanceLocationMap[location]"
       :ref="
         (el: any) => {
-          updateDom(inst.id, el);
+          updateDom(inst.id, el)
         }
       "
       :key="inst.id"

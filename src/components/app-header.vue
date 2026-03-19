@@ -5,10 +5,6 @@ import { trpcClient } from '@/apis'
 import useAppStore from '@/stores/use-app-store'
 import useUserStore from '@/stores/use-user-store'
 
-defineProps<{
-  simple: boolean
-}>()
-
 const appStore = useAppStore()
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
@@ -70,53 +66,51 @@ const closeWin = () => {
                 </template>
                 <v-list-item-title>返回</v-list-item-title>
               </v-list-item>
-              <template v-if="!simple">
-                <template v-if="userInfo">
-                  <v-list-item
-                    @click="
-                      router.push({
-                        name: 'SIGN_IN',
-                      })
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <v-icon icon="mdi-calendar-month"></v-icon>
-                    </template>
-                    <v-list-item-title>每月签到</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item
-                    @click="
-                      router.push({
-                        name: 'PERSON',
-                      })
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <v-icon icon="mdi-account"></v-icon>
-                    </template>
-                    <v-list-item-title>个人中心</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="logout">
-                    <template v-slot:prepend>
-                      <v-icon icon="mdi-logout"></v-icon>
-                    </template>
-                    <v-list-item-title>退出</v-list-item-title>
-                  </v-list-item>
-                </template>
+              <template v-if="userInfo">
                 <v-list-item
-                  v-else
                   @click="
                     router.push({
-                      name: 'LOGIN',
+                      name: 'SIGN_IN',
                     })
                   "
                 >
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-login"></v-icon>
+                    <v-icon icon="mdi-calendar-month"></v-icon>
                   </template>
-                  <v-list-item-title>登录</v-list-item-title>
+                  <v-list-item-title>每月签到</v-list-item-title>
+                </v-list-item>
+                <v-list-item
+                  @click="
+                    router.push({
+                      name: 'PERSON',
+                    })
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-icon icon="mdi-account"></v-icon>
+                  </template>
+                  <v-list-item-title>个人中心</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="logout">
+                  <template v-slot:prepend>
+                    <v-icon icon="mdi-logout"></v-icon>
+                  </template>
+                  <v-list-item-title>退出</v-list-item-title>
                 </v-list-item>
               </template>
+              <v-list-item
+                v-else
+                @click="
+                  router.push({
+                    name: 'LOGIN',
+                  })
+                "
+              >
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-login"></v-icon>
+                </template>
+                <v-list-item-title>登录</v-list-item-title>
+              </v-list-item>
               <v-list-item
                 @click="
                   router.push({
@@ -157,23 +151,22 @@ const closeWin = () => {
           </v-menu>
         </template>
         <template v-else>
-          <template v-if="!simple">
-            <app-header-icon-btn
-              tooltip-text="返回"
-              icon="mdi-arrow-u-left-top"
-              @click="router.back()"
-            />
-            <app-header-icon-btn
-              v-if="userStore.isLogin"
-              tooltip-text="每月签到"
-              icon="mdi-calendar-month"
-              @click="
-                router.push({
-                  name: 'SIGN_IN',
-                })
-              "
-            />
-            <!-- <app-header-icon-btn
+          <app-header-icon-btn
+            tooltip-text="返回"
+            icon="mdi-arrow-u-left-top"
+            @click="router.back()"
+          />
+          <app-header-icon-btn
+            v-if="userStore.isLogin"
+            tooltip-text="每月签到"
+            icon="mdi-calendar-month"
+            @click="
+              router.push({
+                name: 'SIGN_IN',
+              })
+            "
+          />
+          <!-- <app-header-icon-btn
             tooltip-text="本子搜索"
             icon="mdi-magnify"
             @click="
@@ -200,33 +193,28 @@ const closeWin = () => {
               })
             "
           /> -->
-            <template v-if="userInfo">
-              <app-header-icon-btn
-                tooltip-text="个人中心"
-                icon="mdi-account"
-                @click="
-                  router.push({
-                    name: 'PERSON',
-                  })
-                "
-              />
-              <app-header-icon-btn
-                tooltip-text="退出"
-                icon="mdi-logout"
-                @click="logout"
-              />
-            </template>
+          <template v-if="userInfo">
             <app-header-icon-btn
-              v-else
-              tooltip-text="登录"
-              icon="mdi-login"
+              tooltip-text="个人中心"
+              icon="mdi-account"
               @click="
                 router.push({
-                  name: 'LOGIN',
+                  name: 'PERSON',
                 })
               "
             />
+            <app-header-icon-btn tooltip-text="退出" icon="mdi-logout" @click="logout" />
           </template>
+          <app-header-icon-btn
+            v-else
+            tooltip-text="登录"
+            icon="mdi-login"
+            @click="
+              router.push({
+                name: 'LOGIN',
+              })
+            "
+          />
           <app-header-icon-btn
             tooltip-text="设置"
             icon="mdi-cog"
@@ -255,16 +243,8 @@ const closeWin = () => {
             "
           />
         </template>
-        <app-header-icon-btn
-          tooltip-text="最小化"
-          icon="mdi-minus"
-          @click="minimizeWin()"
-        />
-        <app-header-icon-btn
-          tooltip-text="关闭"
-          icon="mdi-close"
-          @click="closeWin()"
-        />
+        <app-header-icon-btn tooltip-text="最小化" icon="mdi-minus" @click="minimizeWin()" />
+        <app-header-icon-btn tooltip-text="关闭" icon="mdi-close" @click="closeWin()" />
       </div>
     </template>
   </v-app-bar>

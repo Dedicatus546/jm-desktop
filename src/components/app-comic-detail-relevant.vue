@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
-withDefaults(defineProps<{
-  loading?: boolean
-  relateList: Array<any>
-}>(), {
-  loading: false,
-})
+withDefaults(
+  defineProps<{
+    loading?: boolean
+    relateList: Array<any>
+  }>(),
+  {
+    loading: false,
+  },
+)
 </script>
 
 <template>
@@ -19,10 +22,7 @@ withDefaults(defineProps<{
       </v-row>
     </template>
     <template #no-data>
-      <v-empty-state
-        title="一个相关都没有的小众宝藏本子"
-        :image="EMPTY_STATE_IMG"
-      ></v-empty-state>
+      <v-empty-state title="一个相关都没有的小众宝藏本子" :image="EMPTY_STATE_IMG"></v-empty-state>
     </template>
     <template #default="{ items }">
       <v-row>

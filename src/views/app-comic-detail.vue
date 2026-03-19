@@ -2,12 +2,7 @@
 import { breakpointsAntDesign } from '@vueuse/core'
 import { useRequest } from 'alova/client'
 
-import {
-  collectComicApi,
-  getComicDetailApi,
-  getComicPicListApi,
-  likeComicApi,
-} from '@/apis'
+import { collectComicApi, getComicDetailApi, getComicPicListApi, likeComicApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { createLogger } from '@/logger'
@@ -37,18 +32,7 @@ const buttonCols = computed(() => {
   return [12, 12, 12, 12]
 })
 
-const {
-  loading,
-  data: comicInfo,
-  send,
-  onSuccess,
-} = useRequest((id: number) => getComicDetailApi(id), {
-  immediate: false,
-})
-
-watchEffect(() => {
-  send(props.id)
-})
+const { loading, data: comicInfo, onSuccess } = useRequest(() => getComicDetailApi(props.id))
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
@@ -59,7 +43,10 @@ const tabList = computed(() => {
     },
     {
       value: 'comment',
-      tab: comicInfo.value && comicInfo.value.data.commentCount > 0 ? (comicInfo.value.data.commentCount + '条评论') : '评论',
+      tab:
+        comicInfo.value && comicInfo.value.data.commentCount > 0
+          ? comicInfo.value.data.commentCount + '条评论'
+          : '评论',
     },
   ]
   if (loading.value || !comicInfo.value) {
@@ -81,12 +68,9 @@ onSuccess(() => {
 })
 
 const currentSeriesName = computed(() => {
-  if (
-    comicInfo.value.data.currentSeriesId
-    && comicInfo.value.data.seriesList.length > 1
-  ) {
+  if (comicInfo.value.data.currentSeriesId && comicInfo.value.data.seriesList.length > 1) {
     const item = comicInfo.value.data.seriesList.find(
-      item => item.id === comicInfo.value.data.currentSeriesId,
+      (item) => item.id === comicInfo.value.data.currentSeriesId,
     )
     return item?.name
   }
@@ -145,8 +129,8 @@ const download = async () => {
   // TODO 这里 currentSeriesId 似乎不会根据点击阅读而记录
   // 目前只会指向第一话
   // 似乎还缺少接口？
-  const id
-    = comicInfo.value.data.currentSeriesId > 0
+  const id =
+    comicInfo.value.data.currentSeriesId > 0
       ? comicInfo.value.data.currentSeriesId
       : comicInfo.value.data.id
   const chapterName = currentSeriesName.value ?? comicInfo.value.data.name
@@ -199,16 +183,12 @@ const download = async () => {
         <v-card-text>
           <app-comic-detail-skeleten v-if="loading" />
           <div class="wind-flex wind-gap-4" v-else>
-            <div
-              class="wind-flex-shrink-0 wind-max-w-[300px] wind-min-w-[200px] wind-w-1/4"
-            >
+            <div class="wind-flex-shrink-0 wind-max-w-[300px] wind-min-w-[200px] wind-w-1/4">
               <v-card variant="text">
                 <v-img :aspect-ratio="3 / 4" cover alt="" :src="cover" />
               </v-card>
             </div>
-            <div
-              class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4"
-            >
+            <div class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4">
               <div class="wind-flex wind-flex-col wind-gap-2">
                 <div class="text-h5">{{ comicInfo.data.name }}</div>
                 <div
@@ -225,7 +205,7 @@ const download = async () => {
                 </div>
               </div>
               <div>
-                <v-row no-gutters class="wind-gap-2">
+                <v-row density="compact" class="wind-gap-2">
                   <v-col v-if="comicInfo.data.authorList.length > 0" :cols="12">
                     <div class="wind-flex">
                       <div class="wind-text-nowrap">作者：</div>
@@ -246,9 +226,7 @@ const download = async () => {
                     <div class="wind-flex wind-gap-1">
                       <div class="wind-text-nowrap">车牌：</div>
                       <div>
-                        <span class="wind-font-bold">
-                          JM{{ comicInfo.data.id }}
-                        </span>
+                        <span class="wind-font-bold"> JM{{ comicInfo.data.id }} </span>
                       </div>
                     </div>
                   </v-col>
@@ -260,11 +238,7 @@ const download = async () => {
                   </v-col>
                   <v-col v-if="comicInfo.data.workList.length > 0" :cols="12">
                     <div class="wind-flex wind-gap-1">
-                      <div
-                        class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap"
-                      >
-                        作品：
-                      </div>
+                      <div class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap">作品：</div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
                           v-for="item of comicInfo.data.workList"
@@ -278,9 +252,7 @@ const download = async () => {
                   </v-col>
                   <v-col v-if="comicInfo.data.roleList.length > 0" :cols="12">
                     <div class="wind-flex wind-gap-1">
-                      <div
-                        class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap"
-                      >
+                      <div class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap">
                         登场人物：
                       </div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
@@ -304,20 +276,14 @@ const download = async () => {
                       :to="{ name: 'COMIC_READ', params: { id } }"
                       custom
                     >
-                      <v-btn
-                        color="primary"
-                        variant="flat"
-                        size="large"
-                        block
-                        @click="navigate()"
-                      >
+                      <v-btn color="primary" variant="flat" size="large" block @click="navigate()">
                         <template #prepend>
                           <v-icon icon="mdi-book-open"></v-icon>
                         </template>
                         {{
                           comicInfo.data.currentSeriesId
-                            ? "从" + currentSeriesName + "阅读"
-                            : "阅读"
+                            ? '从' + currentSeriesName + '阅读'
+                            : '阅读'
                         }}
                       </v-btn>
                     </router-link>
@@ -341,17 +307,11 @@ const download = async () => {
                       </template>
                       {{
                         downloadStore.downloadingMap[id]
-                          ? "正在下载 " +
-                            ((
-                              downloadStore.downloadingMap[id]!.percent * 100
-                            ).toFixed(2) +
-                              "%")
+                          ? '正在下载 ' +
+                            ((downloadStore.downloadingMap[id]!.percent * 100).toFixed(2) + '%')
                           : downloadStore.completeMap[id]
-                            ? "已下载"
-                            : "下载" +
-                              (comicInfo.data.currentSeriesId
-                                ? currentSeriesName
-                                : "")
+                            ? '已下载'
+                            : '下载' + (comicInfo.data.currentSeriesId ? currentSeriesName : '')
                       }}
                     </v-btn>
                   </v-col>
@@ -372,7 +332,7 @@ const download = async () => {
                             :color="comicInfo.data.isLike ? 'red' : undefined"
                           ></v-icon>
                         </template>
-                        {{ comicInfo.data.isLike ? "已喜欢" : "喜欢" }}
+                        {{ comicInfo.data.isLike ? '已喜欢' : '喜欢' }}
                       </v-btn>
                     </v-col>
                     <v-col :cols="buttonCols[3]">
@@ -387,12 +347,10 @@ const download = async () => {
                         <template #prepend>
                           <v-icon
                             icon="mdi-book-heart"
-                            :color="
-                              comicInfo.data.isCollect ? '#834e00' : undefined
-                            "
+                            :color="comicInfo.data.isCollect ? '#834e00' : undefined"
                           ></v-icon>
                         </template>
-                        {{ comicInfo.data.isCollect ? "已收藏" : "收藏" }}
+                        {{ comicInfo.data.isCollect ? '已收藏' : '收藏' }}
                       </v-btn>
                     </v-col>
                   </template>

@@ -2,7 +2,7 @@ import { Server } from 'node:http'
 import { AddressInfo } from 'node:net'
 import { join } from 'node:path'
 
-import { distElectron, distRenderer } from '@electron/shared/path'
+import { distRenderer } from '@electron/shared/path'
 import { resolveProxyUrl } from '@electron/shared/utils'
 import cors from 'cors'
 import Express from 'express'
@@ -51,8 +51,7 @@ const getExpressInstance = async () => {
   if (proxyUrl) {
     info('代理已配置，地址为：%s', proxyUrl)
     agent = new HttpsProxyAgent(proxyUrl)
-  }
-  else {
+  } else {
     info('代理未配置')
   }
 
@@ -85,7 +84,7 @@ const getExpressInstance = async () => {
   )
 
   // vue 路由
-  const filepath = join(distElectron, 'index.html')
+  const filepath = join(distRenderer, 'index.html')
   info('设置剩余路由跳转 index.html ，路径为 %s', filepath)
   express.get('/:rest', (_req, res) => {
     res.sendFile(filepath)
@@ -126,9 +125,7 @@ export const restartExpressServer = async () => {
   const express = await getExpressInstance()
   await (expressServerInitPromise = new Promise<void>((resolve, reject) => {
     const devServerUrl = process.env['VITE_DEV_SERVER_URL']
-    const port = devServerUrl
-      ? (info('server 端口为 6174'), 6174)
-      : (info('server 端口随机'), 0)
+    const port = devServerUrl ? (info('server 端口为 6174'), 6174) : (info('server 端口随机'), 0)
     expressServer = express.listen(port, async () => {
       info('server 启动成功')
       resolve()

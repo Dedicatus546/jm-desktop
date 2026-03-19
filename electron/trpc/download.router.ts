@@ -44,7 +44,7 @@ const onDownloadComicRpc = trpc.procedure
     info('%d 标准化文件路径 %s', query.id, filepath)
     let complete = 0
     const total = query.picUrlList.length
-    const list = query.picUrlList.map(url =>
+    const list = query.picUrlList.map((url) =>
       limit(async () => {
         const res = await net.fetch(url, {
           method: 'GET',
@@ -103,17 +103,13 @@ const getDownloadCompleteListRpc = trpc.procedure.query(() => {
   return getDownloadCompleteList()
 })
 
-const saveDownloadDownloadingListRpc = trpc.procedure
-  .input(z.array(z.any()))
-  .query(({ input }) => {
-    return saveDownloadDownloadingList(input)
-  })
+const saveDownloadDownloadingListRpc = trpc.procedure.input(z.array(z.any())).query(({ input }) => {
+  return saveDownloadDownloadingList(input)
+})
 
-const saveDownloadCompleteListRpc = trpc.procedure
-  .input(z.array(z.any()))
-  .query(({ input }) => {
-    return saveDownloadCompleteList(input)
-  })
+const saveDownloadCompleteListRpc = trpc.procedure.input(z.array(z.any())).query(({ input }) => {
+  return saveDownloadCompleteList(input)
+})
 
 export const router = {
   onDownloadComic: onDownloadComicRpc,

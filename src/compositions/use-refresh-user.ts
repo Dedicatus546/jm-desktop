@@ -35,8 +35,7 @@ export default function useRefreshUser() {
       if (isLogin) {
         info('检测到已登录，开始定时刷新用户，防止登录信息失效。')
         resume()
-      }
-      else {
+      } else {
         info('检测未登录或退出登录，关闭定时刷新用户。')
         pause()
       }

@@ -39,11 +39,9 @@ const useInitConfig = () => {
         if (appStore.setting.shuntList.length > 0) {
           if (
             // 第一次启动未选择图源
-            appStore.config.currentShuntKey === undefined
+            appStore.config.currentShuntKey === undefined ||
             // 接口的图源列表可能发生变化，回退到第一个图源
-            || appStore.setting.shuntList.every(
-              item => item.key !== appStore.config.currentShuntKey,
-            )
+            appStore.setting.shuntList.every((item) => item.key !== appStore.config.currentShuntKey)
           ) {
             info('检测到未选择图源，默认选择第一个')
             appStore.updateConfigAction(
@@ -54,8 +52,7 @@ const useInitConfig = () => {
             )
           }
         }
-      }
-      catch (e) {
+      } catch (e) {
         error('读取本地配置文件失败，原因', e)
         throw new Error('读取本地配置文件失败')
       }
@@ -87,24 +84,20 @@ const useAutoLogin = () => {
       // 开发环境下读 env 直接登录，该 env 为 .local ，不上传仓库
       info('开始处理自动登录')
       if (
-        import.meta.env.DEV
-          && import.meta.env.VITE_AUTO_LOGIN_DEV === '1'
-          && import.meta.env.VITE_LOGIN_USERNAME
-          && import.meta.env.VITE_LOGIN_PASSWORD
+        import.meta.env.DEV &&
+        import.meta.env.VITE_AUTO_LOGIN_DEV === '1' &&
+        import.meta.env.VITE_LOGIN_USERNAME &&
+        import.meta.env.VITE_LOGIN_PASSWORD
       ) {
         info('检测到开发环境且配置了自动登录开关以及用户信息，使用该信息登录')
         username = import.meta.env.VITE_LOGIN_USERNAME
         password = import.meta.env.VITE_LOGIN_PASSWORD
-      }
-      else if (appStore.config.loginUserInfo) {
+      } else if (appStore.config.loginUserInfo) {
         info('检测到本地配置中开启了自动登录，使用本地配置中的用户信息')
-        const loginInfo = await trpcClient.decryptLoginUser.query(
-          appStore.config.loginUserInfo,
-        )
+        const loginInfo = await trpcClient.decryptLoginUser.query(appStore.config.loginUserInfo)
         username = loginInfo.username
         password = loginInfo.password
-      }
-      else {
+      } else {
         return Promise.resolve().then(() => {
           warn('未读取到相应的用户信息，跳过自动登录')
         })
@@ -129,8 +122,7 @@ const useInitDownload = () => {
       try {
         await downloadStore.initAction()
         info('初始化下载任务成功')
-      }
-      catch (e) {
+      } catch (e) {
         error('初始化下载任务失败，原因', e)
         throw new Error('初始化下载任务失败')
       }
@@ -140,17 +132,11 @@ const useInitDownload = () => {
 
 const useInitData = () => {
   const appStore = useAppStore()
-  const {
-    data: weekData,
-    send: weekSend,
-  } = useRequest(() => getWeekListApi(), {
+  const { data: weekData, send: weekSend } = useRequest(() => getWeekListApi(), {
     immediate: false,
   })
 
-  const {
-    data: categoryData,
-    send: categorySend,
-  } = useRequest(() => getCategoryListApi(), {
+  const { data: categoryData, send: categorySend } = useRequest(() => getCategoryListApi(), {
     immediate: false,
   })
 
@@ -158,10 +144,7 @@ const useInitData = () => {
     init: async () => {
       info('初始化全局数据')
       try {
-        await Promise.all([
-          weekSend(),
-          categorySend(),
-        ])
+        await Promise.all([weekSend(), categorySend()])
         Object.assign(appStore.data, {
           weekCategoryList: weekData.value.data.categoryList,
           weekTypeList: weekData.value.data.typeList,
@@ -171,8 +154,7 @@ const useInitData = () => {
           categoryCategoryList: categoryData.value.data.categoryList,
         })
         info('初始化全局数据成功')
-      }
-      catch (e) {
+      } catch (e) {
         error('初始化全局数据失败，原因', e)
         throw new Error('初始化全局数据失败')
       }
@@ -212,12 +194,10 @@ const useInitApp = () => {
       currentStatus.value = '初始化全局数据'
       await data.init()
       await delay(300)
-    }
-    catch (e) {
+    } catch (e) {
       if (isString(e)) {
         error.value = e
-      }
-      else if (e instanceof Error) {
+      } else if (e instanceof Error) {
         error.value = e.message
       }
     }

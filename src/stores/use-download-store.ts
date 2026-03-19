@@ -31,10 +31,7 @@ export const useDownloadStore = defineStore('download', () => {
         map[item.id] = item
         return map
       },
-      {} as Record<
-        DownloadItem['id'],
-        WithDownloadingInfo<DownloadItem> | undefined
-      >,
+      {} as Record<DownloadItem['id'], WithDownloadingInfo<DownloadItem> | undefined>,
     )
   })
 
@@ -69,14 +66,9 @@ export const useDownloadStore = defineStore('download', () => {
     }
   }
 
-  const addDownloadTaskAction = async (
-    item: DownloadItem,
-    reDownload = false,
-  ) => {
+  const addDownloadTaskAction = async (item: DownloadItem, reDownload = false) => {
     if (reDownload) {
-      const index = state.completeList.findIndex(
-        completeItem => item.id === completeItem.id,
-      )
+      const index = state.completeList.findIndex((completeItem) => item.id === completeItem.id)
       if (index > -1) {
         state.completeList.splice(index, 1)
       }
@@ -105,9 +97,7 @@ export const useDownloadStore = defineStore('download', () => {
     tryStartDownloadAction()
   }
 
-  const downloadComicAction = async (
-    downloadItem: WithDownloadingInfo<DownloadComicItem>,
-  ) => {
+  const downloadComicAction = async (downloadItem: WithDownloadingInfo<DownloadComicItem>) => {
     const { promise, resolve, reject } = Promise.withResolvers<void>()
     trpcClient.onDownloadComic.subscribe(
       {
@@ -123,27 +113,18 @@ export const useDownloadStore = defineStore('download', () => {
         onData(value) {
           if (value.type === 'downloading') {
             downloadItem.percent = value.data.complete! / value.data.total!
-          }
-          else if (value.type === 'complete') {
+          } else if (value.type === 'complete') {
             downloadItem.status = 'complete'
             downloadItem.filepath = value.data.filepath!
-            const index = state.downloadingList.findIndex(
-              item => item.id === downloadItem.id,
-            )
+            const index = state.downloadingList.findIndex((item) => item.id === downloadItem.id)
             if (index > -1) {
               const [item] = state.downloadingList.splice(index, 1)
               state.completeList.unshift(
-                omit(item as WithDownloadingInfo<DownloadComicItem>, [
-                  'status',
-                  'percent',
-                ]),
+                omit(item as WithDownloadingInfo<DownloadComicItem>, ['status', 'percent']),
               )
               resolve()
-            }
-            else {
-              reject(
-                new Error('下载列表内找不到对应项，uuid 为 ' + downloadItem.id),
-              )
+            } else {
+              reject(new Error('下载列表内找不到对应项，uuid 为 ' + downloadItem.id))
             }
           }
         },
@@ -159,7 +140,7 @@ export const useDownloadStore = defineStore('download', () => {
 
   const syncAction = async () => {
     await trpcClient.saveDownloadDownloadingList.query(
-      state.downloadingList.map(item => omit(item, ['status', 'percent'])),
+      state.downloadingList.map((item) => omit(item, ['status', 'percent'])),
     )
     await trpcClient.saveDownloadCompleteList.query(state.completeList)
   }

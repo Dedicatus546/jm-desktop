@@ -77,7 +77,7 @@ export const getSettingApi = () => {
   })
 }
 
-export const loginApi = (query: { username: string, password: string }) => {
+export const loginApi = (query: { username: string; password: string }) => {
   const formData = new FormData()
   formData.append('username', query.username)
   formData.append('password', query.password)
@@ -139,11 +139,7 @@ export const loginApi = (query: { username: string, password: string }) => {
   })
 }
 
-export const getComicListApi = (query: {
-  page: number
-  order: string
-  content: string
-}) => {
+export const getComicListApi = (query: { page: number; order: string; content: string }) => {
   return http.Get<
     RespWrapper<{
       total: number
@@ -159,33 +155,33 @@ export const getComicListApi = (query: {
     }>,
     RespWrapper<
       | {
-        search_query: string
-        total: string
-        redirect_aid: string
-        content: []
-      }
+          search_query: string
+          total: string
+          redirect_aid: string
+          content: []
+        }
       | {
-        search_query: string
-        total: string
-        content: Array<{
-          id: string
-          author: string
-          description: string | null
-          name: string
-          image: string
-          category: {
+          search_query: string
+          total: string
+          content: Array<{
             id: string
-            title: string
-          }
-          category_sub: {
-            id: string
-            title: string
-          }
-          liked: boolean
-          is_favorite: boolean
-          update_at: number
-        }>
-      }
+            author: string
+            description: string | null
+            name: string
+            image: string
+            category: {
+              id: string
+              title: string
+            }
+            category_sub: {
+              id: string
+              title: string
+            }
+            liked: boolean
+            is_favorite: boolean
+            update_at: number
+          }>
+        }
     >
   >('search', {
     params: {
@@ -198,10 +194,7 @@ export const getComicListApi = (query: {
         code: res.code,
         data: {
           total: Number.parseInt(res.data.total),
-          redirect_aid:
-            'redirect_aid' in res.data
-              ? Number.parseInt(res.data.redirect_aid)
-              : null,
+          redirect_aid: 'redirect_aid' in res.data ? Number.parseInt(res.data.redirect_aid) : null,
           content: res.data.content.map((item) => {
             return {
               id: Number.parseInt(item.id),
@@ -760,10 +753,7 @@ const getAvatarColor = async (nickname: string) => {
   avatarColorCache.set(nickname, color)
   return color
 }
-export const getComicCommentListApi = (query: {
-  page: number
-  comicId: number
-}) => {
+export const getComicCommentListApi = (query: { page: number; comicId: number }) => {
   return http.Get<
     RespWrapper<{
       list: Array<{
@@ -805,8 +795,7 @@ export const getComicCommentListApi = (query: {
           list: await Promise.all(
             res.data.list.map(async (item) => {
               const avatar = getAvatar(item.photo)
-              const avatarColor
-                = avatar === null ? await getAvatarColor(item.username) : '#eee'
+              const avatarColor = avatar === null ? await getAvatarColor(item.username) : '#eee'
               return {
                 id: Number.parseInt(item.CID),
                 parentId: Number.parseInt(item.parent_CID),
@@ -815,17 +804,12 @@ export const getComicCommentListApi = (query: {
                 content: item.content,
                 avatar,
                 avatarColor,
-                createTime: format(
-                  parse(item.addtime, 'MMM d, yyyy', new Date()),
-                  'yyyy-MM-dd',
-                ),
+                createTime: format(parse(item.addtime, 'MMM d, yyyy', new Date()), 'yyyy-MM-dd'),
                 replyList: await Promise.all(
                   item.replys?.map(async (item) => {
                     const avatar = getAvatar(item.photo)
-                    const avatarColor
-                      = avatar === null
-                        ? await getAvatarColor(item.username)
-                        : '#eee'
+                    const avatarColor =
+                      avatar === null ? await getAvatarColor(item.username) : '#eee'
                     return {
                       id: Number.parseInt(item.CID),
                       parentId: Number.parseInt(item.parent_CID),
@@ -894,8 +878,7 @@ export const getUserCommentListApi = (page: number, userId: number) => {
           list: await Promise.all(
             res.data.list.map(async (item) => {
               const avatar = getAvatar(item.photo)
-              const avatarColor
-                = avatar === null ? await getAvatarColor(item.username) : '#eee'
+              const avatarColor = avatar === null ? await getAvatarColor(item.username) : '#eee'
               return {
                 id: Number.parseInt(item.CID),
                 parentId: Number.parseInt(item.parent_CID),
@@ -904,17 +887,12 @@ export const getUserCommentListApi = (page: number, userId: number) => {
                 content: item.content,
                 avatar,
                 avatarColor,
-                createTime: format(
-                  parse(item.addtime, 'MMM d, yyyy', new Date()),
-                  'yyyy-MM-dd',
-                ),
+                createTime: format(parse(item.addtime, 'MMM d, yyyy', new Date()), 'yyyy-MM-dd'),
                 replyList: await Promise.all(
                   item.replys?.map(async (item) => {
                     const avatar = getAvatar(item.photo)
-                    const avatarColor
-                      = avatar === null
-                        ? await getAvatarColor(item.username)
-                        : '#eee'
+                    const avatarColor =
+                      avatar === null ? await getAvatarColor(item.username) : '#eee'
                     return {
                       id: Number.parseInt(item.CID),
                       parentId: Number.parseInt(item.parent_CID),
@@ -1028,10 +1006,7 @@ export const getSignInDataApi = (userId: number) => {
           mobileBackground: res.data.background_phone,
           currentProgress:
             Number.parseFloat(
-              res.data.currentProgress.substring(
-                0,
-                res.data.currentProgress.length - 1,
-              ),
+              res.data.currentProgress.substring(0, res.data.currentProgress.length - 1),
             ) / 100,
           dateMap: res.data.record
             .flat()
@@ -1049,8 +1024,7 @@ export const getSignInDataApi = (userId: number) => {
             .map((item, index, array) => {
               return {
                 ...item,
-                isNextDaySign:
-                  index < array.length - 1 && array[index + 1].isSign,
+                isNextDaySign: index < array.length - 1 && array[index + 1].isSign,
                 isLastDaySign: index > 0 && array[index - 1].isSign,
               }
             })
@@ -1115,10 +1089,7 @@ export const signInApi = (userId: number, dayId: number) => {
 }
 
 // 获取图片列表，需要通过正则来解析 html 文件内容
-export const getComicPicListApi = (
-  comicId: number,
-  shuntKey: number | undefined,
-) => {
+export const getComicPicListApi = (comicId: number, shuntKey: number | undefined) => {
   return http.Get<{ list: string[] }, string>('chapter_view_template', {
     params: {
       id: comicId,
@@ -1137,9 +1108,9 @@ export const getComicPicListApi = (
       let result: { images: Array<string> } | null = null
       if (resultMatch) {
         try {
+          // oxlint-disable-next-line
           result = eval(`(${resultMatch[1]})`)
-        }
-        catch (e) {
+        } catch (e) {
           console.error('Error parsing result object:', e)
         }
       }
@@ -1154,9 +1125,9 @@ export const getComicPicListApi = (
       } | null = null
       if (configMatch) {
         try {
+          // oxlint-disable-next-line
           config = eval(`(${configMatch[1]})`)
-        }
-        catch (e) {
+        } catch (e) {
           console.error('Error parsing config object:', e)
         }
       }
@@ -1167,8 +1138,7 @@ export const getComicPicListApi = (
       }
       return {
         list: result.images.map(
-          item =>
-            `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
+          (item) => `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
         ),
       }
     },
@@ -1333,11 +1303,7 @@ export const getWeekListApi = () => {
   })
 }
 
-export const getWeekComicListApi = (query: {
-  page: number
-  category: number
-  type: string
-}) => {
+export const getWeekComicListApi = (query: { page: number; category: number; type: string }) => {
   return http.Get<
     RespWrapper<{
       total: number

@@ -7,10 +7,7 @@ interface Position {
 
 class ScrollManager {
   #elId: string
-  #scrollPosition: Record<
-    string,
-    Position | undefined
-  > = {}
+  #scrollPosition: Record<string, Position | undefined> = {}
 
   constructor(elId: string) {
     this.#elId = elId
@@ -41,8 +38,7 @@ class ScrollManager {
           top: position.top,
           left: position.left,
         })
-      }
-      else {
+      } else {
         scrollEl.scrollTo({
           top: 0,
           left: 0,

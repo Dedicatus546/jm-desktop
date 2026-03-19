@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  DialogInstanceOptions,
-  dialogProviderInjectKey,
-  DialogProviderInjectType,
-} from '@/types'
+import { DialogInstanceOptions, dialogProviderInjectKey, DialogProviderInjectType } from '@/types'
 import { delay } from '@/utils'
 
 let id = 0
@@ -26,8 +22,7 @@ const provideValue: DialogProviderInjectType = (options) => {
         instance.okLoading = true
         try {
           await options.onOk()
-        }
-        catch (e) {
+        } catch (e) {
           console.error(e)
         }
         instance.okLoading = false
@@ -39,8 +34,7 @@ const provideValue: DialogProviderInjectType = (options) => {
         instance.cancelLoading = true
         try {
           await options.onCancel()
-        }
-        catch (e) {
+        } catch (e) {
           console.error(e)
         }
         instance.cancelLoading = false
@@ -55,7 +49,7 @@ provide<DialogProviderInjectType>(dialogProviderInjectKey, provideValue)
 
 const removeInstance = async (id: number) => {
   delay(1000)
-  const index = instanceList.value.findIndex(instance => instance.id === id)
+  const index = instanceList.value.findIndex((instance) => instance.id === id)
   if (index > -1) {
     instanceList.value.splice(index, 1)
   }

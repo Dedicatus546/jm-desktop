@@ -51,9 +51,7 @@ const openFile = (item: DownloadItem) => {
                   </template>
                 </td>
                 <td>
-                  <template v-if="item.status === 'pending'">
-                    等待中...
-                  </template>
+                  <template v-if="item.status === 'pending'"> 等待中... </template>
                   <template v-else>
                     <v-row align="center">
                       <v-col cols="auto">正在下载中</v-col>
@@ -105,9 +103,7 @@ const openFile = (item: DownloadItem) => {
                   </template>
                 </td>
                 <td>
-                  <v-btn variant="text" color="primary" @click="openFile(item)">
-                    打开文件
-                  </v-btn>
+                  <v-btn variant="text" color="primary" @click="openFile(item)"> 打开文件 </v-btn>
                 </td>
               </tr>
             </tbody>

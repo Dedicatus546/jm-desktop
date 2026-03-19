@@ -56,10 +56,7 @@ watch(
       pause()
       return
     }
-    const duration
-      = containerWidth === 0
-        ? 0
-        : Math.floor(innerWidth / containerWidth) * 10000
+    const duration = containerWidth === 0 ? 0 : Math.floor(innerWidth / containerWidth) * 10000
     animate.value?.effect?.updateTiming({
       duration: duration <= 0 ? 'auto' : duration,
     })

@@ -1,14 +1,11 @@
-name: Release
+name: Dev
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*.*.*' # 只在版本标签推送时触发
 
 jobs:
   build:
-    name: Release ${{ matrix.os }}
+    name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -46,9 +43,21 @@ jobs:
             pnpm-${{ runner.os }}-
 
       - name: Install Dependencies
-        run: pnpm i
+        run: pnpm install
 
       - name: Build Electron App
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: pnpm run build
+        run: pnpm run build:latest
+
+      - name: Upload Linux Artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-release-assets-${{ github.sha }}
+          path: release/*/jm-desktop-Linux-*.zip
+
+      - name: Upload Windows Artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-release-assets-${{ github.sha }}
+          path: release/*/jm-desktop-Windows-*.zip

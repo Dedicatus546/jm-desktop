@@ -11,9 +11,7 @@ const { loading, data } = useRequest(() => getPromoteComicListApi(), {
     list: [],
   },
 })
-const { loading: latestLoading, data: latestData } = useRequest(() =>
-  getLatestComicListApi(1),
-)
+const { loading: latestLoading, data: latestData } = useRequest(() => getLatestComicListApi(1))
 
 const breakpoints = useBreakpoints(breakpointsVuetifyV3)
 const isGreaterXXL = breakpoints.greater('xxl')
@@ -22,11 +20,9 @@ const isGreaterSM = breakpoints.greater('sm')
 const slidesPerView = computed(() => {
   if (isGreaterXXL.value) {
     return 6.3
-  }
-  else if (isGreaterXL.value) {
+  } else if (isGreaterXL.value) {
     return 5.3
-  }
-  else if (isGreaterSM.value) {
+  } else if (isGreaterSM.value) {
     return 4.3
   }
   return 3.3
@@ -34,11 +30,9 @@ const slidesPerView = computed(() => {
 const minListCount = computed(() => {
   if (isGreaterXXL.value) {
     return 7
-  }
-  else if (isGreaterXL.value) {
+  } else if (isGreaterXL.value) {
     return 6
-  }
-  else if (isGreaterSM.value) {
+  } else if (isGreaterSM.value) {
     return 5
   }
   return 4
@@ -69,7 +63,7 @@ const search = () => {
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <v-row no-gutters class="wind-gap-4">
+          <v-row density="compact" class="wind-gap-4">
             <v-col>
               <v-form @submit.prevent="search">
                 <v-text-field
@@ -132,14 +126,7 @@ const search = () => {
       <v-card :title="item.title">
         <v-card-text>
           <v-row v-if="item.list.length < minListCount">
-            <v-col
-              v-for="subItem of item.list"
-              :key="subItem.id"
-              :cols="6"
-              :sm="4"
-              :md="3"
-              :lg="2"
-            >
+            <v-col v-for="subItem of item.list" :key="subItem.id" :cols="6" :sm="4" :md="3" :lg="2">
               <app-comic-list-item :comic="subItem" />
             </v-col>
           </v-row>
@@ -165,14 +152,7 @@ const search = () => {
         </v-card-item>
         <v-card-text>
           <v-row>
-            <v-col
-              v-for="item of latestData.data"
-              :key="item.id"
-              :cols="6"
-              :sm="4"
-              :md="3"
-              :lg="2"
-            >
+            <v-col v-for="item of latestData.data" :key="item.id" :cols="6" :sm="4" :md="3" :lg="2">
               <app-comic-list-item :comic="item" />
             </v-col>
           </v-row>

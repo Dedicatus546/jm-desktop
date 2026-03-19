@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/quick-search',
     name: 'QUICK_SEARCH',
-    props: to => ({
+    props: (to) => ({
       query: to.query.query as string,
     }),
     component: () => import('@/views/app-quick-search.vue'),
@@ -60,7 +60,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/comic-detail/:id(\\d+)',
     name: 'COMIC_DETAIL',
-    props: route => ({
+    props: (route) => ({
       id: Number.parseInt(route.params.id as string),
     }),
     component: AppComicDetail,
@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/comic-read/:id(\\d+)',
     name: 'COMIC_READ',
-    props: route => ({
+    props: (route) => ({
       id: Number.parseInt(route.params.id as string),
     }),
     component: AppComicRead,
@@ -101,22 +101,19 @@ const router = createRouter({
   scrollBehavior: scrollManager.getScrollBehavior(),
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   info('router.beforeEach', '从', from.fullPath, '跳转到', to.fullPath)
-  next()
 })
 
-router.beforeEach((_to, from, next) => {
+router.beforeEach((_to, from) => {
   const scrollEl = document.getElementById('scroll-view') as HTMLDivElement
   if (!scrollEl) {
-    next()
     return
   }
   scrollManager.setPosition(from.fullPath, {
     top: scrollEl.scrollTop,
     left: scrollEl.scrollLeft,
   })
-  next()
 })
 
 export default router

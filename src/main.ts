@@ -1,8 +1,9 @@
+import './layer.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'swiper/swiper-bundle.css'
 import 'typeface-roboto'
-import 'vuetify/styles'
 import 'virtual:uno.css'
+import 'vuetify/styles'
 import './style.css'
 
 import { createApp } from 'vue'
@@ -22,14 +23,14 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          'primary': '#ff9800',
+          primary: '#ff9800',
           'on-primary': '#ffffff',
         },
       },
       dark: {
         dark: true,
         colors: {
-          'primary': '#633b00',
+          primary: '#633b00',
           'on-primary': '#ffffff',
         },
       },

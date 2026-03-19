@@ -22,35 +22,34 @@ const formState = reactive({
 
 const routePage = useRouteQuery<string, number>('page', '1', {
   transform: {
-    get: val => Number.parseInt(val),
+    get: (val) => Number.parseInt(val),
     // 这里必须转为 string ，不然和默认值不同会导致 page 为 1 时地址出现 page=1 ，进而影响路由历史
-    set: val => String(val),
+    set: (val) => String(val),
   },
   mode: 'push',
 })
-const { page, pageSize, pageCount, send, data, loading, onSuccess }
-  = usePagination(
-    page =>
-      getComicListApi({
-        page,
-        content: content.value,
-        order: order.value,
-      }),
-    {
-      initialPage: routePage.value,
-      initialPageSize: 80,
-      data: (res) => {
-        const list = res.data.content
-        if (res.data.redirect_aid) {
-          (list as any).redirectId = res.data.redirect_aid
-        }
-        return list
-      },
-      total: res => res.data.total,
-      watchingStates: [order, content],
-      immediate: false,
+const { page, pageSize, pageCount, send, data, loading, onSuccess } = usePagination(
+  (page) =>
+    getComicListApi({
+      page,
+      content: content.value,
+      order: order.value,
+    }),
+  {
+    initialPage: routePage.value,
+    initialPageSize: 80,
+    data: (res) => {
+      const list = res.data.content
+      if (res.data.redirect_aid) {
+        ;(list as any).redirectId = res.data.redirect_aid
+      }
+      return list
     },
-  )
+    total: (res) => res.data.total,
+    watchingStates: [order, content],
+    immediate: false,
+  },
+)
 syncRef(page, routePage)
 
 // 如果根据 id 搜索应该直接跳到指定详情页
@@ -80,11 +79,7 @@ if (formState.content) {
 <template>
   <v-card>
     <v-card-text>
-      <v-data-iterator
-        :items="data"
-        :items-per-page="pageSize"
-        :loading="loading"
-      >
+      <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
         <template #loader>
           <v-row>
             <v-col :cols="6" :sm="4" :md="3" :lg="2" v-for="item of pageSize" :key="item">

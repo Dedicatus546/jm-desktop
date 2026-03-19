@@ -33,14 +33,17 @@ const isVisible = useElementVisibility(visibleRef, {
   },
 })
 const isInside = ref(false)
-watch(isVisible, (nVal, oVal) => {
-  if (oVal || nVal) {
-    isInside.value = true
-  }
-},
-{
-  immediate: true,
-})
+watch(
+  isVisible,
+  (nVal, oVal) => {
+    if (oVal || nVal) {
+      isInside.value = true
+    }
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>
@@ -49,18 +52,11 @@ watch(isVisible, (nVal, oVal) => {
     :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
   >
     <v-card color="primary" v-if="isInside">
-      <v-img
-        :aspect-ratio="3 / 4"
-        cover
-        :alt="`${comic.name}的封面`"
-        :src="cover"
-      />
+      <v-img :aspect-ratio="3 / 4" cover :alt="`${comic.name}的封面`" :src="cover" />
       <v-card-item>
         <v-card-title>{{ comic.name }}</v-card-title>
         <v-card-subtitle class="wind-cursor-default">
-          <app-scroll-wrapper
-            v-if="comic.author && route.name !== 'QUICK_SEARCH'"
-          >
+          <app-scroll-wrapper v-if="comic.author && route.name !== 'QUICK_SEARCH'">
             <router-link
               :to="{
                 name: 'QUICK_SEARCH',
