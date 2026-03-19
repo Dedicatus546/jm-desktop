@@ -1,6 +1,6 @@
 {
   "name": "jm-desktop",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A jm comic desktop app for windows and linux by vue + electron.",
   "author": {
     "name": "Par9uet",
