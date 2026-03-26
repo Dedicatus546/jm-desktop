@@ -16,6 +16,8 @@ const { loading, data, send } = useRequest(
     immediate: false,
     initialData: {
       list: [],
+      scrambleId: 0,
+      speed: '',
     },
   },
 )
@@ -27,7 +29,7 @@ const onDecodeSuccess = (index: number) => {
   const end = Math.min(index + cacheCount, list.length - 1)
   for (let i = start; i <= end; i++) {
     // 缓存前后图片，这样翻页可以立马查看
-    decodeImage(list[i], props.id)
+    decodeImage(list[i], props.id, data.value.scrambleId, data.value.speed)
   }
 }
 provide('onDecodeSuccess', onDecodeSuccess)
@@ -49,8 +51,16 @@ watchEffect(() => {
       v-if="appStore.config.readMode === 'scroll'"
       :pic-list="data.list"
       :comic-id="id"
+      :scramble-id="data.scrambleId"
+      :speed="data.speed"
     />
-    <app-comic-page-read v-else :pic-list="data.list" :comic-id="id" />
+    <app-comic-page-read
+      v-else
+      :pic-list="data.list"
+      :comic-id="id"
+      :scramble-id="data.scrambleId"
+      :speed="data.speed"
+    />
   </template>
 </template>
 

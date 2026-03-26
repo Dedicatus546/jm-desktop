@@ -6,6 +6,8 @@ import { decodeImage } from '@/utils/image-decode'
 const props = defineProps<{
   src: string
   comicId: number
+  scrambleId: number
+  speed: string
 }>()
 const emits = defineEmits<{
   (e: 'intersect'): void
@@ -18,7 +20,7 @@ const imgSrc = ref<string>('')
 
 const onLoadImageIntersect = async (isIntersecting: boolean) => {
   if (isIntersecting) {
-    imgSrc.value = await decodeImage(props.src, props.comicId)
+    imgSrc.value = await decodeImage(props.src, props.comicId, props.scrambleId, props.speed)
     emits('decodeSuccess')
   }
 }

@@ -4,6 +4,8 @@ import { decodeImage } from '@/utils/image-decode'
 const props = defineProps<{
   src: string
   comicId: number
+  scrambleId: number
+  speed: string
 }>()
 const emits = defineEmits<{
   (e: 'decodeSuccess'): void
@@ -13,7 +15,7 @@ const isLoaded = ref(false)
 const imgSrc = ref<string>('')
 
 onMounted(async () => {
-  imgSrc.value = await decodeImage(props.src, props.comicId)
+  imgSrc.value = await decodeImage(props.src, props.comicId, props.scrambleId, props.speed)
   emits('decodeSuccess')
 })
 </script>
