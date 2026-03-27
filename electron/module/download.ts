@@ -14,6 +14,8 @@ export interface DownloadComicItem extends DownloadBaseItem {
   comicName: string
   chapterName: string
   picUrlList: Array<string>
+  scrambleId: number
+  speed: string
 }
 
 export type DownloadItem = DownloadComicItem

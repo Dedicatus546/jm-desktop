@@ -121,6 +121,8 @@ const { data, send: getComicPicList } = useRequest(
     immediate: false,
     initialData: {
       list: [],
+      scrambleId: 0,
+      speed: '',
     },
   },
 )
@@ -138,41 +140,36 @@ const download = async () => {
     snackbar.warning('任务正在下载中，请勿重复点击')
     return
   }
+  const exec = async () => {
+    await getComicPicList(id)
+    downloadStore.addDownloadTaskAction(
+      {
+        type: 'comic',
+        id,
+        comicName: comicInfo.value.data.name,
+        chapterName,
+        picUrlList: data.value.list,
+        filepath: '',
+        scrambleId: data.value.scrambleId,
+        speed: data.value.speed,
+      },
+      true,
+    )
+    snackbar.success('添加下载任务成功')
+    info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
+  }
   if (downloadStore.completeMap[id]) {
     dialog({
       width: 300,
       title: '确认',
       content: '该漫画已下载，是否重新下载？',
       async onOk() {
-        await getComicPicList(id)
-        downloadStore.addDownloadTaskAction(
-          {
-            type: 'comic',
-            id,
-            comicName: comicInfo.value.data.name,
-            chapterName,
-            picUrlList: data.value.list,
-            filepath: '',
-          },
-          true,
-        )
-        snackbar.success('添加下载任务成功')
-        info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
+        exec()
       },
     })
     return
   }
-  await getComicPicList(id)
-  downloadStore.addDownloadTaskAction({
-    type: 'comic',
-    id,
-    comicName: comicInfo.value.data.name,
-    chapterName,
-    picUrlList: data.value.list,
-    filepath: '',
-  })
-  snackbar.success('添加下载任务成功')
-  info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
+  exec()
 }
 </script>
 

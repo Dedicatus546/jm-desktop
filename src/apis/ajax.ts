@@ -1090,59 +1090,96 @@ export const signInApi = (userId: number, dayId: number) => {
 
 // 获取图片列表，需要通过正则来解析 html 文件内容
 export const getComicPicListApi = (comicId: number, shuntKey: number | undefined) => {
-  return http.Get<{ list: string[] }, string>('chapter_view_template', {
-    params: {
-      id: comicId,
-      mode: 'vertical',
-      page: 0,
-      app_img_shunt: shuntKey,
-      express: 'off',
-      v: Math.floor(Date.now() / 1000),
-      // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
-    },
-    async transform(htmlStr) {
-      // 2025.06.15 新版匹配方式
-      // 正则表达式匹配 result 对象
-      const resultRegex = /const result\s*=\s*({[\s\S]*?});/
-      const resultMatch = htmlStr.match(resultRegex)
-      let result: { images: Array<string> } | null = null
-      if (resultMatch) {
-        try {
-          // oxlint-disable-next-line
-          result = eval(`(${resultMatch[1]})`)
-        } catch (e) {
-          console.error('Error parsing result object:', e)
+  return http.Get<{ list: string[]; scrambleId: number; speed: string }, string>(
+    'chapter_view_template',
+    {
+      params: {
+        id: comicId,
+        mode: 'vertical',
+        page: 0,
+        app_img_shunt: shuntKey,
+        express: 'off',
+        v: Math.floor(Date.now() / 1000),
+        // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
+      },
+      async transform(htmlStr) {
+        // 2025.06.15 新版匹配方式
+        // 正则表达式匹配 result 对象
+        const resultRegex = /const result\s*=\s*({[\s\S]*?});/
+        const resultMatch = htmlStr.match(resultRegex)
+        let result: { images: Array<string> } | null = null
+        if (resultMatch) {
+          try {
+            // oxlint-disable-next-line
+            result = eval(`(${resultMatch[1]})`)
+          } catch (e) {
+            console.error('Error parsing result object:', e)
+          }
         }
-      }
 
-      // 正则表达式匹配 config 对象
-      const configRegex = /const config\s*=\s*({[\s\S]*?});/
-      const configMatch = htmlStr.match(configRegex)
-      let config: {
-        cache: string
-        imghost: string
-        jmid: string
-      } | null = null
-      if (configMatch) {
-        try {
-          // oxlint-disable-next-line
-          config = eval(`(${configMatch[1]})`)
-        } catch (e) {
-          console.error('Error parsing config object:', e)
+        // 正则表达式匹配 config 对象
+        const configRegex = /const config\s*=\s*({[\s\S]*?});/
+        const configMatch = htmlStr.match(configRegex)
+        let config: {
+          cache: string
+          imghost: string
+          jmid: string
+        } | null = null
+        if (configMatch) {
+          try {
+            // oxlint-disable-next-line
+            config = eval(`(${configMatch[1]})`)
+          } catch (e) {
+            console.error('Error parsing config object:', e)
+          }
         }
-      }
-      if (!result || !config) {
-        return {
-          list: [],
+
+        // 2026.03.26
+        // 新增 scrambleId 和 speed 参数，用于判断是否需要解密
+        // 出现 gif 后缀图片
+        // 匹配 scrambleId
+        const scrambleIdRegex = /var scramble_id\s*=\s*(\d+);/
+        const scrambleIdMatch = htmlStr.match(scrambleIdRegex)
+        let scrambleId = 0
+        if (scrambleIdMatch) {
+          try {
+            scrambleId = Number.parseInt(scrambleIdMatch[1])
+          } catch (e) {
+            console.error('Error parsing scrambleId arg:', e)
+          }
         }
-      }
-      return {
-        list: result.images.map(
+
+        // 匹配 speed
+        const speedRegex = /var speed\s*=\s*'(.*)';/
+        const speedMatch = htmlStr.match(speedRegex)
+        let speed = ''
+        if (speedMatch) {
+          try {
+            speed = speedMatch[1]
+          } catch (e) {
+            console.error('Error parsing speed arg:', e)
+          }
+        }
+
+        if (!result || !config) {
+          return {
+            list: [],
+            scrambleId,
+            speed,
+          }
+        }
+        const list = result.images.map(
           (item) => `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
-        ),
-      }
+        )
+        console.log('list', list)
+        return {
+          list,
+          scrambleId,
+          speed,
+        }
+      },
     },
-  })
+  )
   // .then(() => {
   //   return [
   //     "https://cdn-msp.jmapiproxy3.cc/media/photos/113592/00001.webp",

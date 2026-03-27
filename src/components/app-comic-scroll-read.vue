@@ -2,6 +2,8 @@
 defineProps<{
   comicId: number
   picList: Array<string>
+  scrambleId: number
+  speed: string
 }>()
 
 const sliderValue = ref(0)
@@ -24,6 +26,8 @@ const onDecodeSuccess = inject<(index: number) => void>('onDecodeSuccess', () =>
         :key="item"
         :comic-id="comicId"
         :src="item"
+        :scramble-id="scrambleId"
+        :speed="speed"
         @intersect="sliderValue = index + 1"
         @decode-success="onDecodeSuccess(index)"
       />

@@ -2,6 +2,8 @@
 const props = defineProps<{
   comicId: number
   picList: Array<string>
+  scrambleId: number
+  speed: string
 }>()
 
 const page = ref(0) // [0, picList.length - 1]
@@ -47,6 +49,8 @@ const onSliderEnd = (value: [number, number] | number) => {
           :key="picList[page]"
           :comic-id="comicId"
           :src="picList[page]"
+          :scramble-id="scrambleId"
+          :speed="speed"
           @decode-success="onDecodeSuccess(page)"
         />
       </div>
