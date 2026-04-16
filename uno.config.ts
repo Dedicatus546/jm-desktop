@@ -4,6 +4,9 @@ export default defineConfig({
   presets: [
     presetWind4({
       prefix: 'wind-',
+      preflights: {
+        reset: false,
+      },
     }),
   ],
   outputToCssLayers: {
