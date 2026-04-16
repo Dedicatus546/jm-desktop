@@ -1,26 +1,3 @@
-html,
-body {
-  overflow: hidden;
-  /* font-family:
-    "Noto Sans SC",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    "Noto Sans",
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    "Noto Color Emoji"; */
-}
-
-a {
-  text-decoration: none;
-}
-
 ::-webkit-scrollbar {
   width: 12px; /* 横向滚动条的宽度 */
   height: 12px; /* 纵向滚动条的高度 */

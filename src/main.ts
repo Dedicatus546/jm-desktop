@@ -3,7 +3,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'swiper/swiper-bundle.css'
 import 'typeface-roboto'
 import 'virtual:uno.css'
-import 'vuetify/styles'
+import 'vuetify/styles/core'
 import './style.css'
 
 import { createApp } from 'vue'
