@@ -193,11 +193,13 @@ const download = async () => {
                   v-if="comicInfo.data.tagList.length > 0"
                 >
                   <router-link
+                    custom
+                    v-slot="{ navigate }"
                     v-for="item of comicInfo.data.tagList"
                     :key="item"
                     :to="toQuickQueryPage(item)"
                   >
-                    <v-chip color="primary">{{ item }}</v-chip>
+                    <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                   </router-link>
                 </div>
               </div>
@@ -208,11 +210,13 @@ const download = async () => {
                       <div class="wind-text-nowrap">作者：</div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.authorList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <span class="wind-font-bold">
+                          <span class="wind-cursor-pointer wind-font-bold" @click="navigate">
                             {{ item }}
                           </span>
                         </router-link>
@@ -238,11 +242,13 @@ const download = async () => {
                       <div class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap">作品：</div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.workList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <v-chip color="primary">{{ item }}</v-chip>
+                          <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                         </router-link>
                       </div>
                     </div>
@@ -254,11 +260,13 @@ const download = async () => {
                       </div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.roleList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <v-chip color="primary">{{ item }}</v-chip>
+                          <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                         </router-link>
                       </div>
                     </div>

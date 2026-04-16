@@ -143,10 +143,8 @@ const search = () => {
         <v-card-item>
           <div class="wind-flex wind-items-center wind-justify-between">
             <v-card-title>最新发布</v-card-title>
-            <router-link custom :to="{ name: 'COMIC_LATEST' }">
-              <template #default="{ navigate }">
-                <v-btn variant="text" @click="navigate()">更多</v-btn>
-              </template>
+            <router-link custom v-slot="{ navigate }" :to="{ name: 'COMIC_LATEST' }">
+              <v-btn variant="text" @click="navigate()">更多</v-btn>
             </router-link>
           </div>
         </v-card-item>

@@ -119,13 +119,12 @@ const onCategoryClick = (slug: string) => {
                 v-for="item of tagList"
                 :key="item"
                 custom
+                v-slot="{ navigate }"
                 :to="{ name: 'QUICK_SEARCH', query: { query: item } }"
               >
-                <template #default="{ navigate }">
-                  <v-chip @click="navigate()">
-                    {{ item }}
-                  </v-chip>
-                </template>
+                <v-chip @click="navigate()">
+                  {{ item }}
+                </v-chip>
               </router-link>
             </v-chip-group>
             <v-divider />
