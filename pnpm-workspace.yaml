@@ -6,3 +6,5 @@ onlyBuiltDependencies:
   - simple-git-hooks
   - skia-canvas
   - vue-demi
+# 发布 7 天后的包
+minimumReleaseAge: 10080
