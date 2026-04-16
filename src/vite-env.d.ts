@@ -8,6 +8,11 @@ interface ImportMetaEnv {
   readonly VITE_NSFW: string
 }
 
+declare module 'typeface-roboto' {
+  const classes: CSSModuleClasses
+  export default classes
+}
+
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
