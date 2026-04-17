@@ -1,4 +1,4 @@
-import { defineConfig, presetWind4 } from 'unocss'
+import { defineConfig, presetWind4, presetIcons } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -6,6 +6,11 @@ export default defineConfig({
       prefix: 'wind-',
       preflights: {
         reset: false,
+      },
+    }),
+    presetIcons({
+      processor(props) {
+        delete props.color
       },
     }),
   ],

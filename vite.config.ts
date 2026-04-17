@@ -7,6 +7,8 @@ import { transformerDirectives } from 'unocss'
 import unocss from 'unocss/vite'
 import autoImport from 'unplugin-auto-import/vite'
 import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
+import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
 import component from 'unplugin-vue-components/vite'
 import { defineConfig, esmExternalRequirePlugin } from 'vite'
 import electron from './vite-plugins/vite-plugin-electron/simple'
@@ -67,8 +69,9 @@ export default defineConfig({
         enabled: true,
       },
     }),
+    Icons(),
     component({
-      resolvers: [Vuetify3Resolver()],
+      resolvers: [Vuetify3Resolver(), IconsResolver()],
     }),
     unocss({
       transformers: [

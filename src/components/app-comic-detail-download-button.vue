@@ -214,7 +214,9 @@ const download = async (series?: { id: number; name: string }) => {
     @click="ok"
   >
     <template #prepend>
-      <v-icon icon="mdi-download"></v-icon>
+      <v-icon>
+        <i-mdi-download />
+      </v-icon>
     </template>
     <template #loader>
       {{ percent + "%" }}

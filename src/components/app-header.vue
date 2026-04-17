@@ -62,7 +62,9 @@ const closeWin = () => {
             <v-list>
               <v-list-item @click="router.back()">
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-arrow-u-left-top"></v-icon>
+                  <v-icon>
+                    <i-mdi-arrow-u-left-top />
+                  </v-icon>
                 </template>
                 <v-list-item-title>返回</v-list-item-title>
               </v-list-item>
@@ -75,7 +77,9 @@ const closeWin = () => {
                   "
                 >
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-calendar-month"></v-icon>
+                    <v-icon>
+                      <i-mdi-calendar-month />
+                    </v-icon>
                   </template>
                   <v-list-item-title>每月签到</v-list-item-title>
                 </v-list-item>
@@ -87,13 +91,17 @@ const closeWin = () => {
                   "
                 >
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-account"></v-icon>
+                    <v-icon>
+                      <i-mdi-account />
+                    </v-icon>
                   </template>
                   <v-list-item-title>个人中心</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="logout">
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-logout"></v-icon>
+                    <v-icon>
+                      <i-mdi-logout />
+                    </v-icon>
                   </template>
                   <v-list-item-title>退出</v-list-item-title>
                 </v-list-item>
@@ -107,7 +115,9 @@ const closeWin = () => {
                 "
               >
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-login"></v-icon>
+                  <v-icon>
+                    <i-mdi-login />
+                  </v-icon>
                 </template>
                 <v-list-item-title>登录</v-list-item-title>
               </v-list-item>
@@ -119,7 +129,9 @@ const closeWin = () => {
                 "
               >
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-cog"></v-icon>
+                  <v-icon>
+                    <i-mdi-cog />
+                  </v-icon>
                 </template>
                 <v-list-item-title>设置</v-list-item-title>
               </v-list-item>
@@ -131,7 +143,9 @@ const closeWin = () => {
                 "
               >
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-download"></v-icon>
+                  <v-icon>
+                    <i-mdi-download />
+                  </v-icon>
                 </template>
                 <v-list-item-title>下载</v-list-item-title>
               </v-list-item>
@@ -143,7 +157,9 @@ const closeWin = () => {
                 "
               >
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-information"></v-icon>
+                  <v-icon>
+                    <i-mdi-information />
+                  </v-icon>
                 </template>
                 <v-list-item-title>关于</v-list-item-title>
               </v-list-item>

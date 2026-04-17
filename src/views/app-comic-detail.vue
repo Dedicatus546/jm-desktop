@@ -283,7 +283,9 @@ const download = async () => {
                     >
                       <v-btn color="primary" variant="flat" size="large" block @click="navigate()">
                         <template #prepend>
-                          <v-icon icon="mdi-book-open"></v-icon>
+                          <v-icon>
+                            <i-mdi-book-open />
+                          </v-icon>
                         </template>
                         {{
                           comicInfo.data.currentSeriesId
@@ -308,7 +310,9 @@ const download = async () => {
                       @click="download"
                     >
                       <template #prepend>
-                        <v-icon icon="mdi-download"></v-icon>
+                        <v-icon>
+                          <i-mdi-download />
+                        </v-icon>
                       </template>
                       {{
                         downloadStore.downloadingMap[id]

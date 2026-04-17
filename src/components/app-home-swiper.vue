@@ -61,12 +61,16 @@ watch(isVisible, (nVal, oVal) => {
     </v-col>
     <v-col :cols="6">
       <v-btn color="primary" size="large" variant="flat" block @click="prev">
-        <v-icon icon="mdi-chevron-left"></v-icon>
+        <v-icon>
+          <i-mdi-chevron-left />
+        </v-icon>
       </v-btn>
     </v-col>
     <v-col :cols="6">
       <v-btn color="primary" size="large" variant="flat" block @click="next">
-        <v-icon icon="mdi-chevron-right"></v-icon>
+        <v-icon>
+          <i-mdi-chevron-right />
+        </v-icon>
       </v-btn>
     </v-col>
   </v-row>

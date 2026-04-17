@@ -113,7 +113,9 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
                 @click="navigate()"
               >
                 <template #prepend>
-                  <v-icon icon="mdi-book-open"></v-icon>
+                  <v-icon>
+                    <i-mdi-book-open />
+                  </v-icon>
                 </template>
                 阅读
               </v-btn>
@@ -130,7 +132,9 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
                 @click="downloadChapter(item)"
               >
                 <template #prepend>
-                  <v-icon icon="mdi-download"></v-icon>
+                  <v-icon>
+                    <i-mdi-download />
+                  </v-icon>
                 </template>
                 {{
                   downloadStore.downloadingMap[item.id]
