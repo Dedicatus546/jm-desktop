@@ -72,6 +72,10 @@ const onUseProxyChange = (useProxy: boolean) => {
 onMounted(() => {
   getConfig()
 })
+
+const appApiInputDialogState = reactive({
+  modelValue: false,
+})
 </script>
 
 <template>
@@ -102,12 +106,31 @@ onMounted(() => {
               color="primary"
               v-model:model-value="formState.apiUrl"
               hide-details
-              label="代理域名"
+              label="接口域名"
               placeholder="如果发现无法使用可以切换此处的域名"
               item-title="value"
               item-value="value"
               :items="formState.apiUrlList"
             >
+              <template v-slot:menu-footer="{}">
+                <v-divider />
+                <div class="wind-flex wind-items-center wind-p-3">
+                  <v-btn
+                    class="wind-ml-auto"
+                    variant="flat"
+                    color="primary"
+                    @click="appApiInputDialogState.modelValue = true"
+                  >
+                    <template #prepend>
+                      <v-icon>
+                        <i-mdi-plus />
+                        <!-- <span class="i-mdi:plus"></span> -->
+                      </v-icon>
+                    </template>
+                    新增接口
+                  </v-btn>
+                </div>
+              </template>
             </v-select>
           </v-col>
           <v-col :cols="12">
@@ -222,4 +245,5 @@ onMounted(() => {
       </v-form>
     </v-card-text>
   </v-card>
+  <app-api-input-dialog v-model:model-value="appApiInputDialogState.modelValue" />
 </template>
