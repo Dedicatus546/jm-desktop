@@ -5,13 +5,27 @@ import { useRequest } from 'alova/client'
 import { getLatestComicListApi, getPromoteComicListApi } from '@/apis'
 
 const router = useRouter()
+const {
+  loading: promoteLoading,
+  data: promoteData,
+  error: promoteError,
+  send: promoteSend,
+} = useRequest(() => getPromoteComicListApi())
+const {
+  loading: latestLoading,
+  data: latestData,
+  error: latestError,
+  send: latestSend,
+} = useRequest(() => getLatestComicListApi(1))
 
-const { loading, data } = useRequest(() => getPromoteComicListApi(), {
-  initialData: {
-    list: [],
-  },
+const loading = computed(() => {
+  return promoteLoading.value || latestLoading.value
 })
-const { loading: latestLoading, data: latestData } = useRequest(() => getLatestComicListApi(1))
+const error = computed(() => promoteError.value || latestError.value)
+const retry = () => {
+  promoteSend()
+  latestSend()
+}
 
 const breakpoints = useBreakpoints(breakpointsVuetifyV3)
 const isGreaterXXL = breakpoints.greater('xxl')
@@ -54,16 +68,17 @@ const search = () => {
 
 <template>
   <div
-    v-if="loading || latestLoading"
+    v-if="loading"
     class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
+  <app-error :error="error" v-else-if="error" @retry="retry" />
   <v-row v-else>
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <v-row density="compact" class="wind-gap-4">
+          <v-row density="compact">
             <v-col>
               <v-form @submit.prevent="search">
                 <v-text-field
@@ -134,7 +149,7 @@ const search = () => {
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col v-for="item of data.data" :key="item.id" :cols="12">
+    <v-col v-for="item of promoteData.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
         <v-card-text>
           <v-row v-if="item.list.length < minListCount">

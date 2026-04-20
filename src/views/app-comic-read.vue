@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 const appStore = useAppStore()
 
-const { loading, data, send } = useRequest(
+const { loading, data, send, error } = useRequest(
   (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
   {
     immediate: false,
@@ -46,6 +46,7 @@ watchEffect(() => {
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
+  <app-error :error="error" v-else-if="error" @retry="send(id)" />
   <template v-else>
     <app-comic-scroll-read
       v-if="appStore.config.readMode === 'scroll'"
