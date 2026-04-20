@@ -75,13 +75,17 @@ const search = () => {
                 >
                   <template #append-inner>
                     <v-btn
+                      icon
                       :disabled="!searchText"
                       color="primary"
                       type="submit"
                       variant="text"
-                      icon="mdi-magnify"
                       @click="search"
-                    ></v-btn>
+                    >
+                      <v-icon>
+                        <i-mdi-magnify />
+                      </v-icon>
+                    </v-btn>
                   </template>
                 </v-text-field>
               </v-form>
@@ -90,15 +94,19 @@ const search = () => {
               <v-tooltip text="本子分类" location="bottom">
                 <template #activator="{ props }">
                   <v-btn
+                    icon
                     v-bind="props"
                     variant="flat"
                     color="primary"
                     size="large"
-                    icon="mdi-tag"
                     :to="{
                       name: 'CATEGORY',
                     }"
-                  ></v-btn>
+                  >
+                    <v-icon>
+                      <i-mdi-tag />
+                    </v-icon>
+                  </v-btn>
                 </template>
               </v-tooltip>
             </v-col>
@@ -106,15 +114,19 @@ const search = () => {
               <v-tooltip text="每周必看" location="bottom">
                 <template #activator="{ props }">
                   <v-btn
+                    icon
                     v-bind="props"
                     variant="flat"
                     color="primary"
                     size="large"
-                    icon="mdi-eye"
                     :to="{
                       name: 'WEEK',
                     }"
-                  ></v-btn>
+                  >
+                    <v-icon>
+                      <i-mdi-eye />
+                    </v-icon>
+                  </v-btn>
                 </template>
               </v-tooltip>
             </v-col>

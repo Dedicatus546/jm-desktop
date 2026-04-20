@@ -111,12 +111,14 @@ if (formState.content) {
               </template>
               <template #append-inner>
                 <v-btn
+                  icon
                   color="primary"
                   :disabled="!formState.content"
                   variant="text"
-                  icon="mdi-magnify"
                   @click="submit"
-                ></v-btn>
+                >
+                  <i-mdi-magnify />
+                </v-btn>
               </template>
             </v-text-field>
           </v-form>

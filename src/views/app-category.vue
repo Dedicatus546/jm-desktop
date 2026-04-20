@@ -82,10 +82,14 @@ const onCategoryClick = (slug: string) => {
           <div class="wind-mb-4">
             <v-chip-group color="primary" v-model:model-value="order" column filter>
               <v-chip
+                filter
                 v-for="item of appStore.data.categoryOrderList"
                 :key="item.value"
                 :value="item.value"
               >
+                <template #filter>
+                  <i-mdi-check />
+                </template>
                 {{ item.title }}
               </v-chip>
             </v-chip-group>
@@ -98,17 +102,24 @@ const onCategoryClick = (slug: string) => {
               filter
             >
               <v-chip
+                filter
                 v-for="item of appStore.data.categoryCategoryList"
                 :key="item.slug"
                 :value="item.slug"
               >
+                <template #filter>
+                  <i-mdi-check />
+                </template>
                 {{ item.name }}
               </v-chip>
             </v-chip-group>
             <template v-if="subCategoryList.length > 0">
               <v-divider />
               <v-chip-group color="primary" v-model:model-value="subCategory" column filter>
-                <v-chip v-for="item of subCategoryList" :key="item.slug" :value="item.slug">
+                <v-chip filter v-for="item of subCategoryList" :key="item.slug" :value="item.slug">
+                  <template #filter>
+                    <i-mdi-check />
+                  </template>
                   {{ item.name }}
                 </v-chip>
               </v-chip-group>
