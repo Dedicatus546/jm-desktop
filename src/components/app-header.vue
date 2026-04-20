@@ -42,12 +42,14 @@ const closeWin = () => {
 <template>
   <v-app-bar color="primary" class="app-region-drag">
     <v-app-bar-title>
-      <img
-        src="@/assets/logo.png"
-        class="wind-w-[150px] wind-cursor-pointer app-region-nodrag"
-        alt="jm"
-        @click="router.push('/')"
-      />
+      <div class="wind-h-full wind-flex wind-items-center">
+        <img
+          src="@/assets/logo.png"
+          class="wind-w-[150px] wind-cursor-pointer app-region-nodrag"
+          alt="禁漫天堂"
+          @click="router.push('/')"
+        />
+      </div>
     </v-app-bar-title>
     <template #append>
       <div class="app-region-nodrag">
