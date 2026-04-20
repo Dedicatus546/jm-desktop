@@ -13,6 +13,7 @@ import { error } from './logger'
 import router from './router'
 import pinia from './store'
 import { normalizeError } from './utils'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 const vuetify = createVuetify({
   theme: {
@@ -36,6 +37,15 @@ const vuetify = createVuetify({
   },
   directives: {
     Intersect,
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases: {
+      ...aliases,
+    },
+    sets: {
+      mdi,
+    },
   },
 })
 
