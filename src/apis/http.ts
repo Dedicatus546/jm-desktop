@@ -207,8 +207,14 @@ const http = createAlova({
     async onSuccess(response, method) {
       if (response.status >= 400) {
         const errorMsg = response.data.errorMsg ?? response.statusText
-        error(method.url, response.status, errorMsg)
-        throw new Error(errorMsg)
+        error('网络开小差了，请稍后再试', {
+          url: method.url,
+          output: {
+            status: response.status,
+            errorMsg,
+          },
+        })
+        throw new Error('网络开小差了，请稍后再试')
       }
       info(method.url, response.status)
       if (
@@ -223,12 +229,35 @@ const http = createAlova({
       if (json.code !== 200) {
         throw new Error(json.errorMsg)
       }
-      json.data = JSON.parse(
-        await trpcClient.decodeHttpData.query({
+      let parsedStr = ''
+      try {
+        parsedStr = await trpcClient.decodeHttpData.query({
           data: json.data,
           key: tokenHash,
-        }),
-      )
+        })
+      } catch (e) {
+        error('Trpc 解析请求返回结果失败', {
+          url: method.url,
+          input: {
+            data: json.data,
+            tokenHash,
+          },
+        })
+        throw new Error('Trpc 解析请求返回结果失败', {
+          cause: e,
+        })
+      }
+      try {
+        json.data = JSON.parse(parsedStr)
+      } catch (e) {
+        error('JSON 反序列化失败', {
+          url: method.url,
+          input: parsedStr,
+        })
+        throw new Error('JSON 反序列化失败', {
+          cause: e,
+        })
+      }
       info(method.url, '解密成功')
       if (import.meta.env.DEV) {
         console.log(method.url, '解密成功', json)
