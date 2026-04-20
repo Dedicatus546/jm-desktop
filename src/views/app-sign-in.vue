@@ -141,6 +141,9 @@ onSuccess(() => {
           class="signCalendar"
           :events="events"
         >
+          <template #event="{ eventParsed }">
+            <span class="wind-px-2">{{ eventParsed.input.name }}</span>
+          </template>
         </v-calendar>
         <v-slider
           readonly
