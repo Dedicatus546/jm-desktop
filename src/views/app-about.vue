@@ -19,7 +19,7 @@ const toRepo = () => {
     <v-card-text>
       <div class="wind-py-4 wind-flex wind-flex-col wind-gap-4 wind-items-center">
         <v-avatar size="100" image="/png/512x512.png" rounded="0" />
-        <div class="text-h5">jm-desktop</div>
+        <div class="wind-text-xl">jm-desktop</div>
       </div>
       <v-divider />
       <v-list>

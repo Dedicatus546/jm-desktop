@@ -133,7 +133,7 @@ onSuccess(() => {
   <v-card :loading="loading">
     <v-card-text>
       <div class="wind-flex wind-flex-col wind-gap-4">
-        <div class="text-h6 wind-text-center">本月已签到 {{ signInSumDay }} 天</div>
+        <div class="wind-text-xl wind-text-center">本月已签到 {{ signInSumDay }} 天</div>
         <v-calendar
           style="height: 500px"
           ref="calendar"

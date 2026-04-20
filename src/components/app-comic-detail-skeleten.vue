@@ -27,7 +27,7 @@ const buttonCols = computed(() => {
     </div>
     <div class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4">
       <div class="wind-flex wind-flex-col wind-gap-2">
-        <app-skeleten class="text-h5 wind-w-1/2">&#12288;</app-skeleten>
+        <app-skeleten class="wind-text-xl wind-w-1/2">&#12288;</app-skeleten>
         <div class="wind-flex wind-flex-wrap wind-gap-2">
           <app-skeleten v-for="item of 3" :key="item" class="wind-h-[32px] wind-w-[60px]">
             &#12288;

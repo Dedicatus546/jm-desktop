@@ -187,7 +187,7 @@ const download = async () => {
             </div>
             <div class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4">
               <div class="wind-flex wind-flex-col wind-gap-2">
-                <div class="text-h5">{{ comicInfo.data.name }}</div>
+                <div class="wind-text-xl">{{ comicInfo.data.name }}</div>
                 <div
                   class="wind-flex wind-flex-wrap wind-gap-2"
                   v-if="comicInfo.data.tagList.length > 0"
