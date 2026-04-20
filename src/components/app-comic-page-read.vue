@@ -79,7 +79,13 @@ const onSliderEnd = (value: [number, number] | number) => {
                   <div>{{ sliderValue }} / {{ picList.length }}</div>
                   <app-shunt-select />
                   <div class="wind-flex-shrink-0"></div>
-                  <v-btn color="primary" size="large" :disabled="!hasNextPage" @click="nextPage">
+                  <v-btn
+                    icon
+                    color="primary"
+                    size="large"
+                    :disabled="!hasNextPage"
+                    @click="nextPage"
+                  >
                     <v-icon>
                       <i-mdi-arrow-right />
                     </v-icon>
