@@ -44,7 +44,7 @@ syncRef(routePage, page)
       </v-row>
     </template>
     <template #header>
-      <div class="mb-4 wind-flex wind-justify-end">
+      <div class="wind-mb-4 wind-flex wind-justify-end">
         <div class="wind-w-[200px]">
           <v-select
             color="primary"
