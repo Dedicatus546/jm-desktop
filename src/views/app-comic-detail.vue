@@ -336,10 +336,9 @@ const download = async () => {
                         @click="likeComic()"
                       >
                         <template #prepend>
-                          <v-icon
-                            icon="mdi-heart"
-                            :color="comicInfo.data.isLike ? 'red' : undefined"
-                          ></v-icon>
+                          <v-icon :color="comicInfo.data.isLike ? 'red' : undefined">
+                            <i-mdi-heart />
+                          </v-icon>
                         </template>
                         {{ comicInfo.data.isLike ? '已喜欢' : '喜欢' }}
                       </v-btn>
@@ -354,10 +353,9 @@ const download = async () => {
                         @click="collectComic()"
                       >
                         <template #prepend>
-                          <v-icon
-                            icon="mdi-book-heart"
-                            :color="comicInfo.data.isCollect ? '#834e00' : undefined"
-                          ></v-icon>
+                          <v-icon :color="comicInfo.data.isCollect ? '#834e00' : undefined">
+                            <i-mdi-book-heart />
+                          </v-icon>
                         </template>
                         {{ comicInfo.data.isCollect ? '已收藏' : '收藏' }}
                       </v-btn>
