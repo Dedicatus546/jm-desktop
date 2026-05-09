@@ -180,15 +180,19 @@ const http = createAlova({
     if (!appStore.isInit) {
       if (!initPromise) {
         try {
-          const { promise, resolve } = Promise.withResolvers<void>()
+          const { promise, resolve, reject } = Promise.withResolvers<void>()
           initPromise = promise
           ;(async () => {
-            await initSetting()
-            await initConfig()
-            await autoLogin()
-            await initDownload()
-            await initData()
-            resolve()
+            try {
+              await initSetting()
+              await initConfig()
+              await autoLogin()
+              await initDownload()
+              await initData()
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
           })()
           await initPromise
           appStore.isInit = true
