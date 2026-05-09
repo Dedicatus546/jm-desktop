@@ -14,7 +14,7 @@ import { trpcClient } from './ipc'
 const { info, error, warn } = createLogger('api')
 
 const ts = Math.floor(Date.now() / 1000)
-const version = '1.8.0'
+const version = '1.8.2'
 const token = '185Hcomic3PAPP7R'
 const tokenHash = (await trpcClient.md5.query(`${ts}${token}`)).toLowerCase()
 
