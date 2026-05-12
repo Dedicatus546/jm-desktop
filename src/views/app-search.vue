@@ -28,7 +28,7 @@ const routePage = useRouteQuery<string, number>('page', '1', {
   },
   mode: 'push',
 })
-const { page, pageSize, pageCount, send, data, loading, onSuccess } = usePagination(
+const { page, pageSize, pageCount, send, data, loading, onSuccess, error } = usePagination(
   (page) =>
     getComicListApi({
       page,
@@ -74,10 +74,16 @@ const submit = () => {
 if (formState.content) {
   send()
 }
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-card>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else>
     <v-card-text>
       <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
         <template #loader>

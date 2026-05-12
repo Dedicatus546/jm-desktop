@@ -11,7 +11,9 @@ const userStore = useUserStore()
 const currentDate = new Date()
 const value = new Date(currentDate)
 
-const { loading, data, send } = useRequest(() => getSignInDataApi(userStore.userInfo?.uid ?? 0))
+const { loading, data, send, error } = useRequest(() =>
+  getSignInDataApi(userStore.userInfo?.uid ?? 0),
+)
 const sliderTickMap = computed(() => {
   const o = {
     3: '三',
@@ -122,15 +124,23 @@ const {
 } = useRequest(() => signInApi(userStore.userInfo?.uid ?? 0, data.value.data.id), {
   immediate: false,
 })
+
 const snackbar = useSnackbar()
+
 onSuccess(() => {
   snackbar.primary(signInData.value.data.msg)
   send()
 })
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-card :loading="loading">
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else :loading="loading">
     <v-card-text>
       <div class="wind-flex wind-flex-col wind-gap-4">
         <div class="wind-text-xl wind-text-center">本月已签到 {{ signInSumDay }} 天</div>

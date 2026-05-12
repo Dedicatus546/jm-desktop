@@ -4,20 +4,29 @@ import { usePagination } from 'alova/client'
 import { getLatestComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 
-const { loading, data, page, pageSize } = usePagination((page) => getLatestComicListApi(page), {
-  append: true,
-  initialPage: 1,
-  initialPageSize: 80,
-  data: (res) => res.data,
-  total: () => 0,
-  initialData: {
-    data: [],
+const { loading, data, page, pageSize, error, send } = usePagination(
+  (page) => getLatestComicListApi(page),
+  {
+    append: true,
+    initialPage: 1,
+    initialPageSize: 80,
+    data: (res) => res.data,
+    total: () => 0,
+    initialData: {
+      data: [],
+    },
   },
-})
+)
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-card title="最新发布">
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else title="最新发布" :loading="loading">
     <v-card-text>
       <v-data-iterator :items="data" :items-per-page="data.length" :loading="loading">
         <template #loader>

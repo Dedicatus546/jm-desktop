@@ -37,6 +37,11 @@ provide('onDecodeSuccess', onDecodeSuccess)
 watchEffect(() => {
   send(props.id)
 })
+
+const retry = () => {
+  error.value = undefined
+  send(props.id)
+}
 </script>
 
 <template>
@@ -46,7 +51,7 @@ watchEffect(() => {
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
-  <app-error :error="error" v-else-if="error" @retry="send(id)" />
+  <app-error :error="error" v-else-if="error" @retry="retry" />
   <template v-else>
     <app-comic-scroll-read
       v-if="appStore.config.readMode === 'scroll'"

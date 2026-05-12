@@ -32,7 +32,13 @@ const buttonCols = computed(() => {
   return [12, 12, 12, 12]
 })
 
-const { loading, data: comicInfo, onSuccess } = useRequest(() => getComicDetailApi(props.id))
+const {
+  loading,
+  data: comicInfo,
+  onSuccess,
+  error,
+  send,
+} = useRequest(() => getComicDetailApi(props.id))
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
@@ -171,12 +177,18 @@ const download = async () => {
   }
   exec()
 }
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-row>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-row v-else>
     <v-col :cols="12">
-      <v-card>
+      <v-card :loading="loading">
         <v-card-text>
           <app-comic-detail-skeleten v-if="loading" />
           <div class="wind-flex wind-gap-4" v-else>

@@ -21,7 +21,7 @@ const routePage = useRouteQuery<string, number>('page', '1', {
   },
   mode: 'push',
 })
-const { loading, pageCount, pageSize, data, page } = usePagination(
+const { loading, pageCount, pageSize, data, page, error, send } = usePagination(
   (page) =>
     getCategoryFilterListApi({
       page,
@@ -65,10 +65,16 @@ const onCategoryClick = (slug: string) => {
     })
   }
 }
+
+const retry = () => {
+  error.value = undefined
+  send(page.value)
+}
 </script>
 
 <template>
-  <v-card>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else>
     <v-card-text>
       <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
         <template #loader>
