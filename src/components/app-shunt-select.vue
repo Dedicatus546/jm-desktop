@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import useAppStore from '@/stores/use-app-store'
-const appStore = useAppStore()
+import { useConfigStore } from '@/stores/use-config-store'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
+
+const configStore = useConfigStore()
+const prefetchDataStore = usePrefetchDataStore()
 
 const updateCurrentShuntKey = (value: number) => {
-  appStore.updateConfigAction(
+  configStore.updateConfigAction(
     {
       currentShuntKey: value as number,
     },
@@ -17,9 +20,9 @@ const updateCurrentShuntKey = (value: number) => {
     color="primary"
     variant="outlined"
     hide-details
-    :model-value="appStore.config.currentShuntKey"
+    :model-value="configStore.state.currentShuntKey"
     class="wind-w-[150px]"
-    :items="appStore.setting.shuntList"
+    :items="prefetchDataStore.state.shuntList"
     item-title="title"
     item-value="key"
     @update:model-value="updateCurrentShuntKey"

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { Config } from '@electron/module/config'
 import { clone } from 'radash'
 import { SubmitEventPromise } from 'vuetify'
 
 import { trpcClient } from '@/apis/ipc'
 import useSnackbar from '@/compositions/use-snack-bar'
-import useAppStore from '@/stores/use-app-store.ts'
+import { Config } from '@type/index'
+import { useConfigStore } from '@/stores/use-config-store'
 
-const appStore = useAppStore()
+const configStore = useConfigStore()
 
 const formState = reactive<
-  Omit<Config, 'windowInfo' | 'loginUserInfo' | 'autoLogin'> & {
+  Omit<Config, 'windowInfoMap' | 'loginUserInfo' | 'autoLogin'> & {
     useProxy: boolean
   }
 >({
@@ -26,8 +26,8 @@ const formState = reactive<
 const getConfig = async () => {
   try {
     const config = await trpcClient.getConfig.query()
-    await appStore.updateConfigAction(config)
-    Object.assign(formState, clone(appStore.config))
+    await configStore.updateConfigAction(config)
+    Object.assign(formState, clone(configStore.state))
     if (formState.proxyInfo) {
       formState.useProxy = true
     } else {
@@ -48,7 +48,7 @@ const submit = async (e: SubmitEventPromise) => {
     return
   }
   try {
-    await appStore.updateConfigAction(formState, true)
+    await configStore.updateConfigAction(formState, true)
     snackbar.success('更新成功')
   } catch (e) {
     console.error('保存配置失败', e)

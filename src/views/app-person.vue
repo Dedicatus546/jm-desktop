@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import useAppStore from '@/stores/use-app-store'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 import useUserStore from '@/stores/use-user-store'
 
 const userStore = useUserStore()
-const appStore = useAppStore()
+const prefetchDataStore = usePrefetchDataStore()
 const userInfo = computed(() => userStore.userInfo)
 
 const activeTabKey = ref<'collect' | 'history'>('collect')
@@ -32,7 +32,7 @@ const tabList = [
             <div class="wind-flex wind-flex-col wind-items-center">
               <v-avatar
                 :size="120"
-                :image="`${appStore.setting.imgHost}/media/users/${userInfo.avatar}`"
+                :image="`${prefetchDataStore.state.imgHost}/media/users/${userInfo.avatar}`"
               >
               </v-avatar>
               <div class="wind-text-xl">{{ userInfo.username }}</div>

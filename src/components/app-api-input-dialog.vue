@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import useSnackbar from '@/compositions/use-snack-bar'
+import { useConfigStore } from '@/stores/use-config-store'
+import { clone } from 'radash'
+
 const modelValue = defineModel<boolean>('modelValue')
+const configStore = useConfigStore()
+const snackbar = useSnackbar()
 
 const formState = reactive({
   url: '',
@@ -16,7 +22,19 @@ const formRules = {
   ],
 }
 
-const submit = () => {}
+const submit = async () => {
+  // TODO
+  const apiUrlList = [...configStore.state.apiUrlList, formState.url]
+  const config = Object.assign({}, clone(configStore.state), {
+    apiUrlList,
+  })
+  try {
+    configStore.updateConfigAction(config, true)
+    snackbar.success('新增成功')
+  } catch (e) {
+    console.error('新增失败', e)
+  }
+}
 </script>
 
 <template>

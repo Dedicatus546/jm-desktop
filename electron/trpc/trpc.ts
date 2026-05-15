@@ -5,6 +5,7 @@ import superjson from 'superjson'
 
 interface Context {
   win: BrowserWindow
+  winId: string
   // 可以添加更多依赖...
 }
 

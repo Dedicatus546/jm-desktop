@@ -3,6 +3,8 @@ import { router as configRouter } from './config.router'
 import { router as DownloadRouter } from './download.router'
 import { router as loggerRouter } from './logger.router'
 import { router as proxyServerRouter } from './proxy-server.router'
+import { router as windowRouter } from './window.router'
+import { router as stateRouter } from './state.router'
 import { trpc } from './trpc'
 
 export const router = trpc.router({
@@ -11,6 +13,8 @@ export const router = trpc.router({
   ...proxyServerRouter,
   ...loggerRouter,
   ...DownloadRouter,
+  ...windowRouter,
+  ...stateRouter,
 })
 
 // 导出 Router 类型

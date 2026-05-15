@@ -4,7 +4,7 @@ import { loginApi } from '@/apis'
 import { info } from '@/logger'
 import useUserStore from '@/stores/use-user-store'
 
-export default function useRefreshUser() {
+export const useRefreshUser = () => {
   const userStore = useUserStore()
   const { data, send, onSuccess, onError } = useRequest(
     (username: string, password: string) => loginApi({ username, password }),

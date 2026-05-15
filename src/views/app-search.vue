@@ -4,9 +4,7 @@ import { usePagination } from 'alova/client'
 
 import { getComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/3.jpg'
-import useAppStore from '@/stores/use-app-store'
-
-const appStore = useAppStore()
+import { SEARCH_ORDER_LIST } from '@/constants/search-order-list'
 
 const router = useRouter()
 const content = useRouteQuery<string>('content', '', {
@@ -112,7 +110,7 @@ const retry = () => {
                   class="wind-w-[150px]"
                   item-title="title"
                   item-value="value"
-                  :items="appStore.data.searchOrderList"
+                  :items="SEARCH_ORDER_LIST"
                 ></v-select>
               </template>
               <template #append-inner>

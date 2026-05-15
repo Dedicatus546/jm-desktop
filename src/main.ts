@@ -8,12 +8,12 @@ import './style.css'
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import { Intersect } from 'vuetify/directives'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 import App from './App.vue'
 import { error } from './logger'
 import router from './router'
 import pinia from './store'
 import { normalizeError } from './utils'
-import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 const vuetify = createVuetify({
   theme: {

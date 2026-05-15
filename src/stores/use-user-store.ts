@@ -1,36 +1,23 @@
-interface State {
-  userInfo: {
-    uid: number
-    username: string
-    email: string
-    avatar: string
-    jCoin: number
-    level: [number, string]
-    currentExp: number
-    nextLevelExp: number
-    collectCount: number
-    maxCollectCount: number
-  } | null
-  loginInfo: {
-    username: string
-    password: string
-  } | null
-}
+import { LoginInfo, User } from '@type/index'
+import { assign, clone } from 'radash'
 
 const useUserStore = defineStore('user', () => {
-  const state = reactive<State>({
+  const state = reactive<{
+    userInfo: User | null
+    loginInfo: LoginInfo | null
+  }>({
     userInfo: null,
     loginInfo: null,
   })
 
   const isLogin = computed(() => !!state.userInfo)
 
-  const updateUserInfoAction = (userInfo: NonNullable<State['userInfo']>) => {
+  const updateUserInfoAction = (userInfo: NonNullable<User>) => {
     if (state.userInfo) {
-      Object.assign(state.userInfo, userInfo)
+      assign(state.userInfo, userInfo)
       return
     }
-    state.userInfo = Object.assign({}, userInfo)
+    state.userInfo = clone(userInfo)
   }
 
   const updateLoginInfoAction = (username: string, password: string) => {
@@ -45,12 +32,34 @@ const useUserStore = defineStore('user', () => {
     state.loginInfo = null
   }
 
+  const updateFromTrpcAction = (user: User | null, loginInfo: LoginInfo | null) => {
+    if (state.userInfo) {
+      if (user) {
+        assign(state.userInfo, user)
+      } else {
+        state.userInfo = user
+      }
+    } else {
+      state.userInfo = user
+    }
+    if (state.loginInfo) {
+      if (loginInfo) {
+        assign(state.loginInfo, loginInfo)
+      } else {
+        state.loginInfo = loginInfo
+      }
+    } else {
+      state.loginInfo = loginInfo
+    }
+  }
+
   return {
     ...toRefs(state),
     isLogin,
     updateUserInfoAction,
     updateLoginInfoAction,
     logoutAction,
+    updateFromTrpcAction,
   }
 })
 

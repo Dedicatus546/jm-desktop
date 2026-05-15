@@ -4,12 +4,12 @@ import { SubmitEventPromise } from 'vuetify'
 
 import { loginApi, trpcClient } from '@/apis'
 import useSnackbar from '@/compositions/use-snack-bar'
-import useAppStore from '@/stores/use-app-store'
 import useUserStore from '@/stores/use-user-store'
+import { useConfigStore } from '@/stores/use-config-store'
 
 const router = useRouter()
 const userStore = useUserStore()
-const appStore = useAppStore()
+const configStore = useConfigStore()
 
 const formState = reactive({
   username: '',
@@ -50,7 +50,7 @@ onSuccess(async () => {
       username: formState.username,
       password: formState.password,
     })
-    appStore.updateConfigAction(
+    configStore.updateConfigAction(
       {
         loginUserInfo: encryptStr,
         autoLogin: true,
@@ -58,7 +58,7 @@ onSuccess(async () => {
       true,
     )
   } else {
-    appStore.updateConfigAction(
+    configStore.updateConfigAction(
       {
         loginUserInfo: '',
         autoLogin: false,

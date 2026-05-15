@@ -1,7 +1,8 @@
-import { Config, getConfig, saveConfig } from '@electron/module/config'
+import { getConfig, saveConfig } from '@electron/module/config'
 import { z } from 'zod'
 
 import { trpc } from './trpc'
+import { Config } from '@type/index'
 
 const getConfigRpc = trpc.procedure.query(async () => {
   return getConfig()
@@ -18,14 +19,17 @@ const saveConfigRpc = trpc.procedure
       loginUserInfo: z.string(),
       currentShuntKey: z.number().optional(),
       zoomFactor: z.number(),
-      windowInfo: z
-        .object({
-          x: z.number(),
-          y: z.number(),
-          width: z.number(),
-          height: z.number(),
-        })
-        .optional(),
+      windowInfoMap: z.map(
+        z.string(),
+        z
+          .object({
+            x: z.number(),
+            y: z.number(),
+            width: z.number(),
+            height: z.number(),
+          })
+          .optional(),
+      ),
       proxyInfo: z
         .object({
           host: z.string(),

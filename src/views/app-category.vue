@@ -4,12 +4,11 @@ import { usePagination } from 'alova/client'
 
 import { getCategoryFilterListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
-import useAppStore from '@/stores/use-app-store'
+import { CATEGORY_ORDER_LIST } from '@/constants/category-order-list'
 
-const appStore = useAppStore()
 const router = useRouter()
 
-const order = useRouteQuery<string, string>('order', appStore.data.categoryOrderList[0].value)
+const order = useRouteQuery<string, string>('order', CATEGORY_ORDER_LIST[0].value)
 const category = useRouteQuery<string, string>('category', '')
 const subCategory = useRouteQuery<string, string>('subCategory', '')
 
@@ -89,7 +88,7 @@ const retry = () => {
             <v-chip-group color="primary" v-model:model-value="order" column filter>
               <v-chip
                 filter
-                v-for="item of appStore.data.categoryOrderList"
+                v-for="item of CATEGORY_ORDER_LIST"
                 :key="item.value"
                 :value="item.value"
               >
