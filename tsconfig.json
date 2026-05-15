@@ -26,7 +26,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@electron/*": ["./electron/*"],
-      "@@/*": ["./*"]
+      "@type/*": ["./type/*"]
     }
   },
   "include": [
@@ -34,6 +34,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "electron",
+    "type",
     "auto-imports.d.ts",
     "components.d.ts"
   ],
