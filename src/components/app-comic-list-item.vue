@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store';
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
 const props = withDefaults(
   defineProps<{

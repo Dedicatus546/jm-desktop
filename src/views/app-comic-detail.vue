@@ -25,7 +25,7 @@ const downloadStore = useDownloadStore()
 const breakpoints = useBreakpoints(breakpointsAntDesign)
 const isGreaterMd = breakpoints.greater('md')
 const buttonCols = computed(() => {
-  if (!userStore.userInfo) {
+  if (!userStore.isLogin) {
     return [12, 12, 12, 12]
   }
   if (isGreaterMd.value) {
@@ -124,7 +124,7 @@ const cover = computed(() =>
 )
 
 const { data, send: getComicPicList } = useRequest(
-  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {
@@ -338,7 +338,7 @@ const retry = () => {
                       }}
                     </v-btn>
                   </v-col>
-                  <template v-if="userStore.userInfo">
+                  <template v-if="userStore.isLogin">
                     <v-col :cols="buttonCols[2]">
                       <v-btn
                         color="primary"

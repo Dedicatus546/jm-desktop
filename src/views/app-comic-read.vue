@@ -11,7 +11,7 @@ const props = defineProps<{
 const configStore = useConfigStore()
 
 const { loading, data, send, error } = useRequest(
-  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {

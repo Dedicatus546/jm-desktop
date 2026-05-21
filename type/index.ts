@@ -22,7 +22,6 @@ export type Config = {
   apiUrlList: Array<string>
   currentShuntKey: number | null
   readMode: ReadMode
-  autoLogin: boolean
   loginUserInfo: string
   zoomFactor: number
   windowInfoMap: Map<string, WindowInfo>
@@ -50,7 +49,7 @@ export type PrefetchData = {
   categoryCategoryList: Array<{
     id: number
     name: string
-    type: 'slug' | 'search'
+    type?: 'slug' | 'search'
     slug: string
     subCategoryList: Array<{
       id: number

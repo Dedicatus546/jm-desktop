@@ -7,7 +7,6 @@ import useSnackbar from '@/compositions/use-snack-bar'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 
-const router = useRouter()
 const userStore = useUserStore()
 const configStore = useConfigStore()
 
@@ -43,30 +42,22 @@ const snackbar = useSnackbar()
 
 onSuccess(async () => {
   snackbar.primary('登录成功')
-  userStore.updateUserInfoAction(data.value.data)
-  userStore.updateLoginInfoAction(formState.username, formState.password)
+  await userStore.updateUserAction(data.value.data)
+  // TODO 保存用户信息用于自动登录
   if (formState.autoLogin) {
     const encryptStr = await trpcClient.encryptLoginUser.query({
       username: formState.username,
       password: formState.password,
     })
-    configStore.updateConfigAction(
-      {
-        loginUserInfo: encryptStr,
-        autoLogin: true,
-      },
-      true,
-    )
+    await configStore.updateConfigAction({
+      loginUserInfo: encryptStr,
+    })
   } else {
-    configStore.updateConfigAction(
-      {
-        loginUserInfo: '',
-        autoLogin: false,
-      },
-      true,
-    )
+    await configStore.updateConfigAction({
+      loginUserInfo: '',
+    })
   }
-  router.replace({ name: 'PERSON' })
+  await trpcClient.closeWin.mutate()
 })
 
 onError((e) => {

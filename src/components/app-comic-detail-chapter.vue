@@ -31,7 +31,7 @@ const snackbar = useSnackbar()
 const dialog = useDialog()
 
 const { data, send } = useRequest(
-  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {

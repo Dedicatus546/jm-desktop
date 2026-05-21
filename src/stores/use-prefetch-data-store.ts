@@ -1,24 +1,32 @@
+import { trpcClient } from '@/apis'
 import { PrefetchData } from '@type/index'
-import { assign } from 'radash'
+import { clone } from 'radash'
 
 export const usePrefetchDataStore = defineStore('prefetch-data', () => {
-  const state = reactive<PrefetchData>({
-    imgHost: '',
-    shuntList: [],
-    weekCategoryList: [],
-    weekTypeList: [],
-    categoryTagList: [],
-    categoryCategoryList: [],
+  const state: PrefetchData = reactive({
+    imgHost: appState.prefetchData.imgHost,
+    shuntList: appState.prefetchData.shuntList,
+    weekCategoryList: appState.prefetchData.weekCategoryList,
+    weekTypeList: appState.prefetchData.weekTypeList,
+    categoryTagList: appState.prefetchData.categoryTagList,
+    categoryCategoryList: appState.prefetchData.categoryCategoryList,
   })
   const isInit = ref(false)
 
   const updateFromTrpcAction = (prefetchData: PrefetchData) => {
-    assign(state, prefetchData)
+    Object.assign(state, prefetchData)
+  }
+
+  const updatePrefetchDataAction = async (prefetchData: Partial<PrefetchData>) => {
+    const newPrefetchData = clone(state)
+    Object.assign(newPrefetchData, prefetchData)
+    await trpcClient.updatePrefetchData.mutate(newPrefetchData)
   }
 
   return {
     isInit,
     state,
     updateFromTrpcAction,
+    updatePrefetchDataAction,
   }
 })

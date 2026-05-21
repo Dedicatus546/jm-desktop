@@ -6,12 +6,9 @@ const configStore = useConfigStore()
 const prefetchDataStore = usePrefetchDataStore()
 
 const updateCurrentShuntKey = (value: number) => {
-  configStore.updateConfigAction(
-    {
-      currentShuntKey: value as number,
-    },
-    true,
-  )
+  configStore.updateConfigAction({
+    currentShuntKey: value,
+  })
 }
 </script>
 

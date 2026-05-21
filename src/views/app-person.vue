@@ -4,7 +4,6 @@ import useUserStore from '@/stores/use-user-store'
 
 const userStore = useUserStore()
 const prefetchDataStore = usePrefetchDataStore()
-const userInfo = computed(() => userStore.userInfo)
 
 const activeTabKey = ref<'collect' | 'history'>('collect')
 const tabList = [
@@ -24,7 +23,7 @@ const tabList = [
 </script>
 
 <template>
-  <v-row v-if="userInfo" :gutter="[16, 16]">
+  <v-row v-if="userStore.isLogin" :gutter="[16, 16]">
     <v-col :cols="12">
       <v-card>
         <v-card-text>
@@ -32,10 +31,10 @@ const tabList = [
             <div class="wind-flex wind-flex-col wind-items-center">
               <v-avatar
                 :size="120"
-                :image="`${prefetchDataStore.state.imgHost}/media/users/${userInfo.avatar}`"
+                :image="`${prefetchDataStore.state.imgHost}/media/users/${userStore.state.avatar}`"
               >
               </v-avatar>
-              <div class="wind-text-xl">{{ userInfo.username }}</div>
+              <div class="wind-text-xl">{{ userStore.state.username }}</div>
             </div>
             <v-divider />
             <v-row>
@@ -43,7 +42,7 @@ const tabList = [
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>经验值</div>
                   <div>
-                    {{ `${userInfo.currentExp}/${userInfo.nextLevelExp}` }}
+                    {{ `${userStore.state.currentExp}/${userStore.state.nextLevelExp}` }}
                   </div>
                 </div>
               </v-col>
@@ -51,7 +50,7 @@ const tabList = [
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>等级</div>
                   <div>
-                    {{ `${userInfo.level[0]}（${userInfo.level[1]}）` }}
+                    {{ `${userStore.state.level[0]}（${userStore.state.level[1]}）` }}
                   </div>
                 </div>
               </v-col>
@@ -59,7 +58,7 @@ const tabList = [
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>J Coins</div>
                   <div>
-                    {{ userInfo.jCoin }}
+                    {{ userStore.state.jCoin }}
                   </div>
                 </div>
               </v-col>
@@ -67,7 +66,7 @@ const tabList = [
                 <div class="wind-flex wind-flex-col wind-items-center">
                   <div>可收藏数量</div>
                   <div>
-                    {{ `${userInfo.collectCount}/${userInfo.maxCollectCount}` }}
+                    {{ `${userStore.state.collectCount}/${userStore.state.maxCollectCount}` }}
                   </div>
                 </div>
               </v-col>

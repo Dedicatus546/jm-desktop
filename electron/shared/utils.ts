@@ -3,7 +3,7 @@ import { access } from 'node:fs/promises'
 import { Display, screen } from 'electron'
 import { ProxyInfo, WindowInfo } from '@type/index'
 
-export const resolveProxyUrl = (proxyInfo?: ProxyInfo) => {
+export const resolveProxyUrl = (proxyInfo: ProxyInfo | null) => {
   if (!proxyInfo) {
     return undefined
   }

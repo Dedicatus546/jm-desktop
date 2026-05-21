@@ -1,12 +1,6 @@
 import { z } from 'zod'
 import { trpc } from './trpc'
-import {
-  closeWindow,
-  createWindow,
-  getWindow,
-  getWindowId,
-  hasWindow,
-} from '@electron/module/window-manager'
+import { createWindow, getWindow, getWindowId, hasWindow } from '@electron/module/window-manager'
 
 const openWindowRpc = trpc.procedure
   .input(
@@ -18,17 +12,6 @@ const openWindowRpc = trpc.procedure
   .mutation(async ({ input }) => {
     const { path, id } = input
     createWindow(id, path)
-  })
-
-const closeWindowRpc = trpc.procedure
-  .input(
-    z.object({
-      id: z.string(),
-    }),
-  )
-  .mutation(async ({ input }) => {
-    const { id } = input
-    closeWindow(id)
   })
 
 const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {
@@ -50,6 +33,20 @@ const openSettingWindowRpc = trpc.procedure.query(async () => {
   })
 })
 
+const openLoginWindowRpc = trpc.procedure.query(async () => {
+  if (hasWindow('login')) {
+    const win = getWindow('login')
+    // 聚焦提升到最顶层
+    win!.focus()
+    return
+  }
+  await createWindow('login', '/login', {
+    width: 600,
+    height: 600,
+    resizable: false,
+  })
+})
+
 const openDownloadWindowRpc = trpc.procedure.query(async () => {
   if (hasWindow('download')) {
     const win = getWindow('download')
@@ -65,8 +62,8 @@ const openDownloadWindowRpc = trpc.procedure.query(async () => {
 
 export const router = {
   openWindow: openWindowRpc,
-  closeWindow: closeWindowRpc,
   getWindowId: getWindowIdRpc,
   openSettingWindow: openSettingWindowRpc,
+  openLoginWindow: openLoginWindowRpc,
   openDownloadWindow: openDownloadWindowRpc,
 }

@@ -3,6 +3,7 @@ import { clearAllWindow, createMainWindow, getWindowId } from './module/window-m
 import { createIPCHandler } from 'trpc-electron-fork/main'
 import { router } from './trpc'
 import { initConfigFile } from './module/config'
+import { initDataDir } from './shared/path'
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -24,6 +25,7 @@ app.on('activate', async () => {
 
 app.whenReady().then(async () => {
   await initConfigFile()
+  await initDataDir()
   createIPCHandler({
     router,
     windows: [],

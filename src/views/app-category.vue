@@ -5,8 +5,10 @@ import { usePagination } from 'alova/client'
 import { getCategoryFilterListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
 import { CATEGORY_ORDER_LIST } from '@/constants/category-order-list'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
 const router = useRouter()
+const prefetchDataStore = usePrefetchDataStore()
 
 const order = useRouteQuery<string, string>('order', CATEGORY_ORDER_LIST[0].value)
 const category = useRouteQuery<string, string>('category', '')
@@ -37,18 +39,18 @@ const { loading, pageCount, pageSize, data, page, error, send } = usePagination(
 )
 syncRef(page, routePage)
 
-const tagList = computed(() => appStore.data.categoryTagList.flatMap((item) => item.list))
+const tagList = computed(() => prefetchDataStore.state.categoryTagList.flatMap((item) => item.list))
 
 const subCategoryList = computed(() => {
   return (
-    appStore.data.categoryCategoryList.find(
+    prefetchDataStore.state.categoryCategoryList.find(
       (item) => item.type === 'slug' && item.slug === category.value,
     )?.subCategoryList ?? []
   )
 })
 
 const onCategoryClick = (slug: string) => {
-  const item = appStore.data.categoryCategoryList.find((item) => item.slug == slug)
+  const item = prefetchDataStore.state.categoryCategoryList.find((item) => item.slug == slug)
   if (!item) {
     return
   }
@@ -108,7 +110,7 @@ const retry = () => {
             >
               <v-chip
                 filter
-                v-for="item of appStore.data.categoryCategoryList"
+                v-for="item of prefetchDataStore.state.categoryCategoryList"
                 :key="item.slug"
                 :value="item.slug"
               >

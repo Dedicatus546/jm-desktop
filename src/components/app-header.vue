@@ -5,7 +5,6 @@ import useUserStore from '@/stores/use-user-store'
 
 const configStore = useConfigStore()
 const userStore = useUserStore()
-const userInfo = computed(() => userStore.userInfo)
 const router = useRouter()
 const route = useRoute()
 
@@ -22,14 +21,10 @@ onKeyStroke(
 )
 
 const logout = () => {
-  userStore.logoutAction()
-  configStore.updateConfigAction(
-    {
-      autoLogin: false,
-      loginUserInfo: '',
-    },
-    true,
-  )
+  // userStore.logoutAction()
+  configStore.updateConfigAction({
+    loginUserInfo: '',
+  })
   router.push({ name: 'LOGIN' })
 }
 
@@ -56,7 +51,7 @@ const closeWin = () => {
     </v-app-bar-title>
     <template #append>
       <div class="app-region-nodrag">
-        <template v-if="route.name !== 'CONFIG'">
+        <template v-if="route.name && ['CONFIG', 'LOGIN'].every((item) => route.name !== item)">
           <app-header-icon-btn tooltip-text="返回" @click="router.back()">
             <v-icon>
               <i-mdi-arrow-u-left-top />
@@ -75,7 +70,7 @@ const closeWin = () => {
               <i-mdi-calendar-month />
             </v-icon>
           </app-header-icon-btn>
-          <template v-if="userInfo">
+          <template v-if="userStore.isLogin">
             <app-header-icon-btn
               tooltip-text="个人中心"
               @click="
@@ -97,11 +92,7 @@ const closeWin = () => {
           <app-header-icon-btn
             v-else
             tooltip-text="登录"
-            @click="
-              router.push({
-                name: 'LOGIN',
-              })
-            "
+            @click="trpcClient.openLoginWindow.query()"
           >
             <v-icon>
               <i-mdi-login />

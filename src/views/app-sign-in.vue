@@ -11,9 +11,7 @@ const userStore = useUserStore()
 const currentDate = new Date()
 const value = new Date(currentDate)
 
-const { loading, data, send, error } = useRequest(() =>
-  getSignInDataApi(userStore.userInfo?.uid ?? 0),
-)
+const { loading, data, send, error } = useRequest(() => getSignInDataApi(userStore.state.uid))
 const sliderTickMap = computed(() => {
   const o = {
     3: '三',
@@ -121,7 +119,7 @@ const {
   onSuccess,
   data: signInData,
   send: signIn,
-} = useRequest(() => signInApi(userStore.userInfo?.uid ?? 0, data.value.data.id), {
+} = useRequest(() => signInApi(userStore.state.uid, data.value.data.id), {
   immediate: false,
 })
 

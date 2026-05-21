@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { clone } from 'radash'
 import { SubmitEventPromise } from 'vuetify'
 
-import { trpcClient } from '@/apis/ipc'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { Config } from '@type/index'
 import { useConfigStore } from '@/stores/use-config-store'
+import { trpcClient } from '@/apis'
 
 const configStore = useConfigStore()
 
@@ -19,24 +18,10 @@ const formState = reactive<
   apiUrlList: [],
   readMode: 'click',
   zoomFactor: 0,
-  proxyInfo: undefined,
+  proxyInfo: null,
+  currentShuntKey: null,
   useProxy: false,
 })
-
-const getConfig = async () => {
-  try {
-    const config = await trpcClient.getConfig.query()
-    await configStore.updateConfigAction(config)
-    Object.assign(formState, clone(configStore.state))
-    if (formState.proxyInfo) {
-      formState.useProxy = true
-    } else {
-      formState.useProxy = false
-    }
-  } catch (e) {
-    console.error('读取配置文件失败', e)
-  }
-}
 
 const snackbar = useSnackbar()
 const submit = async (e: SubmitEventPromise) => {
@@ -48,8 +33,9 @@ const submit = async (e: SubmitEventPromise) => {
     return
   }
   try {
-    await configStore.updateConfigAction(formState, true)
+    await configStore.updateConfigAction(formState)
     snackbar.success('更新成功')
+    await trpcClient.closeWin.mutate()
   } catch (e) {
     console.error('保存配置失败', e)
   }
@@ -65,16 +51,19 @@ const onUseProxyChange = (useProxy: boolean) => {
       password: '',
     }
   } else {
-    formState.proxyInfo = undefined
+    formState.proxyInfo = null
   }
 }
 
 onMounted(() => {
-  getConfig()
-})
-
-const appApiInputDialogState = reactive({
-  modelValue: false,
+  formState.theme = configStore.state.theme
+  formState.apiUrl = configStore.state.apiUrl
+  formState.apiUrlList = configStore.state.apiUrlList
+  formState.readMode = configStore.state.readMode
+  formState.zoomFactor = configStore.state.zoomFactor
+  formState.proxyInfo = configStore.state.proxyInfo
+  formState.currentShuntKey = configStore.state.currentShuntKey
+  formState.useProxy = !!formState.proxyInfo
 })
 </script>
 
@@ -115,19 +104,14 @@ const appApiInputDialogState = reactive({
               <template v-slot:menu-footer="{}">
                 <v-divider />
                 <div class="wind-flex wind-items-center wind-p-3">
-                  <v-btn
-                    class="wind-ml-auto"
-                    variant="flat"
-                    color="primary"
-                    @click="appApiInputDialogState.modelValue = true"
-                  >
+                  <!-- TODO 保存一份接口数据在 github 上，用于动态刷新 -->
+                  <v-btn class="wind-ml-auto" variant="flat" color="primary">
                     <template #prepend>
                       <v-icon>
                         <i-mdi-plus />
-                        <!-- <span class="i-mdi:plus"></span> -->
                       </v-icon>
                     </template>
-                    新增接口
+                    拉取最新接口
                   </v-btn>
                 </div>
               </template>
@@ -245,5 +229,4 @@ const appApiInputDialogState = reactive({
       </v-form>
     </v-card-text>
   </v-card>
-  <app-api-input-dialog v-model:model-value="appApiInputDialogState.modelValue" />
 </template>

@@ -1,11 +1,13 @@
 import { useRequest } from 'alova/client'
 
-import { loginApi } from '@/apis'
+import { loginApi, trpcClient } from '@/apis'
 import { info } from '@/logger'
 import useUserStore from '@/stores/use-user-store'
+import { useConfigStore } from '@/stores/use-config-store'
 
 export const useRefreshUser = () => {
   const userStore = useUserStore()
+  const configStore = useConfigStore()
   const { data, send, onSuccess, onError } = useRequest(
     (username: string, password: string) => loginApi({ username, password }),
     {
@@ -13,15 +15,16 @@ export const useRefreshUser = () => {
     },
   )
   onSuccess(() => {
-    userStore.updateUserInfoAction(data.value!.data)
+    userStore.updateUserAction(data.value!.data)
   })
   onError(() => {
-    userStore.logoutAction()
+    userStore.updateUserAction(null)
   })
   const { resume, pause } = useIntervalFn(
-    () => {
+    async () => {
       info('刷新用户信息中...')
-      const { username, password } = userStore.loginInfo!
+      const loginInfo = await trpcClient.decryptLoginUser.query(configStore.state.loginUserInfo)
+      const { username, password } = loginInfo
       send(username, password)
     },
     5 * 60 * 1000,

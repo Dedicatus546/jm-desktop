@@ -52,7 +52,7 @@ const {
   send,
   data: commentData,
   onSuccess,
-} = useRequest(() => commentComicApi(formState.content, userStore.userInfo!.uid), {
+} = useRequest(() => commentComicApi(formState.content, userStore.state.uid), {
   immediate: false,
 })
 const snackbar = useSnackbar()

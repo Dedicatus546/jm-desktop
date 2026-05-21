@@ -16,7 +16,7 @@ const routePage = useRouteQuery<string, number>('historyCommentPage', '1', {
 })
 const userStore = useUserStore()
 const { page, pageCount, pageSize, loading, data } = usePagination(
-  (page) => getUserCommentListApi(page, userStore.userInfo!.uid),
+  (page) => getUserCommentListApi(page, userStore.state.uid),
   {
     initialPage: routePage.value,
     initialPageSize: 10,

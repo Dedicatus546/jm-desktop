@@ -6,7 +6,6 @@ import { createLogger } from './logger'
 import { debounce } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@electron/env'
 import { getExpressServerPort } from './express-server'
-import { emitter } from '../shared/mitt'
 import { ProxyInfo } from '@type/index'
 
 const windowMap = new Map<string, BrowserWindow>()
@@ -40,12 +39,22 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
   }
 }
 
-const saveCurrentWindowInfo = debounce({ delay: 1000 }, async (win: BrowserWindow, id: string) => {
-  let config = await getConfig()
+const saveCurrentWindowInfoDebounce = debounce(
+  { delay: 1000 },
+  async (win: BrowserWindow, id: string) => {
+    let config = getConfig()
+    const windowInfo = win.getBounds()
+    config.windowInfoMap.set(id, windowInfo)
+    await saveConfig(config)
+  },
+)
+
+const saveCurrentWindowInfo = async (win: BrowserWindow, id: string) => {
+  let config = getConfig()
   const windowInfo = win.getBounds()
   config.windowInfoMap.set(id, windowInfo)
   await saveConfig(config)
-})
+}
 
 export const createWindow = async (
   id: string,
@@ -53,7 +62,7 @@ export const createWindow = async (
   bwConfig?: BrowserWindowConstructorOptions,
 ) => {
   const { info } = createLogger(`window[${id}]`)
-  let config = await getConfig()
+  let config = getConfig()
   let win: BrowserWindow | undefined = undefined
   const windowInfo = config.windowInfoMap.get(id)
   if (windowInfo && !isWindowInAvailableDisplayList(windowInfo)) {
@@ -84,9 +93,13 @@ export const createWindow = async (
     await saveConfig(config)
   }
 
-  win.on('close', () => saveCurrentWindowInfo(win, id))
-  win.on('move', () => saveCurrentWindowInfo(win, id))
-  win.on('resize', () => saveCurrentWindowInfo(win, id))
+  win.on('close', () => {
+    saveCurrentWindowInfo(win, id)
+    windowMap.delete(id)
+    windowIdMap.delete(win)
+  })
+  win.on('move', () => saveCurrentWindowInfoDebounce(win, id))
+  win.on('resize', () => saveCurrentWindowInfoDebounce(win, id))
 
   if (VITE_DEV_SERVER_URL) {
     const resolvedUrl = (() => {
@@ -108,7 +121,7 @@ export const createWindow = async (
 }
 
 export const createMainWindow = async () => {
-  const { info } = createLogger(`window[main]`)
+  // const { info } = createLogger(`window[main]`)
 
   const mainWindow = await createWindow('main', '', {
     width: 1200,
@@ -116,7 +129,7 @@ export const createMainWindow = async () => {
     minWidth: 1200,
     minHeight: 800,
   })
-  let config = await getConfig()
+  let config = getConfig()
   setSessionProxy(config.proxyInfo)
 
   // emitter.on('configChange', async ([newConifg]) => {
@@ -127,17 +140,6 @@ export const createMainWindow = async () => {
   // })
 
   return mainWindow
-}
-
-export const closeWindow = (id: string) => {
-  const win = windowMap.get(id)
-  if (win) {
-    win.close()
-    windowMap.delete(id)
-    windowIdMap.delete(win)
-  } else {
-    // TODO
-  }
 }
 
 export const clearAllWindow = () => {

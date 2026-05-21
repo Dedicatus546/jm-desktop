@@ -1,64 +1,54 @@
-import { LoginInfo, User } from '@type/index'
-import { assign, clone } from 'radash'
+import { trpcClient } from '@/apis'
+import { User } from '@type/index'
 
 const useUserStore = defineStore('user', () => {
-  const state = reactive<{
-    userInfo: User | null
-    loginInfo: LoginInfo | null
-  }>({
-    userInfo: null,
-    loginInfo: null,
+  const state: User = reactive({
+    uid: 0,
+    username: '',
+    email: '',
+    avatar: '',
+    jCoin: 0,
+    level: [0, ''],
+    currentExp: 0,
+    nextLevelExp: 0,
+    collectCount: 0,
+    maxCollectCount: 0,
   })
 
-  const isLogin = computed(() => !!state.userInfo)
-
-  const updateUserInfoAction = (userInfo: NonNullable<User>) => {
-    if (state.userInfo) {
-      assign(state.userInfo, userInfo)
-      return
-    }
-    state.userInfo = clone(userInfo)
+  const resetState = () => {
+    Object.assign(state, {
+      uid: 0,
+      username: '',
+      email: '',
+      avatar: '',
+      jCoin: 0,
+      level: [0, ''],
+      currentExp: 0,
+      nextLevelExp: 0,
+      collectCount: 0,
+      maxCollectCount: 0,
+    })
   }
 
-  const updateLoginInfoAction = (username: string, password: string) => {
-    state.loginInfo = {
-      username,
-      password,
-    }
+  const isLogin = computed(() => !!state.uid)
+
+  const updateUserAction = async (user: User | null) => {
+    await trpcClient.updateUser.mutate(user)
   }
 
-  const logoutAction = () => {
-    state.userInfo = null
-    state.loginInfo = null
-  }
-
-  const updateFromTrpcAction = (user: User | null, loginInfo: LoginInfo | null) => {
-    if (state.userInfo) {
-      if (user) {
-        assign(state.userInfo, user)
-      } else {
-        state.userInfo = user
-      }
+  const updateFromTrpcAction = (user: User | null) => {
+    console.log('user', user)
+    if (user) {
+      Object.assign(state, user)
     } else {
-      state.userInfo = user
-    }
-    if (state.loginInfo) {
-      if (loginInfo) {
-        assign(state.loginInfo, loginInfo)
-      } else {
-        state.loginInfo = loginInfo
-      }
-    } else {
-      state.loginInfo = loginInfo
+      resetState()
     }
   }
 
   return {
-    ...toRefs(state),
+    state,
     isLogin,
-    updateUserInfoAction,
-    updateLoginInfoAction,
-    logoutAction,
+    updateUserAction,
     updateFromTrpcAction,
   }
 })

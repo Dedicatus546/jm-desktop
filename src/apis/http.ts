@@ -19,14 +19,6 @@ const version = '1.8.2'
 const token = '185Hcomic3PAPP7R'
 const tokenHash = (await trpcClient.md5.query(`${ts}${token}`)).toLowerCase()
 
-// const decode = (data: string) => {
-//   return JSON.parse(
-//     CryptoJS.AES.decrypt(data, CryptoJS.enc.Utf8.parse(tokenHash), {
-//       mode: CryptoJS.mode.ECB,
-//     }).toString(CryptoJS.enc.Utf8),
-//   );
-// };
-
 let baseURL = ''
 if (import.meta.env.DEV) {
   baseURL = '/api'
@@ -37,27 +29,10 @@ if (import.meta.env.DEV) {
 
 info('baseURL: ', baseURL)
 
-const initSetting = async () => {
-  const prefetchDataStore = usePrefetchDataStore()
-  const { data, send } = useRequest(() => getSettingApi())
-  try {
-    await send()
-    prefetchDataStore.state.imgHost = data.value.data.imgHost
-    prefetchDataStore.state.shuntList = data.value.data.shuntList
-  } catch (e) {
-    error(e)
-    throw new Error('读取网址设置失败')
-  }
-}
-
 const initConfig = async () => {
   const prefetchDataStore = usePrefetchDataStore()
   const configStore = useConfigStore()
-  info('开始读取本地配置文件')
   try {
-    const config = await trpcClient.getConfig.query()
-    configStore.updateConfigAction(config)
-    info('读取本地配置文件成功')
     if (prefetchDataStore.state.shuntList.length > 0) {
       if (
         // 第一次启动未选择图源
@@ -68,12 +43,9 @@ const initConfig = async () => {
         )
       ) {
         info('检测到未选择图源，默认选择第一个')
-        configStore.updateConfigAction(
-          {
-            currentShuntKey: prefetchDataStore.state.shuntList[0].key,
-          },
-          true,
-        )
+        await configStore.updateConfigAction({
+          currentShuntKey: prefetchDataStore.state.shuntList[0].key,
+        })
       }
     }
   } catch (e) {
@@ -85,8 +57,8 @@ const initConfig = async () => {
 const autoLogin = async () => {
   const userStore = useUserStore()
   const configStore = useConfigStore()
-  let username = '',
-    password = ''
+  let username = ''
+  let password = ''
   const { send, data } = useRequest(
     (username: string, password: string) =>
       loginApi({
@@ -120,8 +92,7 @@ const autoLogin = async () => {
   }
   try {
     await send(username, password)
-    userStore.updateUserInfoAction(data.value.data)
-    userStore.updateLoginInfoAction(username, password)
+    userStore.updateUserAction(data.value.data)
     info('自动登录成功')
   } catch (e) {
     error('自动登录失败，跳过自动登录，原因：', e)
@@ -140,23 +111,22 @@ const initDownload = async () => {
   }
 }
 
-const initData = async () => {
+const initPrefetchData = async () => {
   const prefetchDataStore = usePrefetchDataStore()
+  const { data: settingData, send: settingSend } = useRequest(() => getSettingApi())
   const { data: weekData, send: weekSend } = useRequest(() => getWeekListApi(), {
     immediate: false,
   })
-
   const { data: categoryData, send: categorySend } = useRequest(() => getCategoryListApi(), {
     immediate: false,
   })
-  info('初始化全局数据')
   try {
-    await Promise.all([weekSend(), categorySend()])
-    Object.assign(prefetchDataStore.state, {
+    await Promise.all([settingSend(), weekSend(), categorySend()])
+    await prefetchDataStore.updatePrefetchDataAction({
+      imgHost: settingData.value.data.imgHost,
+      shuntList: settingData.value.data.shuntList,
       weekCategoryList: weekData.value.data.categoryList,
       weekTypeList: weekData.value.data.typeList,
-    })
-    Object.assign(prefetchDataStore.state, {
       categoryTagList: categoryData.value.data.tagTypeList,
       categoryCategoryList: categoryData.value.data.categoryList,
     })
@@ -174,6 +144,7 @@ const http = createAlova({
   requestAdapter: xhrRequestAdapter({}),
   baseURL,
   async beforeRequest(method) {
+    const winId = await trpcClient.getWindowId.query()
     const prefetchDataStore = usePrefetchDataStore()
     // method.config.headers["Content-Type"] = "application/x-www-form-urlencoded";
     method.config.headers.tokenparam = `${ts},${version}`
@@ -182,35 +153,34 @@ const http = createAlova({
     if (method.type === 'GET') {
       method.config.cacheFor = 1000 * 60 * 20
     }
-    // if (!prefetchDataStore.isInit) {
-    //   if (!initPromise) {
-    //     try {
-    //       const { promise, resolve, reject } = Promise.withResolvers<void>()
-    //       initPromise = promise
-    //       ;(async () => {
-    //         try {
-    //           await initSetting()
-    //           await initConfig()
-    //           await autoLogin()
-    //           await initDownload()
-    //           await initData()
-    //           resolve()
-    //         } catch (e) {
-    //           reject(e)
-    //         }
-    //       })()
-    //       await initPromise
-    //       prefetchDataStore.isInit = true
-    //     } finally {
-    //       initPromise = undefined
-    //     }
-    //   } else {
-    //     const url = method.url
-    //     if (!['setting', 'login', 'week', 'categories'].includes(url)) {
-    //       await initPromise
-    //     }
-    //   }
-    // }
+    if (!prefetchDataStore.isInit && winId === 'main') {
+      if (!initPromise) {
+        try {
+          const { promise, resolve, reject } = Promise.withResolvers<void>()
+          initPromise = promise
+          ;(async () => {
+            try {
+              await initPrefetchData()
+              await initConfig()
+              await autoLogin()
+              await initDownload()
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          })()
+          await initPromise
+          prefetchDataStore.isInit = true
+        } finally {
+          initPromise = undefined
+        }
+      } else {
+        const url = method.url
+        if (!['setting', 'login', 'week', 'categories'].includes(url)) {
+          await initPromise
+        }
+      }
+    }
   },
   responded: {
     async onSuccess(response, method) {
