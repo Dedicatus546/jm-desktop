@@ -42,6 +42,9 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
 const saveCurrentWindowInfoDebounce = debounce(
   { delay: 1000 },
   async (win: BrowserWindow, id: string) => {
+    if (win.isDestroyed()) {
+      return
+    }
     let config = getConfig()
     const windowInfo = win.getBounds()
     config.windowInfoMap.set(id, windowInfo)
