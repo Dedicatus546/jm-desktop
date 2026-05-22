@@ -3,7 +3,6 @@ import { useRequest } from 'alova/client'
 import { SubmitEventPromise } from 'vuetify'
 
 import { loginApi, trpcClient } from '@/apis'
-import useSnackbar from '@/compositions/use-snack-bar'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 
@@ -15,6 +14,7 @@ const formState = reactive({
   password: '',
   autoLogin: false,
 })
+const errorMsg = ref('')
 
 const { loading, data, onSuccess, onError, send } = useRequest(
   () =>
@@ -29,21 +29,23 @@ const { loading, data, onSuccess, onError, send } = useRequest(
 
 const submit = async (e: SubmitEventPromise) => {
   const res = await e
+  errorMsg.value = ''
   if (!res.valid) {
     const { errors } = res
     const [error] = errors
-    snackbar.error(error.errorMessages[0])
+    errorMsg.value = error.errorMessages[0]
     return
   }
+
   send()
 }
 
-const snackbar = useSnackbar()
-
 onSuccess(async () => {
-  snackbar.primary('登录成功')
   await userStore.updateUserAction(data.value.data)
-  // TODO 保存用户信息用于自动登录
+  await trpcClient.notifyMessage.mutate({
+    type: 'success',
+    message: '登录成功',
+  })
   if (formState.autoLogin) {
     const encryptStr = await trpcClient.encryptLoginUser.query({
       username: formState.username,
@@ -61,7 +63,8 @@ onSuccess(async () => {
 })
 
 onError((e) => {
-  snackbar.error((e.error as Error).message)
+  const err = e.error
+  errorMsg.value = (err as Error).message
 })
 </script>
 
@@ -112,6 +115,9 @@ onError((e) => {
                 </div>
               </template>
             </v-alert>
+          </v-col>
+          <v-col :cols="12" v-if="errorMsg">
+            <v-alert :text="errorMsg" type="error" variant="tonal"></v-alert>
           </v-col>
           <v-col :cols="12">
             <v-btn
