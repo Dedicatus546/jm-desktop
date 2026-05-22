@@ -4,12 +4,12 @@ import { clone } from 'radash'
 
 export const usePrefetchDataStore = defineStore('prefetch-data', () => {
   const state: PrefetchData = reactive({
-    imgHost: appState.prefetchData.imgHost,
-    shuntList: appState.prefetchData.shuntList,
-    weekCategoryList: appState.prefetchData.weekCategoryList,
-    weekTypeList: appState.prefetchData.weekTypeList,
-    categoryTagList: appState.prefetchData.categoryTagList,
-    categoryCategoryList: appState.prefetchData.categoryCategoryList,
+    imgHost: APP_STATE.prefetchData.imgHost,
+    shuntList: APP_STATE.prefetchData.shuntList,
+    weekCategoryList: APP_STATE.prefetchData.weekCategoryList,
+    weekTypeList: APP_STATE.prefetchData.weekTypeList,
+    categoryTagList: APP_STATE.prefetchData.categoryTagList,
+    categoryCategoryList: APP_STATE.prefetchData.categoryCategoryList,
   })
   const isInit = ref(false)
 

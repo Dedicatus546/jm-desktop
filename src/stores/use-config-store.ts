@@ -9,15 +9,15 @@ export const useConfigStore = defineStore('config', () => {
   const isDark = usePreferredDark()
 
   const state: Config = reactive({
-    theme: appState.config.theme,
-    apiUrl: appState.config.apiUrl,
-    apiUrlList: appState.config.apiUrlList,
-    readMode: appState.config.readMode,
-    currentShuntKey: appState.config.currentShuntKey,
-    loginUserInfo: appState.config.loginUserInfo,
-    windowInfoMap: appState.config.windowInfoMap,
-    proxyInfo: appState.config.proxyInfo,
-    zoomFactor: appState.config.zoomFactor,
+    theme: APP_STATE.config.theme,
+    apiUrl: APP_STATE.config.apiUrl,
+    apiUrlList: APP_STATE.config.apiUrlList,
+    readMode: APP_STATE.config.readMode,
+    currentShuntKey: APP_STATE.config.currentShuntKey,
+    loginUserInfo: APP_STATE.config.loginUserInfo,
+    windowInfoMap: APP_STATE.config.windowInfoMap,
+    proxyInfo: APP_STATE.config.proxyInfo,
+    zoomFactor: APP_STATE.config.zoomFactor,
   })
 
   const updateConfigAction = async (config: Partial<Config>) => {

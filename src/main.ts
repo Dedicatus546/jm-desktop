@@ -27,17 +27,20 @@ declare global {
   }
 
   // 这样直接写，可以让前端直接使用 `appState.config`
-  const appState: AppState
+  const APP_STATE: AppState
+  const WINDOW_ID: string
 
   // 这样写，可以让前端使用 `window.appState.config` 并且不报错
   interface Window {
-    appState: AppState
+    APP_STATE: AppState
+    WINDOW_ID: string
   }
 }
 
-window.appState = await trpcClient.getState.query()
+window.APP_STATE = await trpcClient.getState.query()
+window.WINDOW_ID = await trpcClient.getWindowId.query()
 
-console.log('appState', appState)
+console.log('appState', APP_STATE)
 
 const vuetify = createVuetify({
   theme: {

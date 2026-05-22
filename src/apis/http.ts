@@ -144,7 +144,6 @@ const http = createAlova({
   requestAdapter: xhrRequestAdapter({}),
   baseURL,
   async beforeRequest(method) {
-    const winId = await trpcClient.getWindowId.query()
     const prefetchDataStore = usePrefetchDataStore()
     // method.config.headers["Content-Type"] = "application/x-www-form-urlencoded";
     method.config.headers.tokenparam = `${ts},${version}`
@@ -153,7 +152,7 @@ const http = createAlova({
     if (method.type === 'GET') {
       method.config.cacheFor = 1000 * 60 * 20
     }
-    if (!prefetchDataStore.isInit && winId === 'main') {
+    if (!prefetchDataStore.isInit && WINDOW_ID === 'main') {
       if (!initPromise) {
         try {
           const { promise, resolve, reject } = Promise.withResolvers<void>()
@@ -174,18 +173,13 @@ const http = createAlova({
         } finally {
           initPromise = undefined
         }
-      } else {
-        const url = method.url
-        if (!['setting', 'login', 'week', 'categories'].includes(url)) {
-          await initPromise
-        }
       }
     }
   },
   responded: {
     async onSuccess(response, method) {
       if (response.status >= 400) {
-        const errorMsg = response.data.errorMsg ?? response.statusText
+        const errorMsg = response.data.errorMsg ?? '网络开小差了，请稍后再试'
         error('网络开小差了，请稍后再试', {
           url: method.url,
           output: {
@@ -193,7 +187,7 @@ const http = createAlova({
             errorMsg,
           },
         })
-        throw new Error('网络开小差了，请稍后再试')
+        throw new Error(errorMsg)
       }
       info(method.url, response.status)
       if (
