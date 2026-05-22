@@ -5,7 +5,7 @@ import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 import useUserStore from '@/stores/use-user-store'
 import { Unsubscribable } from '@trpc/server/observable'
 
-const { info } = createLogger('state-sync')
+const { info } = createLogger('subscribe')
 
 export const useSyncStoreTrpc = () => {
   const configStore = useConfigStore()
@@ -42,5 +42,6 @@ export const useSyncStoreTrpc = () => {
       unsubscribable.unsubscribe()
     })
     unsubscribableArray.length = 0
+    info('执行 subscribe 清理')
   })
 }

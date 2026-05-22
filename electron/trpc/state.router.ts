@@ -9,7 +9,7 @@ import { ee } from '@electron/events'
 import { on } from 'node:events'
 import { saveConfig } from '@electron/module/config'
 
-const { info } = createLogger('state')
+const { info } = createLogger('trpc-subscription')
 
 const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
   const { signal } = opts
@@ -17,6 +17,8 @@ const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
   for await (const _ of on(ee, 'configUpdate', { signal })) {
     yield state.config
   }
+
+  info('结束 onConfigUpdateRpc 监听')
 })
 
 const updateConfigRpc = trpc.procedure
@@ -65,6 +67,8 @@ const onUserUpdateRpc = trpc.procedure.subscription(async function* (opts) {
   for await (const _ of on(ee, 'userUpdate', { signal })) {
     yield clone(state.user)
   }
+
+  info('结束 onUserUpdateRpc 监听')
 })
 
 const updateUserRpc = trpc.procedure
@@ -102,6 +106,8 @@ const onPrefetchDataUpdateRpc = trpc.procedure.subscription(async function* (opt
   for await (const _ of on(ee, 'prefetchDataUpdate', { signal })) {
     yield state.prefetchData
   }
+
+  info('结束 onPrefetchDataUpdateRpc 监听')
 })
 
 const updatePrefetchDataRpc = trpc.procedure
