@@ -3,6 +3,8 @@ import path from 'node:path'
 import { type Plugin, type UserConfig, mergeConfig } from 'vite'
 import type { InputOption } from 'rolldown'
 import electron, { type ElectronOptions } from '.'
+import type { RendererOptions } from 'vite-plugin-electron-renderer'
+import renderer from 'vite-plugin-electron-renderer'
 
 export interface ElectronSimpleOptions {
   main: ElectronOptions
@@ -18,7 +20,7 @@ export interface ElectronSimpleOptions {
    * Support use Node.js API in Electron-Renderer
    * @see https://github.com/electron-vite/vite-plugin-electron-renderer
    */
-  renderer?: import('vite-plugin-electron-renderer').RendererOptions
+  renderer?: RendererOptions
 }
 
 // The simple API just like v0.9.x
@@ -97,8 +99,7 @@ export default async function electronSimple(options: ElectronSimpleOptions): Pr
 
   if (options.renderer) {
     try {
-      const renderer = await import('vite-plugin-electron-renderer')
-      plugins.push(renderer.default(options.renderer))
+      plugins.push(renderer(options.renderer))
     } catch (error: any) {
       if (error.code === 'ERR_MODULE_NOT_FOUND') {
         throw new Error(
