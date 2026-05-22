@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { trpcClient } from '@/apis'
+import useSnackbar from '@/compositions/use-snack-bar'
 import { useConfigStore } from '@/stores/use-config-store'
 import useUserStore from '@/stores/use-user-store'
 
+const snackbar = useSnackbar()
 const configStore = useConfigStore()
 const userStore = useUserStore()
 const router = useRouter()
@@ -20,12 +22,12 @@ onKeyStroke(
   },
 )
 
-const logout = () => {
-  // userStore.logoutAction()
-  configStore.updateConfigAction({
+const logout = async () => {
+  await userStore.updateUserAction(null)
+  await configStore.updateConfigAction({
     loginUserInfo: '',
   })
-  router.push({ name: 'LOGIN' })
+  snackbar.success('退出成功')
 }
 
 const minimizeWin = () => {
