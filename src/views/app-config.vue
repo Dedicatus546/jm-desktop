@@ -5,6 +5,7 @@ import useSnackbar from '@/compositions/use-snack-bar'
 import { Config } from '@type/index'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/apis'
+import { error } from '@/logger'
 
 const configStore = useConfigStore()
 
@@ -22,7 +23,7 @@ const formState = reactive<
   currentShuntKey: null,
   useProxy: false,
 })
-
+const errorMsg = ref('')
 const snackbar = useSnackbar()
 const submit = async (e: SubmitEventPromise) => {
   const res = await e
@@ -34,10 +35,14 @@ const submit = async (e: SubmitEventPromise) => {
   }
   try {
     await configStore.updateConfigAction(formState)
-    snackbar.success('更新成功')
+    await trpcClient.notifyMessage.mutate({
+      type: 'success',
+      message: '保存成功',
+    })
     await trpcClient.closeWin.mutate()
-  } catch (e) {
-    console.error('保存配置失败', e)
+  } catch (err) {
+    errorMsg.value = (err as Error).message
+    error('保存配置失败', e)
   }
 }
 
@@ -214,6 +219,9 @@ onMounted(() => {
               ></v-text-field>
             </v-col>
           </template>
+          <v-col :cols="12" v-if="errorMsg">
+            <v-alert :text="errorMsg" type="error" variant="tonal"></v-alert>
+          </v-col>
           <v-col :cols="12">
             <v-btn variant="flat" size="large" block color="primary" type="submit"> 保存 </v-btn>
           </v-col>
