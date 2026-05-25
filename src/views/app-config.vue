@@ -101,18 +101,10 @@ onMounted(() => {
               item-value="value"
               :items="formState.apiUrlList"
             >
-              <template v-slot:menu-footer="{}">
+              <template #menu-footer>
                 <v-divider />
                 <div class="wind-flex wind-items-center wind-p-3">
-                  <!-- TODO 保存一份接口数据在 github 上，用于动态刷新 -->
-                  <v-btn class="wind-ml-auto" variant="flat" color="primary">
-                    <template #prepend>
-                      <v-icon>
-                        <i-mdi-plus />
-                      </v-icon>
-                    </template>
-                    拉取最新接口
-                  </v-btn>
+                  <app-refresh-api-btn />
                 </div>
               </template>
             </v-select>
