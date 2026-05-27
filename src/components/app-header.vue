@@ -37,6 +37,14 @@ const minimizeWin = () => {
 const closeWin = () => {
   trpcClient.closeWin.mutate()
 }
+
+const toHome = () => {
+  if (['CONFIG', 'LOGIN'].every((item) => route.name !== item)) {
+    router.push({
+      name: 'HOME',
+    })
+  }
+}
 </script>
 
 <template>
@@ -45,9 +53,12 @@ const closeWin = () => {
       <div class="wind-h-full wind-flex wind-items-center">
         <img
           src="@/assets/logo.png"
-          class="wind-w-[150px] wind-cursor-pointer app-region-nodrag"
+          class="wind-w-[150px] app-region-nodrag"
+          :class="{
+            'wind-cursor-pointer': ['CONFIG', 'LOGIN'].every((item) => route.name !== item),
+          }"
           alt="禁漫天堂"
-          @click="router.push('/')"
+          @click="toHome"
         />
       </div>
     </v-app-bar-title>
