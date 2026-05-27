@@ -90,12 +90,14 @@ const updateUserRpc = trpc.procedure
   )
   .mutation(async ({ input }) => {
     info('更新 user ，原 user ', stringify(state.user), '更新的 config', stringify(input))
-    if (input) {
+    if (input !== null) {
       if (state.user) {
         Object.assign(state.user, input)
       } else {
         state.user = input
       }
+    } else {
+      state.user = null
     }
     ee.emit('userUpdate', state.user)
   })
