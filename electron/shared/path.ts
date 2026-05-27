@@ -16,8 +16,11 @@ export const dataDir = import.meta.env.DEV
   ? join(appRoot, 'data')
   : join(dirname(app.getPath('exe')), 'data')
 
-if (!(await exists(dataDir))) {
-  await mkdir(dataDir, {
-    recursive: true,
-  })
+export const initDataDir = async () => {
+  const isExist = await exists(dataDir)
+  if (!isExist) {
+    await mkdir(dataDir, {
+      recursive: true,
+    })
+  }
 }

@@ -35,6 +35,7 @@ export default defineConfig({
           resolve: {
             alias: {
               '@electron': resolve(__dirname, 'electron'),
+              '@type/*': resolve(__dirname, 'type'),
             },
           },
           build: {
@@ -86,6 +87,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
       '@electron': resolve(__dirname, 'electron'),
+      '@type/*': resolve(__dirname, 'type'),
     },
   },
   server: {

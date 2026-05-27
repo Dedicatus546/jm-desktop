@@ -3,19 +3,20 @@ import { useRequest } from 'alova/client'
 import { SubmitEventPromise } from 'vuetify'
 
 import { loginApi, trpcClient } from '@/apis'
-import useSnackbar from '@/compositions/use-snack-bar'
-import useAppStore from '@/stores/use-app-store'
 import useUserStore from '@/stores/use-user-store'
+import { useConfigStore } from '@/stores/use-config-store'
 
-const router = useRouter()
+useTitle('登录 - 禁漫❤天堂')
+
 const userStore = useUserStore()
-const appStore = useAppStore()
+const configStore = useConfigStore()
 
 const formState = reactive({
   username: '',
   password: '',
   autoLogin: false,
 })
+const errorMsg = ref('')
 
 const { loading, data, onSuccess, onError, send } = useRequest(
   () =>
@@ -30,47 +31,42 @@ const { loading, data, onSuccess, onError, send } = useRequest(
 
 const submit = async (e: SubmitEventPromise) => {
   const res = await e
+  errorMsg.value = ''
   if (!res.valid) {
     const { errors } = res
     const [error] = errors
-    snackbar.error(error.errorMessages[0])
+    errorMsg.value = error.errorMessages[0]
     return
   }
+
   send()
 }
 
-const snackbar = useSnackbar()
-
 onSuccess(async () => {
-  snackbar.primary('登录成功')
-  userStore.updateUserInfoAction(data.value.data)
-  userStore.updateLoginInfoAction(formState.username, formState.password)
+  await userStore.updateUserAction(data.value.data)
+  await trpcClient.notifyMessage.mutate({
+    type: 'success',
+    message: '登录成功',
+  })
   if (formState.autoLogin) {
     const encryptStr = await trpcClient.encryptLoginUser.query({
       username: formState.username,
       password: formState.password,
     })
-    appStore.updateConfigAction(
-      {
-        loginUserInfo: encryptStr,
-        autoLogin: true,
-      },
-      true,
-    )
+    await configStore.updateConfigAction({
+      loginUserInfo: encryptStr,
+    })
   } else {
-    appStore.updateConfigAction(
-      {
-        loginUserInfo: '',
-        autoLogin: false,
-      },
-      true,
-    )
+    await configStore.updateConfigAction({
+      loginUserInfo: '',
+    })
   }
-  router.replace({ name: 'PERSON' })
+  await trpcClient.closeWin.mutate()
 })
 
 onError((e) => {
-  snackbar.error((e.error as Error).message)
+  const err = e.error
+  errorMsg.value = (err as Error).message
 })
 </script>
 
@@ -121,6 +117,9 @@ onError((e) => {
                 </div>
               </template>
             </v-alert>
+          </v-col>
+          <v-col :cols="12" v-if="errorMsg">
+            <v-alert :text="errorMsg" type="error" variant="tonal"></v-alert>
           </v-col>
           <v-col :cols="12">
             <v-btn

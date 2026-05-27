@@ -4,13 +4,13 @@ import { usePagination } from 'alova/client'
 
 import { getWeekComicListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
-import useAppStore from '@/stores/use-app-store'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
-const appStore = useAppStore()
+const prefetchDataStore = usePrefetchDataStore()
 
 const category = useRouteQuery<string, number>(
   'category',
-  appStore.data.weekCategoryList[0].id + '',
+  prefetchDataStore.state.weekCategoryList[0].id + '',
   {
     mode: 'push',
     transform: {
@@ -19,7 +19,7 @@ const category = useRouteQuery<string, number>(
     },
   },
 )
-const type = useRouteQuery('type', appStore.data.weekTypeList.at(-1)!.id, {
+const type = useRouteQuery('type', prefetchDataStore.state.weekTypeList.at(-1)!.id, {
   mode: 'push',
 })
 
@@ -71,7 +71,7 @@ const {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="appStore.data.weekCategoryList"
+                    :items="prefetchDataStore.state.weekCategoryList"
                   ></v-select>
                 </v-col>
                 <v-col :cols="6">
@@ -82,7 +82,7 @@ const {
                     hide-details
                     item-title="name"
                     item-value="id"
-                    :items="appStore.data.weekTypeList"
+                    :items="prefetchDataStore.state.weekTypeList"
                   ></v-select>
                 </v-col>
               </v-row>

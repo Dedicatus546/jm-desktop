@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { Config } from '@electron/module/config'
-import { clone } from 'radash'
 import { SubmitEventPromise } from 'vuetify'
 
-import { trpcClient } from '@/apis/ipc'
 import useSnackbar from '@/compositions/use-snack-bar'
-import useAppStore from '@/stores/use-app-store.ts'
+import { Config } from '@type/index'
+import { useConfigStore } from '@/stores/use-config-store'
+import { trpcClient } from '@/apis'
+import { error } from '@/logger'
 
-const appStore = useAppStore()
+useTitle('设置 - 禁漫❤天堂')
+
+const configStore = useConfigStore()
 
 const formState = reactive<
-  Omit<Config, 'windowInfo' | 'loginUserInfo' | 'autoLogin'> & {
+  Omit<Config, 'windowInfoMap' | 'loginUserInfo' | 'autoLogin'> & {
     useProxy: boolean
   }
 >({
@@ -19,25 +21,11 @@ const formState = reactive<
   apiUrlList: [],
   readMode: 'click',
   zoomFactor: 0,
-  proxyInfo: undefined,
+  proxyInfo: null,
+  currentShuntKey: null,
   useProxy: false,
 })
-
-const getConfig = async () => {
-  try {
-    const config = await trpcClient.getConfig.query()
-    await appStore.updateConfigAction(config)
-    Object.assign(formState, clone(appStore.config))
-    if (formState.proxyInfo) {
-      formState.useProxy = true
-    } else {
-      formState.useProxy = false
-    }
-  } catch (e) {
-    console.error('读取配置文件失败', e)
-  }
-}
-
+const errorMsg = ref('')
 const snackbar = useSnackbar()
 const submit = async (e: SubmitEventPromise) => {
   const res = await e
@@ -48,10 +36,15 @@ const submit = async (e: SubmitEventPromise) => {
     return
   }
   try {
-    await appStore.updateConfigAction(formState, true)
-    snackbar.success('更新成功')
-  } catch (e) {
-    console.error('保存配置失败', e)
+    await configStore.updateConfigAction(formState)
+    await trpcClient.notifyMessage.mutate({
+      type: 'success',
+      message: '保存成功',
+    })
+    await trpcClient.closeWin.mutate()
+  } catch (err) {
+    errorMsg.value = (err as Error).message
+    error('保存配置失败', e)
   }
 }
 
@@ -65,16 +58,19 @@ const onUseProxyChange = (useProxy: boolean) => {
       password: '',
     }
   } else {
-    formState.proxyInfo = undefined
+    formState.proxyInfo = null
   }
 }
 
 onMounted(() => {
-  getConfig()
-})
-
-const appApiInputDialogState = reactive({
-  modelValue: false,
+  formState.theme = configStore.state.theme
+  formState.apiUrl = configStore.state.apiUrl
+  formState.apiUrlList = configStore.state.apiUrlList
+  formState.readMode = configStore.state.readMode
+  formState.zoomFactor = configStore.state.zoomFactor
+  formState.proxyInfo = configStore.state.proxyInfo
+  formState.currentShuntKey = configStore.state.currentShuntKey
+  formState.useProxy = !!formState.proxyInfo
 })
 </script>
 
@@ -112,23 +108,10 @@ const appApiInputDialogState = reactive({
               item-value="value"
               :items="formState.apiUrlList"
             >
-              <template v-slot:menu-footer="{}">
+              <template #menu-footer>
                 <v-divider />
                 <div class="wind-flex wind-items-center wind-p-3">
-                  <v-btn
-                    class="wind-ml-auto"
-                    variant="flat"
-                    color="primary"
-                    @click="appApiInputDialogState.modelValue = true"
-                  >
-                    <template #prepend>
-                      <v-icon>
-                        <i-mdi-plus />
-                        <!-- <span class="i-mdi:plus"></span> -->
-                      </v-icon>
-                    </template>
-                    新增接口
-                  </v-btn>
+                  <app-refresh-api-btn />
                 </div>
               </template>
             </v-select>
@@ -238,6 +221,9 @@ const appApiInputDialogState = reactive({
               ></v-text-field>
             </v-col>
           </template>
+          <v-col :cols="12" v-if="errorMsg">
+            <v-alert :text="errorMsg" type="error" variant="tonal"></v-alert>
+          </v-col>
           <v-col :cols="12">
             <v-btn variant="flat" size="large" block color="primary" type="submit"> 保存 </v-btn>
           </v-col>
@@ -245,5 +231,4 @@ const appApiInputDialogState = reactive({
       </v-form>
     </v-card-text>
   </v-card>
-  <app-api-input-dialog v-model:model-value="appApiInputDialogState.modelValue" />
 </template>

@@ -8,7 +8,7 @@ const userStore = useUserStore()
 const breakpoints = useBreakpoints(breakpointsAntDesign)
 const isGreaterMd = breakpoints.greater('md')
 const buttonCols = computed(() => {
-  if (!userStore.userInfo) {
+  if (!userStore.isLogin) {
     return [12, 12, 12, 12]
   }
   if (isGreaterMd.value) {
@@ -55,7 +55,7 @@ const buttonCols = computed(() => {
           <v-col :cols="buttonCols[1]">
             <app-skeleten class="wind-h-[44px]"> &#12288; </app-skeleten>
           </v-col>
-          <template v-if="userStore.userInfo">
+          <template v-if="userStore.isLogin">
             <v-col :cols="buttonCols[2]">
               <app-skeleten class="wind-h-[44px]"> &#12288; </app-skeleten>
             </v-col>

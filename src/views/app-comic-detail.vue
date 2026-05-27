@@ -6,9 +6,10 @@ import { collectComicApi, getComicDetailApi, getComicPicListApi, likeComicApi } 
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { createLogger } from '@/logger'
-import useAppStore from '@/stores/use-app-store'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
+import { useConfigStore } from '@/stores/use-config-store'
+import { usePrefetchDataStore } from '../stores/use-prefetch-data-store'
 
 const { info } = createLogger('comic')
 
@@ -17,13 +18,14 @@ const props = defineProps<{
 }>()
 const snackbar = useSnackbar()
 const dialog = useDialog()
-const appStore = useAppStore()
+const configStore = useConfigStore()
+const prefetchDataStore = usePrefetchDataStore()
 const userStore = useUserStore()
 const downloadStore = useDownloadStore()
 const breakpoints = useBreakpoints(breakpointsAntDesign)
 const isGreaterMd = breakpoints.greater('md')
 const buttonCols = computed(() => {
-  if (!userStore.userInfo) {
+  if (!userStore.isLogin) {
     return [12, 12, 12, 12]
   }
   if (isGreaterMd.value) {
@@ -118,11 +120,11 @@ const toQuickQueryPage = (query: string) => {
 const cover = computed(() =>
   import.meta.env.VITE_NSFW === 'on'
     ? '/360x640.svg'
-    : `${appStore.setting.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
+    : `${prefetchDataStore.state.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
 )
 
 const { data, send: getComicPicList } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {
@@ -336,7 +338,7 @@ const retry = () => {
                       }}
                     </v-btn>
                   </v-col>
-                  <template v-if="userStore.userInfo">
+                  <template v-if="userStore.isLogin">
                     <v-col :cols="buttonCols[2]">
                       <v-btn
                         color="primary"

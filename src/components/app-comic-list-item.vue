@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useAppStore from '@/stores/use-app-store'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
 const props = withDefaults(
   defineProps<{
@@ -15,13 +15,13 @@ const props = withDefaults(
   },
 )
 
-const appStore = useAppStore()
+const prefetchDataStore = usePrefetchDataStore()
 const route = useRoute()
 
 const cover = computed(() =>
   import.meta.env.VITE_NSFW === 'on'
     ? '/360x640.svg'
-    : `${appStore.setting.imgHost}/media/albums/${props.comic.id}_3x4.jpg`,
+    : `${prefetchDataStore.state.imgHost}/media/albums/${props.comic.id}_3x4.jpg`,
 )
 
 const visibleRef = useTemplateRef('visibleRef')

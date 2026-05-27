@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useAppStore from '@/stores/use-app-store'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
 defineProps<{
   comment: {
@@ -24,7 +24,7 @@ defineProps<{
   }
 }>()
 
-const appStore = useAppStore()
+const prefetchDataStore = usePrefetchDataStore()
 const replyListOpen = ref(false)
 </script>
 
@@ -33,7 +33,7 @@ const replyListOpen = ref(false)
     <div class="wind-flex-shrink-0">
       <v-avatar
         v-if="comment.avatar"
-        :image="`${appStore.setting.imgHost}/media/users/${comment.avatar}`"
+        :image="`${prefetchDataStore.state.imgHost}/media/users/${comment.avatar}`"
         :size="50"
       />
       <v-avatar

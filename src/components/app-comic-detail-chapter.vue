@@ -5,7 +5,7 @@ import { getComicPicListApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { createLogger } from '@/logger'
-import useAppStore from '@/stores/use-app-store'
+import { useConfigStore } from '@/stores/use-config-store'
 import { useDownloadStore } from '@/stores/use-download-store'
 
 const { info } = createLogger('comic')
@@ -25,13 +25,13 @@ const props = withDefaults(
   },
 )
 
-const appStore = useAppStore()
+const configStore = useConfigStore()
 const downloadStore = useDownloadStore()
 const snackbar = useSnackbar()
 const dialog = useDialog()
 
 const { data, send } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {

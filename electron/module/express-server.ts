@@ -11,6 +11,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent'
 
 import { getConfig } from './config'
 import { createLogger } from './logger'
+import { VITE_DEV_SERVER_URL } from '@electron/env'
 
 const { info, error, warn } = createLogger('express-server')
 
@@ -98,7 +99,7 @@ export const startExpressServer = async () => {
   info('获取 express 实例')
   const express = await getExpressInstance()
   await (expressServerInitPromise = new Promise<void>((resolve, reject) => {
-    const devServerUrl = process.env['VITE_DEV_SERVER_URL']
+    const devServerUrl = VITE_DEV_SERVER_URL
     const port = devServerUrl ? 6174 : 0
     expressServer = express.listen(port, async () => {
       info('server 启动成功')
@@ -124,7 +125,7 @@ export const restartExpressServer = async () => {
   info('获取 express 实例')
   const express = await getExpressInstance()
   await (expressServerInitPromise = new Promise<void>((resolve, reject) => {
-    const devServerUrl = process.env['VITE_DEV_SERVER_URL']
+    const devServerUrl = VITE_DEV_SERVER_URL
     const port = devServerUrl ? (info('server 端口为 6174'), 6174) : (info('server 端口随机'), 0)
     expressServer = express.listen(port, async () => {
       info('server 启动成功')
