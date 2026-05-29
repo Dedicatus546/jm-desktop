@@ -31,15 +31,6 @@ const updateConfigRpc = trpc.procedure
       readMode: z.enum(['scroll', 'click']),
       loginUserInfo: z.string(),
       zoomFactor: z.number(),
-      windowInfoMap: z.map(
-        z.string(),
-        z.object({
-          x: z.number(),
-          y: z.number(),
-          width: z.number(),
-          height: z.number(),
-        }),
-      ),
       proxyInfo: z
         .object({
           host: z.string(),

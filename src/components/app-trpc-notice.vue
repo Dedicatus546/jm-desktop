@@ -2,12 +2,13 @@
 import { trpcClient } from '@/apis'
 import useSnackbar from '@/compositions/use-snack-bar'
 import type { Unsubscribable } from '@trpc/server/observable'
+import { WindowId } from '@type/index'
 
 const snackbar = useSnackbar()
 const unSubscribableList: Array<Unsubscribable> = []
 
 onMounted(() => {
-  if (WINDOW_ID === 'main') {
+  if (WINDOW_ID === WindowId.HOME) {
     unSubscribableList.push(
       trpcClient.onNotifyMessage.subscribe(undefined, {
         onData({ type, message }) {
@@ -19,7 +20,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (WINDOW_ID === 'main') {
+  if (WINDOW_ID === WindowId.HOME) {
     unSubscribableList.forEach((ub) => ub.unsubscribe())
   }
 })

@@ -5,7 +5,7 @@ import useSnackbar from '@/compositions/use-snack-bar'
 import { Config } from '@type/index'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/apis'
-import { error } from '@/logger'
+import { error } from '@/utils/logger'
 
 useTitle('设置 - 禁漫❤天堂')
 

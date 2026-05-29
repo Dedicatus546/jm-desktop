@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import useInitApp from './compositions/use-init-app'
-import { useRefreshUser } from './compositions/use-refresh-user'
-import { useSyncStoreTrpc } from './compositions/use-sync-store-tprc'
+import { useRefreshUser } from '@/compositions/use-refresh-user'
+import { useSyncStoreTrpc } from '@/compositions/use-sync-store-tprc'
 
 // const { loading, error, currentStatus, init: reInit } = useInitApp()
 useRefreshUser()

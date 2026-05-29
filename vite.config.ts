@@ -1,6 +1,5 @@
 import { execSync } from 'node:child_process'
-import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join, resolve } from 'node:path'
 
 import vue from '@vitejs/plugin-vue'
 import { transformerDirectives } from 'unocss'
@@ -14,8 +13,7 @@ import { defineConfig } from 'vite'
 import electron from './vite-plugins/vite-plugin-electron/simple'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const envDir = resolve(__dirname, 'env')
+const envDir = resolve(import.meta.dirname, 'env')
 const currentCommitHash = execSync('git rev-parse HEAD').toString().substring(0, 8)
 
 // https://vitejs.dev/config/
@@ -34,8 +32,8 @@ export default defineConfig({
         vite: {
           resolve: {
             alias: {
-              '@electron': resolve(__dirname, 'electron'),
-              '@type/*': resolve(__dirname, 'type'),
+              '@electron': resolve(import.meta.dirname, 'electron'),
+              '@type/*': resolve(import.meta.dirname, 'type'),
             },
           },
           build: {
@@ -53,7 +51,7 @@ export default defineConfig({
       preload: {
         // Shortcut of `build.rollupOptions.input`.
         // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
-        input: join(__dirname, 'electron/preload.ts'),
+        input: join(import.meta.dirname, 'electron/preload.ts'),
       },
       // Ployfill the Electron and Node.js API for Renderer process.
       // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
@@ -85,9 +83,17 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@electron': resolve(__dirname, 'electron'),
-      '@type/*': resolve(__dirname, 'type'),
+      '@': resolve(import.meta.dirname, 'src'),
+      '@electron': resolve(import.meta.dirname, 'electron'),
+      '@type': resolve(import.meta.dirname, 'type'),
+    },
+  },
+  build: {
+    rolldownOptions: {
+      input: {
+        home: resolve(import.meta.dirname, 'home.html'),
+        login: resolve(import.meta.dirname, 'login.html'),
+      },
     },
   },
   server: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useSnackbar from '@/compositions/use-snack-bar'
-import { emitter } from '@/mitt'
+import { emitter } from '@/utils/mitt'
 
 const snackbar = useSnackbar()
 

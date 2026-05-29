@@ -1,21 +1,62 @@
 import { join } from 'node:path'
 import { BrowserWindow, BrowserWindowConstructorOptions, session } from 'electron'
-import { getConfig, saveConfig } from './config'
-import { isWindowInAvailableDisplayList, resolveProxyUrl } from '@electron/shared/utils'
+import { getConfig } from './config'
+// TODO fix
+import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@electron/shared/utils'
 import { createLogger } from './logger'
 import { debounce } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@electron/env'
 import { getExpressServerPort } from './express-server'
-import { ProxyInfo } from '@type/index'
+import { ProxyInfo, WindowId, WindowInfo } from '@type/index'
+import { getWindowInfo, updateWindowInfo } from './window-info'
 
-const windowMap = new Map<string, BrowserWindow>()
-const windowIdMap = new Map<BrowserWindow, string>()
+const windowMap = new Map<WindowId, BrowserWindow>()
+const windowIdMap = new Map<BrowserWindow, WindowId>()
 
-export const hasWindow = (id: string) => {
+type WindowOptionMap = Record<
+  WindowId,
+  {
+    path: 'home.html' | 'login.html' | 'setting.html'
+    saveSize: boolean
+    savePosition: boolean
+    bwConfig?: BrowserWindowConstructorOptions
+  }
+>
+
+const windowOptionMap: WindowOptionMap = {
+  [WindowId.HOME]: {
+    path: 'home.html',
+    saveSize: true,
+    savePosition: true,
+    bwConfig: {
+      width: 1200,
+      height: 800,
+      minWidth: 1200,
+      minHeight: 800,
+    },
+  },
+  [WindowId.LOGIN]: {
+    path: 'login.html',
+    saveSize: false,
+    savePosition: true,
+    bwConfig: {
+      width: 500,
+      height: 650,
+      resizable: false,
+    },
+  },
+  [WindowId.SETTING]: {
+    path: 'setting.html',
+    saveSize: false,
+    savePosition: true,
+  },
+}
+
+export const hasWindow = (id: WindowId) => {
   return windowMap.get(id) !== undefined
 }
 
-export const getWindow = (id: string) => {
+export const getWindow = (id: WindowId) => {
   return windowMap.get(id)
 }
 
@@ -39,42 +80,54 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
   }
 }
 
-const saveCurrentWindowInfoDebounce = debounce(
-  { delay: 1000 },
-  async (win: BrowserWindow, id: string) => {
-    if (win.isDestroyed()) {
-      return
-    }
-    let config = getConfig()
-    const windowInfo = win.getBounds()
-    config.windowInfoMap.set(id, windowInfo)
-    await saveConfig(config)
-  },
-)
-
-const saveCurrentWindowInfo = async (win: BrowserWindow, id: string) => {
-  let config = getConfig()
-  const windowInfo = win.getBounds()
-  config.windowInfoMap.set(id, windowInfo)
-  await saveConfig(config)
+const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
+  const bounds = win.getBounds()
+  const options = windowOptionMap[id]
+  const { savePosition, saveSize } = options
+  const o: WindowInfo = {}
+  if (savePosition) {
+    Object.assign(o, {
+      x: bounds.x,
+      y: bounds.y,
+    })
+  }
+  if (saveSize) {
+    Object.assign(o, {
+      width: bounds.width,
+      height: bounds.height,
+    })
+  }
+  await updateWindowInfo(id, o)
 }
 
-export const createWindow = async (
-  id: string,
-  path: string,
-  bwConfig?: BrowserWindowConstructorOptions,
-) => {
+const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindowInfo)
+
+export const createWindow = async (id: WindowId) => {
   const { info } = createLogger(`window[${id}]`)
-  let config = getConfig()
+
+  const options = windowOptionMap[id]
+  const { bwConfig, path, savePosition, saveSize } = options
+  const config = getConfig()
+  const windowInfo = getWindowInfo(id)
   let win: BrowserWindow | undefined = undefined
-  const windowInfo = config.windowInfoMap.get(id)
-  if (windowInfo && !isWindowInAvailableDisplayList(windowInfo)) {
-    info('存在已记录的窗口位置且不在当前的显示器列表中，使用默认的窗口位置')
-    // TODO fix
-    // config.windowInfoMap.set(id)
-    await saveConfig(config)
+
+  const o: WindowInfo = {}
+  if (windowInfo) {
+    if (savePosition) {
+      Object.assign(o, {
+        x: windowInfo.x,
+        y: windowInfo.y,
+      })
+    }
+    if (saveSize) {
+      Object.assign(o, {
+        width: windowInfo.width,
+        height: windowInfo.height,
+      })
+    }
   }
-  info('preload.mjs', join(MAIN_DIST, 'preload.mjs'))
+
+  info('preload.mjs 文件路径', join(MAIN_DIST, 'preload.mjs'))
   win = new BrowserWindow(
     Object.assign({}, bwConfig, {
       icon: join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
@@ -84,16 +137,16 @@ export const createWindow = async (
       },
       autoHideMenuBar: true,
       frame: false,
-      ...(windowInfo ?? {}),
+      ...o,
     }),
   )
-  windowMap.set(id, win!)
-  windowIdMap.set(win!, id)
+
+  windowMap.set(id, win)
+  windowIdMap.set(win, id)
 
   // 第一次启动后要记录 electron 默认设置的位置
   if (!windowInfo) {
-    config.windowInfoMap.set(id, win.getBounds())
-    await saveConfig(config)
+    await saveCurrentWindowInfo(win, id)
   }
 
   win.on('close', () => {
@@ -123,26 +176,11 @@ export const createWindow = async (
   return win!
 }
 
-export const createMainWindow = async () => {
-  // const { info } = createLogger(`window[main]`)
-
-  const mainWindow = await createWindow('main', '', {
-    width: 1200,
-    height: 600,
-    minWidth: 1200,
-    minHeight: 800,
-  })
+export const createHomeWindow = async () => {
+  const homeWindow = await createWindow(WindowId.HOME)
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
-
-  // emitter.on('configChange', async ([newConifg]) => {
-  //   info('检测到配置文件变化')
-  //   config = newConifg
-  //   await setSessionProxy(config.proxyInfo)
-  //   await setZoomFactor(mainWindow, config.zoomFactor)
-  // })
-
-  return mainWindow
+  return homeWindow
 }
 
 export const clearAllWindow = () => {

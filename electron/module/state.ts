@@ -1,7 +1,8 @@
-import { LoginInfo, PrefetchData, User, Config } from '@type/index'
+import { LoginInfo, PrefetchData, User, Config, WindowInfoMap } from '@type/index'
 
 export const state: {
   config: Config
+  windowInfoMap: WindowInfoMap
   prefetchData: PrefetchData
   user: User | null
   loginInfo: LoginInfo | null
@@ -22,9 +23,9 @@ export const state: {
     readMode: 'scroll',
     loginUserInfo: '',
     zoomFactor: 1.0,
-    windowInfoMap: new Map(),
     proxyInfo: null,
   },
+  windowInfoMap: new Map(),
   prefetchData: {
     imgHost: '',
     shuntList: [],

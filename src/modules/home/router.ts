@@ -1,21 +1,15 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
 import AppComicDetail from '@/views/app-comic-detail.vue'
 import AppComicRead from '@/views/app-comic-read.vue'
 import AppHome from '@/views/app-home.vue'
 
-import { createLogger } from './logger'
-import { scrollManager } from './utils/scroll-manager'
-
-const { info } = createLogger('router')
+import { info } from '@/utils/logger'
+import { scrollManager } from '@/utils/scroll-manager'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/home',
-  },
-  {
-    path: '/home',
     name: 'HOME',
     component: AppHome,
   },
@@ -47,16 +41,16 @@ const routes: RouteRecordRaw[] = [
     name: 'PERSON',
     component: () => import('@/views/app-person.vue'),
   },
-  {
-    path: '/login',
-    name: 'LOGIN',
-    component: () => import('@/views/app-login.vue'),
-  },
-  {
-    path: '/config',
-    name: 'CONFIG',
-    component: () => import('@/views/app-config.vue'),
-  },
+  // {
+  //   path: '/login',
+  //   name: 'LOGIN',
+  //   component: () => import('@/views/app-login.vue'),
+  // },
+  // {
+  //   path: '/config',
+  //   name: 'CONFIG',
+  //   component: () => import('@/views/app-config.vue'),
+  // },
   {
     path: '/comic-detail/:id(\\d+)',
     name: 'COMIC_DETAIL',
@@ -96,7 +90,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
   scrollBehavior: scrollManager.getScrollBehavior(),
 })

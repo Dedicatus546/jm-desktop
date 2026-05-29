@@ -5,7 +5,7 @@ import vueHook from 'alova/vue'
 import { xhrRequestAdapter } from '@alova/adapter-xhr'
 import { useConfigStore } from '@/stores/use-config-store'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { error } from '@/logger'
+import { error } from '@/utils/logger'
 
 const snackbar = useSnackbar()
 const configStore = useConfigStore()

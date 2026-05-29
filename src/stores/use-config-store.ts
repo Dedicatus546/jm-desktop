@@ -15,7 +15,6 @@ export const useConfigStore = defineStore('config', () => {
     readMode: APP_STATE.config.readMode,
     currentShuntKey: APP_STATE.config.currentShuntKey,
     loginUserInfo: APP_STATE.config.loginUserInfo,
-    windowInfoMap: APP_STATE.config.windowInfoMap,
     proxyInfo: APP_STATE.config.proxyInfo,
     zoomFactor: APP_STATE.config.zoomFactor,
   })

@@ -1,7 +1,7 @@
 import { useRequest } from 'alova/client'
 
 import { loginApi, trpcClient } from '@/apis'
-import { info } from '@/logger'
+import { info } from '@/utils/logger'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 

@@ -2,8 +2,8 @@ import { DownloadComicItem, DownloadItem } from '@electron/module/download'
 import { omit } from 'radash'
 
 import { trpcClient } from '@/apis/ipc'
-import { createLogger } from '@/logger'
-import { emitter } from '@/mitt'
+import { createLogger } from '@/utils/logger'
+import { emitter } from '@/utils/mitt'
 
 const { info, warn } = createLogger('download')
 

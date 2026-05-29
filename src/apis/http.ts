@@ -3,7 +3,7 @@ import { createAlova } from 'alova'
 import { useRequest } from 'alova/client'
 import vueHook from 'alova/vue'
 
-import { createLogger } from '@/logger'
+import { createLogger } from '@/utils/logger'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 
@@ -11,6 +11,7 @@ import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi } from './a
 import { trpcClient } from './ipc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
+import { WindowId } from '@type/index'
 
 const { info, error, warn } = createLogger('api')
 
@@ -152,7 +153,7 @@ const http = createAlova({
     if (method.type === 'GET') {
       method.config.cacheFor = 1000 * 60 * 20
     }
-    if (!prefetchDataStore.isInit && WINDOW_ID === 'main') {
+    if (!prefetchDataStore.isInit && WINDOW_ID === WindowId.HOME) {
       if (!initPromise) {
         try {
           const { promise, resolve, reject } = Promise.withResolvers<void>()

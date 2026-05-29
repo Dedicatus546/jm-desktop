@@ -1,9 +1,10 @@
 import { app, BrowserWindow } from 'electron'
-import { clearAllWindow, createMainWindow, getWindowId } from './module/window-manager'
+import { clearAllWindow, createHomeWindow, getWindowId } from './module/window-manager'
 import { createIPCHandler } from 'trpc-electron-fork/main'
 import { router } from './trpc'
 import { initConfigFile } from './module/config'
 import { initDataDir } from './shared/path'
+import { initWindowInfoMapFile } from './module/window-info'
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -25,6 +26,7 @@ app.on('activate', async () => {
 
 app.whenReady().then(async () => {
   await initConfigFile()
+  await initWindowInfoMapFile()
   await initDataDir()
   createIPCHandler({
     router,
@@ -38,5 +40,5 @@ app.whenReady().then(async () => {
       }
     },
   })
-  await createMainWindow()
+  await createHomeWindow()
 })

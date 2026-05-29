@@ -4,7 +4,7 @@ import { useRequest } from 'alova/client'
 import { getComicPicListApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { createLogger } from '@/logger'
+import { createLogger } from '@/utils/logger'
 import { useConfigStore } from '@/stores/use-config-store'
 import { useDownloadStore } from '@/stores/use-download-store'
 
