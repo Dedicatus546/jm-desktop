@@ -16,7 +16,7 @@ const windowIdMap = new Map<BrowserWindow, WindowId>()
 type WindowOptionMap = Record<
   WindowId,
   {
-    path: 'home.html' | 'login.html' | 'setting.html'
+    path: `${string}.html`
     saveSize: boolean
     savePosition: boolean
     bwConfig?: BrowserWindowConstructorOptions
@@ -52,6 +52,16 @@ const windowOptionMap: WindowOptionMap = {
     bwConfig: {
       width: 500,
       height: 735,
+      resizable: false,
+    },
+  },
+  [WindowId.ABOUT]: {
+    path: 'about.html',
+    saveSize: false,
+    savePosition: true,
+    bwConfig: {
+      width: 700,
+      height: 435,
       resizable: false,
     },
   },

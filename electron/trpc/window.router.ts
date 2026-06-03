@@ -51,9 +51,23 @@ const openDownloadWindowRpc = trpc.procedure.query(async () => {
   // })
 })
 
+const openAboutWindowRpc = trpc.procedure.query(async () => {
+  if (hasWindow(WindowId.ABOUT)) {
+    const win = getWindow(WindowId.ABOUT)!
+    if (win.isMinimized()) {
+      win.restore()
+    }
+    // 聚焦提升到最顶层
+    win.focus()
+    return
+  }
+  await createWindow(WindowId.ABOUT)
+})
+
 export const router = {
   getWindowId: getWindowIdRpc,
   openSettingWindow: openSettingWindowRpc,
   openLoginWindow: openLoginWindowRpc,
   openDownloadWindow: openDownloadWindowRpc,
+  openAboutWindow: openAboutWindowRpc,
 }
