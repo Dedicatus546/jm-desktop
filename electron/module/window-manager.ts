@@ -49,6 +49,11 @@ const windowOptionMap: WindowOptionMap = {
     path: 'setting.html',
     saveSize: false,
     savePosition: true,
+    bwConfig: {
+      width: 500,
+      height: 735,
+      resizable: false,
+    },
   },
 }
 
