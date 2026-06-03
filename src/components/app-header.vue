@@ -31,11 +31,11 @@ const logout = async () => {
 }
 
 const minimizeWin = () => {
-  trpcClient.minimizeWin.mutate()
+  trpcClient.minimizeWindow.mutate()
 }
 
 const closeWin = () => {
-  trpcClient.closeWin.mutate()
+  trpcClient.closeWindow.mutate()
 }
 
 const toHome = () => {
@@ -128,14 +128,7 @@ const toHome = () => {
               <i-mdi-download />
             </v-icon>
           </app-header-icon-btn>
-          <app-header-icon-btn
-            tooltip-text="关于"
-            @click="
-              router.push({
-                name: 'ABOUT',
-              })
-            "
-          >
+          <app-header-icon-btn tooltip-text="关于" @click="trpcClient.openAboutWindow.query()">
             <v-icon>
               <i-mdi-information />
             </v-icon>

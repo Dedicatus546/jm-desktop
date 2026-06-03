@@ -59,7 +59,7 @@ onSuccess(async () => {
       loginUserInfo: '',
     })
   }
-  await trpcClient.closeWin.mutate()
+  await trpcClient.closeWindow.mutate()
 })
 
 onError((e) => {
@@ -68,7 +68,7 @@ onError((e) => {
 })
 
 const close = () => {
-  trpcClient.closeWin.mutate()
+  trpcClient.closeWindow.mutate()
 }
 </script>
 

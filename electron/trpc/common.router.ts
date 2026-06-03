@@ -10,16 +10,6 @@ import { createLogger } from '@electron/module/logger'
 
 const { info } = createLogger('trpc-subscription')
 
-const minimizeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win
-  win.minimize()
-})
-
-const closeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win
-  win.close()
-})
-
 const openLinkRpc = trpc.procedure
   .input(
     z.object({
@@ -141,8 +131,6 @@ const notifyMessageRpc = trpc.procedure
   })
 
 export const router = {
-  minimizeWin: minimizeWinRpc,
-  closeWin: closeWinRpc,
   openLink: openLinkRpc,
   showItemInFolder: showItemInFolderRpc,
   selectFolder: selectFolderRpc,

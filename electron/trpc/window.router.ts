@@ -1,6 +1,7 @@
 import { trpc } from './trpc'
 import { createWindow, getWindow, getWindowId, hasWindow } from '@electron/module/window-manager'
 import { WindowId } from '@type/index'
+import { app } from 'electron'
 
 const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {
   const win = ctx.win
@@ -64,10 +65,26 @@ const openAboutWindowRpc = trpc.procedure.query(async () => {
   await createWindow(WindowId.ABOUT)
 })
 
+const closeWindowRpc = trpc.procedure.mutation(({ ctx }) => {
+  const { winId } = ctx
+  const win = ctx.win
+  win.close()
+  if (winId === WindowId.HOME) {
+    app.exit()
+  }
+})
+
+const minimizeWindowRpc = trpc.procedure.mutation(({ ctx }) => {
+  const win = ctx.win
+  win.minimize()
+})
+
 export const router = {
   getWindowId: getWindowIdRpc,
   openSettingWindow: openSettingWindowRpc,
   openLoginWindow: openLoginWindowRpc,
   openDownloadWindow: openDownloadWindowRpc,
   openAboutWindow: openAboutWindowRpc,
+  closeWindow: closeWindowRpc,
+  minimizeWindow: minimizeWindowRpc,
 }

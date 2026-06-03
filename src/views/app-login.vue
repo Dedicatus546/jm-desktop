@@ -61,7 +61,7 @@ onSuccess(async () => {
       loginUserInfo: '',
     })
   }
-  await trpcClient.closeWin.mutate()
+  await trpcClient.closeWindow.mutate()
 })
 
 onError((e) => {

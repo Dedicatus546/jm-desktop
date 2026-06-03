@@ -37,7 +37,7 @@ const submit = async (e: SubmitEventPromise) => {
       type: 'success',
       message: '保存成功',
     })
-    await trpcClient.closeWin.mutate()
+    await trpcClient.closeWindow.mutate()
   } catch (err) {
     errorMsg.value = (err as Error).message
     error('保存配置失败', e)
@@ -59,7 +59,7 @@ const onUseProxyChange = (useProxy: boolean) => {
 }
 
 const close = () => {
-  trpcClient.closeWin.mutate()
+  trpcClient.closeWindow.mutate()
 }
 
 onMounted(() => {
