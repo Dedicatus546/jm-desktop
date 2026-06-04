@@ -12,10 +12,6 @@ const toRepo = () => {
     url: repoUrl,
   })
 }
-
-const close = () => {
-  trpcClient.closeWindow.mutate()
-}
 </script>
 
 <template>
@@ -24,7 +20,12 @@ const close = () => {
       <v-app-bar-title>关于</v-app-bar-title>
       <template #append>
         <div class="app-region-nodrag">
-          <v-btn flat icon @click="close()">
+          <v-btn flat icon @click="trpcClient.minimizeWindow.mutate()">
+            <v-icon>
+              <i-mdi-minus />
+            </v-icon>
+          </v-btn>
+          <v-btn flat icon @click="trpcClient.closeWindow.mutate()">
             <v-icon>
               <i-mdi-close />
             </v-icon>
@@ -38,7 +39,7 @@ const close = () => {
         style="height: calc(100vh - var(--v-layout-top, 0px))"
       >
         <div class="wind-py-4 wind-flex wind-flex-col wind-gap-4 wind-items-center">
-          <v-avatar size="100" image="/png/512x512.png" rounded="0" />
+          <v-avatar size="100" image="/png/512x512.png" :rounded="0" />
           <div class="wind-text-xl">jm-desktop</div>
         </div>
         <v-divider />

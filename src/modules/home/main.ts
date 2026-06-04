@@ -3,7 +3,7 @@ import '@/style/scroller.css'
 import 'swiper/swiper-bundle.css'
 import 'typeface-roboto'
 import 'virtual:uno.css'
-import 'vuetify/styles/core'
+import 'vuetify/styles'
 
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'

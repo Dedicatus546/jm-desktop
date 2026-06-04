@@ -58,10 +58,6 @@ const onUseProxyChange = (useProxy: boolean) => {
   }
 }
 
-const close = () => {
-  trpcClient.closeWindow.mutate()
-}
-
 onMounted(() => {
   formState.theme = configStore.state.theme
   formState.apiUrl = configStore.state.apiUrl
@@ -80,7 +76,12 @@ onMounted(() => {
       <v-app-bar-title> 设置 </v-app-bar-title>
       <template #append>
         <div class="app-region-nodrag">
-          <v-btn flat icon @click="close()">
+          <v-btn flat icon @click="trpcClient.minimizeWindow.mutate()">
+            <v-icon>
+              <i-mdi-minus />
+            </v-icon>
+          </v-btn>
+          <v-btn flat icon @click="trpcClient.closeWindow.mutate()">
             <v-icon>
               <i-mdi-close />
             </v-icon>
