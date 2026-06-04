@@ -27,6 +27,9 @@ const logout = async () => {
   await configStore.updateConfigAction({
     loginUserInfo: '',
   })
+  if (route.name === 'PERSON') {
+    toHome()
+  }
   snackbar.success('退出成功')
 }
 

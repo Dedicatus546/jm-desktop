@@ -41,16 +41,6 @@ const routes: RouteRecordRaw[] = [
     name: 'PERSON',
     component: () => import('@/views/app-person.vue'),
   },
-  // {
-  //   path: '/login',
-  //   name: 'LOGIN',
-  //   component: () => import('@/views/app-login.vue'),
-  // },
-  // {
-  //   path: '/config',
-  //   name: 'CONFIG',
-  //   component: () => import('@/views/app-config.vue'),
-  // },
   {
     path: '/comic-detail/:id(\\d+)',
     name: 'COMIC_DETAIL',
@@ -76,11 +66,6 @@ const routes: RouteRecordRaw[] = [
     path: '/comic-latest',
     name: 'COMIC_LATEST',
     component: () => import('@/views/app-comic-latest.vue'),
-  },
-  {
-    path: '/about',
-    name: 'ABOUT',
-    component: () => import('@/views/app-about.vue'),
   },
   {
     path: '/download',
