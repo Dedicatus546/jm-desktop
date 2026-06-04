@@ -41,7 +41,7 @@ const windowOptionMap: WindowOptionMap = {
     savePosition: true,
     bwConfig: {
       width: 500,
-      height: 650,
+      height: 690,
       resizable: false,
     },
   },
