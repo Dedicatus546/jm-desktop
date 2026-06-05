@@ -1,4 +1,4 @@
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import { PrefetchData } from '@type/index'
 import { clone } from 'radash'
 

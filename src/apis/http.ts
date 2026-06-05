@@ -8,7 +8,7 @@ import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 
 import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi } from './ajax'
-import { trpcClient } from './ipc'
+import { trpcClient } from '@/trpc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 import { WindowId } from '@type/index'

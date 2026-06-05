@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { useConfigStore } from '@/stores/use-config-store'
 import useUserStore from '@/stores/use-user-store'

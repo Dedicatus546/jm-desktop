@@ -1,7 +1,7 @@
 import { DownloadComicItem, DownloadItem } from '@electron/module/download'
 import { omit } from 'radash'
 
-import { trpcClient } from '@/apis/ipc'
+import { trpcClient } from '@/trpc'
 import { createLogger } from '@/utils/logger'
 import { emitter } from '@/utils/mitt'
 

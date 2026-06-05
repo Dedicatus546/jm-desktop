@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 
 import { version } from '../../../package.json'
 

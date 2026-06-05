@@ -1,7 +1,7 @@
 import { format, getDate, parse } from 'date-fns'
 
 import http from './http'
-import { trpcClient } from './ipc'
+import { trpcClient } from '@/trpc'
 
 type RespWrapper<T> = {
   code: number

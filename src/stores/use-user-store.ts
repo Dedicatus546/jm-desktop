@@ -1,4 +1,4 @@
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import { User } from '@type/index'
 
 const useUserStore = defineStore('user', () => {

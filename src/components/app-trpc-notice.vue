@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import useSnackbar from '@/compositions/use-snack-bar'
 import type { Unsubscribable } from '@trpc/server/observable'
 import { WindowId } from '@type/index'

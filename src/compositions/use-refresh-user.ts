@@ -1,9 +1,10 @@
 import { useRequest } from 'alova/client'
 
-import { loginApi, trpcClient } from '@/apis'
+import { loginApi } from '@/apis'
 import { info } from '@/utils/logger'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
+import { trpcClient } from '@/trpc'
 
 export const useRefreshUser = () => {
   const userStore = useUserStore()

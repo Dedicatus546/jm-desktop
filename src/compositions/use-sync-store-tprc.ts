@@ -1,4 +1,4 @@
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import { createLogger } from '@/utils/logger'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'

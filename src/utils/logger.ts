@@ -1,4 +1,4 @@
-import { trpcClient } from '../apis/ipc'
+import { trpcClient } from '@/trpc'
 
 const rendererName = 'renderer'
 

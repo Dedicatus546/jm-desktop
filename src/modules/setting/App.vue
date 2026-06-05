@@ -3,7 +3,7 @@ import { SubmitEventPromise } from 'vuetify'
 
 import { Config } from '@type/index'
 import { useConfigStore } from '@/stores/use-config-store'
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import { error } from '@/utils/logger'
 
 const configStore = useConfigStore()

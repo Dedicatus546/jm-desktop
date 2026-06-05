@@ -1,7 +1,7 @@
 import { Config } from '@type/index'
 import { useTheme } from 'vuetify'
 
-import { trpcClient } from '@/apis'
+import { trpcClient } from '@/trpc'
 import { clone } from 'radash'
 
 export const useConfigStore = defineStore('config', () => {

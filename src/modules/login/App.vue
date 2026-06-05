@@ -2,9 +2,10 @@
 import { useRequest } from 'alova/client'
 import { SubmitEventPromise } from 'vuetify'
 
-import { loginApi, trpcClient } from '@/apis'
+import { loginApi } from '@/apis'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
+import { trpcClient } from '@/trpc'
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
