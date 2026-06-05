@@ -108,7 +108,6 @@ onError((e) => {
             <v-col :cols="12">
               <v-text-field
                 hide-details
-                size="small"
                 color="primary"
                 variant="outlined"
                 v-model:model-value="formState.username"
@@ -131,7 +130,6 @@ onError((e) => {
             </v-col>
             <v-col :cols="12">
               <v-checkbox
-                size="small"
                 v-model:model-value="formState.autoLogin"
                 hide-details
                 label="自动登录"
