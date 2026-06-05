@@ -1,5 +1,6 @@
+import { z } from 'zod'
 import { trpc } from './trpc'
-import { createWindow, getWindow, getWindowId, hasWindow } from '@electron/module/window-manager'
+import { getWindowId, showWindow } from '@electron/module/window-manager'
 import { WindowId } from '@type/index'
 import { app } from 'electron'
 
@@ -9,61 +10,15 @@ const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {
   return id
 })
 
-const openSettingWindowRpc = trpc.procedure.query(async () => {
-  if (hasWindow(WindowId.SETTING)) {
-    const win = getWindow(WindowId.SETTING)!
-    if (win.isMinimized()) {
-      win.restore()
-    }
-    // 聚焦提升到最顶层
-    win.focus()
-    return
-  }
-  await createWindow(WindowId.SETTING)
-})
-
-const openLoginWindowRpc = trpc.procedure.query(async () => {
-  if (hasWindow(WindowId.LOGIN)) {
-    const win = getWindow(WindowId.LOGIN)!
-    if (win.isMinimized()) {
-      win.restore()
-    }
-    // 聚焦提升到最顶层
-    win.focus()
-    return
-  }
-  await createWindow(WindowId.LOGIN)
-})
-
-const openDownloadWindowRpc = trpc.procedure.query(async () => {
-  // TODO fix
-  // if (hasWindow('download')) {
-  //   const win = getWindow('download')!
-  //   if (win.isMinimized()) {
-  //     win.restore()
-  //   }
-  //   // 聚焦提升到最顶层
-  //   win.focus()
-  //   return
-  // }
-  // await createWindow('download', '/download', {
-  //   width: 800,
-  //   height: 600,
-  // })
-})
-
-const openAboutWindowRpc = trpc.procedure.query(async () => {
-  if (hasWindow(WindowId.ABOUT)) {
-    const win = getWindow(WindowId.ABOUT)!
-    if (win.isMinimized()) {
-      win.restore()
-    }
-    // 聚焦提升到最顶层
-    win.focus()
-    return
-  }
-  await createWindow(WindowId.ABOUT)
-})
+const openWindowRpc = trpc.procedure
+  .input(
+    z.object({
+      id: z.enum(WindowId),
+    }),
+  )
+  .mutation(async ({ input }) => {
+    showWindow(input.id)
+  })
 
 const closeWindowRpc = trpc.procedure.mutation(({ ctx }) => {
   const { winId } = ctx
@@ -81,10 +36,11 @@ const minimizeWindowRpc = trpc.procedure.mutation(({ ctx }) => {
 
 export const router = {
   getWindowId: getWindowIdRpc,
-  openSettingWindow: openSettingWindowRpc,
-  openLoginWindow: openLoginWindowRpc,
-  openDownloadWindow: openDownloadWindowRpc,
-  openAboutWindow: openAboutWindowRpc,
+  // openSettingWindow: openSettingWindowRpc,
+  // openLoginWindow: openLoginWindowRpc,
+  // openDownloadWindow: openDownloadWindowRpc,
+  // openAboutWindow: openAboutWindowRpc,
+  openWindow: openWindowRpc,
   closeWindow: closeWindowRpc,
   minimizeWindow: minimizeWindowRpc,
 }

@@ -3,6 +3,7 @@ import { trpcClient } from '@/apis'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { useConfigStore } from '@/stores/use-config-store'
 import useUserStore from '@/stores/use-user-store'
+import { WindowId } from '@type/index'
 
 const snackbar = useSnackbar()
 const configStore = useConfigStore()
@@ -108,13 +109,16 @@ const toHome = () => {
           <app-header-icon-btn
             v-else
             tooltip-text="登录"
-            @click="trpcClient.openLoginWindow.query()"
+            @click="trpcClient.openWindow.mutate({ id: WindowId.LOGIN })"
           >
             <v-icon>
               <i-mdi-login />
             </v-icon>
           </app-header-icon-btn>
-          <app-header-icon-btn tooltip-text="设置" @click="trpcClient.openSettingWindow.query()">
+          <app-header-icon-btn
+            tooltip-text="设置"
+            @click="trpcClient.openWindow.mutate({ id: WindowId.SETTING })"
+          >
             <v-icon>
               <i-mdi-cog />
             </v-icon>
@@ -131,7 +135,10 @@ const toHome = () => {
               <i-mdi-download />
             </v-icon>
           </app-header-icon-btn>
-          <app-header-icon-btn tooltip-text="关于" @click="trpcClient.openAboutWindow.query()">
+          <app-header-icon-btn
+            tooltip-text="关于"
+            @click="trpcClient.openWindow.mutate({ id: WindowId.ABOUT })"
+          >
             <v-icon>
               <i-mdi-information />
             </v-icon>

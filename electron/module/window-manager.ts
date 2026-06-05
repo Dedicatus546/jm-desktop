@@ -210,6 +210,7 @@ export const createHomeWindow = async () => {
   const disposeFnList: Array<() => void> = []
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
+
   const onUpdateConfig = async (config: Config, oldConfig: Config) => {
     if (!isEqual(config.proxyInfo, oldConfig.proxyInfo)) {
       info('检测到代理设置变更，重新启动 express 服务器')
@@ -237,4 +238,17 @@ export const clearAllWindow = () => {
 
 export const getWindowId = (win: BrowserWindow) => {
   return windowIdMap.get(win)!
+}
+
+export const showWindow = async (id: WindowId) => {
+  if (hasWindow(id)) {
+    const win = getWindow(id)!
+    if (win.isMinimized()) {
+      win.restore()
+    }
+    // 聚焦提升到最顶层
+    win.focus()
+    return
+  }
+  await createWindow(id)
 }
