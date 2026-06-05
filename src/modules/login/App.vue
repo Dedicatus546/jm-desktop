@@ -89,8 +89,8 @@ onError((e) => {
     </v-app-bar>
     <v-main>
       <div
-        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4"
-        style="height: calc(100vh - var(--v-layout-top, 0px))"
+        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4 wind-pb-0"
+        style="height: calc(100vh - var(--v-layout-top, 0px) - 76px)"
       >
         <v-form validate-on="submit" :disabled="loading" @submit.prevent="submit">
           <v-row gap="5">
@@ -136,7 +136,7 @@ onError((e) => {
                 label="自动登录"
               ></v-checkbox>
             </v-col>
-            <v-col :cols="12" class="wind-mb-2">
+            <v-col :cols="12">
               <v-alert border="start" color="warning">
                 <template #text>
                   <div class="wind-py-1 wind-flex wind-flex-col wind-gap-1 wind-text-sm">
@@ -159,7 +159,7 @@ onError((e) => {
                 </template>
               </v-alert>
             </v-col>
-            <div class="wind-absolute wind-bottom-4 wind-left-4 wind-right-4">
+            <div class="wind-absolute wind-bottom-0 wind-left-0 wind-right-0 wind-p-4">
               <v-btn
                 variant="flat"
                 size="large"

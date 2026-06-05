@@ -91,8 +91,8 @@ onMounted(() => {
     </v-app-bar>
     <v-main>
       <div
-        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4"
-        style="height: calc(100vh - var(--v-layout-top, 0px))"
+        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4 wind-pb-0"
+        style="height: calc(100vh - var(--v-layout-top, 0px) - 76px)"
       >
         <v-form validate-on="submit" @submit.prevent="submit">
           <v-row gap="15">
