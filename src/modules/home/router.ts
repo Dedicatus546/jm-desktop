@@ -58,11 +58,6 @@ const routes: RouteRecordRaw[] = [
     component: AppComicRead,
   },
   {
-    path: '/sign-in',
-    name: 'SIGN_IN',
-    component: () => import('@/views/app-sign-in.vue'),
-  },
-  {
     path: '/comic-latest',
     name: 'COMIC_LATEST',
     component: () => import('@/views/app-comic-latest.vue'),
