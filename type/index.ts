@@ -6,7 +6,8 @@ export enum WindowId {
   HOME,
   SETTING,
   LOGIN,
-  ABOUT
+  ABOUT,
+  SIGN,
 }
 
 export type WindowInfo = {

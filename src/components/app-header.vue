@@ -77,11 +77,7 @@ const toHome = () => {
           <app-header-icon-btn
             v-if="userStore.isLogin"
             tooltip-text="每月签到"
-            @click="
-              router.push({
-                name: 'SIGN_IN',
-              })
-            "
+            @click="trpcClient.openWindow.mutate({ id: WindowId.SIGN })"
           >
             <v-icon>
               <i-mdi-calendar-month />
