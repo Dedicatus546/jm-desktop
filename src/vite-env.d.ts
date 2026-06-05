@@ -17,4 +17,9 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
+interface Window {
+  $snackbar: import('@/types/snackbar-provider').SnackbarProviderInjectValue
+}
+
 declare const __COMIT_HASH__: string
+declare const $snackbar: import('@/types/snackbar-provider').SnackbarProviderInjectValue
