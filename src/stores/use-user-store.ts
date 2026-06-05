@@ -15,6 +15,10 @@ const useUserStore = defineStore('user', () => {
     maxCollectCount: 0,
   })
 
+  if (APP_STATE.user) {
+    Object.assign(state, APP_STATE.user)
+  }
+
   const resetState = () => {
     Object.assign(state, {
       uid: 0,
