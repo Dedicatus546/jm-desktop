@@ -5,6 +5,8 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import superjson from 'superjson'
 import { state } from './state'
+import { ee } from '@electron/events'
+import { clone } from 'radash'
 
 export const configFilepath = resolve(dataDir, 'config.json')
 
@@ -26,6 +28,8 @@ export const getConfig = () => {
 }
 
 export const saveConfig = async (newConfig: Partial<Config>) => {
+  const oldConfig = clone(state.config)
   Object.assign(state.config, newConfig)
   await writeFile(configFilepath, superjson.stringify(state.config))
+  ee.emit('configUpdate', clone(state.config), oldConfig)
 }

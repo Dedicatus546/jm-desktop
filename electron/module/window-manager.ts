@@ -4,11 +4,12 @@ import { getConfig } from './config'
 // TODO fix
 import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@electron/shared/utils'
 import { createLogger } from './logger'
-import { debounce } from 'radash'
+import { debounce, isEqual } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@electron/env'
-import { getExpressServerPort } from './express-server'
-import { ProxyInfo, WindowId, WindowInfo } from '@type/index'
+import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
+import { Config, ProxyInfo, WindowId, WindowInfo } from '@type/index'
 import { getWindowInfo, updateWindowInfo } from './window-info'
+import { ee } from '@electron/events'
 
 const windowMap = new Map<WindowId, BrowserWindow>()
 const windowIdMap = new Map<BrowserWindow, WindowId>()
@@ -119,6 +120,7 @@ const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindo
 
 export const createWindow = async (id: WindowId) => {
   const { info } = createLogger(`window[${id}]`)
+  const disposeFnList: Array<() => void> = []
 
   const options = windowOptionMap[id]
   const { bwConfig, path, savePosition, saveSize } = options
@@ -165,6 +167,7 @@ export const createWindow = async (id: WindowId) => {
   }
 
   win.on('close', () => {
+    disposeFnList.forEach((fn) => fn())
     saveCurrentWindowInfo(win, id)
     windowMap.delete(id)
     windowIdMap.delete(win)
@@ -188,13 +191,42 @@ export const createWindow = async (id: WindowId) => {
   // 放在 loadURL 后，不然白屏
   await setZoomFactor(win, config.zoomFactor)
 
+  const onUpdateConfig = async (config: Config, oldConfig: Config) => {
+    if (config.zoomFactor !== oldConfig.zoomFactor) {
+      await setZoomFactor(win, config.zoomFactor)
+    }
+  }
+  ee.on('configUpdate', onUpdateConfig)
+  disposeFnList.push(() => {
+    ee.off('configUpdate', onUpdateConfig)
+  })
+
   return win!
 }
 
 export const createHomeWindow = async () => {
   const homeWindow = await createWindow(WindowId.HOME)
+  const { info } = createLogger(`window[${WindowId.HOME}]`)
+  const disposeFnList: Array<() => void> = []
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
+  const onUpdateConfig = async (config: Config, oldConfig: Config) => {
+    if (!isEqual(config.proxyInfo, oldConfig.proxyInfo)) {
+      info('检测到代理设置变更，重新启动 express 服务器')
+      updateProxyMiddleware()
+      await setSessionProxy(config.proxyInfo)
+    }
+    if (config.apiUrl !== oldConfig.apiUrl) {
+      updateTarget()
+    }
+  }
+  ee.on('configUpdate', onUpdateConfig)
+  disposeFnList.push(() => {
+    ee.off('configUpdate', onUpdateConfig)
+  })
+  homeWindow.addListener('close', () => {
+    disposeFnList.forEach((fn) => fn())
+  })
   return homeWindow
 }
 

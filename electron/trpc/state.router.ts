@@ -44,7 +44,6 @@ const updateConfigRpc = trpc.procedure
   .mutation(async ({ input }) => {
     info('更新 config ，原 config ', stringify(state.config), '更新的 config', stringify(input))
     await saveConfig(input)
-    ee.emit('configUpdate', state.config)
   })
 
 const onUserUpdateRpc = trpc.procedure.subscription(async function* (opts) {
@@ -80,7 +79,8 @@ const updateUserRpc = trpc.procedure
       .nullable() satisfies z.Schema<User | null>,
   )
   .mutation(async ({ input }) => {
-    info('更新 user ，原 user ', stringify(state.user), '更新的 config', stringify(input))
+    // user 不写入本地
+    info('更新 user ，原 user ', stringify(state.user), '更新的 user', stringify(input))
     if (input !== null) {
       if (state.user) {
         Object.assign(state.user, input)
