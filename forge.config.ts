@@ -1,4 +1,4 @@
-import type { ForgeConfig } from '@electron-forge/shared-types';
+import type { ForgeConfig } from '@electron-forge/shared-types'
 import { FusesPlugin } from '@electron-forge/plugin-fuses'
 import { FuseV1Options, FuseVersion } from '@electron/fuses'
 
@@ -9,21 +9,21 @@ const config: ForgeConfig = {
     executableName: 'jm-desktop',
     icon: './public/win/app-icon', // Windows 图标（不要扩展名）
   },
-  outDir: "./release",
+  outDir: './release',
   rebuildConfig: {},
   makers: [
-    // {
-    //   name: '@electron-forge/maker-zip',
-    //   platforms: ['linux'],
-    //   config: {
-    //     arch: ['x64'], // 对应 linux.target.arch
-    //   },
-    // },
+    {
+      name: '@electron-forge/maker-zip',
+      platforms: ['linux'],
+      config: {
+        arch: ['x64'], // 对应 linux.target.arch
+      },
+    },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['win32'],
       config: {
-        arch: ['x64']
+        arch: ['x64'],
       },
     },
   ],
@@ -60,4 +60,4 @@ const config: ForgeConfig = {
   ],
 }
 
-export default config;
+export default config
