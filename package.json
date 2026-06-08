@@ -18,14 +18,11 @@
   "scripts": {
     "dev": "vite",
     "build": "electron-forge make",
-    "build:latest": "vue-tsc && vite build && electron-builder --publish never",
+    "publish": "electron-forge publish",
     "build:web": "vue-tsc && vite build",
     "lint": "oxlint",
     "fmt": "oxfmt",
-    "postinstall": "simple-git-hooks",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": ""
+    "postinstall": "simple-git-hooks"
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.3.1",
