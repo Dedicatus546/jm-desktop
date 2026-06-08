@@ -194,8 +194,8 @@ export const createWindow = async (id: WindowId) => {
     info('加载 DEV 地址', resolvedUrl)
   } else {
     const port = await getExpressServerPort()
-    await win.loadURL(`http://localhost:${port}${path}`)
-    info('加载 PROD 地址', `http://localhost:${port}${path}`)
+    await win.loadURL(`http://localhost:${port}/${path}`)
+    info('加载 PROD 地址', `http://localhost:${port}/${path}`)
   }
 
   // 放在 loadURL 后，不然白屏
