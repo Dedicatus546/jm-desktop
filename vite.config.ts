@@ -93,6 +93,9 @@ export default defineConfig({
       input: {
         home: resolve(import.meta.dirname, 'home.html'),
         login: resolve(import.meta.dirname, 'login.html'),
+        setting: resolve(import.meta.dirname, 'setting.html'),
+        sign: resolve(import.meta.dirname, 'sign.html'),
+        about: resolve(import.meta.dirname, 'about.html'),
       },
     },
   },
