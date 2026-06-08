@@ -10,7 +10,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import component from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
-import electron from './vite-plugins/vite-plugin-electron/simple'
+import electronSimple from 'vite-plugin-electron/simple'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 const envDir = resolve(import.meta.dirname, 'env')
@@ -25,7 +25,7 @@ export default defineConfig({
   base: '/',
   plugins: [
     vue(),
-    electron({
+    electronSimple({
       main: {
         // Shortcut of `build.lib.entry`.
         entry: 'electron/main.ts',
