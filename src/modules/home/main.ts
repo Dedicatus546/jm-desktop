@@ -1,9 +1,4 @@
-import '@/style/layer.css'
-import '@/style/scroller.css'
-import 'swiper/swiper-bundle.css'
-import 'typeface-roboto'
-import 'virtual:uno.css'
-import 'vuetify/styles'
+import '../common.ts'
 
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
