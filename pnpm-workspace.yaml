@@ -54,6 +54,11 @@ minimumReleaseAgeExclude:
   - sass-embedded@1.100.0
   - sass@1.100.0
   - unocss@66.7.0
+  - app-builder-lib@26.15.2
+  - dmg-builder@26.15.2
+  - electron-builder-squirrel-windows@26.15.2
+  - electron-builder@26.15.2
+  - electron-publish@26.15.1
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - electron
@@ -65,3 +70,5 @@ onlyBuiltDependencies:
 
 # 发布 7 天后的包
 # minimumReleaseAge: 10080
+blockExoticSubdeps: false
+nodeLinker: hoisted

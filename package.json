@@ -8,13 +8,24 @@
   },
   "type": "module",
   "main": "dist-electron/main.js",
+  "files": [
+    "dist",
+    "dist-electron"
+  ],
+  "config": {
+    "forge": "./forge.config.ts"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && electron-builder --publish always",
+    "build": "electron-forge make",
     "build:latest": "vue-tsc && vite build && electron-builder --publish never",
+    "build:web": "vue-tsc && vite build",
     "lint": "oxlint",
     "fmt": "oxfmt",
-    "postinstall": "electron-builder install-app-deps && simple-git-hooks"
+    "postinstall": "simple-git-hooks",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": ""
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.3.1",
@@ -25,10 +36,10 @@
     "alova": "^3.5.1",
     "archiver": "^8.0.0",
     "cors": "^2.8.6",
-    "date-fns": "^4.2.1",
-    "electron": "^42.2.0",
+    "date-fns": "^4.4.0",
+    "electron-squirrel-startup": "^1.0.1",
     "express": "^5.2.1",
-    "http-proxy-middleware": "^4.0.0",
+    "http-proxy-middleware": "^4.1.0",
     "https-proxy-agent": "^9.0.0",
     "mitt": "^3.0.1",
     "p-limit": "^7.3.0",
@@ -38,28 +49,37 @@
     "scroll-into-view-if-needed": "^3.1.0",
     "skia-canvas": "^3.0.8",
     "superjson": "^2.2.6",
-    "swiper": "^12.1.4",
+    "swiper": "^12.2.0",
     "trpc-electron-fork": "^1.0.2",
     "typeface-roboto": "^1.1.13",
-    "vue": "^3.5.34",
-    "vue-router": "^5.0.7",
-    "vuetify": "^4.0.7",
+    "vue": "^3.5.35",
+    "vue-router": "^5.1.0",
+    "vuetify": "^4.1.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-deb": "^7.11.2",
+    "@electron-forge/maker-rpm": "^7.11.2",
+    "@electron-forge/maker-squirrel": "^7.11.2",
+    "@electron-forge/maker-zip": "^7.11.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.2",
+    "@electron-forge/plugin-fuses": "^7.11.2",
+    "@electron-forge/publisher-github": "^7.11.2",
     "@electron/devtron": "^2.1.1",
+    "@electron/fuses": "^2.1.2",
     "@iconify-json/mdi": "^1.2.3",
     "@mdi/font": "^7.4.47",
     "@types/cors": "^2.8.19",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.2",
     "@vitejs/plugin-vue": "^6.0.7",
-    "electron-builder": "^26.11.1",
+    "electron": "^42.3.3",
     "esbuild": "^0.28.0",
-    "lint-staged": "^17.0.5",
-    "oxfmt": "^0.51.0",
-    "oxlint": "^1.66.0",
+    "lint-staged": "^17.0.7",
+    "oxfmt": "^0.53.0",
+    "oxlint": "^1.68.0",
     "rolldown": "1.0.2",
     "sass-embedded": "^1.100.0",
     "simple-git-hooks": "^2.13.1",
@@ -68,11 +88,11 @@
     "unplugin-auto-import": "^21.0.0",
     "unplugin-icons": "^23.0.1",
     "unplugin-vue-components": "^32.1.0",
-    "vite": "^8.0.14",
-    "vite-plugin-electron": "^0.29.1",
-    "vite-plugin-electron-renderer": "^0.14.7",
+    "vite": "^8.0.16",
+    "vite-plugin-electron": "^1.0.4",
+    "vite-plugin-electron-renderer": "^1.0.0",
     "vite-plugin-vue-devtools": "^8.1.2",
-    "vue-tsc": "^3.3.1"
+    "vue-tsc": "^3.3.3"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
@@ -90,5 +110,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.2.1"
+  "packageManager": "pnpm@11.5.2"
 }
