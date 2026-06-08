@@ -22,7 +22,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 'latest'
+          node-version: '24.10.0'
 
       - name: Enable Corepack
         run: corepack enable
@@ -50,5 +50,5 @@ jobs:
 
       - name: Build Electron App
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: pnpm run build

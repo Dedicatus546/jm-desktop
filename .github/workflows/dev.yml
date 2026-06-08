@@ -19,7 +19,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 'latest'
+          node-version: '24.10.0'
 
       - name: Enable Corepack
         run: corepack enable
@@ -53,11 +53,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: linux-release-assets-${{ github.sha }}
-          path: release/*/jm-desktop-Linux-*.zip
+          path: release/make/zip/linux/x64/jm-desktop-*.zip
 
       - name: Upload Windows Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v7
         with:
           name: windows-release-assets-${{ github.sha }}
-          path: release/*/jm-desktop-Windows-*.zip
+          path: release/make/zip/win32/x64/jm-desktop-*.zip
