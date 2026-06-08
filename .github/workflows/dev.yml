@@ -34,6 +34,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Build Web
+        run: pnpm run build:web
+
       - name: Build Electron App
         run: pnpm run build
 
