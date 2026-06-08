@@ -21,6 +21,11 @@ jobs:
         with:
           node-version: '24.10.0'
 
+      - name: Git SSH fix
+        run: |
+          git config --global url."https://github.com/".insteadOf git@github.com:
+          git config --global url."https://".insteadOf git://
+
       - name: Enable Corepack
         run: corepack enable
 
