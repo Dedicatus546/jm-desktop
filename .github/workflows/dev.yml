@@ -20,12 +20,16 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24.10.0'
-          cache: pnpm
 
       - name: Git SSH fix
         run: |
           git config --global url."https://github.com/".insteadOf git@github.com:
           git config --global url."https://".insteadOf git://
+      
+      - name: Install pnpm 
+        uses: pnpm/action-setup@v6
+        with: 
+          cache: true
 
       - name: Install Dependencies
         run: pnpm install
