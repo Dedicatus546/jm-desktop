@@ -4,12 +4,13 @@ import { usePagination } from 'alova/client'
 
 import { getCategoryFilterListApi } from '@/apis'
 import EMPTY_STATE_IMG from '@/assets/empty-state/2.jpg'
-import useAppStore from '@/stores/use-app-store'
+import { CATEGORY_ORDER_LIST } from '@/constants/category-order-list'
+import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 
-const appStore = useAppStore()
 const router = useRouter()
+const prefetchDataStore = usePrefetchDataStore()
 
-const order = useRouteQuery<string, string>('order', appStore.data.categoryOrderList[0].value)
+const order = useRouteQuery<string, string>('order', CATEGORY_ORDER_LIST[0].value)
 const category = useRouteQuery<string, string>('category', '')
 const subCategory = useRouteQuery<string, string>('subCategory', '')
 
@@ -21,7 +22,7 @@ const routePage = useRouteQuery<string, number>('page', '1', {
   },
   mode: 'push',
 })
-const { loading, pageCount, pageSize, data, page } = usePagination(
+const { loading, pageCount, pageSize, data, page, error, send } = usePagination(
   (page) =>
     getCategoryFilterListApi({
       page,
@@ -38,18 +39,18 @@ const { loading, pageCount, pageSize, data, page } = usePagination(
 )
 syncRef(page, routePage)
 
-const tagList = computed(() => appStore.data.categoryTagList.flatMap((item) => item.list))
+const tagList = computed(() => prefetchDataStore.state.categoryTagList.flatMap((item) => item.list))
 
 const subCategoryList = computed(() => {
   return (
-    appStore.data.categoryCategoryList.find(
+    prefetchDataStore.state.categoryCategoryList.find(
       (item) => item.type === 'slug' && item.slug === category.value,
     )?.subCategoryList ?? []
   )
 })
 
 const onCategoryClick = (slug: string) => {
-  const item = appStore.data.categoryCategoryList.find((item) => item.slug == slug)
+  const item = prefetchDataStore.state.categoryCategoryList.find((item) => item.slug == slug)
   if (!item) {
     return
   }
@@ -65,10 +66,16 @@ const onCategoryClick = (slug: string) => {
     })
   }
 }
+
+const retry = () => {
+  error.value = undefined
+  send(page.value)
+}
 </script>
 
 <template>
-  <v-card>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else>
     <v-card-text>
       <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
         <template #loader>
@@ -82,10 +89,14 @@ const onCategoryClick = (slug: string) => {
           <div class="wind-mb-4">
             <v-chip-group color="primary" v-model:model-value="order" column filter>
               <v-chip
-                v-for="item of appStore.data.categoryOrderList"
+                filter
+                v-for="item of CATEGORY_ORDER_LIST"
                 :key="item.value"
                 :value="item.value"
               >
+                <template #filter>
+                  <i-mdi-check />
+                </template>
                 {{ item.title }}
               </v-chip>
             </v-chip-group>
@@ -98,17 +109,24 @@ const onCategoryClick = (slug: string) => {
               filter
             >
               <v-chip
-                v-for="item of appStore.data.categoryCategoryList"
+                filter
+                v-for="item of prefetchDataStore.state.categoryCategoryList"
                 :key="item.slug"
                 :value="item.slug"
               >
+                <template #filter>
+                  <i-mdi-check />
+                </template>
                 {{ item.name }}
               </v-chip>
             </v-chip-group>
             <template v-if="subCategoryList.length > 0">
               <v-divider />
               <v-chip-group color="primary" v-model:model-value="subCategory" column filter>
-                <v-chip v-for="item of subCategoryList" :key="item.slug" :value="item.slug">
+                <v-chip filter v-for="item of subCategoryList" :key="item.slug" :value="item.slug">
+                  <template #filter>
+                    <i-mdi-check />
+                  </template>
                   {{ item.name }}
                 </v-chip>
               </v-chip-group>
@@ -119,13 +137,12 @@ const onCategoryClick = (slug: string) => {
                 v-for="item of tagList"
                 :key="item"
                 custom
+                v-slot="{ navigate }"
                 :to="{ name: 'QUICK_SEARCH', query: { query: item } }"
               >
-                <template #default="{ navigate }">
-                  <v-chip @click="navigate()">
-                    {{ item }}
-                  </v-chip>
-                </template>
+                <v-chip @click="navigate()">
+                  {{ item }}
+                </v-chip>
               </router-link>
             </v-chip-group>
             <v-divider />

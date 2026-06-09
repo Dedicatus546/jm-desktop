@@ -4,8 +4,8 @@ import { useRequest } from 'alova/client'
 import { getComicPicListApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { createLogger } from '@/logger'
-import useAppStore from '@/stores/use-app-store'
+import { createLogger } from '@/utils/logger'
+import { useConfigStore } from '@/stores/use-config-store'
 import { useDownloadStore } from '@/stores/use-download-store'
 
 const { info } = createLogger('comic')
@@ -25,13 +25,13 @@ const props = withDefaults(
   },
 )
 
-const appStore = useAppStore()
+const configStore = useConfigStore()
 const downloadStore = useDownloadStore()
 const snackbar = useSnackbar()
 const dialog = useDialog()
 
 const { data, send } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {
@@ -94,53 +94,59 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
     </template>
     <template v-else>
       <v-col v-for="item of chapterList" :key="item.id" :cols="12" :lg="6">
-        <router-link :to="{ name: 'COMIC_READ', params: { id: item.id } }" custom>
-          <template #default="{ navigate }">
-            <v-row density="compact" class="wind-gap-4 wind-items-center">
-              <v-col class="wind-min-w-0">
-                <app-scroll-wrapper>
-                  {{ item.name }}
-                </app-scroll-wrapper>
-              </v-col>
-              <v-col cols="auto">
-                <v-btn
-                  variant="flat"
-                  class="chapter-btn"
-                  :color="currentChapterId === item.id ? 'primary' : undefined"
-                  @click="navigate()"
-                >
-                  <template #prepend>
-                    <v-icon icon="mdi-book-open"></v-icon>
-                  </template>
-                  阅读
-                </v-btn>
-                <v-btn
-                  variant="flat"
-                  :color="
-                    downloadStore.downloadingMap[item.id]
-                      ? 'info'
-                      : downloadStore.completeMap[item.id]
-                        ? 'success'
-                        : undefined
-                  "
-                  class="chapter-btn wind-ml-2"
-                  @click="downloadChapter(item)"
-                >
-                  <template #prepend>
-                    <v-icon icon="mdi-download"></v-icon>
-                  </template>
-                  {{
-                    downloadStore.downloadingMap[item.id]
-                      ? '正在下载 ' +
-                        ((downloadStore.downloadingMap[item.id]!.percent * 100).toFixed(2) + '%')
-                      : downloadStore.completeMap[item.id]
-                        ? '已下载'
-                        : '下载'
-                  }}
-                </v-btn>
-              </v-col>
-            </v-row>
-          </template>
+        <router-link
+          v-slot="{ navigate }"
+          :to="{ name: 'COMIC_READ', params: { id: item.id } }"
+          custom
+        >
+          <v-row density="compact" class="wind-gap-4 wind-items-center">
+            <v-col class="wind-min-w-0">
+              <app-scroll-wrapper>
+                {{ item.name }}
+              </app-scroll-wrapper>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn
+                variant="flat"
+                class="chapter-btn"
+                :color="currentChapterId === item.id ? 'primary' : undefined"
+                @click="navigate()"
+              >
+                <template #prepend>
+                  <v-icon>
+                    <i-mdi-book-open />
+                  </v-icon>
+                </template>
+                阅读
+              </v-btn>
+              <v-btn
+                variant="flat"
+                :color="
+                  downloadStore.downloadingMap[item.id]
+                    ? 'info'
+                    : downloadStore.completeMap[item.id]
+                      ? 'success'
+                      : undefined
+                "
+                class="chapter-btn wind-ml-2"
+                @click="downloadChapter(item)"
+              >
+                <template #prepend>
+                  <v-icon>
+                    <i-mdi-download />
+                  </v-icon>
+                </template>
+                {{
+                  downloadStore.downloadingMap[item.id]
+                    ? '正在下载 ' +
+                      ((downloadStore.downloadingMap[item.id]!.percent * 100).toFixed(2) + '%')
+                    : downloadStore.completeMap[item.id]
+                      ? '已下载'
+                      : '下载'
+                }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </router-link>
       </v-col>
     </template>

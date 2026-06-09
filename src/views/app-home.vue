@@ -5,13 +5,27 @@ import { useRequest } from 'alova/client'
 import { getLatestComicListApi, getPromoteComicListApi } from '@/apis'
 
 const router = useRouter()
+const {
+  loading: promoteLoading,
+  data: promoteData,
+  error: promoteError,
+  send: promoteSend,
+} = useRequest(() => getPromoteComicListApi())
+const {
+  loading: latestLoading,
+  data: latestData,
+  error: latestError,
+  send: latestSend,
+} = useRequest(() => getLatestComicListApi(1))
 
-const { loading, data } = useRequest(() => getPromoteComicListApi(), {
-  initialData: {
-    list: [],
-  },
+const loading = computed(() => {
+  return promoteLoading.value || latestLoading.value
 })
-const { loading: latestLoading, data: latestData } = useRequest(() => getLatestComicListApi(1))
+const error = computed(() => promoteError.value || latestError.value)
+const retry = () => {
+  promoteSend()
+  latestSend()
+}
 
 const breakpoints = useBreakpoints(breakpointsVuetifyV3)
 const isGreaterXXL = breakpoints.greater('xxl')
@@ -54,16 +68,17 @@ const search = () => {
 
 <template>
   <div
-    v-if="loading || latestLoading"
+    v-if="loading"
     class="wind-flex wind-items-center wind-inset-0 wind-justify-center wind-absolute"
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
+  <app-error :error="error" v-else-if="error" @retry="retry" />
   <v-row v-else>
     <v-col :cols="12">
       <v-card>
         <v-card-text>
-          <v-row density="compact" class="wind-gap-4">
+          <v-row density="compact">
             <v-col>
               <v-form @submit.prevent="search">
                 <v-text-field
@@ -75,13 +90,17 @@ const search = () => {
                 >
                   <template #append-inner>
                     <v-btn
+                      icon
                       :disabled="!searchText"
                       color="primary"
                       type="submit"
                       variant="text"
-                      icon="mdi-magnify"
                       @click="search"
-                    ></v-btn>
+                    >
+                      <v-icon>
+                        <i-mdi-magnify />
+                      </v-icon>
+                    </v-btn>
                   </template>
                 </v-text-field>
               </v-form>
@@ -90,15 +109,19 @@ const search = () => {
               <v-tooltip text="本子分类" location="bottom">
                 <template #activator="{ props }">
                   <v-btn
+                    icon
                     v-bind="props"
                     variant="flat"
                     color="primary"
                     size="large"
-                    icon="mdi-tag"
                     :to="{
                       name: 'CATEGORY',
                     }"
-                  ></v-btn>
+                  >
+                    <v-icon>
+                      <i-mdi-tag />
+                    </v-icon>
+                  </v-btn>
                 </template>
               </v-tooltip>
             </v-col>
@@ -106,15 +129,19 @@ const search = () => {
               <v-tooltip text="每周必看" location="bottom">
                 <template #activator="{ props }">
                   <v-btn
+                    icon
                     v-bind="props"
                     variant="flat"
                     color="primary"
                     size="large"
-                    icon="mdi-eye"
                     :to="{
                       name: 'WEEK',
                     }"
-                  ></v-btn>
+                  >
+                    <v-icon>
+                      <i-mdi-eye />
+                    </v-icon>
+                  </v-btn>
                 </template>
               </v-tooltip>
             </v-col>
@@ -122,7 +149,7 @@ const search = () => {
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col v-for="item of data.data" :key="item.id" :cols="12">
+    <v-col v-for="item of promoteData.data" :key="item.id" :cols="12">
       <v-card :title="item.title">
         <v-card-text>
           <v-row v-if="item.list.length < minListCount">
@@ -143,10 +170,8 @@ const search = () => {
         <v-card-item>
           <div class="wind-flex wind-items-center wind-justify-between">
             <v-card-title>最新发布</v-card-title>
-            <router-link custom :to="{ name: 'COMIC_LATEST' }">
-              <template #default="{ navigate }">
-                <v-btn variant="text" @click="navigate()">更多</v-btn>
-              </template>
+            <router-link custom v-slot="{ navigate }" :to="{ name: 'COMIC_LATEST' }">
+              <v-btn variant="text" @click="navigate()">更多</v-btn>
             </router-link>
           </div>
         </v-card-item>

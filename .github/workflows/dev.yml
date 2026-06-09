@@ -19,45 +19,37 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 'latest'
+          node-version: '24.10.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Cache Linux pnpm
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/cache@v5
-        with:
-          path: ~/.local/share/pnpm/store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
-
-      - name: Cache Windows pnpm
-        if: matrix.os == 'windows-latest'
-        uses: actions/cache@v5
-        with:
-          path: D:\.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
+      - name: Git SSH fix
+        run: |
+          git config --global url."https://github.com/".insteadOf git@github.com:
+          git config --global url."https://".insteadOf git://
+      
+      - name: Install pnpm 
+        uses: pnpm/action-setup@v6
+        with: 
+          cache: true
 
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Build Web
+        run: pnpm run build:web
+
       - name: Build Electron App
-        run: pnpm run build:latest
+        run: pnpm run build
 
       - name: Upload Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v7
         with:
           name: linux-release-assets-${{ github.sha }}
-          path: release/*/jm-desktop-Linux-*.zip
+          path: release/make/zip/linux/x64/jm-desktop-*.zip
 
       - name: Upload Windows Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v7
         with:
           name: windows-release-assets-${{ github.sha }}
-          path: release/*/jm-desktop-Windows-*.zip
+          path: release/make/zip/win32/x64/jm-desktop-*.zip

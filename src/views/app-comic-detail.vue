@@ -5,10 +5,11 @@ import { useRequest } from 'alova/client'
 import { collectComicApi, getComicDetailApi, getComicPicListApi, likeComicApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { createLogger } from '@/logger'
-import useAppStore from '@/stores/use-app-store'
+import { createLogger } from '@/utils/logger'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
+import { useConfigStore } from '@/stores/use-config-store'
+import { usePrefetchDataStore } from '../stores/use-prefetch-data-store'
 
 const { info } = createLogger('comic')
 
@@ -17,13 +18,14 @@ const props = defineProps<{
 }>()
 const snackbar = useSnackbar()
 const dialog = useDialog()
-const appStore = useAppStore()
+const configStore = useConfigStore()
+const prefetchDataStore = usePrefetchDataStore()
 const userStore = useUserStore()
 const downloadStore = useDownloadStore()
 const breakpoints = useBreakpoints(breakpointsAntDesign)
 const isGreaterMd = breakpoints.greater('md')
 const buttonCols = computed(() => {
-  if (!userStore.userInfo) {
+  if (!userStore.isLogin) {
     return [12, 12, 12, 12]
   }
   if (isGreaterMd.value) {
@@ -32,7 +34,13 @@ const buttonCols = computed(() => {
   return [12, 12, 12, 12]
 })
 
-const { loading, data: comicInfo, onSuccess } = useRequest(() => getComicDetailApi(props.id))
+const {
+  loading,
+  data: comicInfo,
+  onSuccess,
+  error,
+  send,
+} = useRequest(() => getComicDetailApi(props.id))
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
@@ -112,11 +120,11 @@ const toQuickQueryPage = (query: string) => {
 const cover = computed(() =>
   import.meta.env.VITE_NSFW === 'on'
     ? '/360x640.svg'
-    : `${appStore.setting.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
+    : `${prefetchDataStore.state.imgHost}/media/albums/${comicInfo.value.data.id}_3x4.jpg`,
 )
 
 const { data, send: getComicPicList } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {
@@ -171,12 +179,18 @@ const download = async () => {
   }
   exec()
 }
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-row>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-row v-else>
     <v-col :cols="12">
-      <v-card>
+      <v-card :loading="loading">
         <v-card-text>
           <app-comic-detail-skeleten v-if="loading" />
           <div class="wind-flex wind-gap-4" v-else>
@@ -187,17 +201,19 @@ const download = async () => {
             </div>
             <div class="wind-leading-6 wind-flex wind-flex-grow wind-flex-col wind-gap-4">
               <div class="wind-flex wind-flex-col wind-gap-2">
-                <div class="text-h5">{{ comicInfo.data.name }}</div>
+                <div class="wind-text-xl">{{ comicInfo.data.name }}</div>
                 <div
                   class="wind-flex wind-flex-wrap wind-gap-2"
                   v-if="comicInfo.data.tagList.length > 0"
                 >
                   <router-link
+                    custom
+                    v-slot="{ navigate }"
                     v-for="item of comicInfo.data.tagList"
                     :key="item"
                     :to="toQuickQueryPage(item)"
                   >
-                    <v-chip color="primary">{{ item }}</v-chip>
+                    <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                   </router-link>
                 </div>
               </div>
@@ -208,11 +224,13 @@ const download = async () => {
                       <div class="wind-text-nowrap">作者：</div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.authorList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <span class="wind-font-bold">
+                          <span class="wind-cursor-pointer wind-font-bold" @click="navigate">
                             {{ item }}
                           </span>
                         </router-link>
@@ -238,11 +256,13 @@ const download = async () => {
                       <div class="wind-leading-[30px] wind-h-[30px] wind-text-nowrap">作品：</div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.workList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <v-chip color="primary">{{ item }}</v-chip>
+                          <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                         </router-link>
                       </div>
                     </div>
@@ -254,11 +274,13 @@ const download = async () => {
                       </div>
                       <div class="wind-flex wind-flex-wrap wind-gap-2">
                         <router-link
+                          custom
+                          v-slot="{ navigate }"
                           v-for="item of comicInfo.data.roleList"
                           :key="item"
                           :to="toQuickQueryPage(item)"
                         >
-                          <v-chip color="primary">{{ item }}</v-chip>
+                          <v-chip color="primary" @click="navigate()">{{ item }}</v-chip>
                         </router-link>
                       </div>
                     </div>
@@ -275,7 +297,9 @@ const download = async () => {
                     >
                       <v-btn color="primary" variant="flat" size="large" block @click="navigate()">
                         <template #prepend>
-                          <v-icon icon="mdi-book-open"></v-icon>
+                          <v-icon>
+                            <i-mdi-book-open />
+                          </v-icon>
                         </template>
                         {{
                           comicInfo.data.currentSeriesId
@@ -300,7 +324,9 @@ const download = async () => {
                       @click="download"
                     >
                       <template #prepend>
-                        <v-icon icon="mdi-download"></v-icon>
+                        <v-icon>
+                          <i-mdi-download />
+                        </v-icon>
                       </template>
                       {{
                         downloadStore.downloadingMap[id]
@@ -312,7 +338,7 @@ const download = async () => {
                       }}
                     </v-btn>
                   </v-col>
-                  <template v-if="userStore.userInfo">
+                  <template v-if="userStore.isLogin">
                     <v-col :cols="buttonCols[2]">
                       <v-btn
                         color="primary"
@@ -324,10 +350,9 @@ const download = async () => {
                         @click="likeComic()"
                       >
                         <template #prepend>
-                          <v-icon
-                            icon="mdi-heart"
-                            :color="comicInfo.data.isLike ? 'red' : undefined"
-                          ></v-icon>
+                          <v-icon :color="comicInfo.data.isLike ? 'red' : undefined">
+                            <i-mdi-heart />
+                          </v-icon>
                         </template>
                         {{ comicInfo.data.isLike ? '已喜欢' : '喜欢' }}
                       </v-btn>
@@ -342,10 +367,9 @@ const download = async () => {
                         @click="collectComic()"
                       >
                         <template #prepend>
-                          <v-icon
-                            icon="mdi-book-heart"
-                            :color="comicInfo.data.isCollect ? '#834e00' : undefined"
-                          ></v-icon>
+                          <v-icon :color="comicInfo.data.isCollect ? '#834e00' : undefined">
+                            <i-mdi-book-heart />
+                          </v-icon>
                         </template>
                         {{ comicInfo.data.isCollect ? '已收藏' : '收藏' }}
                       </v-btn>

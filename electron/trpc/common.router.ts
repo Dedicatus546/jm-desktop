@@ -4,16 +4,11 @@ import { dialog, shell } from 'electron'
 import { z } from 'zod'
 
 import { trpc } from './trpc'
+import { on } from 'node:events'
+import { ee, EventEmitterMap } from '@electron/events'
+import { createLogger } from '@electron/module/logger'
 
-const minimizeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win
-  win.minimize()
-})
-
-const closeWinRpc = trpc.procedure.mutation(({ ctx }) => {
-  const win = ctx.win
-  win.close()
-})
+const { info } = createLogger('trpc-subscription')
 
 const openLinkRpc = trpc.procedure
   .input(
@@ -105,9 +100,37 @@ export const decryptLoginUserRpc = trpc.procedure.input(z.string()).query(async 
   return JSON.parse(result) as { username: string; password: string }
 })
 
+const onNotifyMessageRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal } = opts
+
+  for await (const [{ type, message }] of on(ee, 'messageNotify', {
+    signal,
+  })) {
+    yield {
+      type: type,
+      message: message,
+    } as EventEmitterMap['messageNotify'][0]
+  }
+
+  info('结束 onNotifyMessageRpc 监听')
+})
+
+const notifyMessageRpc = trpc.procedure
+  .input(
+    z.object({
+      type: z.enum(['primary', 'success', 'warning', 'error']),
+      message: z.string(),
+    }),
+  )
+  .mutation(({ input }) => {
+    const { type, message } = input
+    ee.emit('messageNotify', {
+      type,
+      message,
+    })
+  })
+
 export const router = {
-  minimizeWin: minimizeWinRpc,
-  closeWin: closeWinRpc,
   openLink: openLinkRpc,
   showItemInFolder: showItemInFolderRpc,
   selectFolder: selectFolderRpc,
@@ -115,4 +138,7 @@ export const router = {
   decodeHttpData: decodeHttpDataRpc,
   encryptLoginUser: encryptLoginUserRpc,
   decryptLoginUser: decryptLoginUserRpc,
+
+  onNotifyMessage: onNotifyMessageRpc,
+  notifyMessage: notifyMessageRpc,
 }

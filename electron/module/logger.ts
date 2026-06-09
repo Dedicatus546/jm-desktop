@@ -34,22 +34,19 @@ const logger = {
     const datetime = getDatetime()
     const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.info(messageFormated)
-    await writeFile(infoLogFd, messageFormated)
-    await writeFile(infoLogFd, EOL)
+    await writeFile(infoLogFd, messageFormated + EOL)
   },
   async error(message?: any, ...optionalParams: any[]) {
     const datetime = getDatetime()
     const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.error(messageFormated)
-    await writeFile(errorLogFd, messageFormated)
-    await writeFile(errorLogFd, EOL)
+    await writeFile(errorLogFd, messageFormated + EOL)
   },
   async warn(message?: any, ...optionalParams: any[]) {
     const datetime = getDatetime()
     const messageFormated = stringFormat(`[${datetime}] ${message}`, ...optionalParams)
     console.error(messageFormated)
-    await writeFile(warnLogFd, messageFormated)
-    await writeFile(warnLogFd, EOL)
+    await writeFile(warnLogFd, messageFormated + EOL)
   },
 }
 

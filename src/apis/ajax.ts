@@ -1,7 +1,7 @@
 import { format, getDate, parse } from 'date-fns'
 
 import http from './http'
-import { trpcClient } from './ipc'
+import { trpcClient } from '@/trpc'
 
 type RespWrapper<T> = {
   code: number
@@ -103,7 +103,7 @@ export const loginApi = (query: { username: string; password: string }) => {
       fname: string
       gender: string
       message: string
-      coin: number
+      coin: string
       album_favorites: number
       s: string
       level_name: string
@@ -127,7 +127,7 @@ export const loginApi = (query: { username: string; password: string }) => {
           username: res.data.username,
           email: res.data.email,
           avatar: res.data.photo,
-          jCoin: res.data.coin,
+          jCoin: Number.parseInt(res.data.coin),
           level: [res.data.level, res.data.level_name],
           currentExp: Number.parseInt(res.data.exp),
           nextLevelExp: res.data.nextLevelExp,

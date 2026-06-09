@@ -2,16 +2,16 @@
 import { useRequest } from 'alova/client'
 
 import { getComicPicListApi } from '@/apis'
-import useAppStore from '@/stores/use-app-store'
 import { decodeImage } from '@/utils/image-decode'
+import { useConfigStore } from '@/stores/use-config-store'
 
 const props = defineProps<{
   id: number
 }>()
-const appStore = useAppStore()
+const configStore = useConfigStore()
 
-const { loading, data, send } = useRequest(
-  (id: number) => getComicPicListApi(id, appStore.config.currentShuntKey),
+const { loading, data, send, error } = useRequest(
+  (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
   {
     immediate: false,
     initialData: {
@@ -37,6 +37,11 @@ provide('onDecodeSuccess', onDecodeSuccess)
 watchEffect(() => {
   send(props.id)
 })
+
+const retry = () => {
+  error.value = undefined
+  send(props.id)
+}
 </script>
 
 <template>
@@ -46,9 +51,10 @@ watchEffect(() => {
   >
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
+  <app-error :error="error" v-else-if="error" @retry="retry" />
   <template v-else>
     <app-comic-scroll-read
-      v-if="appStore.config.readMode === 'scroll'"
+      v-if="configStore.state.readMode === 'scroll'"
       :pic-list="data.list"
       :comic-id="id"
       :scramble-id="data.scrambleId"

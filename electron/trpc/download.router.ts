@@ -12,7 +12,8 @@ import {
 import { createLogger } from '@electron/module/logger'
 import { decodeImage } from '@electron/shared/decode-image'
 import { delay, exists } from '@electron/shared/utils'
-import archiver from 'archiver'
+// @ts-expect-error 缺少 type 类型文件
+import { ZipArchive } from 'archiver'
 import { net } from 'electron'
 import pLimit from 'p-limit'
 import nameSanitizer from 'sanitize-filename'
@@ -70,7 +71,7 @@ const onDownloadComicRpc = trpc.procedure
     }
     const arrayBufferList = await Promise.all(list)
     info('%d 所有图片下载完成', query.id)
-    const archive = archiver('zip', {
+    const archive = new ZipArchive('zip', {
       zlib: { level: 9 },
     })
     arrayBufferList.forEach((arrayBuffer, index) => {

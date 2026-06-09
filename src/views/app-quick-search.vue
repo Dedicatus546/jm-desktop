@@ -17,7 +17,7 @@ const routePage = useRouteQuery<string, number>('page', '1', {
   },
   mode: 'push',
 })
-const { page, pageSize, pageCount, data, loading } = usePagination(
+const { page, pageSize, pageCount, data, loading, error, send } = usePagination(
   (page) =>
     getComicListApi({
       content: props.query,
@@ -31,11 +31,18 @@ const { page, pageSize, pageCount, data, loading } = usePagination(
     total: (res) => res.data.total,
   },
 )
+
 syncRef(page, routePage)
+
+const retry = () => {
+  error.value = undefined
+  send()
+}
 </script>
 
 <template>
-  <v-card>
+  <app-error :error="error" v-if="error" @retry="retry" />
+  <v-card v-else :loading="loading">
     <template #title> 搜索：{{ props.query }} </template>
     <v-card-text>
       <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">

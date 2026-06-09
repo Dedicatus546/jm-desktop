@@ -68,13 +68,11 @@ const onSliderEnd = (value: [number, number] | number) => {
               @end="onSliderEnd"
             >
               <template #prepend>
-                <v-btn
-                  color="primary"
-                  icon="mdi-arrow-left"
-                  size="large"
-                  :disabled="!hasLastPage"
-                  @click="lastPage"
-                ></v-btn>
+                <v-btn icon color="primary" size="large" :disabled="!hasLastPage" @click="lastPage">
+                  <v-icon>
+                    <i-mdi-arrow-left />
+                  </v-icon>
+                </v-btn>
               </template>
               <template #append>
                 <div class="wind-flex wind-gap-2 wind-items-center">
@@ -82,12 +80,15 @@ const onSliderEnd = (value: [number, number] | number) => {
                   <app-shunt-select />
                   <div class="wind-flex-shrink-0"></div>
                   <v-btn
+                    icon
                     color="primary"
-                    icon="mdi-arrow-right"
                     size="large"
                     :disabled="!hasNextPage"
                     @click="nextPage"
                   >
+                    <v-icon>
+                      <i-mdi-arrow-right />
+                    </v-icon>
                   </v-btn>
                 </div>
               </template>

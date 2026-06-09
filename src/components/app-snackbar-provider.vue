@@ -170,6 +170,7 @@ const snackbar: SnackbarProviderInjectValue = ((text, messageOptions) => {
 })
 
 provide<SnackbarProviderInjectValue>(snackbarProviderInjectKey, snackbar)
+window.$snackbar = snackbar
 </script>
 
 <template>

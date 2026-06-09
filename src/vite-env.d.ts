@@ -8,8 +8,18 @@ interface ImportMetaEnv {
   readonly VITE_NSFW: string
 }
 
+declare module 'typeface-roboto' {
+  const classes: CSSModuleClasses
+  export default classes
+}
+
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
+interface Window {
+  $snackbar: import('@/types/snackbar-provider').SnackbarProviderInjectValue
+}
+
 declare const __COMIT_HASH__: string
+declare const $snackbar: import('@/types/snackbar-provider').SnackbarProviderInjectValue

@@ -1,0 +1,6 @@
+import '@/style/layer.css'
+import '@/style/scroller.css'
+import 'swiper/swiper-bundle.css'
+import 'typeface-roboto'
+import 'virtual:uno.css'
+import 'vuetify/styles'
