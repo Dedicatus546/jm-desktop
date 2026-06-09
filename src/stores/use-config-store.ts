@@ -6,7 +6,6 @@ import { clone } from 'radash'
 
 export const useConfigStore = defineStore('config', () => {
   const theme = useTheme()
-  const isDark = usePreferredDark()
 
   const state: Config = reactive({
     theme: APP_STATE.config.theme,
@@ -27,13 +26,12 @@ export const useConfigStore = defineStore('config', () => {
 
   const updateFromTrpcAction = (config: Config) => {
     Object.assign(state, config)
-  }
-
-  watch(isDark, (isDark) => {
-    if (state.theme === 'auto') {
-      theme.change(isDark ? 'dark' : 'light')
+    if (config.theme === 'auto') {
+      theme.change('system')
+    } else {
+      theme.change(config.theme)
     }
-  })
+  }
 
   return {
     state,
