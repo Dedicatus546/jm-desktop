@@ -24,31 +24,29 @@ jobs:
         with:
           node-version: '24.10.0'
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Git SSH fix
+        run: |
+          git config --global url."https://github.com/".insteadOf git@github.com:
+          git config --global url."https://".insteadOf git://
+      
+      - name: Install pnpm 
+        uses: pnpm/action-setup@v6
+        with: 
+          cache: true
 
-      - name: Cache Linux pnpm
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/cache@v5
-        with:
-          path: ~/.local/share/pnpm/store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
-
-      - name: Cache Windows pnpm
-        if: matrix.os == 'windows-latest'
-        uses: actions/cache@v5
-        with:
-          path: D:\.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
+      - name: Install Dependencies
+        run: pnpm install
 
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Build Web
+        run: pnpm run build:web
+
       - name: Build Electron App
+        run: pnpm run build
+
+      - name: Publish 
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: pnpm run build
+        run: pnpm run publish
