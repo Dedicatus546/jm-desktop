@@ -2,6 +2,7 @@
 import { trpcClient } from '@/trpc'
 
 import { version } from '../../../package.json'
+import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
 
 const hash = __COMIT_HASH__
 const isDev = import.meta.env.DEV
@@ -12,6 +13,8 @@ const toRepo = () => {
     url: repoUrl,
   })
 }
+
+useSyncConfigTrpc()
 </script>
 
 <template>

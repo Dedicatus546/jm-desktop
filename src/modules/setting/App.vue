@@ -5,7 +5,9 @@ import { Config } from '@type/index'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/trpc'
 import { error } from '@/utils/logger'
+import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
 
+useSyncConfigTrpc()
 const configStore = useConfigStore()
 
 const formState = reactive<

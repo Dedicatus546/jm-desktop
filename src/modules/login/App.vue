@@ -6,6 +6,9 @@ import { loginApi } from '@/apis'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/trpc'
+import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
+
+useSyncConfigTrpc()
 
 const userStore = useUserStore()
 const configStore = useConfigStore()

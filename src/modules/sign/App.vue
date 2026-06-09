@@ -5,9 +5,11 @@ import { set } from 'date-fns'
 import { getSignInDataApi, signInApi } from '@/apis'
 import useUserStore from '@/stores/use-user-store'
 import { trpcClient } from '@/trpc'
-import { useSyncUserStoreTrpc } from '@/compositions/useSyncUserStoreTrpc'
+import { useSyncUserTrpc } from '@/compositions/use-sync-user-trpc'
+import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
 
-useSyncUserStoreTrpc()
+useSyncConfigTrpc()
+useSyncUserTrpc()
 const userStore = useUserStore()
 
 const currentDate = new Date()
