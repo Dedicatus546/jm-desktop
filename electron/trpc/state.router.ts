@@ -1,13 +1,13 @@
-import { createLogger } from '@electron/module/logger'
+import { createLogger } from '@main/module/logger'
 import { trpc } from './trpc'
-import { state } from '@electron/module/state'
+import { state } from '@main/module/state'
 import { Config, PrefetchData, User } from '@type/index'
 import { clone } from 'radash'
 import { stringify } from 'superjson'
 import z from 'zod'
-import { ee } from '@electron/events'
+import { ee } from '@main/events'
 import { on } from 'node:events'
-import { saveConfig } from '@electron/module/config'
+import { saveConfig } from '@main/module/config'
 
 const { info } = createLogger('trpc-subscription')
 

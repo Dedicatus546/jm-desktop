@@ -5,8 +5,8 @@ import { z } from 'zod'
 
 import { trpc } from './trpc'
 import { on } from 'node:events'
-import { ee, EventEmitterMap } from '@electron/events'
-import { createLogger } from '@electron/module/logger'
+import { ee, EventEmitterMap } from '@main/events'
+import { createLogger } from '@main/module/logger'
 
 const { info } = createLogger('trpc-subscription')
 

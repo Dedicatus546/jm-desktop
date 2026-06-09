@@ -1,4 +1,4 @@
-import { createLogger } from '@electron/module/logger'
+import { createLogger } from '@main/module/logger'
 import { z } from 'zod'
 
 import { trpc } from './trpc'

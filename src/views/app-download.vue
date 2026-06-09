@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DownloadItem } from '@electron/module/download'
+import { DownloadItem } from '@main/module/download'
 
 import { trpcClient } from '@/trpc'
 import EMPTY_STATE_IMG_1 from '@/assets/empty-state/1.jpg'

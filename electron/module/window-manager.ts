@@ -2,14 +2,14 @@ import { join } from 'node:path'
 import { BrowserWindow, BrowserWindowConstructorOptions, session } from 'electron'
 import { getConfig } from './config'
 // TODO fix
-import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@electron/shared/utils'
+import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/shared/utils'
 import { createLogger } from './logger'
 import { debounce, isEqual } from 'radash'
-import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@electron/env'
+import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
 import { Config, ProxyInfo, WindowId, WindowInfo } from '@type/index'
 import { getWindowInfo, updateWindowInfo } from './window-info'
-import { ee } from '@electron/events'
+import { ee } from '@main/events'
 
 const windowMap = new Map<WindowId, BrowserWindow>()
 const windowIdMap = new Map<BrowserWindow, WindowId>()

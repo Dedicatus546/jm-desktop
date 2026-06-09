@@ -8,10 +8,10 @@ import {
   getDownloadDownloadingList,
   saveDownloadCompleteList,
   saveDownloadDownloadingList,
-} from '@electron/module/download'
-import { createLogger } from '@electron/module/logger'
-import { decodeImage } from '@electron/shared/decode-image'
-import { delay, exists } from '@electron/shared/utils'
+} from '@main/module/download'
+import { createLogger } from '@main/module/logger'
+import { decodeImage } from '@main/shared/decode-image'
+import { delay, exists } from '@main/shared/utils'
 // @ts-expect-error 缺少 type 类型文件
 import { ZipArchive } from 'archiver'
 import { net } from 'electron'

@@ -1,4 +1,4 @@
-import { DownloadComicItem, DownloadItem } from '@electron/module/download'
+import { DownloadComicItem, DownloadItem } from '@main/module/download'
 import { omit } from 'radash'
 
 import { trpcClient } from '@/trpc'

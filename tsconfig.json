@@ -25,7 +25,7 @@
 
     "paths": {
       "@/*": ["./src/*"],
-      "@electron/*": ["./electron/*"],
+      "@main/*": ["./electron/*"],
       "@type/*": ["./type/*"]
     }
   },

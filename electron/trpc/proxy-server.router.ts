@@ -1,4 +1,4 @@
-import { getExpressServerPort } from '@electron/module/express-server'
+import { getExpressServerPort } from '@main/module/express-server'
 
 import { trpc } from './trpc'
 

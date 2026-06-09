@@ -5,6 +5,15 @@ import { router } from './trpc'
 import { initConfigFile } from './module/config'
 import { initDataDir } from './shared/path'
 import { initWindowInfoMapFile } from './module/window-info'
+import { devtron } from '@electron/devtron'
+
+const isDev = !app.isPackaged
+
+if (isDev) {
+  devtron.install().catch((error) => {
+    console.error('Failed to install Devtron:', error)
+  })
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

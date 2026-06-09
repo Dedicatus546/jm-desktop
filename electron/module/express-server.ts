@@ -1,8 +1,8 @@
 import { Server } from 'node:http'
 import { AddressInfo } from 'node:net'
 
-import { distRenderer } from '@electron/shared/path'
-import { resolveProxyUrl } from '@electron/shared/utils'
+import { distRenderer } from '@main/shared/path'
+import { resolveProxyUrl } from '@main/shared/utils'
 import cors from 'cors'
 import Express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -10,7 +10,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent'
 
 import { getConfig } from './config'
 import { createLogger } from './logger'
-import { VITE_DEV_SERVER_URL } from '@electron/env'
+import { VITE_DEV_SERVER_URL } from '@main/env'
 
 const { info, error, warn } = createLogger('express-server')
 

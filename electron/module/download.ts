@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import { dataDir } from '@electron/shared/path'
-import { exists } from '@electron/shared/utils'
+import { dataDir } from '@main/shared/path'
+import { exists } from '@main/shared/utils'
 
 export interface DownloadBaseItem {
   id: number

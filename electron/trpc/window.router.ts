@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { trpc } from './trpc'
-import { getWindowId, showWindow } from '@electron/module/window-manager'
+import { getWindowId, showWindow } from '@main/module/window-manager'
 import { WindowId } from '@type/index'
 import { app } from 'electron'
 
