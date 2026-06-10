@@ -120,5 +120,3 @@ export const updateTarget = () => {
   info('apiUrl 已设置，地址：%s', config.apiUrl)
   target = config.apiUrl
 }
-
-startExpressServer()

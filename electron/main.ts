@@ -5,6 +5,7 @@ import { router } from './trpc'
 import { initConfigFile } from './module/config'
 import { initDataDir } from './shared/path'
 import { initWindowInfoMapFile } from './module/window-info'
+import { startExpressServer } from './module/express-server'
 
 const isDev = !app.isPackaged
 
@@ -31,6 +32,7 @@ app.whenReady().then(async () => {
     const { devtron } = await import('@electron/devtron')
     await devtron.install()
   }
+  await startExpressServer()
   await initConfigFile()
   await initWindowInfoMapFile()
   await initDataDir()
