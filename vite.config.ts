@@ -27,7 +27,10 @@ export default defineConfig({
     vue(),
     electronSimple({
       main: {
-        // Shortcut of `build.lib.entry`.
+        // NOTE: 如果使用 --no-sandbox 启动，则 @electron/devtron 无法安装
+        onstart({ startup }) {
+          startup(['.'])
+        },
         entry: 'electron/main.ts',
         vite: {
           resolve: {
@@ -37,25 +40,16 @@ export default defineConfig({
             },
           },
           build: {
-            target: 'esnext',
+            sourcemap: true,
             rolldownOptions: {
-              // 关键，这样才会生成 var __require = /* @__PURE__ */ createRequire(import.meta.url); 垫片
-              platform: 'node',
-              // https://github.com/electron-vite/vite-plugin-electron/blob/main/README.zh-CN.md
-              // Here are some C/C++ modules them can't be built properly.
               external: ['skia-canvas'],
             },
           },
         },
       },
       preload: {
-        // Shortcut of `build.rollupOptions.input`.
-        // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
         input: join(import.meta.dirname, 'electron/preload.ts'),
       },
-      // Ployfill the Electron and Node.js API for Renderer process.
-      // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
-      // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
       renderer:
         process.env.NODE_ENV === 'test'
           ? // https://github.com/electron-vite/vite-plugin-electron-renderer/issues/78#issuecomment-2053600808
@@ -89,6 +83,7 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: true,
     rolldownOptions: {
       input: {
         home: resolve(import.meta.dirname, 'home.html'),
