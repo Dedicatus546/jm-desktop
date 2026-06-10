@@ -32,7 +32,7 @@ export default defineConfig({
         vite: {
           resolve: {
             alias: {
-              '@electron': resolve(import.meta.dirname, 'electron'),
+              '@main': resolve(import.meta.dirname, 'electron'),
               '@type/*': resolve(import.meta.dirname, 'type'),
             },
           },
