@@ -11,10 +11,25 @@ import { saveConfig } from '@main/module/config'
 
 const { info } = createLogger('trpc-subscription')
 
-const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+const createChainAbortController = (signal: AbortSignal | undefined) => {
+  const ac = new AbortController()
+  if (signal) {
+    signal.addEventListener('abort', () => {
+      ac.abort()
+    })
+  }
+  return ac
+}
 
-  for await (const _ of on(ee, 'configUpdate', { signal })) {
+const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const _ of on(ee, 'configUpdate', { signal: ac.signal })) {
     yield state.config
   }
 
@@ -47,14 +62,14 @@ const updateConfigRpc = trpc.procedure
   })
 
 const onUserUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
 
-  // yield {
-  //   user: clone(state.user),
-  //   loginInfo: clone(state.loginInfo),
-  // }
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
 
-  for await (const _ of on(ee, 'userUpdate', { signal })) {
+  for await (const _ of on(ee, 'userUpdate', { signal: ac.signal })) {
     yield clone(state.user)
   }
 
@@ -94,9 +109,14 @@ const updateUserRpc = trpc.procedure
   })
 
 const onPrefetchDataUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
 
-  for await (const _ of on(ee, 'prefetchDataUpdate', { signal })) {
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const _ of on(ee, 'prefetchDataUpdate', { signal: ac.signal })) {
     yield state.prefetchData
   }
 
