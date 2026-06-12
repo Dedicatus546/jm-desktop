@@ -1,8 +1,9 @@
 {
   "recommendations": [
-    "Vue.volar",
     "editorconfig.editorconfig",
     "antfu.unocss",
-    "oxc.oxc-vscode"
+    "oxc.oxc-vscode",
+    "mhutchie.git-graph",
+    "vue.volar"
   ]
 }
