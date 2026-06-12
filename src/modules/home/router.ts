@@ -4,8 +4,10 @@ import AppComicDetail from '@/views/app-comic-detail.vue'
 import AppComicRead from '@/views/app-comic-read.vue'
 import AppHome from '@/views/app-home.vue'
 
-import { info } from '@/utils/logger'
+import { log } from '@/utils/logger'
 import { scrollManager } from '@/utils/scroll-manager'
+
+const { info } = log
 
 const routes: RouteRecordRaw[] = [
   {

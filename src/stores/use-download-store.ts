@@ -2,10 +2,10 @@ import { DownloadComicItem, DownloadItem } from '@main/module/download'
 import { omit } from 'radash'
 
 import { trpcClient } from '@/trpc'
-import { createLogger } from '@/utils/logger'
+import { log } from '@/utils/logger'
 import { emitter } from '@/utils/mitt'
 
-const { info, warn } = createLogger('download')
+const { info, warn } = log
 
 type WithDownloadingInfo<T> = T & {
   status: 'downloading' | 'pending' | 'complete'

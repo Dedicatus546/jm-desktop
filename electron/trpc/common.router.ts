@@ -1,14 +1,13 @@
 import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
-
+import log from 'electron-log/main'
 import { dialog, shell } from 'electron'
 import { z } from 'zod'
 
 import { trpc } from './trpc'
 import { on } from 'node:events'
 import { ee, EventEmitterMap } from '@main/events'
-import { createLogger } from '@main/module/logger'
 
-const { info } = createLogger('trpc-subscription')
+const logger = log.scope('trpc-subscription')
 
 const openLinkRpc = trpc.procedure
   .input(
@@ -112,7 +111,7 @@ const onNotifyMessageRpc = trpc.procedure.subscription(async function* (opts) {
     } as EventEmitterMap['messageNotify'][0]
   }
 
-  info('结束 onNotifyMessageRpc 监听')
+  logger.info('结束 onNotifyMessageRpc 监听')
 })
 
 const notifyMessageRpc = trpc.procedure

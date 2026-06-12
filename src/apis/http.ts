@@ -2,8 +2,6 @@ import { xhrRequestAdapter } from '@alova/adapter-xhr'
 import { createAlova } from 'alova'
 import { useRequest } from 'alova/client'
 import vueHook from 'alova/vue'
-
-import { createLogger } from '@/utils/logger'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 
@@ -12,8 +10,9 @@ import { trpcClient } from '@/trpc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
 import { WindowId } from '@type/index'
+import { log } from '@/utils/logger'
 
-const { info, error, warn } = createLogger('api')
+const { info, error, warn } = log
 
 const ts = Math.floor(Date.now() / 1000)
 const version = '1.8.2'

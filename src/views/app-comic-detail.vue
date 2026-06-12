@@ -5,13 +5,13 @@ import { useRequest } from 'alova/client'
 import { collectComicApi, getComicDetailApi, getComicPicListApi, likeComicApi } from '@/apis'
 import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { createLogger } from '@/utils/logger'
+import { log } from '@/utils/logger'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '../stores/use-prefetch-data-store'
 
-const { info } = createLogger('comic')
+const { info } = log
 
 const props = defineProps<{
   id: number

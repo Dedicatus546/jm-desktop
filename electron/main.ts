@@ -6,8 +6,10 @@ import { initConfigFile } from './module/config'
 import { initDataDir } from './shared/path'
 import { initWindowInfoMapFile } from './module/window-info'
 import { startExpressServer } from './module/express-server'
+import { initLog } from './module/logger'
+import { isDev } from './env'
 
-const isDev = !app.isPackaged
+initLog()
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -32,10 +34,10 @@ app.whenReady().then(async () => {
     const { devtron } = await import('@electron/devtron')
     await devtron.install()
   }
-  await startExpressServer()
+  await initDataDir()
   await initConfigFile()
   await initWindowInfoMapFile()
-  await initDataDir()
+  await startExpressServer()
   createIPCHandler({
     router,
     windows: [],

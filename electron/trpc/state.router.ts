@@ -1,4 +1,4 @@
-import { createLogger } from '@main/module/logger'
+import log from 'electron-log/main'
 import { trpc } from './trpc'
 import { state } from '@main/module/state'
 import { Config, PrefetchData, User } from '@type/index'
@@ -9,7 +9,7 @@ import { ee } from '@main/events'
 import { on } from 'node:events'
 import { saveConfig } from '@main/module/config'
 
-const { info } = createLogger('trpc-subscription')
+const logger = log.scope('trpc-subscription')
 
 const createChainAbortController = (signal: AbortSignal | undefined) => {
   const ac = new AbortController()
@@ -33,7 +33,7 @@ const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
     yield state.config
   }
 
-  info('结束 onConfigUpdateRpc 监听')
+  logger.info('结束 onConfigUpdateRpc 监听')
 })
 
 const updateConfigRpc = trpc.procedure
@@ -57,7 +57,12 @@ const updateConfigRpc = trpc.procedure
     }) satisfies z.Schema<Config>,
   )
   .mutation(async ({ input }) => {
-    info('更新 config ，原 config ', stringify(state.config), '更新的 config', stringify(input))
+    logger.info(
+      '更新 config ，原 config ',
+      stringify(state.config),
+      '更新的 config',
+      stringify(input),
+    )
     await saveConfig(input)
   })
 
@@ -73,7 +78,7 @@ const onUserUpdateRpc = trpc.procedure.subscription(async function* (opts) {
     yield clone(state.user)
   }
 
-  info('结束 onUserUpdateRpc 监听')
+  logger.info('结束 onUserUpdateRpc 监听')
 })
 
 const updateUserRpc = trpc.procedure
@@ -95,7 +100,7 @@ const updateUserRpc = trpc.procedure
   )
   .mutation(async ({ input }) => {
     // user 不写入本地
-    info('更新 user ，原 user ', stringify(state.user), '更新的 user', stringify(input))
+    logger.info('更新 user ，原 user ', stringify(state.user), '更新的 user', stringify(input))
     if (input !== null) {
       if (state.user) {
         Object.assign(state.user, input)
@@ -120,7 +125,7 @@ const onPrefetchDataUpdateRpc = trpc.procedure.subscription(async function* (opt
     yield state.prefetchData
   }
 
-  info('结束 onPrefetchDataUpdateRpc 监听')
+  logger.info('结束 onPrefetchDataUpdateRpc 监听')
 })
 
 const updatePrefetchDataRpc = trpc.procedure
@@ -169,7 +174,7 @@ const updatePrefetchDataRpc = trpc.procedure
     }) satisfies z.Schema<PrefetchData>,
   )
   .mutation(async ({ input }) => {
-    info('更新 user ，原 user ', stringify(state.user), '更新的 config', stringify(input))
+    // info('更新 prefetchdata ，原 prefetchdata ', stringify(state.user), '更新的 config', stringify(input))
     if (input) {
       Object.assign(state.prefetchData, input)
     }

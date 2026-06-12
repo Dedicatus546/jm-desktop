@@ -1,6 +1,7 @@
 import { createWriteStream } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import log from 'electron-log/main'
 
 import {
   comicDownloadDir,
@@ -9,7 +10,6 @@ import {
   saveDownloadCompleteList,
   saveDownloadDownloadingList,
 } from '@main/module/download'
-import { createLogger } from '@main/module/logger'
 import { decodeImage } from '@main/shared/decode-image'
 import { delay, exists } from '@main/shared/utils'
 // @ts-expect-error 缺少 type 类型文件
@@ -21,7 +21,7 @@ import { z } from 'zod'
 
 import { trpc } from './trpc'
 
-const { info } = createLogger('download.router')
+const logger = log.scope('download.router')
 
 const limit = pLimit(3)
 
@@ -36,13 +36,13 @@ const onDownloadComicRpc = trpc.procedure
   )
   .subscription(async function* (opts) {
     const query = opts.input
-    info('%d 开始处理下载', query.id)
+    logger.info('%d 开始处理下载', query.id)
     const dirname = `${query.comicName}`
     const filename = `[${query.id}] ${query.chapterName}.zip`
     const fileDir = resolve(comicDownloadDir, nameSanitizer(dirname))
-    info('%d 标准化文件目录路径 %s', query.id, fileDir)
+    logger.info('%d 标准化文件目录路径 %s', query.id, fileDir)
     const filepath = resolve(fileDir, nameSanitizer(filename))
-    info('%d 标准化文件路径 %s', query.id, filepath)
+    logger.info('%d 标准化文件路径 %s', query.id, filepath)
     let complete = 0
     const total = query.picUrlList.length
     const list = query.picUrlList.map((url) =>
@@ -51,9 +51,9 @@ const onDownloadComicRpc = trpc.procedure
           method: 'GET',
         })
         const arrayBuffer = await res.arrayBuffer()
-        info('%d 已获取 %s 图片 arrayBuffer 数据', query.id, url)
+        logger.info('%d 已获取 %s 图片 arrayBuffer 数据', query.id, url)
         const decodeArrayBuffer = await decodeImage(url, arrayBuffer, query.id)
-        info('%d 已解密 %s 图片数据', query.id, url)
+        logger.info('%d 已解密 %s 图片数据', query.id, url)
         await delay(1000)
         return decodeArrayBuffer
       }),
@@ -70,7 +70,7 @@ const onDownloadComicRpc = trpc.procedure
       }
     }
     const arrayBufferList = await Promise.all(list)
-    info('%d 所有图片下载完成', query.id)
+    logger.info('%d 所有图片下载完成', query.id)
     const archive = new ZipArchive('zip', {
       zlib: { level: 9 },
     })
@@ -87,7 +87,7 @@ const onDownloadComicRpc = trpc.procedure
     const output = createWriteStream(filepath)
     archive.pipe(output)
     await archive.finalize()
-    info('%d 所有图片压缩完成，文件地址为 %s', query.id, filepath)
+    logger.info('%d 所有图片压缩完成，文件地址为 %s', query.id, filepath)
     yield {
       type: 'complete',
       data: {

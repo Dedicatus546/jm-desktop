@@ -1,12 +1,14 @@
-import '../common-style.ts'
+import '../common-style'
 
 import { createApp } from 'vue'
-import { error } from '@/utils/logger.ts'
-import { registerGlobalState } from '@/utils/resigter-global-state.ts'
+import { registerGlobalState } from '@/utils/resigter-global-state'
 import { normalizeError } from '@/utils'
 import App from './App.vue'
 import router from './router'
-import { createVuetify } from '../create-vuetify.ts'
+import { createVuetify } from '../create-vuetify'
+import { log } from '@/utils/logger'
+
+const { error } = log
 
 await registerGlobalState()
 

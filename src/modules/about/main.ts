@@ -1,16 +1,15 @@
-import '../common-style.ts'
+import '../common-style'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import { error } from '@/utils/logger.ts'
 import { normalizeError } from '@/utils'
-import { registerGlobalState } from '@/utils/resigter-global-state.ts'
-import { createVuetify } from '../create-vuetify.ts'
+import { registerGlobalState } from '@/utils/resigter-global-state'
+import { createVuetify } from '../create-vuetify'
+import { log } from '@/utils/logger'
 
+const { error } = log
 await registerGlobalState()
-
 const vuetify = createVuetify()
-
 const app = createApp(App)
 
 app.config.errorHandler = (err) => {

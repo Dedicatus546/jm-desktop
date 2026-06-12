@@ -1,10 +1,11 @@
 // jm 的从 220980 之后的图都经过混淆
 // 需要通过 canvas 重绘
 import { trpcClient } from '@/trpc'
-import { info } from '@/utils/logger'
+import { log } from '@/utils/logger'
 
 import { getLoadedImage } from '.'
 
+const { info } = log
 const isGif = (src: string): boolean => {
   return src.endsWith('.gif')
 }

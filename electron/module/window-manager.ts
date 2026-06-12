@@ -1,9 +1,9 @@
 import { join } from 'node:path'
+import log from 'electron-log/main'
 import { BrowserWindow, BrowserWindowConstructorOptions, session } from 'electron'
 import { getConfig } from './config'
 // TODO fix
 import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/shared/utils'
-import { createLogger } from './logger'
 import { debounce, isEqual } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
@@ -129,7 +129,7 @@ const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
 const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindowInfo)
 
 export const createWindow = async (id: WindowId) => {
-  const { info } = createLogger(`window[${id}]`)
+  const logger = log.scope(`window[${id}]`)
   const disposeFnList: Array<() => void> = []
 
   const options = windowOptionMap[id]
@@ -154,7 +154,7 @@ export const createWindow = async (id: WindowId) => {
     }
   }
 
-  info('preload.mjs 文件路径', join(MAIN_DIST, 'preload.mjs'))
+  logger.info('preload.mjs 文件路径', join(MAIN_DIST, 'preload.mjs'))
   win = new BrowserWindow(
     Object.assign({}, bwConfig, {
       icon: join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
@@ -191,11 +191,11 @@ export const createWindow = async (id: WindowId) => {
       return url.toString()
     })()
     await win.loadURL(resolvedUrl)
-    info('加载 DEV 地址', resolvedUrl)
+    logger.info('加载 DEV 地址', resolvedUrl)
   } else {
     const port = await getExpressServerPort()
     await win.loadURL(`http://localhost:${port}/${path}`)
-    info('加载 PROD 地址', `http://localhost:${port}/${path}`)
+    logger.info('加载 PROD 地址', `http://localhost:${port}/${path}`)
   }
 
   // 放在 loadURL 后，不然白屏
@@ -216,14 +216,14 @@ export const createWindow = async (id: WindowId) => {
 
 export const createHomeWindow = async () => {
   const homeWindow = await createWindow(WindowId.HOME)
-  const { info } = createLogger(`window[${WindowId.HOME}]`)
+  const logger = log.scope(`window[${WindowId.HOME}]`)
   const disposeFnList: Array<() => void> = []
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
 
   const onUpdateConfig = async (config: Config, oldConfig: Config) => {
     if (!isEqual(config.proxyInfo, oldConfig.proxyInfo)) {
-      info('检测到代理设置变更，重新启动 express 服务器')
+      logger.info('检测到代理设置变更，重新启动 express 服务器')
       updateProxyMiddleware()
       await setSessionProxy(config.proxyInfo)
     }
