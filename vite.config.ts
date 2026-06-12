@@ -29,7 +29,7 @@ export default defineConfig({
       main: {
         // NOTE: 如果使用 --no-sandbox 启动，则 @electron/devtron 无法安装
         onstart({ startup }) {
-          startup(['.'])
+          startup(['.', '--trace-warnings'])
         },
         entry: 'electron/main.ts',
         vite: {
