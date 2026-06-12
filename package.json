@@ -6,15 +6,12 @@
     "name": "Par9uet",
     "email": "par9uet@qq.com"
   },
-  "type": "module",
-  "main": "dist-electron/main.js",
   "files": [
     "dist",
     "dist-electron"
   ],
-  "config": {
-    "forge": "./forge.config.ts"
-  },
+  "type": "module",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "electron-forge make",
@@ -103,6 +100,9 @@
       "oxlint",
       "oxfmt"
     ]
+  },
+  "config": {
+    "forge": "./forge.config.ts"
   },
   "engines": {
     "node": ">=24"
