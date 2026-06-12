@@ -1120,7 +1120,7 @@ export const getComicPicListApi = (comicId: number, shuntKey: number | undefined
 
         // 正则表达式匹配 config 对象
         const configRegex =
-          /const config\s*=\s*\{\s*jmid:\s*'(?<jmid>\d+)',\s*imghost:\s*'(?<imghost>https?:\/\/[\w:.\\/-]+)',\s*cache:\s*'(?<cache>\?v=\d+)'\s*\}/
+          /const config\s*=\s*\{\s*jmid:\s*'(?<jmid>\d+)',\s*imghost:\s*'(?<imghost>https?:\/\/[\w:.\\/-]+)',\s*cache:\s*'(?<cache>.*?)'\s*\}/
         const configMatch = htmlStr.match(configRegex)
         let config:
           | {
