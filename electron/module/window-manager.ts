@@ -76,6 +76,16 @@ const windowOptionMap: WindowOptionMap = {
       resizable: false,
     },
   },
+  [WindowId.DOWNLOAD]: {
+    path: 'download.html',
+    saveSize: false,
+    savePosition: true,
+    bwConfig: {
+      width: 1200,
+      height: 950,
+      resizable: false,
+    },
+  },
 }
 
 export const hasWindow = (id: WindowId) => {

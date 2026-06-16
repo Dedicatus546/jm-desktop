@@ -121,11 +121,7 @@ const toHome = () => {
           </app-header-icon-btn>
           <app-header-icon-btn
             tooltip-text="下载"
-            @click="
-              router.push({
-                name: 'DOWNLOAD',
-              })
-            "
+            @click="trpcClient.openWindow.mutate({ id: WindowId.DOWNLOAD })"
           >
             <v-icon>
               <i-mdi-download />
