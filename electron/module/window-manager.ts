@@ -7,7 +7,7 @@ import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/sha
 import { debounce, isEqual } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
-import { Config, ProxyInfo, WindowId, WindowInfo } from '@type/index'
+import { Config, ProxyInfo, WindowId, WindowInfo } from '@common/type'
 import { getWindowInfo, updateWindowInfo } from './window-info'
 import { ee } from '@main/events'
 

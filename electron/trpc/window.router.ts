@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { trpc } from './trpc'
 import { getWindowId, showWindow } from '@main/module/window-manager'
-import { WindowId } from '@type/index'
+import { WindowId } from '@common/type'
 import { app } from 'electron'
 
 const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {

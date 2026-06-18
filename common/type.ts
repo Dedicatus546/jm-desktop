@@ -8,7 +8,7 @@ export enum WindowId {
   LOGIN,
   ABOUT,
   SIGN,
-  DOWNLOAD
+  DOWNLOAD,
 }
 
 export type WindowInfo = {
@@ -85,4 +85,18 @@ export type User = {
 export type LoginInfo = {
   username: string // 加密
   password: string // 加密
+}
+
+export interface DownloadItem {
+  comicId: number
+  comicName: string
+  chapterName: string
+  picUrlList: Array<string>
+  scrambleId: number
+  speed: string
+
+  filepath: string
+  status: 'downloading' | 'pending' | 'complete'
+  percent: number // 0 - 1
+  createTime: number
 }

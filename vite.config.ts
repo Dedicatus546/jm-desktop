@@ -36,7 +36,7 @@ export default defineConfig({
           resolve: {
             alias: {
               '@main': resolve(import.meta.dirname, 'electron'),
-              '@type/*': resolve(import.meta.dirname, 'type'),
+              '@common': resolve(import.meta.dirname, 'common'),
             },
           },
           build: {
@@ -79,7 +79,7 @@ export default defineConfig({
     alias: {
       '@': resolve(import.meta.dirname, 'src'),
       '@main': resolve(import.meta.dirname, 'electron'),
-      '@type': resolve(import.meta.dirname, 'type'),
+      '@common': resolve(import.meta.dirname, 'common'),
     },
   },
   build: {

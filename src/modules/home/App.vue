@@ -2,6 +2,7 @@
 // import useInitApp from './compositions/use-init-app'
 import { useRefreshUser } from '@/compositions/use-refresh-user'
 import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
+import { useSyncDownloadTrpc } from '@/compositions/use-sync-download-tprc'
 import { useSyncPrefetchDataTrpc } from '@/compositions/use-sync-prefetch-data-trpc'
 import { useSyncUserTrpc } from '@/compositions/use-sync-user-trpc'
 
@@ -10,6 +11,7 @@ useRefreshUser()
 useSyncUserTrpc()
 useSyncConfigTrpc()
 useSyncPrefetchDataTrpc()
+useSyncDownloadTrpc()
 </script>
 
 <template>

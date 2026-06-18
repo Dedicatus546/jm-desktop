@@ -1,6 +1,6 @@
 import { dataDir } from '@main/shared/path'
 import { exists } from '@main/shared/utils'
-import { WindowId, WindowInfo, WindowInfoMap } from '@type/index'
+import { WindowId, WindowInfo, WindowInfoMap } from '@common/type'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import superjson from 'superjson'

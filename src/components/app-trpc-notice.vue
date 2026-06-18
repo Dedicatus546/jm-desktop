@@ -2,7 +2,7 @@
 import { trpcClient } from '@/trpc'
 import useSnackbar from '@/compositions/use-snack-bar'
 import type { Unsubscribable } from '@trpc/server/observable'
-import { WindowId } from '@type/index'
+import { WindowId } from '@common/type'
 
 const snackbar = useSnackbar()
 const unSubscribableList: Array<Unsubscribable> = []

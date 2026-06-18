@@ -6,10 +6,7 @@ const snackbar = useSnackbar()
 
 onMounted(() => {
   emitter.on('DownloadSuccess', (item) => {
-    let name = ''
-    if (item.type === 'comic') {
-      name = `${item.comicName}-${item.chapterName}`
-    }
+    const name = `${item.comicName}-${item.chapterName}`
     snackbar.success(`${name} 下载成功`)
   })
 })

@@ -1,4 +1,4 @@
-import { Config, PrefetchData, User } from '@type/index'
+import { Config, DownloadItem, PrefetchData, User } from '@common/type'
 import { EventEmitter } from 'node:events'
 
 export interface EventEmitterMap {
@@ -9,6 +9,15 @@ export interface EventEmitterMap {
     {
       type: 'primary' | 'success' | 'warning' | 'error'
       message: string
+    },
+  ]
+  downloadUpdate: [list: Array<DownloadItem>]
+  downloadProgressUpdate: [
+    item: {
+      comicId: number
+      percent: number
+      status: DownloadItem['status']
+      filepath: string
     },
   ]
 }

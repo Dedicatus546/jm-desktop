@@ -64,11 +64,6 @@ const routes: RouteRecordRaw[] = [
     name: 'COMIC_LATEST',
     component: () => import('@/views/app-comic-latest.vue'),
   },
-  {
-    path: '/download',
-    name: 'DOWNLOAD',
-    component: () => import('@/views/app-download.vue'),
-  },
 ]
 
 const router = createRouter({

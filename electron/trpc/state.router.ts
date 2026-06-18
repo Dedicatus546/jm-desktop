@@ -1,7 +1,7 @@
 import log from 'electron-log/main'
 import { trpc } from './trpc'
 import { state } from '@main/module/state'
-import { Config, PrefetchData, User } from '@type/index'
+import { Config, PrefetchData, User } from '@common/type'
 import { clone } from 'radash'
 import { stringify } from 'superjson'
 import z from 'zod'

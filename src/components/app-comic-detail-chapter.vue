@@ -2,13 +2,10 @@
 import { useRequest } from 'alova/client'
 
 import { getComicPicListApi } from '@/apis'
-import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { useConfigStore } from '@/stores/use-config-store'
 import { useDownloadStore } from '@/stores/use-download-store'
 import { log } from '@/utils/logger'
-
-const { info } = log
 
 const props = withDefaults(
   defineProps<{
@@ -28,7 +25,6 @@ const props = withDefaults(
 const configStore = useConfigStore()
 const downloadStore = useDownloadStore()
 const snackbar = useSnackbar()
-const dialog = useDialog()
 
 const { data, send } = useRequest(
   (id: number) => getComicPicListApi(id, configStore.state.currentShuntKey ?? 1),
@@ -43,40 +39,39 @@ const { data, send } = useRequest(
 )
 
 const downloadChapter = async (chapter: { id: number; name: string }) => {
-  if (downloadStore.downloadingMap[chapter.id]) {
-    snackbar.warning('任务正在下载中，请勿重复点击')
+  const item = downloadStore.downloadList.find((item) => item.comicId === chapter.id)
+  if (item) {
+    if (['downloading', 'pending'].includes(item.status)) {
+      snackbar.warning('任务正在下载中，请勿重复点击')
+    } else if (item.status === 'complete') {
+      snackbar.warning('任务已下载，请勿重复点击')
+      // TODO 弹窗重新下载
+      // dialog({
+      //   width: 300,
+      //   title: '确认',
+      //   content: '该漫画已下载，是否重新下载？',
+      //   async onOk() {
+      //     exec()
+      //   },
+      // })
+    }
     return
   }
 
   const exec = async () => {
     await send(chapter.id)
-    downloadStore.addDownloadTaskAction(
-      {
-        type: 'comic',
-        id: chapter.id,
-        comicName: props.comicName,
-        chapterName: chapter.name,
-        picUrlList: data.value.list,
-        filepath: '',
-        scrambleId: data.value.scrambleId,
-        speed: data.value.speed,
-      },
-      true,
-    )
-    snackbar.success('添加下载任务成功')
-    info('添加 %s %s 下载任务', props.comicName, chapter.name)
-  }
-  if (downloadStore.completeMap[chapter.id]) {
-    dialog({
-      width: 300,
-      title: '确认',
-      content: '该漫画已下载，是否重新下载？',
-      async onOk() {
-        exec()
-      },
+    await downloadStore.addDownloadItemAction({
+      comicId: chapter.id,
+      comicName: props.comicName,
+      chapterName: chapter.name,
+      picUrlList: data.value.list,
+      scrambleId: data.value.scrambleId,
+      speed: data.value.speed,
     })
-    return
+    snackbar.success('添加下载任务成功')
+    log.info('添加 %s %s 下载任务', props.comicName, chapter.name)
   }
+
   exec()
 }
 </script>
@@ -119,6 +114,7 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
                 </template>
                 阅读
               </v-btn>
+              <!-- TODO fix -->
               <v-btn
                 variant="flat"
                 :color="

@@ -2,14 +2,13 @@ import { xhrRequestAdapter } from '@alova/adapter-xhr'
 import { createAlova } from 'alova'
 import { useRequest } from 'alova/client'
 import vueHook from 'alova/vue'
-import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 
 import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi } from './ajax'
 import { trpcClient } from '@/trpc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
-import { WindowId } from '@type/index'
+import { WindowId } from '@common/type'
 import { log } from '@/utils/logger'
 
 const { info, error, warn } = log
@@ -99,18 +98,6 @@ const autoLogin = async () => {
   }
 }
 
-const initDownload = async () => {
-  const downloadStore = useDownloadStore()
-  info('开始初始化下载任务')
-  try {
-    await downloadStore.initAction()
-    info('初始化下载任务成功')
-  } catch (e) {
-    error('初始化下载任务失败，原因', e)
-    throw new Error('初始化下载任务失败')
-  }
-}
-
 const initPrefetchData = async () => {
   const prefetchDataStore = usePrefetchDataStore()
   const { data: settingData, send: settingSend } = useRequest(() => getSettingApi())
@@ -162,7 +149,6 @@ const http = createAlova({
               await initPrefetchData()
               await initConfig()
               await autoLogin()
-              await initDownload()
               resolve()
             } catch (e) {
               reject(e)

@@ -8,6 +8,7 @@ import { initWindowInfoMapFile } from './module/window-info'
 import { startExpressServer } from './module/express-server'
 import { initLog } from './module/logger'
 import { isDev } from './env'
+import { initDownloadFile } from './module/download'
 
 initLog()
 
@@ -36,6 +37,7 @@ app.whenReady().then(async () => {
   }
   await initDataDir()
   await initConfigFile()
+  await initDownloadFile()
   await initWindowInfoMapFile()
   await startExpressServer()
   createIPCHandler({

@@ -1,4 +1,4 @@
-import { LoginInfo, PrefetchData, User, Config, WindowInfoMap } from '@type/index'
+import { LoginInfo, PrefetchData, User, Config, WindowInfoMap, DownloadItem } from '@common/type'
 
 export const state: {
   config: Config
@@ -6,6 +6,7 @@ export const state: {
   prefetchData: PrefetchData
   user: User | null
   loginInfo: LoginInfo | null
+  downloadList: Array<DownloadItem>
 } = {
   config: {
     theme: 'light',
@@ -36,4 +37,5 @@ export const state: {
   },
   user: null,
   loginInfo: null,
+  downloadList: [],
 }

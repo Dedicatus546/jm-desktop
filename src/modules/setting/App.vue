@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SubmitEventPromise } from 'vuetify'
 
-import { Config } from '@type/index'
+import { Config } from '@common/type'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/trpc'
 import { log } from '@/utils/logger'

@@ -1,6 +1,6 @@
 // src/shared/trpc.ts
 import { initTRPC } from '@trpc/server'
-import { WindowId } from '@type/index'
+import { WindowId } from '@common/type'
 import { type BrowserWindow } from 'electron'
 import superjson from 'superjson'
 

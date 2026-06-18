@@ -1,5 +1,5 @@
 import { trpcClient } from '@/trpc'
-import { User } from '@type/index'
+import { User } from '@common/type'
 
 const useUserStore = defineStore('user', () => {
   const state: User = reactive({

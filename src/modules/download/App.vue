@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { DownloadItem } from '@main/module/download'
+import { DownloadItem } from '@common/type'
 
 import { trpcClient } from '@/trpc'
 import EMPTY_STATE_IMG_1 from '@/assets/empty-state/1.jpg'
 import EMPTY_STATE_IMG_2 from '@/assets/empty-state/2.jpg'
 import { useDownloadStore } from '@/stores/use-download-store'
+import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
+import { useSyncDownloadTrpc } from '@/compositions/use-sync-download-tprc'
+
+useSyncConfigTrpc()
+useSyncDownloadTrpc()
 
 const downloadStore = useDownloadStore()
 
@@ -68,13 +73,11 @@ const openFile = (item: DownloadItem) => {
                     <v-empty-state title="空空如也" :image="EMPTY_STATE_IMG_1" />
                   </td>
                 </tr>
-                <tr v-for="item in downloadStore.downloadingList" :key="item.id">
+                <tr v-for="item in downloadStore.downloadingList" :key="item.comicId">
                   <td>
-                    <template v-if="item.type === 'comic'">
-                      {{ item.comicName }}
-                      <template v-if="item.chapterName !== item.comicName">
-                        - {{ item.chapterName }}
-                      </template>
+                    {{ item.comicName }}
+                    <template v-if="item.chapterName !== item.comicName">
+                      - {{ item.chapterName }}
                     </template>
                   </td>
                   <td>
@@ -120,13 +123,11 @@ const openFile = (item: DownloadItem) => {
                     <v-empty-state title="空空如也" :image="EMPTY_STATE_IMG_2" />
                   </td>
                 </tr>
-                <tr v-for="item in downloadStore.completeList" :key="item.id">
+                <tr v-for="item in downloadStore.completeList" :key="item.comicId">
                   <td>
-                    <template v-if="item.type === 'comic'">
-                      {{ item.comicName }}
-                      <template v-if="item.chapterName !== item.comicName">
-                        - {{ item.chapterName }}
-                      </template>
+                    {{ item.comicName }}
+                    <template v-if="item.chapterName !== item.comicName">
+                      - {{ item.chapterName }}
                     </template>
                   </td>
                   <td>
