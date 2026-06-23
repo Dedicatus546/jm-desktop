@@ -39,10 +39,14 @@ export const saveDownloadList = async (list: Array<DownloadItem>) => {
   await writeFile(downloadFilepath, superjson.stringify(state.downloadList), {
     encoding: 'utf-8',
   })
+  ee.emit('downloadUpdate', state.downloadList)
 }
 
-export const updateDownloadItem = async (_item: DownloadItem) => {
-  const item = state.downloadList.find((a) => a.comicId === _item.comicId)
+export const updateDownloadItem = async (
+  comicId: DownloadItem['comicId'],
+  _item: Partial<Omit<DownloadItem, 'comicId'>>,
+) => {
+  const item = state.downloadList.find((a) => a.comicId === comicId)
   if (!item) {
     log.warn('未知的本子信息', superjson.stringify(_item))
     return

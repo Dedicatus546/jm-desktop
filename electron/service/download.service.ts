@@ -1,8 +1,8 @@
-import { downloadDir, saveDownloadList } from '@main/module/download'
+import { downloadDir, updateDownloadItem } from '@main/module/download'
 import { decodeImage } from '@main/shared/decode-image'
 import { net } from 'electron'
 import log from 'electron-log/main'
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 import pLimit from 'p-limit'
 import nameSanitizer from 'sanitize-filename'
 // @ts-expect-error 缺少 type 类型文件
@@ -24,18 +24,17 @@ export const tryDownloadService = async () => {
     return
   }
   logger.info('%d 开始处理下载', item.comicId)
-  Object.assign(item, {
+  await updateDownloadItem(item.comicId, {
     percent: 0,
     status: 'downloading',
     filepath: '',
   })
-  ee.emit('downloadUpdate', state.downloadList)
   const dirname = `${item.comicName}`
   const dirnameSanitizer = nameSanitizer(dirname)
   const filename = `[${item.comicId}] ${item.chapterName}.zip`
   const filenameSanitizer = nameSanitizer(filename)
   const dirpath = resolve(downloadDir, dirnameSanitizer)
-  const relativeFilepath = resolve(dirnameSanitizer, filenameSanitizer)
+  const relativeFilepath = join(dirnameSanitizer, filenameSanitizer)
   const filepath = resolve(downloadDir, dirnameSanitizer, filenameSanitizer)
   logger.info('%d 标准化下载文件路径 %s', item.comicId, filepath)
   let complete = 0
@@ -53,17 +52,25 @@ export const tryDownloadService = async () => {
       return decodeArrayBuffer
     }),
   )
-  const racePromiseList = list.map((promise) =>
-    promise.then((buffer) => ({
-      promise,
-      buffer,
-    })),
-  )
+  const racePromiseList = list.map((p) => {
+    type P<T> = {
+      promise: Promise<P<T>>
+      buffer: T
+    }
+    const { resolve, promise } = Promise.withResolvers<P<Buffer<ArrayBufferLike>>>()
+    p.then((buffer) =>
+      resolve({
+        promise,
+        buffer,
+      }),
+    )
+    return promise
+  })
   while (racePromiseList.length > 0) {
     const completed = await Promise.race(racePromiseList)
-    const idx = list.indexOf(completed.promise)
+    const idx = racePromiseList.indexOf(completed.promise)
     racePromiseList.splice(idx, 1)
-    Object.assign(item, {
+    await updateDownloadItem(item.comicId, {
       percent: complete / total,
       status: 'downloading',
       filepath: '',
@@ -89,11 +96,10 @@ export const tryDownloadService = async () => {
   archive.pipe(output)
   await archive.finalize()
   logger.info('%d 所有图片压缩完成，文件路径为 %s', item.comicId, filepath)
-  Object.assign(item, {
+  await updateDownloadItem(item.comicId, {
     percent: 1,
     status: 'complete',
     filepath: relativeFilepath,
   })
-  await saveDownloadList(state.downloadList)
   tryDownloadService()
 }
