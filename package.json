@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@alova/adapter-xhr": "^2.3.1",
-    "@trpc/client": "^11.17.0",
-    "@trpc/server": "^11.17.0",
+    "@trpc/client": "^11.18.0",
+    "@trpc/server": "^11.18.0",
     "@vueuse/core": "^14.3.0",
     "@vueuse/router": "^14.3.0",
     "alova": "^3.5.1",
@@ -34,8 +34,8 @@
     "electron-log": "^5.4.4",
     "electron-squirrel-startup": "^1.0.1",
     "express": "^5.2.1",
-    "http-proxy-middleware": "^4.1.0",
-    "https-proxy-agent": "^9.0.0",
+    "http-proxy-middleware": "^4.1.1",
+    "https-proxy-agent": "^9.1.0",
     "mitt": "^3.0.1",
     "p-limit": "^7.3.0",
     "pinia": "^3.0.4",
@@ -47,9 +47,9 @@
     "swiper": "^12.2.0",
     "trpc-electron-fork": "^1.0.2",
     "typeface-roboto": "^1.1.13",
-    "vue": "^3.5.35",
+    "vue": "^3.5.38",
     "vue-router": "^5.1.0",
-    "vuetify": "^4.1.0",
+    "vuetify": "^4.1.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -68,26 +68,26 @@
     "@types/cors": "^2.8.19",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.9.2",
+    "@types/node": "^26.0.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "electron": "^42.3.3",
-    "esbuild": "^0.28.0",
-    "lint-staged": "^17.0.7",
+    "electron": "^42.4.1",
+    "esbuild": "^0.28.1",
+    "lint-staged": "^17.0.8",
     "oxfmt": "^0.53.0",
     "oxlint": "^1.68.0",
     "rolldown": "1.0.2",
     "sass-embedded": "^1.100.0",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^6.0.3",
-    "unocss": "^66.7.0",
+    "unocss": "^66.7.2",
     "unplugin-auto-import": "^21.0.0",
     "unplugin-icons": "^23.0.1",
     "unplugin-vue-components": "^32.1.0",
     "vite": "^8.0.16",
     "vite-plugin-electron": "^1.0.4",
     "vite-plugin-electron-renderer": "^1.0.0",
-    "vite-plugin-vue-devtools": "^8.1.2",
-    "vue-tsc": "^3.3.3"
+    "vite-plugin-vue-devtools": "^8.1.3",
+    "vue-tsc": "^3.3.5"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
@@ -108,5 +108,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.5.2"
+  "packageManager": "pnpm@11.8.0"
 }
