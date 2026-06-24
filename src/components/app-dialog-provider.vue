@@ -46,6 +46,7 @@ const provideValue: DialogProviderInjectType = (options) => {
 }
 
 provide<DialogProviderInjectType>(dialogProviderInjectKey, provideValue)
+window.$dialog = provideValue
 
 const removeInstance = async (id: number) => {
   delay(1000)
