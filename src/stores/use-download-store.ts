@@ -1,13 +1,14 @@
 import { DownloadItem } from '@common/type'
 
 import { trpcClient } from '@/trpc'
+import { delay } from '@/utils'
 
 export const useDownloadStore = defineStore('download', () => {
   const state = reactive<{
-    activeTabKey: 'downloading' | 'complete'
+    activeTabKey: 'downloading' | 'complete' | 'pending'
     downloadList: Array<DownloadItem>
   }>({
-    activeTabKey: 'downloading',
+    activeTabKey: 'pending',
     downloadList: APP_STATE.downloadList,
   })
 
@@ -68,6 +69,18 @@ export const useDownloadStore = defineStore('download', () => {
     state.downloadList = downloadList
   }
 
+  const checkAndStartAction = async () => {
+    if (downloadingList.value.length > 0) {
+      await trpcClient.resetDownloadItem.mutate(downloadingList.value.map((item) => item.comicId))
+      await delay(1000)
+    }
+    if (pendingList.value.length > 0) {
+      pendingList.value.forEach((item) => {
+        trpcClient.download.mutate(item.comicId)
+      })
+    }
+  }
+
   return {
     ...toRefs(state),
     pendingList,
@@ -78,5 +91,6 @@ export const useDownloadStore = defineStore('download', () => {
     completeMap,
     addDownloadItemAction,
     updateFromTrpcAction,
+    checkAndStartAction,
   }
 })

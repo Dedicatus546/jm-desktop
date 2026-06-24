@@ -83,4 +83,5 @@ export const addDownloadItem = async (query: {
     encoding: 'utf-8',
   })
   ee.emit('downloadUpdate', state.downloadList)
+  return newItem
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from 'date-fns'
 import { DownloadItem } from '@common/type'
 
 import { trpcClient } from '@/trpc'
@@ -14,9 +15,11 @@ useSyncDownloadTrpc()
 const downloadStore = useDownloadStore()
 
 const openFile = (item: DownloadItem) => {
-  trpcClient.showItemInFolder.mutate({
-    path: item.filepath,
-  })
+  trpcClient.openDownloadItemDir.mutate(item.comicId)
+}
+
+const reDownload = (_item: DownloadItem) => {
+  // TODO
 }
 </script>
 
@@ -44,6 +47,7 @@ const openFile = (item: DownloadItem) => {
           v-model:model-value="downloadStore.activeTabKey"
           bg-color="primary"
         >
+          <v-tab value="pending">等待中</v-tab>
           <v-tab value="downloading">正在下载</v-tab>
           <v-tab value="complete">下载完成</v-tab>
         </v-tabs>
@@ -55,6 +59,38 @@ const openFile = (item: DownloadItem) => {
         style="height: calc(100vh - var(--v-layout-top, 0px))"
       >
         <v-tabs-window v-model:model-value="downloadStore.activeTabKey">
+          <v-tabs-window-item value="pending">
+            <v-table>
+              <colgroup>
+                <col style="width: auto" />
+                <col style="min-width: 300px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="text-left">名称</th>
+                  <th class="text-left">下载时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="downloadStore.pendingList.length === 0">
+                  <td colspan="3">
+                    <v-empty-state title="空空如也" :image="EMPTY_STATE_IMG_1" />
+                  </td>
+                </tr>
+                <tr v-for="item in downloadStore.pendingList" :key="item.comicId">
+                  <td>
+                    {{ item.comicName }}
+                    <template v-if="item.chapterName !== item.comicName">
+                      - {{ item.chapterName }}
+                    </template>
+                  </td>
+                  <td>
+                    {{ format(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-tabs-window-item>
           <v-tabs-window-item value="downloading">
             <v-table>
               <colgroup>
@@ -65,6 +101,7 @@ const openFile = (item: DownloadItem) => {
                 <tr>
                   <th class="text-left">名称</th>
                   <th class="text-left">状态</th>
+                  <th class="text-left">下载时间</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,25 +118,25 @@ const openFile = (item: DownloadItem) => {
                     </template>
                   </td>
                   <td>
-                    <template v-if="item.status === 'pending'"> 等待中... </template>
-                    <template v-else>
-                      <v-row align="center">
-                        <v-col cols="auto">正在下载中</v-col>
-                        <v-col>
-                          <v-progress-linear
-                            rounded
-                            height="25"
-                            color="primary"
-                            :model-value="item.percent * 100"
-                            size="large"
-                          >
-                            <template #default="{ value }">
-                              <strong>{{ value.toFixed(2) }}%</strong>
-                            </template>
-                          </v-progress-linear>
-                        </v-col>
-                      </v-row>
-                    </template>
+                    <v-row align="center">
+                      <v-col cols="auto">正在下载中</v-col>
+                      <v-col>
+                        <v-progress-linear
+                          rounded
+                          height="25"
+                          color="primary"
+                          :model-value="item.percent * 100"
+                          size="large"
+                        >
+                          <template #default="{ value }">
+                            <strong>{{ value.toFixed(2) }}%</strong>
+                          </template>
+                        </v-progress-linear>
+                      </v-col>
+                    </v-row>
+                  </td>
+                  <td>
+                    {{ format(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}
                   </td>
                 </tr>
               </tbody>
@@ -114,7 +151,8 @@ const openFile = (item: DownloadItem) => {
               <thead>
                 <tr>
                   <th class="text-left">名称</th>
-                  <th class="text-left">操作</th>
+                  <th class="text-left">下载时间</th>
+                  <th class="text-center">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,7 +169,11 @@ const openFile = (item: DownloadItem) => {
                     </template>
                   </td>
                   <td>
-                    <v-btn variant="text" color="primary" @click="openFile(item)"> 打开文件 </v-btn>
+                    {{ format(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}
+                  </td>
+                  <td>
+                    <v-btn variant="text" color="primary" @click="openFile(item)">打开</v-btn>
+                    <v-btn variant="text" color="primary" @click="reDownload(item)">重新下载</v-btn>
                   </td>
                 </tr>
               </tbody>

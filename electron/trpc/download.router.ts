@@ -1,13 +1,20 @@
 import log from 'electron-log/main'
 
-import { getDonwloadList, addDownloadItem } from '@main/module/download'
+import {
+  getDonwloadList,
+  addDownloadItem,
+  updateDownloadItem,
+  downloadDir,
+} from '@main/module/download'
 import { z } from 'zod'
 
 import { trpc } from './trpc'
 import { on } from 'node:events'
 import { ee } from '@main/events'
 import { state } from '@main/module/state'
-import { tryDownloadService } from '@main/service/download.service'
+import { downloadService } from '@main/service/download.service'
+import { resolve } from 'node:path'
+import { shell } from 'electron'
 
 const createChainAbortController = (signal: AbortSignal | undefined) => {
   const ac = new AbortController()
@@ -32,7 +39,7 @@ const addDownloadItemRpc = trpc.procedure
   )
   .mutation(async function (opts) {
     const { input } = opts
-    await addDownloadItem({
+    const item = await addDownloadItem({
       comicId: input.comicId,
       comicName: input.comicName,
       chapterName: input.chapterName,
@@ -40,7 +47,9 @@ const addDownloadItemRpc = trpc.procedure
       scrambleId: input.scrambleId,
       speed: input.speed,
     })
-    tryDownloadService()
+    if (item) {
+      downloadService(item.comicId)
+    }
   })
 
 const getDownloadListRpc = trpc.procedure.query(() => {
@@ -62,8 +71,39 @@ const onDownloadUpdateRpc = trpc.procedure.subscription(async function* (opts) {
   log.info('结束 onDownloadUpdate 监听')
 })
 
+const resetDownloadItemRpc = trpc.procedure
+  .input(z.array(z.number()))
+  .mutation(async ({ input }) => {
+    for (const comicId of input) {
+      const item = state.downloadList.find((item) => item.comicId === comicId)
+      if (item) {
+        await updateDownloadItem(item.comicId, {
+          filepath: '',
+          status: 'pending',
+          percent: 0,
+        })
+      }
+    }
+  })
+
+const downloadRpc = trpc.procedure.input(z.number()).mutation(async ({ input }) => {
+  downloadService(input)
+})
+
+const openDownloadItemDirRpc = trpc.procedure.input(z.number()).mutation(({ input }) => {
+  const item = state.downloadList.find((item) => item.comicId === input)
+  if (item) {
+    const { filepath } = item
+    const absoluteFilepath = resolve(downloadDir, filepath)
+    shell.showItemInFolder(absoluteFilepath)
+  }
+})
+
 export const router = {
   addDownloadItem: addDownloadItemRpc,
   onDownloadUpdate: onDownloadUpdateRpc,
   getDownloadList: getDownloadListRpc,
+  resetDownloadItem: resetDownloadItemRpc,
+  download: downloadRpc,
+  openDownloadItemDir: openDownloadItemDirRpc,
 }

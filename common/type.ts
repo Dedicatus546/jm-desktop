@@ -96,7 +96,7 @@ export interface DownloadItem {
   speed: string
 
   filepath: string
-  status: 'downloading' | 'pending' | 'complete'
+  status: 'pending' | 'downloading' | 'complete'
   percent: number // 0 - 1
   createTime: number
 }
