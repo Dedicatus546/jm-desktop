@@ -4,6 +4,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses'
 
 const config: ForgeConfig = {
   packagerConfig: {
+    appBundleId: "com.par9uet.jm-deskstop",
     asar: true,
     name: 'jm-desktop', // 对应 productName
     executableName: 'jm-desktop',
