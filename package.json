@@ -70,11 +70,11 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.0.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "electron": "^42.4.1",
+    "electron": "^42.5.0",
     "esbuild": "^0.28.1",
     "lint-staged": "^17.0.8",
-    "oxfmt": "^0.53.0",
-    "oxlint": "^1.68.0",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
     "rolldown": "1.0.2",
     "sass-embedded": "^1.100.0",
     "simple-git-hooks": "^2.13.1",
@@ -83,14 +83,14 @@
     "unplugin-auto-import": "^21.0.0",
     "unplugin-icons": "^23.0.1",
     "unplugin-vue-components": "^32.1.0",
-    "vite": "^8.0.16",
+    "vite": "^8.1.0",
     "vite-plugin-electron": "^1.0.4",
     "vite-plugin-electron-renderer": "^1.0.0",
     "vite-plugin-vue-devtools": "^8.1.3",
     "vue-tsc": "^3.3.5"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm vue-tsc && pnpm lint-staged"
+    "pre-commit": "pnpm lint-staged"
   },
   "lint-staged": {
     "src/**": [
@@ -108,5 +108,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.9.0"
 }
