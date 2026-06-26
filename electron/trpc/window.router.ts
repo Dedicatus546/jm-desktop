@@ -14,10 +14,11 @@ const openWindowRpc = trpc.procedure
   .input(
     z.object({
       id: z.enum(WindowId),
+      query: z.record(z.string(), z.any()).optional(),
     }),
   )
   .mutation(async ({ input }) => {
-    showWindow(input.id)
+    showWindow(input.id, input.query)
   })
 
 const closeWindowRpc = trpc.procedure.mutation(({ ctx }) => {

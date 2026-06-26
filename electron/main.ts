@@ -31,6 +31,7 @@ app.on('activate', async () => {
 })
 
 app.whenReady().then(async () => {
+  app.setAsDefaultProtocolClient('jm-desktop')
   if (isDev) {
     const { devtron } = await import('@electron/devtron')
     await devtron.install()

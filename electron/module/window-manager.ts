@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import log from 'electron-log/main'
-import { BrowserWindow, BrowserWindowConstructorOptions, session } from 'electron'
+import { BrowserWindow, BrowserWindowConstructorOptions, screen, session } from 'electron'
 import { getConfig } from './config'
 // TODO fix
 import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/shared/utils'
@@ -86,6 +86,18 @@ const windowOptionMap: WindowOptionMap = {
       resizable: false,
     },
   },
+  [WindowId.DOWNLOAD_NOTIFICATION]: {
+    path: 'download-notification.html',
+    saveSize: false,
+    savePosition: false,
+    bwConfig: {
+      width: 400,
+      height: 200,
+      resizable: false,
+      movable: false,
+      show: false,
+    },
+  },
 }
 
 export const hasWindow = (id: WindowId) => {
@@ -138,7 +150,7 @@ const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
 
 const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindowInfo)
 
-export const createWindow = async (id: WindowId) => {
+export const createWindow = async (id: WindowId, query?: Record<string, any>) => {
   const logger = log.scope(`window[${id}]`)
   const disposeFnList: Array<() => void> = []
 
@@ -174,9 +186,19 @@ export const createWindow = async (id: WindowId) => {
       },
       autoHideMenuBar: true,
       frame: false,
+      useContentSize: true, // 让 width/height 直接控制网页内容区域
       ...o,
     }),
   )
+
+  if (id === WindowId.DOWNLOAD_NOTIFICATION) {
+    const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
+    const [windowWidth, windowHeight] = win.getContentSize()
+    const x = screenWidth - windowWidth - 10
+    const y = screenHeight - windowHeight - 10
+    win.setPosition(x, y)
+    win.show()
+  }
 
   windowMap.set(id, win)
   windowIdMap.set(win, id)
@@ -196,16 +218,24 @@ export const createWindow = async (id: WindowId) => {
   win.on('resize', () => saveCurrentWindowInfoDebounce(win, id))
 
   if (VITE_DEV_SERVER_URL) {
-    const resolvedUrl = (() => {
-      const url = new URL(path, VITE_DEV_SERVER_URL)
-      return url.toString()
-    })()
-    await win.loadURL(resolvedUrl)
-    logger.info('加载 DEV 地址', resolvedUrl)
+    const url = new URL(path, VITE_DEV_SERVER_URL)
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        url.searchParams.append(key, query[key])
+      })
+    }
+    await win.loadURL(url.toString())
+    logger.info('加载 DEV 地址', url.toString())
   } else {
     const port = await getExpressServerPort()
-    await win.loadURL(`http://localhost:${port}/${path}`)
-    logger.info('加载 PROD 地址', `http://localhost:${port}/${path}`)
+    const url = new URL(path, `http://localhost:${port}`)
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        url.searchParams.append(key, query[key])
+      })
+    }
+    await win.loadURL(url.toString())
+    logger.info('加载 PROD 地址', url.toString())
   }
 
   // 放在 loadURL 后，不然白屏
@@ -260,7 +290,7 @@ export const getWindowId = (win: BrowserWindow) => {
   return windowIdMap.get(win)!
 }
 
-export const showWindow = async (id: WindowId) => {
+export const showWindow = async (id: WindowId, query?: Record<string, any>) => {
   if (hasWindow(id)) {
     const win = getWindow(id)!
     if (win.isMinimized()) {
@@ -270,5 +300,5 @@ export const showWindow = async (id: WindowId) => {
     win.focus()
     return
   }
-  await createWindow(id)
+  await createWindow(id, query)
 }

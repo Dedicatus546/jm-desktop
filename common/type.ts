@@ -9,6 +9,7 @@ export enum WindowId {
   ABOUT,
   SIGN,
   DOWNLOAD,
+  DOWNLOAD_NOTIFICATION
 }
 
 export type WindowInfo = {
