@@ -41,9 +41,15 @@ const windowOptionMap: WindowOptionMap = {
     saveSize: false,
     savePosition: true,
     bwConfig: {
+      // 如果直接设置 resizable: false
+      // 会导致宽高不一致
       width: 500,
       height: 690,
-      resizable: false,
+      minWidth: 500,
+      minHeight: 690,
+      maxWidth: 500,
+      maxHeight: 690,
+      // resizable: false,
     },
   },
   [WindowId.SETTING]: {
@@ -53,7 +59,11 @@ const windowOptionMap: WindowOptionMap = {
     bwConfig: {
       width: 500,
       height: 735,
-      resizable: false,
+      minWidth: 500,
+      minHeight: 735,
+      maxWidth: 500,
+      maxHeight: 735,
+      // resizable: false,
     },
   },
   [WindowId.ABOUT]: {
@@ -63,7 +73,11 @@ const windowOptionMap: WindowOptionMap = {
     bwConfig: {
       width: 700,
       height: 460,
-      resizable: false,
+      minWidth: 700,
+      minHeight: 460,
+      maxWidth: 700,
+      maxHeight: 460,
+      // resizable: false,
     },
   },
   [WindowId.SIGN]: {
@@ -73,7 +87,11 @@ const windowOptionMap: WindowOptionMap = {
     bwConfig: {
       width: 1200,
       height: 950,
-      resizable: false,
+      minWidth: 1200,
+      minHeight: 950,
+      maxWidth: 1200,
+      maxHeight: 950,
+      // resizable: false,
     },
   },
   [WindowId.DOWNLOAD]: {
@@ -83,17 +101,25 @@ const windowOptionMap: WindowOptionMap = {
     bwConfig: {
       width: 1200,
       height: 950,
-      resizable: false,
+      minWidth: 1200,
+      minHeight: 950,
+      maxWidth: 1200,
+      maxHeight: 950,
+      // resizable: false,
     },
   },
-  [WindowId.DOWNLOAD_NOTIFICATION]: {
-    path: 'download-notification.html',
+  [WindowId.NOTIFICATION]: {
+    path: 'notification.html',
     saveSize: false,
     savePosition: false,
     bwConfig: {
       width: 400,
       height: 200,
-      resizable: false,
+      minWidth: 400,
+      minHeight: 200,
+      maxWidth: 400,
+      maxHeight: 200,
+      // resizable: false,
       movable: false,
       show: false,
     },
@@ -191,11 +217,11 @@ export const createWindow = async (id: WindowId, query?: Record<string, any>) =>
     }),
   )
 
-  if (id === WindowId.DOWNLOAD_NOTIFICATION) {
+  if (id === WindowId.NOTIFICATION) {
     const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
     const [windowWidth, windowHeight] = win.getContentSize()
-    const x = screenWidth - windowWidth - 10
-    const y = screenHeight - windowHeight - 10
+    const x = screenWidth - windowWidth
+    const y = screenHeight - windowHeight
     win.setPosition(x, y)
     win.show()
   }
