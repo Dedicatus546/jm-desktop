@@ -7,7 +7,7 @@ import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/sha
 import { debounce, isEqual } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
-import { Config, ProxyInfo, WindowType as string, WindowInfo, WindowType } from '@common/type'
+import { Config, ProxyInfo, WindowType, WindowInfo } from '@common/type'
 import { getWindowInfo, updateWindowInfo } from './window-info'
 import { ee } from '@main/events'
 
@@ -25,7 +25,7 @@ type WindowOptionMap = Record<
 >
 
 const windowOptionMap: WindowOptionMap = {
-  [string.HOME]: {
+  [WindowType.HOME]: {
     path: 'home.html',
     saveSize: true,
     savePosition: true,
@@ -36,7 +36,7 @@ const windowOptionMap: WindowOptionMap = {
       minHeight: 800,
     },
   },
-  [string.LOGIN]: {
+  [WindowType.LOGIN]: {
     path: 'login.html',
     saveSize: false,
     savePosition: true,
@@ -52,7 +52,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [string.SETTING]: {
+  [WindowType.SETTING]: {
     path: 'setting.html',
     saveSize: false,
     savePosition: true,
@@ -66,7 +66,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [string.ABOUT]: {
+  [WindowType.ABOUT]: {
     path: 'about.html',
     saveSize: false,
     savePosition: true,
@@ -80,7 +80,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [string.SIGN]: {
+  [WindowType.SIGN]: {
     path: 'sign.html',
     saveSize: false,
     savePosition: true,
@@ -94,7 +94,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [string.DOWNLOAD]: {
+  [WindowType.DOWNLOAD]: {
     path: 'download.html',
     saveSize: false,
     savePosition: true,
@@ -108,7 +108,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [string.NOTIFICATION]: {
+  [WindowType.NOTIFICATION]: {
     path: 'notification.html',
     saveSize: false,
     savePosition: false,
@@ -154,9 +154,9 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
   }
 }
 
-const saveCurrentWindowInfo = async (win: BrowserWindow, id: string) => {
+const saveCurrentWindowInfo = async (win: BrowserWindow, id: string, type: WindowType) => {
   const bounds = win.getBounds()
-  const options = windowOptionMap[id]
+  const options = windowOptionMap[type]
   const { savePosition, saveSize } = options
   const o: WindowInfo = {}
   if (savePosition) {
@@ -219,7 +219,7 @@ export const createWindow = async (id: string, type: WindowType, query?: Record<
     }),
   )
 
-  if (type === string.NOTIFICATION) {
+  if (type === WindowType.NOTIFICATION) {
     const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
     const [windowWidth, windowHeight] = win.getContentSize()
     const x = screenWidth - windowWidth
@@ -233,17 +233,17 @@ export const createWindow = async (id: string, type: WindowType, query?: Record<
 
   // 第一次启动后要记录 electron 默认设置的位置
   if (!windowInfo) {
-    await saveCurrentWindowInfo(win, id)
+    await saveCurrentWindowInfo(win, id, type)
   }
 
   win.on('close', () => {
     disposeFnList.forEach((fn) => fn())
-    saveCurrentWindowInfo(win, id)
+    saveCurrentWindowInfo(win, id, type)
     windowMap.delete(id)
     windowIdMap.delete(win)
   })
-  win.on('move', () => saveCurrentWindowInfoDebounce(win, id))
-  win.on('resize', () => saveCurrentWindowInfoDebounce(win, id))
+  win.on('move', () => saveCurrentWindowInfoDebounce(win, id, type))
+  win.on('resize', () => saveCurrentWindowInfoDebounce(win, id, type))
 
   if (VITE_DEV_SERVER_URL) {
     const url = new URL(path, VITE_DEV_SERVER_URL)
