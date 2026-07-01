@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // import useInitApp from './compositions/use-init-app'
+import { useListenDownloadComplete } from '@/compositions/use-listen-download-complete'
 import { useRefreshUser } from '@/compositions/use-refresh-user'
 import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
 import { useSyncDownloadTrpc } from '@/compositions/use-sync-download-tprc'
@@ -13,6 +14,7 @@ useSyncUserTrpc()
 useSyncConfigTrpc()
 useSyncPrefetchDataTrpc()
 useSyncDownloadTrpc()
+useListenDownloadComplete()
 
 const downloadStore = useDownloadStore()
 onMounted(() => {

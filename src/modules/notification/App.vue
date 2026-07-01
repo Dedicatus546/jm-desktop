@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import { useUrlSearchParams } from '@vueuse/core'
 import { trpcClient } from '@/trpc'
-import { useSyncPrefetchDataTrpc } from '@/compositions/use-sync-prefetch-data-trpc'
-import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
-
-useSyncPrefetchDataTrpc()
-
-const prefetchDataStore = usePrefetchDataStore()
+import { AppNotification } from '@common/type'
+import { decodeFromBase64 } from '@/utils/base64'
 
 const usp = useUrlSearchParams<{
   q: string
 }>('history')
 
-const msg = computed(() => {
-  return JSON.parse(usp.q) as {
-    comicId: string
-  }
+const appNotificationInfo = computed(() => {
+  return JSON.parse(decodeFromBase64(usp.q)) as AppNotification
 })
 
-const cover = computed(() =>
-  import.meta.env.VITE_NSFW === 'off'
-    ? '/360x640.svg'
-    : `${prefetchDataStore.state.imgHost}/media/albums/${msg.value.comicId}_3x4.jpg`,
-)
+onMounted(() => {
+  setTimeout(() => {
+    trpcClient.closeWindow.mutate()
+  }, appNotificationInfo.value.duration)
+})
 </script>
 
 <template>
@@ -41,13 +35,16 @@ const cover = computed(() =>
     </v-app-bar>
     <v-main>
       <div
-        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4 wind-flex"
+        class="wind-h-full wind-w-full wind-overflow-y-auto wind-p-4"
         style="height: calc(100vh - var(--v-layout-top, 0px))"
       >
-        <div class="wind-w-[70px]">
-          <v-img :aspect-ratio="3 / 4" alt="" :src="cover" />
+        <div
+          class="wind-text-xl wind-font-bold wind-line-clamp-3"
+          :title="appNotificationInfo.title"
+        >
+          {{ appNotificationInfo.title }}
         </div>
-        <div class="wind-flex-grow">xxxxxxxxxxxx</div>
+        <div class="wind-mt-2">{{ appNotificationInfo.body }}</div>
       </div>
     </v-main>
   </app-provider>

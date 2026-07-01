@@ -12,6 +12,7 @@ export interface EventEmitterMap {
     },
   ]
   downloadUpdate: [list: Array<DownloadItem>]
+  downloadComplete: [DownloadItem]
   downloadProgressUpdate: [
     item: {
       comicId: number

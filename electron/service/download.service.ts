@@ -1,6 +1,6 @@
 import { downloadDir, updateDownloadItem } from '@main/module/download'
 import { decodeImage } from '@main/shared/decode-image'
-import { net, Notification, shell } from 'electron'
+import { net } from 'electron'
 import log from 'electron-log/main'
 import { join, resolve } from 'node:path'
 import pLimit from 'p-limit'
@@ -104,15 +104,6 @@ export const downloadService = async (comicId: DownloadItem['comicId']) => {
       status: 'complete',
       filepath: relativeFilepath,
     })
-    const title = `[${item.comicId}] ${item.comicName} ${item.chapterName}`
-    const ntf = new Notification({
-      title,
-      body: `下载完成`,
-    })
-    ntf.show()
-    // TODO fix 没有生效
-    ntf.once('click', () => {
-      shell.showItemInFolder(filepath)
-    })
+    ee.emit('downloadComplete', item)
   })
 }

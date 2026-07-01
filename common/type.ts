@@ -9,7 +9,7 @@ export enum WindowId {
   ABOUT,
   SIGN,
   DOWNLOAD,
-  DOWNLOAD_NOTIFICATION
+  NOTIFICATION,
 }
 
 export type WindowInfo = {
@@ -89,15 +89,22 @@ export type LoginInfo = {
 }
 
 export interface DownloadItem {
+  belongComicId: number
   comicId: number
   comicName: string
   chapterName: string
   picUrlList: Array<string>
   scrambleId: number
   speed: string
-
   filepath: string
   status: 'pending' | 'downloading' | 'complete'
   percent: number // 0 - 1
   createTime: number
+}
+
+export interface AppNotification {
+  type: 'base'
+  title: string
+  body: string
+  duration: number
 }

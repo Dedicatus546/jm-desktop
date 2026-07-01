@@ -48,6 +48,7 @@ export const useDownloadStore = defineStore('download', () => {
   )
 
   const addDownloadItemAction = async (query: {
+    belongComicId: number
     comicId: number
     comicName: string
     chapterName: string
@@ -56,6 +57,7 @@ export const useDownloadStore = defineStore('download', () => {
     speed: string
   }) => {
     await trpcClient.addDownloadItem.mutate({
+      belongComicId: query.belongComicId,
       comicId: query.comicId,
       comicName: query.comicName,
       chapterName: query.chapterName,

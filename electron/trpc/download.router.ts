@@ -15,6 +15,7 @@ import { state } from '@main/module/state'
 import { downloadService } from '@main/service/download.service'
 import { resolve } from 'node:path'
 import { shell } from 'electron'
+import { DownloadItem } from '@common/type'
 
 const createChainAbortController = (signal: AbortSignal | undefined) => {
   const ac = new AbortController()
@@ -73,6 +74,21 @@ const onDownloadUpdateRpc = trpc.procedure.subscription(async function* (opts) {
   log.info('结束 onDownloadUpdate 监听')
 })
 
+const onDownloadCompleteRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const [downloadItem] of on(ee, 'downloadComplete', { signal: ac.signal })) {
+    yield downloadItem as DownloadItem
+  }
+
+  log.info('结束 onDownloadComplete 监听')
+})
+
 const resetDownloadItemRpc = trpc.procedure
   .input(z.array(z.number()))
   .mutation(async ({ input }) => {
@@ -108,4 +124,5 @@ export const router = {
   resetDownloadItem: resetDownloadItemRpc,
   download: downloadRpc,
   openDownloadItemDir: openDownloadItemDirRpc,
+  onDownloadComplete: onDownloadCompleteRpc,
 }
