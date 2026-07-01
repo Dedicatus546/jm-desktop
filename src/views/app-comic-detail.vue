@@ -319,11 +319,16 @@ const retry = () => {
                       variant="flat"
                       size="large"
                       block
+                      :disabled="item?.status === 'downloading'"
                       @click="download"
                     >
                       <template #prepend>
                         <v-icon>
-                          <i-mdi-download />
+                          <i-mdi-loading
+                            class="wind-animate-spin"
+                            v-if="item?.status === 'downloading'"
+                          />
+                          <i-mdi-download v-else />
                         </v-icon>
                       </template>
                       {{

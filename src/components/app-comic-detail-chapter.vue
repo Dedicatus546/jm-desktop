@@ -127,11 +127,16 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
                       : undefined
                 "
                 class="chapter-btn wind-ml-2"
+                :disabled="!!downloadStore.downloadingMap[item.id]"
                 @click="downloadChapter(item)"
               >
                 <template #prepend>
                   <v-icon>
-                    <i-mdi-download />
+                    <i-mdi-loading
+                      class="wind-animate-spin"
+                      v-if="!!downloadStore.downloadingMap[item.id]"
+                    />
+                    <i-mdi-download v-else />
                   </v-icon>
                 </template>
                 {{
