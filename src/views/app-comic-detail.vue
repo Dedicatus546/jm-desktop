@@ -164,6 +164,7 @@ const download = async () => {
   const exec = async () => {
     await getComicPicList(id.value)
     await downloadStore.addDownloadItemAction({
+      belongComicId: id.value,
       comicId: id.value,
       comicName: comicInfo.value.data.name,
       chapterName,
@@ -390,6 +391,7 @@ const retry = () => {
             <v-tabs-window-item value="chapter">
               <app-comic-detail-chapter
                 :loading="loading"
+                :comic-id="comicInfo?.data.id"
                 :comic-name="comicInfo?.data.name ?? ''"
                 :chapter-list="comicInfo?.data.seriesList ?? []"
                 :current-chapter-id="comicInfo?.data.currentSeriesId"

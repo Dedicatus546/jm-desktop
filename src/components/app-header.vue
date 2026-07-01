@@ -128,23 +128,6 @@ const toHome = () => {
             </v-icon>
           </app-header-icon-btn>
           <app-header-icon-btn
-            tooltip-text="test"
-            @click="
-              trpcClient.openWindow.mutate({
-                id: WindowId.DOWNLOAD_NOTIFICATION,
-                query: {
-                  q: JSON.stringify({
-                    comicId: 1044156,
-                  }),
-                },
-              })
-            "
-          >
-            <v-icon>
-              <i-mdi-download />
-            </v-icon>
-          </app-header-icon-btn>
-          <app-header-icon-btn
             tooltip-text="关于"
             @click="trpcClient.openWindow.mutate({ id: WindowId.ABOUT })"
           >

@@ -59,6 +59,7 @@ export const updateDownloadItem = async (
 }
 
 export const addDownloadItem = async (query: {
+  belongComicId: number
   comicId: number
   comicName: string
   chapterName: string

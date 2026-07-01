@@ -29,6 +29,7 @@ const createChainAbortController = (signal: AbortSignal | undefined) => {
 const addDownloadItemRpc = trpc.procedure
   .input(
     z.object({
+      belongComicId: z.number(),
       comicId: z.number(),
       comicName: z.string(),
       chapterName: z.string(),
@@ -40,6 +41,7 @@ const addDownloadItemRpc = trpc.procedure
   .mutation(async function (opts) {
     const { input } = opts
     const item = await addDownloadItem({
+      belongComicId: input.belongComicId,
       comicId: input.comicId,
       comicName: input.comicName,
       chapterName: input.chapterName,

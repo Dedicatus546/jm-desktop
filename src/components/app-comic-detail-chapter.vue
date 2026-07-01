@@ -9,6 +9,7 @@ import { log } from '@/utils/logger'
 
 const props = withDefaults(
   defineProps<{
+    comicId: number
     loading?: boolean
     chapterList: Array<{
       id: number
@@ -61,6 +62,7 @@ const downloadChapter = async (chapter: { id: number; name: string }) => {
   const exec = async () => {
     await send(chapter.id)
     await downloadStore.addDownloadItemAction({
+      belongComicId: props.comicId,
       comicId: chapter.id,
       comicName: props.comicName,
       chapterName: chapter.name,
