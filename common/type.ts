@@ -2,14 +2,14 @@ export type Theme = 'light' | 'dark' | 'auto'
 
 export type ReadMode = 'scroll' | 'click'
 
-export enum WindowId {
-  HOME,
-  SETTING,
-  LOGIN,
-  ABOUT,
-  SIGN,
-  DOWNLOAD,
-  NOTIFICATION,
+export enum WindowType {
+  HOME = 'home',
+  SETTING = 'setting',
+  LOGIN = 'login',
+  ABOUT = 'about',
+  SIGN = 'sign',
+  DOWNLOAD = 'download',
+  NOTIFICATION = 'notification',
 }
 
 export type WindowInfo = {
@@ -37,7 +37,7 @@ export type Config = {
   proxyInfo: ProxyInfo | null
 }
 
-export type WindowInfoMap = Map<WindowId, WindowInfo>
+export type WindowInfoMap = Map<string, WindowInfo>
 
 export type PrefetchData = {
   imgHost: string

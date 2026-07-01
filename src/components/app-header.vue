@@ -3,7 +3,7 @@ import { trpcClient } from '@/trpc'
 import useSnackbar from '@/compositions/use-snack-bar'
 import { useConfigStore } from '@/stores/use-config-store'
 import useUserStore from '@/stores/use-user-store'
-import { WindowId } from '@common/type'
+import { WindowType } from '@common/type'
 
 const snackbar = useSnackbar()
 const configStore = useConfigStore()
@@ -77,7 +77,7 @@ const toHome = () => {
           <app-header-icon-btn
             v-if="userStore.isLogin"
             tooltip-text="每月签到"
-            @click="trpcClient.openWindow.mutate({ id: WindowId.SIGN })"
+            @click="trpcClient.openWindow.mutate({ id: WindowType.SIGN, type: WindowType.SIGN })"
           >
             <v-icon>
               <i-mdi-calendar-month />
@@ -105,7 +105,7 @@ const toHome = () => {
           <app-header-icon-btn
             v-else
             tooltip-text="登录"
-            @click="trpcClient.openWindow.mutate({ id: WindowId.LOGIN })"
+            @click="trpcClient.openWindow.mutate({ id: WindowType.LOGIN, type: WindowType.LOGIN })"
           >
             <v-icon>
               <i-mdi-login />
@@ -113,7 +113,9 @@ const toHome = () => {
           </app-header-icon-btn>
           <app-header-icon-btn
             tooltip-text="设置"
-            @click="trpcClient.openWindow.mutate({ id: WindowId.SETTING })"
+            @click="
+              trpcClient.openWindow.mutate({ id: WindowType.SETTING, type: WindowType.SETTING })
+            "
           >
             <v-icon>
               <i-mdi-cog />
@@ -121,7 +123,9 @@ const toHome = () => {
           </app-header-icon-btn>
           <app-header-icon-btn
             tooltip-text="下载"
-            @click="trpcClient.openWindow.mutate({ id: WindowId.DOWNLOAD })"
+            @click="
+              trpcClient.openWindow.mutate({ id: WindowType.DOWNLOAD, type: WindowType.DOWNLOAD })
+            "
           >
             <v-icon>
               <i-mdi-download />
@@ -129,7 +133,7 @@ const toHome = () => {
           </app-header-icon-btn>
           <app-header-icon-btn
             tooltip-text="关于"
-            @click="trpcClient.openWindow.mutate({ id: WindowId.ABOUT })"
+            @click="trpcClient.openWindow.mutate({ id: WindowType.ABOUT, type: WindowType.ABOUT })"
           >
             <v-icon>
               <i-mdi-information />

@@ -1,7 +1,7 @@
 import { trpcClient } from '@/trpc'
 import { Unsubscribable } from '@trpc/server/observable'
 import { log } from '@/utils/logger'
-import { WindowId } from '@common/type'
+import { WindowType } from '@common/type'
 import { encodeToBase64 } from '@/utils/base64'
 
 const { info } = log
@@ -34,10 +34,12 @@ export const useListenDownloadComplete = () => {
   onMounted(() => {
     info('订阅 downloadComplete 变化')
     unsubscribable = trpcClient.onDownloadComplete.subscribe(undefined, {
-      onData(item) {
+      async onData(item) {
         const title = `[${item.comicId}] ${item.comicName} ${item.chapterName}`
+        const uuid = await trpcClient.getUUID.query()
         trpcClient.openWindow.mutate({
-          id: WindowId.NOTIFICATION,
+          id: uuid,
+          type: WindowType.NOTIFICATION,
           query: {
             q: encodeToBase64(
               JSON.stringify({
@@ -50,7 +52,6 @@ export const useListenDownloadComplete = () => {
           },
         })
         playNotificationSound()
-        // TODO 重构 openWindow 改为不使用 WindowId 作为 id ，不然通知多窗口不好做
       },
     })
   })

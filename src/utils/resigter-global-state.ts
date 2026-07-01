@@ -1,5 +1,5 @@
 import { trpcClient } from '@/trpc'
-import { Config, DownloadItem, LoginInfo, PrefetchData, User, WindowId } from '@common/type'
+import { Config, DownloadItem, LoginInfo, PrefetchData, User, WindowType } from '@common/type'
 
 declare global {
   // 定义你的状态结构
@@ -13,12 +13,12 @@ declare global {
 
   // 这样直接写，可以让前端直接使用 `appState.config`
   const APP_STATE: AppState
-  const WINDOW_ID: WindowId
+  const WINDOW_ID: WindowType
 
   // 这样写，可以让前端使用 `window.appState.config` 并且不报错
   interface Window {
     APP_STATE: AppState
-    WINDOW_ID: WindowId
+    WINDOW_ID: string
   }
 }
 

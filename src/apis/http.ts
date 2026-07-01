@@ -8,7 +8,7 @@ import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi } from './a
 import { trpcClient } from '@/trpc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
-import { WindowId } from '@common/type'
+import { WindowType } from '@common/type'
 import { log } from '@/utils/logger'
 
 const { info, error, warn } = log
@@ -139,7 +139,7 @@ const http = createAlova({
     if (method.type === 'GET') {
       method.config.cacheFor = 1000 * 60 * 20
     }
-    if (!prefetchDataStore.isInit && WINDOW_ID === WindowId.HOME) {
+    if (!prefetchDataStore.isInit && WINDOW_ID === WindowType.HOME) {
       if (!initPromise) {
         try {
           const { promise, resolve, reject } = Promise.withResolvers<void>()

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { trpc } from './trpc'
 import { getWindowId, showWindow } from '@main/module/window-manager'
-import { WindowId } from '@common/type'
+import { WindowType } from '@common/type'
 import { app } from 'electron'
 
 const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {
@@ -13,19 +13,20 @@ const getWindowIdRpc = trpc.procedure.query(async ({ ctx }) => {
 const openWindowRpc = trpc.procedure
   .input(
     z.object({
-      id: z.enum(WindowId),
+      id: z.string(),
+      type: z.enum(WindowType),
       query: z.record(z.string(), z.any()).optional(),
     }),
   )
   .mutation(async ({ input }) => {
-    showWindow(input.id, input.query)
+    showWindow(input.id, input.type, input.query)
   })
 
 const closeWindowRpc = trpc.procedure.mutation(({ ctx }) => {
   const { winId } = ctx
   const win = ctx.win
   win.close()
-  if (winId === WindowId.HOME) {
+  if (winId === WindowType.HOME) {
     app.exit()
   }
 })

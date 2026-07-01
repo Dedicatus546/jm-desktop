@@ -7,15 +7,15 @@ import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/sha
 import { debounce, isEqual } from 'radash'
 import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
-import { Config, ProxyInfo, WindowId, WindowInfo } from '@common/type'
+import { Config, ProxyInfo, WindowType as string, WindowInfo, WindowType } from '@common/type'
 import { getWindowInfo, updateWindowInfo } from './window-info'
 import { ee } from '@main/events'
 
-const windowMap = new Map<WindowId, BrowserWindow>()
-const windowIdMap = new Map<BrowserWindow, WindowId>()
+const windowMap = new Map<string, BrowserWindow>()
+const windowIdMap = new Map<BrowserWindow, string>()
 
 type WindowOptionMap = Record<
-  WindowId,
+  string,
   {
     path: `${string}.html`
     saveSize: boolean
@@ -25,7 +25,7 @@ type WindowOptionMap = Record<
 >
 
 const windowOptionMap: WindowOptionMap = {
-  [WindowId.HOME]: {
+  [string.HOME]: {
     path: 'home.html',
     saveSize: true,
     savePosition: true,
@@ -36,7 +36,7 @@ const windowOptionMap: WindowOptionMap = {
       minHeight: 800,
     },
   },
-  [WindowId.LOGIN]: {
+  [string.LOGIN]: {
     path: 'login.html',
     saveSize: false,
     savePosition: true,
@@ -52,7 +52,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [WindowId.SETTING]: {
+  [string.SETTING]: {
     path: 'setting.html',
     saveSize: false,
     savePosition: true,
@@ -66,7 +66,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [WindowId.ABOUT]: {
+  [string.ABOUT]: {
     path: 'about.html',
     saveSize: false,
     savePosition: true,
@@ -80,7 +80,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [WindowId.SIGN]: {
+  [string.SIGN]: {
     path: 'sign.html',
     saveSize: false,
     savePosition: true,
@@ -94,7 +94,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [WindowId.DOWNLOAD]: {
+  [string.DOWNLOAD]: {
     path: 'download.html',
     saveSize: false,
     savePosition: true,
@@ -108,7 +108,7 @@ const windowOptionMap: WindowOptionMap = {
       // resizable: false,
     },
   },
-  [WindowId.NOTIFICATION]: {
+  [string.NOTIFICATION]: {
     path: 'notification.html',
     saveSize: false,
     savePosition: false,
@@ -126,11 +126,11 @@ const windowOptionMap: WindowOptionMap = {
   },
 }
 
-export const hasWindow = (id: WindowId) => {
+export const hasWindow = (id: string) => {
   return windowMap.get(id) !== undefined
 }
 
-export const getWindow = (id: WindowId) => {
+export const getWindow = (id: string) => {
   return windowMap.get(id)
 }
 
@@ -154,7 +154,7 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
   }
 }
 
-const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
+const saveCurrentWindowInfo = async (win: BrowserWindow, id: string) => {
   const bounds = win.getBounds()
   const options = windowOptionMap[id]
   const { savePosition, saveSize } = options
@@ -171,16 +171,18 @@ const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
       height: bounds.height,
     })
   }
-  await updateWindowInfo(id, o)
+  if (savePosition || saveSize) {
+    await updateWindowInfo(id, o)
+  }
 }
 
 const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindowInfo)
 
-export const createWindow = async (id: WindowId, query?: Record<string, any>) => {
-  const logger = log.scope(`window[${id}]`)
+export const createWindow = async (id: string, type: WindowType, query?: Record<string, any>) => {
+  const logger = log.scope(`window[${id}-${type}]`)
   const disposeFnList: Array<() => void> = []
 
-  const options = windowOptionMap[id]
+  const options = windowOptionMap[type]
   const { bwConfig, path, savePosition, saveSize } = options
   const config = getConfig()
   const windowInfo = getWindowInfo(id)
@@ -217,7 +219,7 @@ export const createWindow = async (id: WindowId, query?: Record<string, any>) =>
     }),
   )
 
-  if (id === WindowId.NOTIFICATION) {
+  if (type === string.NOTIFICATION) {
     const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
     const [windowWidth, windowHeight] = win.getContentSize()
     const x = screenWidth - windowWidth
@@ -281,8 +283,8 @@ export const createWindow = async (id: WindowId, query?: Record<string, any>) =>
 }
 
 export const createHomeWindow = async () => {
-  const homeWindow = await createWindow(WindowId.HOME)
-  const logger = log.scope(`window[${WindowId.HOME}]`)
+  const homeWindow = await createWindow(WindowType.HOME, WindowType.HOME)
+  const logger = log.scope(`window[${WindowType.HOME}]`)
   const disposeFnList: Array<() => void> = []
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
@@ -316,7 +318,7 @@ export const getWindowId = (win: BrowserWindow) => {
   return windowIdMap.get(win)!
 }
 
-export const showWindow = async (id: WindowId, query?: Record<string, any>) => {
+export const showWindow = async (id: string, type: WindowType, query?: Record<string, any>) => {
   if (hasWindow(id)) {
     const win = getWindow(id)!
     if (win.isMinimized()) {
@@ -326,5 +328,5 @@ export const showWindow = async (id: WindowId, query?: Record<string, any>) => {
     win.focus()
     return
   }
-  await createWindow(id, query)
+  await createWindow(id, type, query)
 }

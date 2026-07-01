@@ -2,6 +2,7 @@ import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
 import log from 'electron-log/main'
 import { dialog, shell } from 'electron'
 import { z } from 'zod'
+import { randomUUID } from 'node:crypto'
 
 import { trpc } from './trpc'
 import { on } from 'node:events'
@@ -129,6 +130,10 @@ const notifyMessageRpc = trpc.procedure
     })
   })
 
+const getUUIDRpc = trpc.procedure.query(() => {
+  return randomUUID()
+})
+
 export const router = {
   openLink: openLinkRpc,
   showItemInFolder: showItemInFolderRpc,
@@ -140,4 +145,5 @@ export const router = {
 
   onNotifyMessage: onNotifyMessageRpc,
   notifyMessage: notifyMessageRpc,
+  getUUID: getUUIDRpc,
 }
