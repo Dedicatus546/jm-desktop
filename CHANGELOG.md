@@ -10,11 +10,16 @@
 # 2.1.4（未发布）
 
 - 接口错误情况下显示重试按钮。现在页面在出现网络错误后会出现重试 UI ，这样就不用使用 ctrl + r 来刷新了。
+  
   ![](https://fastly.jsdelivr.net/gh/Dedicatus546/image@main/2026/05/12/20260512143314940.avif)
 - 设置页、登录页、签到页、关于页拆分为单独的窗口
+  
   ![](https://fastly.jsdelivr.net/gh/Dedicatus546/image@main/2026/06/09/20260609111709834.avif)
 - 远程拉取最新的接口。鉴于 jm 的接口变动可能比较频繁，目前加了个按钮用来使用 远程拉取本项目下的 api.txt 。由于 jsdelivr 跨域限制，所以我在我的域名下做了一层转发，即 `https://proxy-api.prohibitorum.top/jm-api` -> `https://fastly.jsdelivr.net/gh/Dedicatus546/jm-desktop@main/api.txt`。
+  
   ![](https://fastly.jsdelivr.net/gh/Dedicatus546/image@main/2026/06/11/20260611154206190.avif)
+
+- 去除了解析图片列表时的 eval 调用，改为正则匹配。
 - 升级了一些依赖
 
 # 2.1.3
