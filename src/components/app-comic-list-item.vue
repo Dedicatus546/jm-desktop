@@ -26,24 +26,12 @@ const cover = computed(() =>
 
 const visibleRef = useTemplateRef('visibleRef')
 const isVisible = useElementVisibility(visibleRef, {
-  once: true,
+  // once: true,
   rootMargin: '100px 0px 100px 0px',
   scrollTarget() {
     return document.getElementById('scroll-view')
   },
 })
-const isInside = ref(false)
-watch(
-  isVisible,
-  (nVal, oVal) => {
-    if (oVal || nVal) {
-      isInside.value = true
-    }
-  },
-  {
-    immediate: true,
-  },
-)
 </script>
 
 <template>
@@ -53,7 +41,7 @@ watch(
     :to="{ name: 'COMIC_DETAIL', params: { id: comic.id }, replace }"
   >
     <div @click="navigate" class="wind-relative">
-      <v-card color="primary" v-if="isInside" @click="navigate">
+      <v-card color="primary" v-if="isVisible" @click="navigate">
         <v-img :aspect-ratio="3 / 4" cover :alt="`${comic.name}的封面`" :src="cover" />
         <v-card-item>
           <v-card-title :title="comic.name">{{ comic.name }}</v-card-title>
@@ -75,7 +63,7 @@ watch(
           </v-card-subtitle>
         </v-card-item>
       </v-card>
-      <div class="wind-aspect-ratio-[0.57978]" v-else></div>
+      <div class="wind-aspect-ratio-[0.61762]" v-else></div>
       <div class="wind-pointer-events-none wind-inset-0 wind-absolute" ref="visibleRef"></div>
     </div>
   </router-link>

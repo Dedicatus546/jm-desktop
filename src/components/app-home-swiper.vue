@@ -26,17 +26,11 @@ const next = () => {
 
 const visibleRef = useTemplateRef('visibleRef')
 const isVisible = useElementVisibility(visibleRef, {
-  once: true,
+  // once: true,
   rootMargin: '100px 0px 100px 0px',
   scrollTarget() {
     return document.getElementById('scroll-view')
   },
-})
-const isInside = ref(false)
-watch(isVisible, (nVal, oVal) => {
-  if (oVal || nVal) {
-    isInside.value = true
-  }
 })
 </script>
 
@@ -45,7 +39,7 @@ watch(isVisible, (nVal, oVal) => {
     <div ref="visibleRef" class="wind-pointer-events-none wind-inset-0 wind-absolute"></div>
     <v-col :cols="12">
       <swiper
-        v-if="isInside"
+        v-if="isVisible"
         class="wind-select-none"
         centered-slides
         loop
