@@ -42,14 +42,7 @@ const slidesPerView = computed(() => {
   return 3.3
 })
 const minListCount = computed(() => {
-  if (isGreaterXXL.value) {
-    return 7
-  } else if (isGreaterXL.value) {
-    return 6
-  } else if (isGreaterSM.value) {
-    return 5
-  }
-  return 4
+  return 2 * Math.ceil(slidesPerView.value) + 1
 })
 
 const searchText = ref('')
