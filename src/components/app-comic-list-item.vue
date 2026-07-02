@@ -56,7 +56,7 @@ watch(
       <v-card color="primary" v-if="isInside" @click="navigate">
         <v-img :aspect-ratio="3 / 4" cover :alt="`${comic.name}的封面`" :src="cover" />
         <v-card-item>
-          <v-card-title>{{ comic.name }}</v-card-title>
+          <v-card-title :title="comic.name">{{ comic.name }}</v-card-title>
           <v-card-subtitle class="wind-cursor-default">
             <app-scroll-wrapper v-if="comic.author && route.name !== 'QUICK_SEARCH'">
               <router-link
