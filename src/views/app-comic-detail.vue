@@ -38,6 +38,13 @@ const {
   send,
 } = useRequest(() => getComicDetailApi(props.id))
 
+watch(
+  () => props.id,
+  () => {
+    send()
+  },
+)
+
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
   const list = [
