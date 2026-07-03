@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+import { info, error } from 'electron-log'
 import { clearAllWindow, createHomeWindow, getWindowId } from './module/window-manager'
 import { createIPCHandler } from 'trpc-electron-fork/main'
 import { router } from './trpc'
@@ -9,8 +10,31 @@ import { startExpressServer } from './module/express-server'
 import { initLog } from './module/logger'
 import { isDev } from './env'
 import { initDownloadFile } from './module/download'
+import { resolve } from 'node:path'
+import { ee } from './events'
 
 initLog()
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    info('开发环境下注册深度链接协议')
+    const success = app.setAsDefaultProtocolClient('jm-desktop', process.execPath, [
+      resolve(process.argv[1]),
+    ])
+    if (success) {
+      info('注册 jm-desktop 为深度链接协议成功')
+    } else {
+      error('注册 jm-desktop 为深度链接协议失败')
+    }
+  }
+} else {
+  const success = app.setAsDefaultProtocolClient('jm-desktop')
+  if (success) {
+    info('注册 jm-desktop 为深度链接协议成功')
+  } else {
+    error('注册 jm-desktop 为深度链接协议失败')
+  }
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -30,28 +54,52 @@ app.on('activate', async () => {
   }
 })
 
-app.whenReady().then(async () => {
-  app.setAsDefaultProtocolClient('jm-desktop')
-  if (isDev) {
-    const { devtron } = await import('@electron/devtron')
-    await devtron.install()
-  }
-  await initDataDir()
-  await initConfigFile()
-  await initDownloadFile()
-  await initWindowInfoMapFile()
-  await startExpressServer()
-  createIPCHandler({
-    router,
-    windows: [],
-    createContext: async ({ event }) => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const winId = getWindowId(win!)
-      return {
-        win: win!,
-        winId,
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  let homeWin: BrowserWindow | undefined = undefined
+  app.on('second-instance', (_event, commandLine, _workingDirectory) => {
+    info({
+      _event,
+      commandLine,
+      _workingDirectory,
+    })
+    if (homeWin) {
+      if (homeWin.isMinimized()) {
+        homeWin.restore()
       }
-    },
+      homeWin.focus()
+    }
+    const url = commandLine.find((arg) => arg.startsWith('jm-desktop://'))
+    if (url) {
+      ee.emit('deepLinkUpdate', url)
+    }
   })
-  await createHomeWindow()
-})
+
+  app.whenReady().then(async () => {
+    if (isDev) {
+      const { devtron } = await import('@electron/devtron')
+      await devtron.install()
+    }
+    await initDataDir()
+    await initConfigFile()
+    await initDownloadFile()
+    await initWindowInfoMapFile()
+    await startExpressServer()
+    createIPCHandler({
+      router,
+      windows: [],
+      createContext: async ({ event }) => {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        const winId = getWindowId(win!)
+        return {
+          win: win!,
+          winId,
+        }
+      },
+    })
+    homeWin = await createHomeWindow()
+  })
+}

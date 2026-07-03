@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // import useInitApp from './compositions/use-init-app'
+import { useCheckDeepLink } from '@/compositions/use-check-deep-link'
 import { useListenDownloadComplete } from '@/compositions/use-listen-download-complete'
 import { useRefreshUser } from '@/compositions/use-refresh-user'
 import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
@@ -8,13 +9,13 @@ import { useSyncPrefetchDataTrpc } from '@/compositions/use-sync-prefetch-data-t
 import { useSyncUserTrpc } from '@/compositions/use-sync-user-trpc'
 import { useDownloadStore } from '@/stores/use-download-store'
 
-// const { loading, error, currentStatus, init: reInit } = useInitApp()
 useRefreshUser()
 useSyncUserTrpc()
 useSyncConfigTrpc()
 useSyncPrefetchDataTrpc()
 useSyncDownloadTrpc()
 useListenDownloadComplete()
+useCheckDeepLink()
 
 const downloadStore = useDownloadStore()
 onMounted(() => {

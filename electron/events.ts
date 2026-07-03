@@ -21,6 +21,8 @@ export interface EventEmitterMap {
       filepath: string
     },
   ]
+
+  deepLinkUpdate: [url: string]
 }
 
 export const ee = new EventEmitter<EventEmitterMap>()

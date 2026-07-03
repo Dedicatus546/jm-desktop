@@ -10,6 +10,16 @@ import { ee, EventEmitterMap } from '@main/events'
 
 const logger = log.scope('trpc-subscription')
 
+const createChainAbortController = (signal: AbortSignal | undefined) => {
+  const ac = new AbortController()
+  if (signal) {
+    signal.addEventListener('abort', () => {
+      ac.abort()
+    })
+  }
+  return ac
+}
+
 const openLinkRpc = trpc.procedure
   .input(
     z.object({
@@ -101,10 +111,15 @@ export const decryptLoginUserRpc = trpc.procedure.input(z.string()).query(async 
 })
 
 const onNotifyMessageRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
 
   for await (const [{ type, message }] of on(ee, 'messageNotify', {
-    signal,
+    signal: ac.signal,
   })) {
     yield {
       type: type,
@@ -112,7 +127,7 @@ const onNotifyMessageRpc = trpc.procedure.subscription(async function* (opts) {
     } as EventEmitterMap['messageNotify'][0]
   }
 
-  logger.info('结束 onNotifyMessageRpc 监听')
+  logger.info('结束 onNotifyMessage 监听')
 })
 
 const notifyMessageRpc = trpc.procedure
@@ -134,6 +149,29 @@ const getUUIDRpc = trpc.procedure.query(() => {
   return randomUUID()
 })
 
+const getDeepLinkRpc = trpc.procedure.query(() => {
+  logger.info({
+    'process.argv': process.argv,
+  })
+  const url = process.argv.find((arg) => arg.startsWith('jm-desktop://'))
+  return url
+})
+
+const onDeepLinkUpdateRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const [url] of on(ee, 'deepLinkUpdate', { signal: ac.signal })) {
+    yield url as string | undefined
+  }
+
+  logger.info('结束 onDeepLinkUpdate 监听')
+})
+
 export const router = {
   openLink: openLinkRpc,
   showItemInFolder: showItemInFolderRpc,
@@ -146,4 +184,6 @@ export const router = {
   onNotifyMessage: onNotifyMessageRpc,
   notifyMessage: notifyMessageRpc,
   getUUID: getUUIDRpc,
+  getDeepLink: getDeepLinkRpc,
+  onDeepLinkUpdate: onDeepLinkUpdateRpc,
 }
