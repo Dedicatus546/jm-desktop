@@ -91,6 +91,7 @@ export default defineConfig({
         setting: resolve(import.meta.dirname, 'setting.html'),
         sign: resolve(import.meta.dirname, 'sign.html'),
         about: resolve(import.meta.dirname, 'about.html'),
+        download: resolve(import.meta.dirname, 'download.html'),
         notification: resolve(import.meta.dirname, 'notification.html'),
       },
     },
