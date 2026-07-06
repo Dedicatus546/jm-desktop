@@ -150,9 +150,6 @@ const getUUIDRpc = trpc.procedure.query(() => {
 })
 
 const getDeepLinkRpc = trpc.procedure.query(() => {
-  logger.info({
-    'process.argv': process.argv,
-  })
   const url = process.argv.find((arg) => arg.startsWith('jm-desktop://'))
   return url
 })
