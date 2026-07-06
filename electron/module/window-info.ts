@@ -1,6 +1,6 @@
-import { dataDir } from '@electron/shared/path'
-import { exists } from '@electron/shared/utils'
-import { WindowId, WindowInfo, WindowInfoMap } from '@type/index'
+import { dataDir } from '@main/shared/path'
+import { exists } from '@main/shared/utils'
+import { WindowInfo, WindowInfoMap } from '@common/type'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import superjson from 'superjson'
@@ -21,11 +21,11 @@ export const initWindowInfoMapFile = async () => {
   }
 }
 
-export const getWindowInfo = (id: WindowId) => {
+export const getWindowInfo = (id: string) => {
   return state.windowInfoMap.get(id)
 }
 
-export const updateWindowInfo = async (id: WindowId, windowInfo: Partial<WindowInfo>) => {
+export const updateWindowInfo = async (id: string, windowInfo: Partial<WindowInfo>) => {
   const sourceWindowInfo = getWindowInfo(id)
   const targetWindowInfo = Object.assign({}, sourceWindowInfo, windowInfo) as WindowInfo
   state.windowInfoMap.set(id, targetWindowInfo)

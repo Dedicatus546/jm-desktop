@@ -1,21 +1,21 @@
 import { join } from 'node:path'
-import { BrowserWindow, BrowserWindowConstructorOptions, session } from 'electron'
+import log from 'electron-log/main'
+import { BrowserWindow, BrowserWindowConstructorOptions, screen, session } from 'electron'
 import { getConfig } from './config'
 // TODO fix
-import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@electron/shared/utils'
-import { createLogger } from './logger'
+import { /* isWindowInAvailableDisplayList, */ resolveProxyUrl } from '@main/shared/utils'
 import { debounce, isEqual } from 'radash'
-import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@electron/env'
+import { MAIN_DIST, VITE_DEV_SERVER_URL } from '@main/env'
 import { getExpressServerPort, updateProxyMiddleware, updateTarget } from './express-server'
-import { Config, ProxyInfo, WindowId, WindowInfo } from '@type/index'
+import { Config, ProxyInfo, WindowType, WindowInfo } from '@common/type'
 import { getWindowInfo, updateWindowInfo } from './window-info'
-import { ee } from '@electron/events'
+import { ee } from '@main/events'
 
-const windowMap = new Map<WindowId, BrowserWindow>()
-const windowIdMap = new Map<BrowserWindow, WindowId>()
+const windowMap = new Map<string, BrowserWindow>()
+const windowIdMap = new Map<BrowserWindow, string>()
 
 type WindowOptionMap = Record<
-  WindowId,
+  string,
   {
     path: `${string}.html`
     saveSize: boolean
@@ -25,7 +25,7 @@ type WindowOptionMap = Record<
 >
 
 const windowOptionMap: WindowOptionMap = {
-  [WindowId.HOME]: {
+  [WindowType.HOME]: {
     path: 'home.html',
     saveSize: true,
     savePosition: true,
@@ -36,53 +36,101 @@ const windowOptionMap: WindowOptionMap = {
       minHeight: 800,
     },
   },
-  [WindowId.LOGIN]: {
+  [WindowType.LOGIN]: {
     path: 'login.html',
     saveSize: false,
     savePosition: true,
     bwConfig: {
+      // 如果直接设置 resizable: false
+      // 会导致宽高不一致
       width: 500,
       height: 690,
-      resizable: false,
+      minWidth: 500,
+      minHeight: 690,
+      maxWidth: 500,
+      maxHeight: 690,
+      // resizable: false,
     },
   },
-  [WindowId.SETTING]: {
+  [WindowType.SETTING]: {
     path: 'setting.html',
     saveSize: false,
     savePosition: true,
     bwConfig: {
       width: 500,
       height: 735,
-      resizable: false,
+      minWidth: 500,
+      minHeight: 735,
+      maxWidth: 500,
+      maxHeight: 735,
+      // resizable: false,
     },
   },
-  [WindowId.ABOUT]: {
+  [WindowType.ABOUT]: {
     path: 'about.html',
     saveSize: false,
     savePosition: true,
     bwConfig: {
       width: 700,
       height: 460,
-      resizable: false,
+      minWidth: 700,
+      minHeight: 460,
+      maxWidth: 700,
+      maxHeight: 460,
+      // resizable: false,
     },
   },
-  [WindowId.SIGN]: {
+  [WindowType.SIGN]: {
     path: 'sign.html',
     saveSize: false,
     savePosition: true,
     bwConfig: {
       width: 1200,
       height: 950,
-      resizable: false,
+      minWidth: 1200,
+      minHeight: 950,
+      maxWidth: 1200,
+      maxHeight: 950,
+      // resizable: false,
+    },
+  },
+  [WindowType.DOWNLOAD]: {
+    path: 'download.html',
+    saveSize: false,
+    savePosition: true,
+    bwConfig: {
+      width: 1200,
+      height: 950,
+      minWidth: 1200,
+      minHeight: 950,
+      maxWidth: 1200,
+      maxHeight: 950,
+      // resizable: false,
+    },
+  },
+  [WindowType.NOTIFICATION]: {
+    path: 'notification.html',
+    saveSize: false,
+    savePosition: false,
+    bwConfig: {
+      width: 400,
+      height: 200,
+      minWidth: 400,
+      minHeight: 200,
+      maxWidth: 400,
+      maxHeight: 200,
+      // resizable: false,
+      movable: false,
+      show: false,
     },
   },
 }
 
-export const hasWindow = (id: WindowId) => {
+export const hasWindow = (id: string) => {
   return windowMap.get(id) !== undefined
 }
 
-export const getWindow = (id: WindowId) => {
+export const getWindow = (id: string) => {
   return windowMap.get(id)
 }
 
@@ -106,9 +154,9 @@ const setSessionProxy = async (proxyInfo: ProxyInfo | null) => {
   }
 }
 
-const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
+const saveCurrentWindowInfo = async (win: BrowserWindow, id: string, type: WindowType) => {
   const bounds = win.getBounds()
-  const options = windowOptionMap[id]
+  const options = windowOptionMap[type]
   const { savePosition, saveSize } = options
   const o: WindowInfo = {}
   if (savePosition) {
@@ -123,16 +171,18 @@ const saveCurrentWindowInfo = async (win: BrowserWindow, id: WindowId) => {
       height: bounds.height,
     })
   }
-  await updateWindowInfo(id, o)
+  if (savePosition || saveSize) {
+    await updateWindowInfo(id, o)
+  }
 }
 
 const saveCurrentWindowInfoDebounce = debounce({ delay: 1000 }, saveCurrentWindowInfo)
 
-export const createWindow = async (id: WindowId) => {
-  const { info } = createLogger(`window[${id}]`)
+export const createWindow = async (id: string, type: WindowType, query?: Record<string, any>) => {
+  const logger = log.scope(`window[${id}-${type}]`)
   const disposeFnList: Array<() => void> = []
 
-  const options = windowOptionMap[id]
+  const options = windowOptionMap[type]
   const { bwConfig, path, savePosition, saveSize } = options
   const config = getConfig()
   const windowInfo = getWindowInfo(id)
@@ -154,7 +204,7 @@ export const createWindow = async (id: WindowId) => {
     }
   }
 
-  info('preload.mjs 文件路径', join(MAIN_DIST, 'preload.mjs'))
+  logger.info('preload.mjs 文件路径', join(MAIN_DIST, 'preload.mjs'))
   win = new BrowserWindow(
     Object.assign({}, bwConfig, {
       icon: join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
@@ -164,38 +214,56 @@ export const createWindow = async (id: WindowId) => {
       },
       autoHideMenuBar: true,
       frame: false,
+      useContentSize: true, // 让 width/height 直接控制网页内容区域
       ...o,
     }),
   )
+
+  if (type === WindowType.NOTIFICATION) {
+    const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
+    const [windowWidth, windowHeight] = win.getContentSize()
+    const x = screenWidth - windowWidth
+    const y = screenHeight - windowHeight
+    win.setPosition(x, y)
+    win.show()
+  }
 
   windowMap.set(id, win)
   windowIdMap.set(win, id)
 
   // 第一次启动后要记录 electron 默认设置的位置
   if (!windowInfo) {
-    await saveCurrentWindowInfo(win, id)
+    await saveCurrentWindowInfo(win, id, type)
   }
 
   win.on('close', () => {
     disposeFnList.forEach((fn) => fn())
-    saveCurrentWindowInfo(win, id)
+    saveCurrentWindowInfo(win, id, type)
     windowMap.delete(id)
     windowIdMap.delete(win)
   })
-  win.on('move', () => saveCurrentWindowInfoDebounce(win, id))
-  win.on('resize', () => saveCurrentWindowInfoDebounce(win, id))
+  win.on('move', () => saveCurrentWindowInfoDebounce(win, id, type))
+  win.on('resize', () => saveCurrentWindowInfoDebounce(win, id, type))
 
   if (VITE_DEV_SERVER_URL) {
-    const resolvedUrl = (() => {
-      const url = new URL(path, VITE_DEV_SERVER_URL)
-      return url.toString()
-    })()
-    await win.loadURL(resolvedUrl)
-    info('加载 DEV 地址', resolvedUrl)
+    const url = new URL(path, VITE_DEV_SERVER_URL)
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        url.searchParams.append(key, query[key])
+      })
+    }
+    await win.loadURL(url.toString())
+    logger.info('加载 DEV 地址', url.toString())
   } else {
     const port = await getExpressServerPort()
-    await win.loadURL(`http://localhost:${port}/${path}`)
-    info('加载 PROD 地址', `http://localhost:${port}/${path}`)
+    const url = new URL(path, `http://localhost:${port}`)
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        url.searchParams.append(key, query[key])
+      })
+    }
+    await win.loadURL(url.toString())
+    logger.info('加载 PROD 地址', url.toString())
   }
 
   // 放在 loadURL 后，不然白屏
@@ -215,15 +283,15 @@ export const createWindow = async (id: WindowId) => {
 }
 
 export const createHomeWindow = async () => {
-  const homeWindow = await createWindow(WindowId.HOME)
-  const { info } = createLogger(`window[${WindowId.HOME}]`)
+  const homeWindow = await createWindow(WindowType.HOME, WindowType.HOME)
+  const logger = log.scope(`window[${WindowType.HOME}]`)
   const disposeFnList: Array<() => void> = []
   let config = getConfig()
   setSessionProxy(config.proxyInfo)
 
   const onUpdateConfig = async (config: Config, oldConfig: Config) => {
     if (!isEqual(config.proxyInfo, oldConfig.proxyInfo)) {
-      info('检测到代理设置变更，重新启动 express 服务器')
+      logger.info('检测到代理设置变更，重新启动 express 服务器')
       updateProxyMiddleware()
       await setSessionProxy(config.proxyInfo)
     }
@@ -250,7 +318,7 @@ export const getWindowId = (win: BrowserWindow) => {
   return windowIdMap.get(win)!
 }
 
-export const showWindow = async (id: WindowId) => {
+export const showWindow = async (id: string, type: WindowType, query?: Record<string, any>) => {
   if (hasWindow(id)) {
     const win = getWindow(id)!
     if (win.isMinimized()) {
@@ -260,5 +328,5 @@ export const showWindow = async (id: WindowId) => {
     win.focus()
     return
   }
-  await createWindow(id)
+  await createWindow(id, type, query)
 }

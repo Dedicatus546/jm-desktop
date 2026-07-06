@@ -1,7 +1,7 @@
 import { access } from 'node:fs/promises'
 
 // import { Display, screen } from 'electron'
-import { ProxyInfo /*WindowInfo*/ } from '@type/index'
+import { ProxyInfo /*WindowInfo*/ } from '@common/type'
 
 export const resolveProxyUrl = (proxyInfo: ProxyInfo | null) => {
   if (!proxyInfo) {

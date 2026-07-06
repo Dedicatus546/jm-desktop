@@ -1,18 +1,18 @@
 import { Server } from 'node:http'
 import { AddressInfo } from 'node:net'
+import log from 'electron-log/main'
 
-import { distRenderer } from '@electron/shared/path'
-import { resolveProxyUrl } from '@electron/shared/utils'
+import { distRenderer } from '@main/shared/path'
+import { resolveProxyUrl } from '@main/shared/utils'
 import cors from 'cors'
 import Express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 
 import { getConfig } from './config'
-import { createLogger } from './logger'
-import { VITE_DEV_SERVER_URL } from '@electron/env'
+import { VITE_DEV_SERVER_URL } from '@main/env'
 
-const { info, error, warn } = createLogger('express-server')
+const logger = log.scope('express-server')
 
 let expressServer: Server | undefined
 let expressServerInitPromise: Promise<void> | undefined
@@ -21,7 +21,7 @@ let target = ''
 
 export const getExpressServerPort = async () => {
   if (!expressServer) {
-    warn('没有获取到 server 实例，无法获取端口')
+    logger.warn('没有获取到 server 实例，无法获取端口')
     return -1
   }
   await expressServerInitPromise
@@ -54,10 +54,10 @@ const getExpressInstance = async () => {
       maxAge: 60 * 60 * 2,
     }),
   )
-  info('设置 distRenderer：%s 为静态目录', distRenderer)
+  logger.info('设置 distRenderer：%s 为静态目录', distRenderer)
   express.use('/', Express.static(distRenderer))
 
-  info('设置 /api 转发')
+  logger.info('设置 /api 转发')
   updateTarget()
   express.use('/api', (req, res, next) => {
     if (proxyMiddleware === undefined) {
@@ -76,10 +76,10 @@ export const startExpressServer = async () => {
   const startPort = devServerUrl ? 6174 : 0
   const server = express.listen(startPort, async (e) => {
     if (e) {
-      error('express 启动错误，原因：%s', e.message + '\n' + e.stack)
-      reject(error)
+      logger.error('express 启动错误，原因：%s', e.message + '\n' + e.stack)
+      reject(e)
     }
-    info('server 启动成功')
+    logger.info('server 启动成功')
     resolve()
   })
   expressServerInitPromise = promise
@@ -87,7 +87,7 @@ export const startExpressServer = async () => {
   expressServer = server
 
   const port = await getExpressServerPort()
-  info('server 端口为 %d', port)
+  logger.info('server 端口为 %d', port)
 }
 
 export const updateProxyMiddleware = () => {
@@ -95,10 +95,10 @@ export const updateProxyMiddleware = () => {
   let agent: HttpsProxyAgent<string> | undefined
   const proxyUrl = resolveProxyUrl(config.proxyInfo)
   if (proxyUrl) {
-    info('代理已设置，地址：%s', proxyUrl)
+    logger.info('代理已设置，地址：%s', proxyUrl)
     agent = new HttpsProxyAgent(proxyUrl)
   } else {
-    info('代理未设置')
+    logger.info('代理未设置')
   }
 
   proxyMiddleware = createProxyMiddleware({
@@ -117,8 +117,6 @@ export const updateProxyMiddleware = () => {
 
 export const updateTarget = () => {
   const config = getConfig()
-  info('apiUrl 已设置，地址：%s', config.apiUrl)
+  logger.info('apiUrl 已设置，地址：%s', config.apiUrl)
   target = config.apiUrl
 }
-
-startExpressServer()

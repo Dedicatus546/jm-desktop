@@ -28,10 +28,10 @@ jobs:
         run: |
           git config --global url."https://github.com/".insteadOf git@github.com:
           git config --global url."https://".insteadOf git://
-      
-      - name: Install pnpm 
+
+      - name: Install pnpm
         uses: pnpm/action-setup@v6
-        with: 
+        with:
           cache: true
 
       - name: Install Dependencies
@@ -46,7 +46,7 @@ jobs:
       - name: Build Electron App
         run: pnpm run build
 
-      - name: Publish 
+      - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: pnpm run publish

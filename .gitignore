@@ -28,7 +28,6 @@ dist-electron/
 log/
 release/
 ./config/
-download/
 data/
 less.json
 ajax-test.mjs

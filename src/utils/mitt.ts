@@ -1,4 +1,4 @@
-import { DownloadItem } from '@electron/module/download'
+import { DownloadItem } from '@common/type'
 import mitt from 'mitt'
 
 export const emitter = mitt<{

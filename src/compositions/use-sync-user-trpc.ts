@@ -1,9 +1,9 @@
 import { trpcClient } from '@/trpc'
-import { createLogger } from '@/utils/logger'
 import { Unsubscribable } from '@trpc/server/observable'
 import useUserStore from '@/stores/use-user-store'
+import { log } from '@/utils/logger'
 
-const { info } = createLogger('subscribe')
+const { info } = log
 
 export const useSyncUserTrpc = () => {
   const userStore = useUserStore()

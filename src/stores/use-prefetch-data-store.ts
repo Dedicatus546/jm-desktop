@@ -1,5 +1,5 @@
 import { trpcClient } from '@/trpc'
-import { PrefetchData } from '@type/index'
+import { PrefetchData } from '@common/type'
 import { clone } from 'radash'
 
 export const usePrefetchDataStore = defineStore('prefetch-data', () => {

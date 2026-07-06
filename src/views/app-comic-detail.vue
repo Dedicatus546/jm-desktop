@@ -3,21 +3,17 @@ import { breakpointsAntDesign } from '@vueuse/core'
 import { useRequest } from 'alova/client'
 
 import { collectComicApi, getComicDetailApi, getComicPicListApi, likeComicApi } from '@/apis'
-import useDialog from '@/compositions/use-dialog'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { createLogger } from '@/utils/logger'
+import { log } from '@/utils/logger'
 import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '../stores/use-prefetch-data-store'
 
-const { info } = createLogger('comic')
-
 const props = defineProps<{
   id: number
 }>()
 const snackbar = useSnackbar()
-const dialog = useDialog()
 const configStore = useConfigStore()
 const prefetchDataStore = usePrefetchDataStore()
 const userStore = useUserStore()
@@ -41,6 +37,13 @@ const {
   error,
   send,
 } = useRequest(() => getComicDetailApi(props.id))
+
+watch(
+  () => props.id,
+  () => {
+    send()
+  },
+)
 
 const activeTabKey = ref<'relevant' | 'comment' | 'chapter'>('relevant')
 const tabList = computed(() => {
@@ -135,47 +138,49 @@ const { data, send: getComicPicList } = useRequest(
   },
 )
 
-const download = async () => {
+const id = computed(() =>
   // TODO 这里 currentSeriesId 似乎不会根据点击阅读而记录
   // 目前只会指向第一话
   // 似乎还缺少接口？
-  const id =
-    comicInfo.value.data.currentSeriesId > 0
-      ? comicInfo.value.data.currentSeriesId
-      : comicInfo.value.data.id
+  comicInfo.value.data.currentSeriesId > 0
+    ? comicInfo.value.data.currentSeriesId
+    : comicInfo.value.data.id,
+)
+const item = computed(() => downloadStore.downloadList.find((item) => item.comicId === id.value))
+
+const download = async () => {
   const chapterName = currentSeriesName.value ?? comicInfo.value.data.name
-  if (downloadStore.downloadingMap[id]) {
-    snackbar.warning('任务正在下载中，请勿重复点击')
+  const item = downloadStore.downloadList.find((item) => item.comicId === id.value)
+  if (item) {
+    if (['downloading', 'pending'].includes(item.status)) {
+      snackbar.warning('任务正在下载中，请勿重复点击')
+    } else if (item.status === 'complete') {
+      snackbar.warning('任务已下载，请勿重复点击')
+      // TODO 弹窗重新下载
+      // dialog({
+      //   width: 300,
+      //   title: '确认',
+      //   content: '该漫画已下载，是否重新下载？',
+      //   async onOk() {
+      //     exec()
+      //   },
+      // })
+    }
     return
   }
   const exec = async () => {
-    await getComicPicList(id)
-    downloadStore.addDownloadTaskAction(
-      {
-        type: 'comic',
-        id,
-        comicName: comicInfo.value.data.name,
-        chapterName,
-        picUrlList: data.value.list,
-        filepath: '',
-        scrambleId: data.value.scrambleId,
-        speed: data.value.speed,
-      },
-      true,
-    )
-    snackbar.success('添加下载任务成功')
-    info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
-  }
-  if (downloadStore.completeMap[id]) {
-    dialog({
-      width: 300,
-      title: '确认',
-      content: '该漫画已下载，是否重新下载？',
-      async onOk() {
-        exec()
-      },
+    await getComicPicList(id.value)
+    await downloadStore.addDownloadItemAction({
+      belongComicId: id.value,
+      comicId: id.value,
+      comicName: comicInfo.value.data.name,
+      chapterName,
+      picUrlList: data.value.list,
+      scrambleId: data.value.scrambleId,
+      speed: data.value.speed,
     })
-    return
+    snackbar.success('添加下载任务成功')
+    log.info('添加 %s %s 下载任务', comicInfo.value.data.name, chapterName)
   }
   exec()
 }
@@ -312,27 +317,31 @@ const retry = () => {
                   <v-col :cols="buttonCols[1]">
                     <v-btn
                       :color="
-                        downloadStore.downloadingMap[id]
+                        item?.status === 'downloading'
                           ? 'info'
-                          : downloadStore.completeMap[id]
+                          : item?.status === 'complete'
                             ? 'success'
                             : 'primary'
                       "
                       variant="flat"
                       size="large"
                       block
+                      :disabled="item?.status === 'downloading'"
                       @click="download"
                     >
                       <template #prepend>
                         <v-icon>
-                          <i-mdi-download />
+                          <i-mdi-loading
+                            class="wind-animate-spin"
+                            v-if="item?.status === 'downloading'"
+                          />
+                          <i-mdi-download v-else />
                         </v-icon>
                       </template>
                       {{
-                        downloadStore.downloadingMap[id]
-                          ? '正在下载 ' +
-                            ((downloadStore.downloadingMap[id]!.percent * 100).toFixed(2) + '%')
-                          : downloadStore.completeMap[id]
+                        item?.status === 'downloading'
+                          ? '正在下载 ' + ((item!.percent * 100).toFixed(2) + '%')
+                          : item?.status === 'complete'
                             ? '已下载'
                             : '下载' + (comicInfo.data.currentSeriesId ? currentSeriesName : '')
                       }}
@@ -394,6 +403,7 @@ const retry = () => {
             <v-tabs-window-item value="chapter">
               <app-comic-detail-chapter
                 :loading="loading"
+                :comic-id="comicInfo?.data.id"
                 :comic-name="comicInfo?.data.name ?? ''"
                 :chapter-list="comicInfo?.data.seriesList ?? []"
                 :current-chapter-id="comicInfo?.data.currentSeriesId"

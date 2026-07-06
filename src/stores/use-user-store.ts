@@ -1,5 +1,5 @@
 import { trpcClient } from '@/trpc'
-import { User } from '@type/index'
+import { User } from '@common/type'
 
 const useUserStore = defineStore('user', () => {
   const state: User = reactive({
@@ -41,7 +41,6 @@ const useUserStore = defineStore('user', () => {
   }
 
   const updateFromTrpcAction = (user: User | null) => {
-    console.log('user', user)
     if (user) {
       Object.assign(state, user)
     } else {

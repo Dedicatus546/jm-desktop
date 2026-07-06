@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { SubmitEventPromise } from 'vuetify'
 
-import { Config } from '@type/index'
+import { Config } from '@common/type'
 import { useConfigStore } from '@/stores/use-config-store'
 import { trpcClient } from '@/trpc'
-import { error } from '@/utils/logger'
+import { log } from '@/utils/logger'
 import { useSyncConfigTrpc } from '@/compositions/use-sync-config-trpc'
 
+const { error } = log
 useSyncConfigTrpc()
 const configStore = useConfigStore()
 

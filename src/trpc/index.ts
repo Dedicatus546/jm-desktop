@@ -1,4 +1,4 @@
-import { Router } from '@electron/trpc/router'
+import { Router } from '@main/trpc/router'
 import { createTRPCClient } from '@trpc/client'
 import superjson from 'superjson'
 import { ipcLink } from 'trpc-electron-fork/renderer'

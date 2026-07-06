@@ -1,9 +1,9 @@
 import { trpcClient } from '@/trpc'
-import { createLogger } from '@/utils/logger'
 import { Unsubscribable } from '@trpc/server/observable'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
+import { log } from '@/utils/logger'
 
-const { info } = createLogger('subscribe')
+const { info } = log
 
 export const useSyncPrefetchDataTrpc = () => {
   const prefetchDataStore = usePrefetchDataStore()
@@ -14,7 +14,7 @@ export const useSyncPrefetchDataTrpc = () => {
     info('订阅 prefetchdata 变化')
     unsubscribable = trpcClient.onPrefetchDataUpdate.subscribe(undefined, {
       onData(value) {
-        info('更新 prefetchdata', JSON.stringify(value))
+        // info('更新 prefetchdata', JSON.stringify(value))
         prefetchDataStore.updateFromTrpcAction(value)
       },
     })

@@ -1,24 +1,39 @@
-import { createLogger } from '@electron/module/logger'
+import log from 'electron-log/main'
 import { trpc } from './trpc'
-import { state } from '@electron/module/state'
-import { Config, PrefetchData, User } from '@type/index'
+import { state } from '@main/module/state'
+import { Config, PrefetchData, User } from '@common/type'
 import { clone } from 'radash'
 import { stringify } from 'superjson'
 import z from 'zod'
-import { ee } from '@electron/events'
+import { ee } from '@main/events'
 import { on } from 'node:events'
-import { saveConfig } from '@electron/module/config'
+import { saveConfig } from '@main/module/config'
 
-const { info } = createLogger('trpc-subscription')
+const logger = log.scope('trpc-subscription')
+
+const createChainAbortController = (signal: AbortSignal | undefined) => {
+  const ac = new AbortController()
+  if (signal) {
+    signal.addEventListener('abort', () => {
+      ac.abort()
+    })
+  }
+  return ac
+}
 
 const onConfigUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
 
-  for await (const _ of on(ee, 'configUpdate', { signal })) {
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const _ of on(ee, 'configUpdate', { signal: ac.signal })) {
     yield state.config
   }
 
-  info('结束 onConfigUpdateRpc 监听')
+  logger.info('结束 onConfigUpdateRpc 监听')
 })
 
 const updateConfigRpc = trpc.procedure
@@ -42,23 +57,28 @@ const updateConfigRpc = trpc.procedure
     }) satisfies z.Schema<Config>,
   )
   .mutation(async ({ input }) => {
-    info('更新 config ，原 config ', stringify(state.config), '更新的 config', stringify(input))
+    logger.info(
+      '更新 config ，原 config ',
+      stringify(state.config),
+      '更新的 config',
+      stringify(input),
+    )
     await saveConfig(input)
   })
 
 const onUserUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
 
-  // yield {
-  //   user: clone(state.user),
-  //   loginInfo: clone(state.loginInfo),
-  // }
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
 
-  for await (const _ of on(ee, 'userUpdate', { signal })) {
+  for await (const _ of on(ee, 'userUpdate', { signal: ac.signal })) {
     yield clone(state.user)
   }
 
-  info('结束 onUserUpdateRpc 监听')
+  logger.info('结束 onUserUpdateRpc 监听')
 })
 
 const updateUserRpc = trpc.procedure
@@ -80,7 +100,7 @@ const updateUserRpc = trpc.procedure
   )
   .mutation(async ({ input }) => {
     // user 不写入本地
-    info('更新 user ，原 user ', stringify(state.user), '更新的 user', stringify(input))
+    logger.info('更新 user ，原 user ', stringify(state.user), '更新的 user', stringify(input))
     if (input !== null) {
       if (state.user) {
         Object.assign(state.user, input)
@@ -94,13 +114,18 @@ const updateUserRpc = trpc.procedure
   })
 
 const onPrefetchDataUpdateRpc = trpc.procedure.subscription(async function* (opts) {
-  const { signal } = opts
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
 
-  for await (const _ of on(ee, 'prefetchDataUpdate', { signal })) {
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const _ of on(ee, 'prefetchDataUpdate', { signal: ac.signal })) {
     yield state.prefetchData
   }
 
-  info('结束 onPrefetchDataUpdateRpc 监听')
+  logger.info('结束 onPrefetchDataUpdateRpc 监听')
 })
 
 const updatePrefetchDataRpc = trpc.procedure
@@ -149,7 +174,12 @@ const updatePrefetchDataRpc = trpc.procedure
     }) satisfies z.Schema<PrefetchData>,
   )
   .mutation(async ({ input }) => {
-    info('更新 user ，原 user ', stringify(state.user), '更新的 config', stringify(input))
+    logger.info(
+      '更新 prefetchdata ，原 prefetchdata ',
+      stringify(state.user),
+      '更新的 prefetchdata',
+      stringify(input),
+    )
     if (input) {
       Object.assign(state.prefetchData, input)
     }

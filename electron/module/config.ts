@@ -1,11 +1,11 @@
-import { dataDir } from '@electron/shared/path'
-import { exists } from '@electron/shared/utils'
-import { Config } from '@type/index'
+import { dataDir } from '@main/shared/path'
+import { exists } from '@main/shared/utils'
+import { Config } from '@common/type'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import superjson from 'superjson'
 import { state } from './state'
-import { ee } from '@electron/events'
+import { ee } from '@main/events'
 import { clone } from 'radash'
 
 export const configFilepath = resolve(dataDir, 'config.json')

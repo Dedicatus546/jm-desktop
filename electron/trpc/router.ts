@@ -1,6 +1,5 @@
 import { router as commonRouter } from './common.router'
 import { router as DownloadRouter } from './download.router'
-import { router as loggerRouter } from './logger.router'
 import { router as proxyServerRouter } from './proxy-server.router'
 import { router as windowRouter } from './window.router'
 import { router as stateRouter } from './state.router'
@@ -9,7 +8,6 @@ import { trpc } from './trpc'
 export const router = trpc.router({
   ...commonRouter,
   ...proxyServerRouter,
-  ...loggerRouter,
   ...DownloadRouter,
   ...windowRouter,
   ...stateRouter,

@@ -1103,32 +1103,35 @@ export const getComicPicListApi = (comicId: number, shuntKey: number | undefined
         // id=416130&mode=vertical&page=0&app_img_shunt=1&express=off&v=1727492089
       },
       async transform(htmlStr) {
-        // 2025.06.15 新版匹配方式
-        // 正则表达式匹配 result 对象
-        const resultRegex = /const result\s*=\s*({[\s\S]*?});/
+        const resultRegex = /const result\s*=\s*\{\s*images:\s*\[(?<images>.*)\]\s*\};/
         const resultMatch = htmlStr.match(resultRegex)
-        let result: { images: Array<string> } | null = null
+        let images: Array<string> | undefined = undefined
         if (resultMatch) {
           try {
             // oxlint-disable-next-line
-            result = eval(`(${resultMatch[1]})`)
+            images = resultMatch
+              .groups!.images.split(',')
+              .filter((item) => Boolean(item))
+              .map((item) => item.substring(1, item.length - 1))
           } catch (e) {
             console.error('Error parsing result object:', e)
           }
         }
 
         // 正则表达式匹配 config 对象
-        const configRegex = /const config\s*=\s*({[\s\S]*?});/
+        const configRegex =
+          /const config\s*=\s*\{\s*jmid:\s*'(?<jmid>\d+)',\s*imghost:\s*'(?<imghost>https?:\/\/[\w:.\\/-]+)',\s*cache:\s*'(?<cache>.*?)'\s*\}/
         const configMatch = htmlStr.match(configRegex)
-        let config: {
-          cache: string
-          imghost: string
-          jmid: string
-        } | null = null
+        let config:
+          | {
+              cache: string
+              imghost: string
+              jmid: string
+            }
+          | undefined = undefined
         if (configMatch) {
           try {
-            // oxlint-disable-next-line
-            config = eval(`(${configMatch[1]})`)
+            config = configMatch.groups as any
           } catch (e) {
             console.error('Error parsing config object:', e)
           }
@@ -1138,37 +1141,37 @@ export const getComicPicListApi = (comicId: number, shuntKey: number | undefined
         // 新增 scrambleId 和 speed 参数，用于判断是否需要解密
         // 出现 gif 后缀图片
         // 匹配 scrambleId
-        const scrambleIdRegex = /var scramble_id\s*=\s*(\d+);/
+        const scrambleIdRegex = /var scramble_id\s*=\s*(?<scrambleId>\d+);/
         const scrambleIdMatch = htmlStr.match(scrambleIdRegex)
         let scrambleId = 0
         if (scrambleIdMatch) {
           try {
-            scrambleId = Number.parseInt(scrambleIdMatch[1])
+            scrambleId = Number.parseInt(scrambleIdMatch.groups!.scrambleId)
           } catch (e) {
             console.error('Error parsing scrambleId arg:', e)
           }
         }
 
         // 匹配 speed
-        const speedRegex = /var speed\s*=\s*'(.*)';/
+        const speedRegex = /var speed\s*=\s*'(?<speed>.*)';/
         const speedMatch = htmlStr.match(speedRegex)
         let speed = ''
         if (speedMatch) {
           try {
-            speed = speedMatch[1]
+            speed = speedMatch.groups!.speed
           } catch (e) {
             console.error('Error parsing speed arg:', e)
           }
         }
 
-        if (!result || !config) {
+        if (!images || !config) {
           return {
             list: [],
             scrambleId,
             speed,
           }
         }
-        const list = result.images.map(
+        const list = images.map(
           (item) => `${config.imghost}/media/photos/${config.jmid}/${item}${config.cache}`,
         )
         console.log('list', list)

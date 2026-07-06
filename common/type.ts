@@ -2,12 +2,14 @@ export type Theme = 'light' | 'dark' | 'auto'
 
 export type ReadMode = 'scroll' | 'click'
 
-export enum WindowId {
-  HOME,
-  SETTING,
-  LOGIN,
-  ABOUT,
-  SIGN,
+export enum WindowType {
+  HOME = 'home',
+  SETTING = 'setting',
+  LOGIN = 'login',
+  ABOUT = 'about',
+  SIGN = 'sign',
+  DOWNLOAD = 'download',
+  NOTIFICATION = 'notification',
 }
 
 export type WindowInfo = {
@@ -35,7 +37,7 @@ export type Config = {
   proxyInfo: ProxyInfo | null
 }
 
-export type WindowInfoMap = Map<WindowId, WindowInfo>
+export type WindowInfoMap = Map<string, WindowInfo>
 
 export type PrefetchData = {
   imgHost: string
@@ -84,4 +86,25 @@ export type User = {
 export type LoginInfo = {
   username: string // 加密
   password: string // 加密
+}
+
+export interface DownloadItem {
+  belongComicId: number
+  comicId: number
+  comicName: string
+  chapterName: string
+  picUrlList: Array<string>
+  scrambleId: number
+  speed: string
+  filepath: string
+  status: 'pending' | 'downloading' | 'complete'
+  percent: number // 0 - 1
+  createTime: number
+}
+
+export interface AppNotification {
+  type: 'base'
+  title: string
+  body: string
+  duration: number
 }

@@ -1,121 +1,128 @@
-import { createWriteStream } from 'node:fs'
-import { mkdir } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import log from 'electron-log/main'
 
 import {
-  comicDownloadDir,
-  getDownloadCompleteList,
-  getDownloadDownloadingList,
-  saveDownloadCompleteList,
-  saveDownloadDownloadingList,
-} from '@electron/module/download'
-import { createLogger } from '@electron/module/logger'
-import { decodeImage } from '@electron/shared/decode-image'
-import { delay, exists } from '@electron/shared/utils'
-// @ts-expect-error 缺少 type 类型文件
-import { ZipArchive } from 'archiver'
-import { net } from 'electron'
-import pLimit from 'p-limit'
-import nameSanitizer from 'sanitize-filename'
+  getDonwloadList,
+  addDownloadItem,
+  updateDownloadItem,
+  downloadDir,
+} from '@main/module/download'
 import { z } from 'zod'
 
 import { trpc } from './trpc'
+import { on } from 'node:events'
+import { ee } from '@main/events'
+import { state } from '@main/module/state'
+import { downloadService } from '@main/service/download.service'
+import { resolve } from 'node:path'
+import { shell } from 'electron'
+import { DownloadItem } from '@common/type'
 
-const { info } = createLogger('download.router')
+const createChainAbortController = (signal: AbortSignal | undefined) => {
+  const ac = new AbortController()
+  if (signal) {
+    signal.addEventListener('abort', () => {
+      ac.abort()
+    })
+  }
+  return ac
+}
 
-const limit = pLimit(3)
-
-const onDownloadComicRpc = trpc.procedure
+const addDownloadItemRpc = trpc.procedure
   .input(
     z.object({
-      id: z.number(),
+      belongComicId: z.number(),
+      comicId: z.number(),
       comicName: z.string(),
       chapterName: z.string(),
       picUrlList: z.array(z.string()),
+      scrambleId: z.number(),
+      speed: z.string(),
     }),
   )
-  .subscription(async function* (opts) {
-    const query = opts.input
-    info('%d 开始处理下载', query.id)
-    const dirname = `${query.comicName}`
-    const filename = `[${query.id}] ${query.chapterName}.zip`
-    const fileDir = resolve(comicDownloadDir, nameSanitizer(dirname))
-    info('%d 标准化文件目录路径 %s', query.id, fileDir)
-    const filepath = resolve(fileDir, nameSanitizer(filename))
-    info('%d 标准化文件路径 %s', query.id, filepath)
-    let complete = 0
-    const total = query.picUrlList.length
-    const list = query.picUrlList.map((url) =>
-      limit(async () => {
-        const res = await net.fetch(url, {
-          method: 'GET',
-        })
-        const arrayBuffer = await res.arrayBuffer()
-        info('%d 已获取 %s 图片 arrayBuffer 数据', query.id, url)
-        const decodeArrayBuffer = await decodeImage(url, arrayBuffer, query.id)
-        info('%d 已解密 %s 图片数据', query.id, url)
-        await delay(1000)
-        return decodeArrayBuffer
-      }),
-    )
-    for (const p of list) {
-      await p
-      complete++
-      yield {
-        type: 'downloading',
-        data: {
-          complete,
-          total,
-        },
-      }
-    }
-    const arrayBufferList = await Promise.all(list)
-    info('%d 所有图片下载完成', query.id)
-    const archive = new ZipArchive('zip', {
-      zlib: { level: 9 },
+  .mutation(async function (opts) {
+    const { input } = opts
+    const item = await addDownloadItem({
+      belongComicId: input.belongComicId,
+      comicId: input.comicId,
+      comicName: input.comicName,
+      chapterName: input.chapterName,
+      picUrlList: input.picUrlList,
+      scrambleId: input.scrambleId,
+      speed: input.speed,
     })
-    arrayBufferList.forEach((arrayBuffer, index) => {
-      archive.append(Buffer.from(arrayBuffer), {
-        name: `${index + 1}.webp`,
-      })
-    })
-    if (!(await exists(fileDir))) {
-      await mkdir(fileDir, {
-        recursive: true,
-      })
-    }
-    const output = createWriteStream(filepath)
-    archive.pipe(output)
-    await archive.finalize()
-    info('%d 所有图片压缩完成，文件地址为 %s', query.id, filepath)
-    yield {
-      type: 'complete',
-      data: {
-        filepath,
-      },
+    if (item) {
+      downloadService(item.comicId)
     }
   })
 
-const getDownloadDownloadingListRpc = trpc.procedure.query(() => {
-  return getDownloadDownloadingList()
+const getDownloadListRpc = trpc.procedure.query(() => {
+  return getDonwloadList()
 })
 
-const getDownloadCompleteListRpc = trpc.procedure.query(() => {
-  return getDownloadCompleteList()
+const onDownloadUpdateRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const _ of on(ee, 'downloadUpdate', { signal: ac.signal })) {
+    yield state.downloadList
+  }
+
+  log.info('结束 onDownloadUpdate 监听')
 })
 
-const saveDownloadDownloadingListRpc = trpc.procedure.input(z.array(z.any())).query(({ input }) => {
-  return saveDownloadDownloadingList(input)
+const onDownloadCompleteRpc = trpc.procedure.subscription(async function* (opts) {
+  const { signal, ctx } = opts
+  const ac = createChainAbortController(signal)
+
+  ctx.win.once('close', () => {
+    ac.abort()
+  })
+
+  for await (const [downloadItem] of on(ee, 'downloadComplete', { signal: ac.signal })) {
+    yield downloadItem as DownloadItem
+  }
+
+  log.info('结束 onDownloadComplete 监听')
 })
 
-const saveDownloadCompleteListRpc = trpc.procedure.input(z.array(z.any())).query(({ input }) => {
-  return saveDownloadCompleteList(input)
+const resetDownloadItemRpc = trpc.procedure
+  .input(z.array(z.number()))
+  .mutation(async ({ input }) => {
+    for (const comicId of input) {
+      const item = state.downloadList.find((item) => item.comicId === comicId)
+      if (item) {
+        await updateDownloadItem(item.comicId, {
+          filepath: '',
+          status: 'pending',
+          percent: 0,
+        })
+      }
+    }
+  })
+
+const downloadRpc = trpc.procedure.input(z.number()).mutation(async ({ input }) => {
+  downloadService(input)
+})
+
+const openDownloadItemDirRpc = trpc.procedure.input(z.number()).mutation(({ input }) => {
+  const item = state.downloadList.find((item) => item.comicId === input)
+  if (item) {
+    const { filepath } = item
+    const absoluteFilepath = resolve(downloadDir, filepath)
+    shell.showItemInFolder(absoluteFilepath)
+  }
 })
 
 export const router = {
-  onDownloadComic: onDownloadComicRpc,
-  getDownloadDownloadingList: getDownloadDownloadingListRpc,
-  getDownloadCompleteList: getDownloadCompleteListRpc,
-  saveDownloadDownloadingList: saveDownloadDownloadingListRpc,
-  saveDownloadCompleteList: saveDownloadCompleteListRpc,
+  addDownloadItem: addDownloadItemRpc,
+  onDownloadUpdate: onDownloadUpdateRpc,
+  getDownloadList: getDownloadListRpc,
+  resetDownloadItem: resetDownloadItemRpc,
+  download: downloadRpc,
+  openDownloadItemDir: openDownloadItemDirRpc,
+  onDownloadComplete: onDownloadCompleteRpc,
 }

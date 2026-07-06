@@ -2,11 +2,12 @@
 import { useRequest } from 'alova/client'
 import { createAlova } from 'alova'
 import vueHook from 'alova/vue'
-import { xhrRequestAdapter } from '@alova/adapter-xhr'
+import { AlovaXHRResponse, xhrRequestAdapter } from '@alova/adapter-xhr'
 import { useConfigStore } from '@/stores/use-config-store'
 import useSnackbar from '@/compositions/use-snack-bar'
-import { error } from '@/utils/logger'
+import { log } from '@/utils/logger'
 
+const { error } = log
 const snackbar = useSnackbar()
 const configStore = useConfigStore()
 const alovaInstance = createAlova({
@@ -16,15 +17,7 @@ const alovaInstance = createAlova({
 
 const { data, send } = useRequest(
   () =>
-    alovaInstance.Get<Array<string>, string>(
-      'https://fastly.jsdelivr.net/gh/Dedicatus546/jm-desktop@main/api.txt',
-      {
-        transform(data) {
-          const urlList = data.split(/\r?\n/)
-          return urlList.filter((url) => /^https?:\/\//.test(url))
-        },
-      },
-    ),
+    alovaInstance.Get<AlovaXHRResponse<Array<string>>>('https://proxy-api.prohibitorum.top/jm-api'),
   {
     immediate: false,
   },
@@ -36,7 +29,7 @@ const refresh = async () => {
     loading.value = true
     await send()
     await configStore.updateConfigAction({
-      apiUrlList: data.value,
+      apiUrlList: data.value.data,
     })
     snackbar.success('刷新成功')
   } catch (e) {

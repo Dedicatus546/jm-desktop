@@ -2,18 +2,16 @@ import { xhrRequestAdapter } from '@alova/adapter-xhr'
 import { createAlova } from 'alova'
 import { useRequest } from 'alova/client'
 import vueHook from 'alova/vue'
-
-import { createLogger } from '@/utils/logger'
-import { useDownloadStore } from '@/stores/use-download-store'
 import useUserStore from '@/stores/use-user-store'
 
 import { getCategoryListApi, getSettingApi, getWeekListApi, loginApi } from './ajax'
 import { trpcClient } from '@/trpc'
 import { useConfigStore } from '@/stores/use-config-store'
 import { usePrefetchDataStore } from '@/stores/use-prefetch-data-store'
-import { WindowId } from '@type/index'
+import { WindowType } from '@common/type'
+import { log } from '@/utils/logger'
 
-const { info, error, warn } = createLogger('api')
+const { info, error, warn } = log
 
 const ts = Math.floor(Date.now() / 1000)
 const version = '1.8.2'
@@ -100,18 +98,6 @@ const autoLogin = async () => {
   }
 }
 
-const initDownload = async () => {
-  const downloadStore = useDownloadStore()
-  info('开始初始化下载任务')
-  try {
-    await downloadStore.initAction()
-    info('初始化下载任务成功')
-  } catch (e) {
-    error('初始化下载任务失败，原因', e)
-    throw new Error('初始化下载任务失败')
-  }
-}
-
 const initPrefetchData = async () => {
   const prefetchDataStore = usePrefetchDataStore()
   const { data: settingData, send: settingSend } = useRequest(() => getSettingApi())
@@ -153,7 +139,7 @@ const http = createAlova({
     if (method.type === 'GET') {
       method.config.cacheFor = 1000 * 60 * 20
     }
-    if (!prefetchDataStore.isInit && WINDOW_ID === WindowId.HOME) {
+    if (!prefetchDataStore.isInit && WINDOW_ID === WindowType.HOME) {
       if (!initPromise) {
         try {
           const { promise, resolve, reject } = Promise.withResolvers<void>()
@@ -163,7 +149,6 @@ const http = createAlova({
               await initPrefetchData()
               await initConfig()
               await autoLogin()
-              await initDownload()
               resolve()
             } catch (e) {
               reject(e)

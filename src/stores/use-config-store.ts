@@ -1,4 +1,4 @@
-import { Config } from '@type/index'
+import { Config } from '@common/type'
 import { useTheme } from 'vuetify'
 
 import { trpcClient } from '@/trpc'

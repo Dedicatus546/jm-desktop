@@ -83,9 +83,14 @@ export const decodeImage = async (src: string, arrayBuffer: ArrayBuffer, comicId
     )
   }
   const promise = canvas.toBuffer('webp')
-  decodePromiseMap.set(key, promise)
+  decodePromiseMap.set(
+    key,
+    promise.then((outputBuffer) => {
+      decodeSrcMap.set(key, outputBuffer)
+      decodePromiseMap.delete(key)
+      return outputBuffer
+    }),
+  )
   const outputBuffer = await promise
-  decodeSrcMap.set(key, outputBuffer)
-  decodePromiseMap.delete(key)
   return outputBuffer
 }
