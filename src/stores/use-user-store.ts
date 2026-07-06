@@ -41,7 +41,6 @@ const useUserStore = defineStore('user', () => {
   }
 
   const updateFromTrpcAction = (user: User | null) => {
-    console.log('user', user)
     if (user) {
       Object.assign(state, user)
     } else {

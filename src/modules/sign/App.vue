@@ -136,6 +136,17 @@ const retry = () => {
   error.value = undefined
   send()
 }
+
+watch(
+  () => userStore.state.uid,
+  () => {
+    if (userStore.isLogin) {
+      send()
+    } else {
+      trpcClient.closeWindow.mutate()
+    }
+  },
+)
 </script>
 
 <template>
