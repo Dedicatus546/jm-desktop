@@ -174,7 +174,12 @@ const updatePrefetchDataRpc = trpc.procedure
     }) satisfies z.Schema<PrefetchData>,
   )
   .mutation(async ({ input }) => {
-    // info('更新 prefetchdata ，原 prefetchdata ', stringify(state.user), '更新的 config', stringify(input))
+    logger.info(
+      '更新 prefetchdata ，原 prefetchdata ',
+      stringify(state.user),
+      '更新的 prefetchdata',
+      stringify(input),
+    )
     if (input) {
       Object.assign(state.prefetchData, input)
     }
