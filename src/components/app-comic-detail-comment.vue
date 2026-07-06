@@ -21,6 +21,7 @@ const routePage = useRouteQuery<string, number>('commentPage', '1', {
 })
 
 const {
+  error,
   loading,
   page,
   pageCount,
@@ -61,6 +62,11 @@ onSuccess(() => {
   snackbar.success(commentData.value.data.msg)
   refresh(1, 0)
 })
+
+const retry = () => {
+  error.value = undefined
+  refresh(1, 0)
+}
 </script>
 
 <template>
@@ -91,7 +97,10 @@ onSuccess(() => {
       </v-col>
     </v-row>
   </v-form>
-  <v-data-iterator :items="data" :items-per-page="pageSize" :loading="loading">
+  <div class="wind-h-300px wind-relative" v-if="error">
+    <app-error :error="error" @retry="retry" />
+  </div>
+  <v-data-iterator v-else :items="data" :items-per-page="pageSize" :loading="loading">
     <template #loader>
       <v-row>
         <template v-for="item of pageSize" :key="item">
