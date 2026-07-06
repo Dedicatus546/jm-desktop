@@ -14,8 +14,8 @@ const userStore = useUserStore()
 const configStore = useConfigStore()
 
 const formState = reactive({
-  username: '',
-  password: '',
+  username: import.meta.env.VITE_TEST_USERNAME ?? '',
+  password: import.meta.env.VITE_TEST_PASSWORD ?? '',
   autoLogin: false,
 })
 const errorMsg = ref('')

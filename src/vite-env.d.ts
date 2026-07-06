@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly VITE_LOGIN_PASSWORD: string
   readonly VITE_GIT_REPO_URL: string
   readonly VITE_NSFW: string
+  readonly VITE_TEST_USERNAME?: string
+  readonly VITE_TEST_PASSWORD?: string
 }
 
 declare module 'typeface-roboto' {
