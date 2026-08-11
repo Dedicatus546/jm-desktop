@@ -380,23 +380,27 @@ export const getPromoteComicListApi = () => {
     transform(res) {
       return {
         code: res.code,
-        data: res.data.map((item) => {
-          return {
-            id: Number.parseInt(item.id + ''),
-            title: item.title,
-            filterValue: item.filter_val,
-            list: item.content.map((item) => {
-              return {
-                id: Number.parseInt(item.id),
-                author: item.author,
-                name: item.name,
-                liked: item.liked,
-                isCollect: item.is_favorite,
-                updateAt: item.update_at,
-              }
-            }),
-          }
-        }),
+        data: res.data
+          .filter((item) => {
+            return item.type !== 'library' && item.type !== 'novels'
+          })
+          .map((item) => {
+            return {
+              id: Number.parseInt(item.id + ''),
+              title: item.title,
+              filterValue: item.filter_val,
+              list: item.content.map((item) => {
+                return {
+                  id: Number.parseInt(item.id),
+                  author: item.author,
+                  name: item.name,
+                  liked: item.liked,
+                  isCollect: item.is_favorite,
+                  updateAt: item.update_at,
+                }
+              }),
+            }
+          }),
       }
     },
   })
