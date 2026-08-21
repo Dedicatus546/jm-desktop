@@ -1,10 +1,16 @@
 import { createVuetify as cv } from 'vuetify'
 import { Intersect } from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
+import { zhHans } from 'vuetify/locale'
 
 export const createVuetify = () => {
   const isAuto = APP_STATE.config.theme === 'auto'
   return cv({
+    locale: {
+      locale: 'zhHans',
+      fallback: 'sv',
+      messages: { zhHans },
+    },
     theme: {
       defaultTheme: isAuto ? 'system' : APP_STATE.config.theme,
       themes: {
