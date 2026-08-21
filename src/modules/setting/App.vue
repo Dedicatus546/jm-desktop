@@ -24,6 +24,7 @@ const formState = reactive<
   proxyInfo: null,
   currentShuntKey: null,
   useProxy: false,
+  readCacheCount: 3,
 })
 const errorMsg = ref('')
 const submit = async (e: SubmitEventPromise) => {
@@ -70,6 +71,7 @@ onMounted(() => {
   formState.proxyInfo = configStore.state.proxyInfo
   formState.currentShuntKey = configStore.state.currentShuntKey
   formState.useProxy = !!formState.proxyInfo
+  formState.readCacheCount = configStore.state.readCacheCount
 })
 </script>
 
@@ -169,6 +171,20 @@ onMounted(() => {
                 :step="0.1"
                 :precision="1"
                 placeholder="系统默认缩放情况下 2k 可尝试 1.4 ，4k 可尝试 1.8"
+              ></v-number-input>
+            </v-col>
+            <v-col :cols="12">
+              <v-number-input
+                hide-details
+                variant="outlined"
+                color="primary"
+                v-model:model-value="formState.readCacheCount"
+                label="图片预加载数量"
+                :min="1"
+                :max="6"
+                :step="1"
+                :precision="1"
+                placeholder="建议设置为 3"
               ></v-number-input>
             </v-col>
             <v-col :cols="12">

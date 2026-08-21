@@ -21,7 +21,6 @@ const imgSrc = ref<string>('')
 const onLoadImageIntersect = async (isIntersecting: boolean) => {
   if (isIntersecting) {
     imgSrc.value = await decodeImage(props.src, props.comicId, props.scrambleId, props.speed)
-    emits('decodeSuccess')
   }
 }
 
@@ -29,6 +28,11 @@ const onScrollImageIntersect = (isIntersecting: boolean) => {
   if (isIntersecting) {
     emits('intersect')
   }
+}
+
+const onLoad = () => {
+  isLoaded.value = true
+  emits('decodeSuccess')
 }
 
 defineExpose({
@@ -60,7 +64,7 @@ defineExpose({
       :src="imgSrc"
       :data-original-src="src"
       alt=""
-      @load="isLoaded = true"
+      @load="onLoad"
     />
   </div>
 </template>

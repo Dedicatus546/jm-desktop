@@ -16,6 +16,7 @@ export const useConfigStore = defineStore('config', () => {
     loginUserInfo: APP_STATE.config.loginUserInfo,
     proxyInfo: APP_STATE.config.proxyInfo,
     zoomFactor: APP_STATE.config.zoomFactor,
+    readCacheCount: APP_STATE.config.readCacheCount,
   })
 
   const updateConfigAction = async (config: Partial<Config>) => {

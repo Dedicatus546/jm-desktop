@@ -4,6 +4,7 @@ import { useRequest } from 'alova/client'
 import { getComicPicListApi } from '@/apis'
 import { decodeImage } from '@/utils/image-decode'
 import { useConfigStore } from '@/stores/use-config-store'
+import { log } from '@/utils/logger'
 
 const props = defineProps<{
   id: number
@@ -22,8 +23,9 @@ const { loading, data, send, error } = useRequest(
   },
 )
 
-const cacheCount = 3
 const onDecodeSuccess = (index: number) => {
+  const cacheCount = configStore.state.readCacheCount
+  log.info('开始预加载，预加载数量 ', cacheCount)
   const list = data.value.list ?? []
   const start = Math.max(0, index - cacheCount)
   const end = Math.min(index + cacheCount, list.length - 1)

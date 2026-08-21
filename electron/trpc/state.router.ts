@@ -54,6 +54,7 @@ const updateConfigRpc = trpc.procedure
           password: z.string(),
         })
         .nullable(),
+      readCacheCount: z.number(),
     }) satisfies z.Schema<Config>,
   )
   .mutation(async ({ input }) => {

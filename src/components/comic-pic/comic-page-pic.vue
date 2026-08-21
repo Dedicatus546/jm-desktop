@@ -14,9 +14,13 @@ const emits = defineEmits<{
 const isLoaded = ref(false)
 const imgSrc = ref<string>('')
 
+const onLoad = () => {
+  isLoaded.value = true
+  emits('decodeSuccess')
+}
+
 onMounted(async () => {
   imgSrc.value = await decodeImage(props.src, props.comicId, props.scrambleId, props.speed)
-  emits('decodeSuccess')
 })
 </script>
 
@@ -31,7 +35,7 @@ onMounted(async () => {
       :src="imgSrc"
       :data-original-src="src"
       alt=""
-      @load="isLoaded = true"
+      @load="onLoad"
     />
   </div>
 </template>
