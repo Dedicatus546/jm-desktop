@@ -174,21 +174,17 @@ watch(
         style="height: calc(100vh - var(--v-layout-top, 0px))"
       >
         <app-error :error="error" v-if="error" @retry="retry" />
-        <v-card v-else :loading="loading">
-          <v-card-text>
-            <div class="wind-flex wind-flex-col wind-gap-4">
-              <div class="wind-text-xl wind-text-center">本月已签到 {{ signInSumDay }} 天</div>
-              <v-calendar
-                style="height: 500px"
-                ref="calendar"
-                :model-value="value"
-                class="signCalendar"
-                :events="events"
-              >
+        <v-card v-else :loading="loading" class="wind-h-full">
+          <v-card-text class="wind-flex wind-flex-col wind-gap-4 wind-h-full">
+            <div class="wind-text-xl wind-text-center">本月已签到 {{ signInSumDay }} 天</div>
+            <div class="wind-flex-grow-1 wind-min-h-0">
+              <v-calendar ref="calendar" :model-value="value" class="wind-h-full" :events="events">
                 <template #event="{ eventParsed }">
                   <span class="wind-px-2">{{ eventParsed.input.name }}</span>
                 </template>
               </v-calendar>
+            </div>
+            <div>
               <v-slider
                 readonly
                 label="连续签到进度"
@@ -200,6 +196,8 @@ watch(
                 :ticks="sliderTickMap"
                 :tick-size="7"
               ></v-slider>
+            </div>
+            <div>
               <v-alert type="info" title="连续签到奖励">
                 <template #text>
                   <div class="wind-text">
@@ -212,6 +210,8 @@ watch(
                   </div>
                 </template>
               </v-alert>
+            </div>
+            <div>
               <v-btn
                 :disabled="loading"
                 :loading="signInLoading"
