@@ -1,4 +1,5 @@
 import { LoginInfo, PrefetchData, User, Config, WindowInfoMap, DownloadItem } from '@common/type'
+import { DEFAULT_CONFIG } from '@common/constant'
 
 export const state: {
   config: Config
@@ -8,24 +9,7 @@ export const state: {
   loginInfo: LoginInfo | null
   downloadList: Array<DownloadItem>
 } = {
-  config: {
-    theme: 'light',
-    apiUrl: 'https://www.cdngwc.cc',
-    apiUrlList: [
-      'https://www.cdnhth.club',
-      'https://www.cdnzack.cc',
-      'https://www.jmapiproxyxxx.vip',
-      'https://www.cdnxxx-proxy.xyz',
-      'https://www.jmeadpoolcdn.life',
-      'https://jmcomicne.net',
-      'https://www.cdngwc.cc',
-    ],
-    currentShuntKey: null,
-    readMode: 'scroll',
-    loginUserInfo: '',
-    zoomFactor: 1.0,
-    proxyInfo: null,
-  },
+  config: Object.assign({}, DEFAULT_CONFIG),
   windowInfoMap: new Map(),
   prefetchData: {
     imgHost: '',

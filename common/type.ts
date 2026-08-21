@@ -32,6 +32,7 @@ export type Config = {
   apiUrlList: Array<string>
   currentShuntKey: number | null
   readMode: ReadMode
+  readCacheCount: number;
   loginUserInfo: string
   zoomFactor: number
   proxyInfo: ProxyInfo | null

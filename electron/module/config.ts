@@ -7,8 +7,13 @@ import superjson from 'superjson'
 import { state } from './state'
 import { ee } from '@main/events'
 import { clone } from 'radash'
+import { DEFAULT_CONFIG } from '@common/constant'
 
 export const configFilepath = resolve(dataDir, 'config.json')
+
+const normalizeConfig = (config: Partial<Config>): Config => {
+  return Object.assign({}, DEFAULT_CONFIG, config)
+}
 
 export const initConfigFile = async () => {
   const isExists = await exists(configFilepath)
@@ -16,8 +21,8 @@ export const initConfigFile = async () => {
     const str = await readFile(configFilepath, {
       encoding: 'utf-8',
     })
-    const config = superjson.parse<Config>(str)
-    state.config = config
+    const config = superjson.parse<Partial<Config>>(str)
+    state.config = normalizeConfig(config)
   } else {
     await writeFile(configFilepath, superjson.stringify(state.config))
   }
