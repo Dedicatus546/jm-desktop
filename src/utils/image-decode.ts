@@ -42,19 +42,8 @@ export const decodeImage = async (
     scrambleId,
     speed,
   )
-  if (comicId < scrambleId) {
-    info('comicId 小于 scrambleId ，跳过解密')
-  }
-  if (isGif(src)) {
-    info('gif 格式，跳过解密')
-  }
-  if (speed === '1') {
-    info('speed 参数为 1 ，跳过解密')
-  }
-  if (comicId < scrambleId || isGif(src) || speed === '1') {
-    return src
-  }
   const key = comicId + '-' + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
+  const page = src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
   info('全局解密 promise map key ：%s', key)
   if (decodeSrcMap.has(key)) {
     const src = decodeSrcMap.get(key)!
@@ -65,7 +54,43 @@ export const decodeImage = async (
   if (decodePromiseMap.has(key)) {
     return decodePromiseMap.get(key)!
   }
-  const page = src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'))
+  if (comicId < scrambleId || isGif(src) || speed === '1') {
+    if (comicId < scrambleId) {
+      info('comicId 小于 scrambleId ，跳过解密')
+    } else if (isGif(src)) {
+      info('gif 格式，跳过解密')
+    } else if (speed === '1') {
+      info('speed 参数为 1 ，跳过解密')
+    }
+    const img = await getLoadedImage(src)
+    const { naturalHeight, naturalWidth } = img
+    const canvas = document.createElement('canvas')
+    canvas.width = naturalWidth
+    canvas.height = naturalHeight
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(img, 0, 0)
+    const promise = new Promise<string>((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const file = new File([blob], page + '.webp', {
+              type: 'image/webp',
+            })
+            const decodeUrl = URL.createObjectURL(file)
+            decodeSrcMap.set(key, decodeUrl)
+            resolve(decodeUrl)
+          } else {
+            reject("canvas not output a blob by invoking 'toBlob' method.")
+          }
+        },
+        'image/webp',
+        1,
+      )
+    })
+    decodePromiseMap.set(key, promise)
+    promise.then(() => decodePromiseMap.delete(key))
+    return promise
+  }
   const img = await getLoadedImage(src)
   const { naturalHeight, naturalWidth } = img
   const canvas = document.createElement('canvas')
